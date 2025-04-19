@@ -1,0 +1,263 @@
+:root {
+    --Primary: #023047;
+    --Secondary: #219EBC;
+    --Accent: #FB8500;
+    --Highlight: #F8F9FA;
+    --Heading: #CCD6F6;
+}
+
+body,
+html {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #F8F9FA;
+    scroll-behavior: smooth;
+}
+
+.main-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    background-color: var(--Highlight);
+}
+
+.left {
+    width: 60%;
+    height: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+}
+
+.left .heading {
+    color: var(--Accent);
+    font-size: 35px;
+    font-weight: 800;
+}
+
+.left form {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.left form input {
+    outline: none;
+    padding: 10px;
+    width: 300px;
+    position: relative;
+    transition: .2s ease;
+    border-radius: 5px;
+    border: .5px solid var(--Heading);
+    box-shadow: inset 0px 0px 2px #00000056;
+}
+
+.left form input::placeholder {
+    color: #021c29 !important;
+}
+
+.left form input:focus {
+    border-bottom: 2px solid var(--Accent);
+}
+
+.left form .password {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.left form .password i {
+    position: absolute;
+    right: 7px;
+    color: #383838;
+    cursor: pointer;
+}
+
+.forgot-btn {
+    width: 130px;
+    cursor: pointer;
+    color: #021c29;
+    text-decoration: underline;
+}
+
+.left form button {
+    padding: 7px 0px;
+    width: 130px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--Accent);
+    border: 2px solid var(--Accent);
+    cursor: pointer;
+    background-image: url(https://devmaster7.github.io/Pages-for-Mega-Project/assets/liquid.png);
+    border-radius: 12px;
+    background-repeat: repeat-x;
+    background-position: 0 -100%;
+    transition: .7s ease;
+}
+
+.left form button:hover {
+    color: white;
+    background-position: center;
+}
+
+.have-acc {
+    color: #021c29;
+    font-size: 17px;
+    text-align: center;
+}
+
+.have-acc button {
+    color: var(--Accent);
+    text-decoration: underline solid var(--Accent);
+}
+
+.right {
+    width: 40%;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
+    padding: 140px 20px 0px;
+    position: relative;
+    background-color: var(--Primary);
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+.bubble {
+    position: absolute;
+    bottom: -60px;
+    width: 30px;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    animation: rise 12s linear infinite;
+}
+
+@keyframes rise {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translateY(-120vh) scale(1.7);
+        opacity: 0;
+    }
+}
+
+.icon {
+    width: 55px;
+    position: absolute;
+    top: 50px;
+    cursor: pointer;
+}
+
+.tag {
+    transform-origin: top center;
+    animation: dangle 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes dangle {
+    0% {
+        transform: rotate(-10deg);
+    }
+
+    100% {
+        transform: rotate(20deg);
+    }
+}
+
+.right .heading {
+    color: var(--Accent);
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.right .text {
+    color: var(--Highlight);
+    font-size: 16px;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin-top: 25px;
+}
+
+.circle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 36px;
+    height: 36px;
+    background-color: var(--Primary);
+    border-radius: 50%;
+    transition: .2s;
+    z-index: 9;
+}
+
+.circle i {
+    color: var(--Highlight);
+    transition: .2s;
+    font-size: 22px;
+}
+
+.circle:hover {
+    background: var(--Highlight);
+    border: 1px solid rgba(119, 119, 119, 0.842);
+}
+
+.twi:hover i {
+    color: #020202;
+}
+
+.face:hover i {
+    color: #0965fd;
+}
+
+.insta:hover i {
+    color: #e4405f;
+}
+
+.you:hover i {
+    color: #ea0000;
+}
+
+
+/* TODO: Media Queries */
+
+
+@media (max-width: 1120px) {
+    .right {
+        padding: 80px 20px 0px;
+    }
+
+    .icon {
+        top: 25px;
+    }
+}
+
+@media (max-width: 768px) {
+    .right .heading {
+        font-size: 28px;
+        font-weight: 700;
+    }
+    
+    .right .text {
+        font-size: 14px;
+    }
+
+    .social-links{
+        margin-top: 10px;
+    }
+}

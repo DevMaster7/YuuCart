@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <link rel="shortcut icon" href="assets/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/css/register.css">
+    <title>QuickCart - Register</title>
+</head>
+
+<body>
+    <div class="main-container">
+        <div class="left">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 3H6L9 15H19L22 6H7" stroke="#64B6AC" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                <circle cx="10" cy="18" r="2" stroke="#CCD6F6" stroke-width="2" fill="none" />
+                <circle cx="18" cy="18" r="2" stroke="#CCD6F6" stroke-width="2" fill="none" />
+                <g class="tag">
+                    <path d="M15 5L18 8L16 10L13 7L15 5Z" stroke-linecap="round" stroke-linejoin="round" fill="#FF6F00"
+                        stroke="#FF6F00" stroke-width="1.5" />
+                    <circle cx="15" cy="7" r="0.8" fill="#0A192F" />
+                </g>
+            </svg>
+            <span class="heading">Hello Friend,<br>Welcome To Our QuickCart</span>
+            <div class="text">
+                QuickCart offers a seamless platform to design and order high-quality custom products tailored to your
+                style. From apparel to accessories, everything is crafted with precision and delivered with care. Sign
+                up today to unlock full access to our design tools, exclusive offers, and a personalized shopping
+                experience built just for you.
+            </div>
+            <div class="social-links">
+                <a class="circle twi" href="#">
+                    <i class="fa-brands fa-x-twitter"></i>
+                </a>
+                <a class="circle face" href="#">
+                    <i class="fa-brands fa-facebook-f"></i>
+                </a>
+                <a class="circle insta" href="#">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+                <a class="circle you" href="#">
+                    <i class="fa-brands fa-youtube"></i>
+                </a>
+            </div>
+        </div>
+        <div class="right">
+            <span class="heading">Create Your Account!</span>
+            <form action="">
+                <input type="text" placeholder="Full Name" name="fullname">
+                <input type="text" placeholder="Username" name="username">
+                <input type="email" placeholder="Email" name="email">
+                <select id="citySelect" style="width: 300px; border: none; outline: none;">
+                    <option value="">-- Select a city --</option>
+                    <option value="karachi">Karachi</option>
+                    <option value="lahore">Lahore</option>
+                    <option value="islamabad">Islamabad</option>
+                    <option value="peshawar">Peshawar</option>
+                    <option value="quetta">Quetta</option>
+                    <option value="multan">Multan</option>
+                    <option value="faisalabad">Faisalabad</option>
+                    <!-- aur bhi jitni marzi add karo -->
+                </select>
+                <div class="password">
+                    <input type="password" placeholder="Password" name="password">
+                    <i class="fa-solid fa-eye eye"></i>
+                </div>
+                <div class="password">
+                    <input type="password" placeholder="Confirm Password" name="password">
+                    <i class="fa-solid fa-eye eye"></i>
+                </div>
+                <div class="terms">
+                    <input type="checkbox" name="terms" id="terms">
+                    <label for="terms">I agree to the <span class="terms-btn">Terms & Conditions</span></label>
+                </div>
+                <div
+                    style="display: flex;justify-content: center;align-items: center;flex-direction: column;gap: 20px;">
+                    <div class="g-recaptcha" style="user-select: none;"
+                        data-sitekey="6LdYwRwrAAAAAM0kqhiN1nA6STjhdvLLH-4XC58U"></div>
+                    <button class="submit-btn" type="submit">Sign Up</button>
+                </div>
+            </form>
+            <div class="have-acc">Already have an account? <button class="login-btn">Login</button></div>
+        </div>
+    </div>
+    <script src="/js/register.js"></script>
+</body>
+
+</html>

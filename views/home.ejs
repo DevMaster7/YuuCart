@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="shortcut icon" href="assets/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/css/home.css">
+    <title>QuickCart - Home</title>
+</head>
+
+<body>
+    <!-- NavBar / Header -->
+    <section class="nav-container">
+        <i class="fa-solid fa-bars bars-cross-mobile"></i>
+        <div class="dropdown-con-mobile">
+            <div class="dropdown-mobile">
+                <i class="fa-solid fa-xmark bars-cross-mobile" style="position: fixed;top: 20px;left: 25px;"></i>
+            </div>
+            <div class="useless-dropdown-mobile"></div>
+        </div>
+        <div class="nav-links">
+            <a href="#Faqs">FAQ's</a>
+            <button id="shop" style="margin-left: 10px;">Shop</button>
+        </div>
+        <div class="logo-con">
+            <a href="" class="icon-con">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 3H6L9 15H19L22 6H7" stroke="#64B6AC" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <circle cx="10" cy="18" r="2" stroke="#CCD6F6" stroke-width="2" fill="none" />
+                    <circle cx="18" cy="18" r="2" stroke="#CCD6F6" stroke-width="2" fill="none" />
+                    <g class="tag">
+                        <path d="M15 5L18 8L16 10L13 7L15 5Z" stroke-linecap="round" stroke-linejoin="round"
+                            fill="#FF6F00" stroke="#FF6F00" stroke-width="1.5" />
+                        <circle cx="15" cy="7" r="0.8" fill="#0A192F" />
+                    </g>
+                </svg>
+            </a>
+            <a href="" style="text-decoration: none;">
+                <div class="logo-text">QuickCart</div>
+            </a>
+        </div>
+        <i class="fa-solid fa-bars bars-cross-land"></i>
+        <div class="dropdown-con-land">
+            <div class="dropdown-land">
+                <i class="fa-solid fa-xmark bars-cross-land"></i>
+            </div>
+            <div class="useless-dropdown-land"></div>
+        </div>
+        <div class="nav-links op">
+            <button id="register">Get Started</button>
+            <button id="login">Sign In</button>
+        </div>
+        <button class="theme__icon" onclick="toggleTheme()">
+            <span></span>
+            <span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </span>
+            <span></span>
+        </button>
+    </section>
+
+    <!-- Main Landing Page -->
+    <main>
+        <section class="landing-page">
+            <div class="landing-left">
+                <img src="assets/man.jpg" alt="">
+            </div>
+            <div class="landing-center">
+                <div class="heading-text">
+                    Welcome to <div><span>QuickCart</span></div> Your Trusted Shopping Platform
+                </div>
+                <div class="other-text">
+                    Discover a platform built for your creativity. Design custom T-shirts, mugs, and more — tailored to
+                    your unique style. Now offering up to 30% off across selected products for a limited time. Premium
+                    quality, fast delivery, and effortless customization.
+                </div>
+                <div class="btns">
+                    <button class="register-btn">Get Started</button>
+                    <button class="login-btn">Sign In</button>
+                    <!-- <a class="register-btn" href="register.html">Get Started</a>
+                    <a class="login-btn" href="">Sign In</a> -->
+                </div>
+                <div class="sale-text">SPECIAL DISCOUNT<br><span>UPTO 15% OFF ON ALL ITEMS</span></div>
+            </div>
+            <div class="landing-right">
+                <div class="right-con">
+                    <img class="imgg" style="grid-area: box1;" src="assets/pic1.png" alt="">
+                    <div class="social-links" style="grid-area: box3;">
+                        <a class="circle twi" href="#">
+                            <i class="fa-brands fa-x-twitter"></i>
+                        </a>
+                        <a class="circle face" href="#">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                        <a class="circle insta" href="#">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a class="circle you" href="#">
+                            <i class="fa-brands fa-youtube"></i>
+                        </a>
+                    </div>
+                    <img class="imgg" style="grid-area: box4;" src="assets/pic2.png" alt="">
+                    <img class="imgg" style="grid-area: box5;" src="assets/pic3.png" alt="">
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Main Content Area -->
+    <section class="content-page">
+        <!-- Customize Section -->
+        <div class="customize-con">
+            <div class="cust-left">
+                <div>
+                    <span>Customize With Your Style - No Limits!
+                        <img src="assets/bulbGIF.gif" alt="" class="gif1">
+                    </span>
+                    <div>Your Things Your Canvas! Choose From a Variety Of Colors, Add Your Custom Logos And Create a
+                        Look That's Uniquely Defined You. Express Your Personality With Your Design.
+                        <img src="assets/shirtGIF.gif" alt="" class="gif2">
+                    </div>
+                </div>
+            </div>
+            <div class="cust-right">
+                <div class="right">
+                    <div class="preview-pic">
+                        <img class="product-logo" src="" style="width: 30px; height: 30px;display: none;" alt="">
+                        <img src="assets/customizabale/MenTshirtwhite.png" alt="">
+                    </div>
+                    <div class="position-size">
+                        <input type="number" name="" id="logo-W" min="0" max="100" placeholder="Width">
+                        <input type="number" name="" id="logo-H" min="0" max="100" placeholder="Height">
+                        <input type="number" name="" id="logo-X" min="0" max="100" placeholder="X-axis">
+                        <input type="number" name="" id="logo-Y" min="0" max="100" placeholder="Y-axis">
+                    </div>
+                    <div class="img-selection">
+                        <div class="img-box"><img src="assets/customizabale/MenTshirtwhite.png" alt=""></div>
+                        <div class="img-box"><img src="assets/customizabale/FemTshirtwhite.png" alt=""></div>
+                        <div class="img-box dis"><img src="assets/customizabale/MugWhite.png" alt=""></div>
+                        <div class="img-box dis"><img src="assets/customizabale/Perfume.png" alt=""></div>
+                    </div>
+                    <div class="color-selection">
+                        <div class="color-box white" style="background-color: hsl(0, 0%, 100%);"></div>
+                        <div class="color-box black" style="background-color: hsl(0, 2%, 24%);"></div>
+                        <div class="color-box red" style="background-color: hsl(358, 75%, 56%);"></div>
+                        <div class="color-box blue" style="background-color: hsl(216, 58%, 65%);"></div>
+                        <div class="color-box orange" style="background-color: hsl(28, 87%, 57%);"></div>
+                        <div class="color-box green" style="background-color: hsl(75, 62%, 67%);"></div>
+                    </div>
+                    <label for="fileInput" class="custom-file-upload">Your Logo</label>
+                    <input type="file" id="fileInput" accept="image/*" hidden>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Delivery Section -->
+        <div class="delivery-con">
+            <div class="left">
+                <img src="assets/deliveryGIF.gif" alt="">
+            </div>
+            <div class="right">
+                <span>We Bring Your Designs to Your Doorstep</span>
+                <div>
+                    Our Store QuickCart, Ensures Seamless Delivery Of Your Customized Products To Every Corner Of
+                    Pakistan.
+                </div>
+            </div>
+        </div>
+
+        <!-- Our Reviews Section -->
+        <div class="review">
+            <div class="review-heading">Typical Reviews Of Our QuickCart</div>
+            <div class="carousel-wrapper">
+                <div class="arrow left-arrow" onclick="slide(-1)"><i class="fa-solid fa-chevron-left"></i></div>
+                <div class="carousel-container">
+                    <div class="carousel" id="carousel">
+                        <div class="card" style="background: transparent; box-shadow: unset;cursor: default;"></div>
+                        <div class="card">
+                            <div class="cir"></div>
+                            <p>“I designed my first T-shirt in minutes! Super easy and fun to use.”</p>
+                            <h4>- Areeba S.</h4>
+                        </div>
+                        <div class="card">
+                            <div class="cir"></div>
+                            <p>“Loved the color options and how I could drag my logo anywhere. Game changer!”</p>
+                            <h4>- Zain M.</h4>
+                        </div>
+                        <div class="card">
+                            <div class="cir"></div>
+                            <p>“Product came out just like the preview. Highly recommended!”</p>
+                            <h4>- Fatima A.</h4>
+                        </div>
+                        <div class="card">
+                            <div class="cir"></div>
+                            <p>“Never thought customizing could be this easy. I had fun designing my hoodie!”</p>
+                            <h4>- Usman T.</h4>
+                        </div>
+                        <div class="card">
+                            <div class="cir"></div>
+                            <p>“The drag-and-drop feature made placing my logo so effortless. Loved it!”</p>
+                            <h4>- Mehwish R.</h4>
+                        </div>
+                        <div class="card center">
+                            <div class="cir"></div>
+                            <p>“Such a smooth and clean experience. Got exactly what I imagined!”</p>
+                            <h4>- Danish I.</h4>
+                        </div>
+                        <div class="card">
+                            <div class="cir"></div>
+                            <p>“Honestly impressed! The final print matched my design perfectly. Will order again.”</p>
+                            <h4>- Hania K.</h4>
+                        </div>
+                        <div class="card">
+                            <div class="cir"></div>
+                            <p>“I didn't expect it to be this fun. The interface is clean and beginner-friendly.”</p>
+                            <h4>- Bilal S.</h4>
+                        </div>
+                        <div class="card">
+                            <div class="cir"></div>
+                            <p>“Quality exceeded my expectations. Colors were vibrant and print was sharp!”</p>
+                            <h4>- Sana J.</h4>
+                        </div>
+                        <div class="card">
+                            <div class="cir"></div>
+                            <p>“My friends were shocked I made this myself! Super cool customization options.”</p>
+                            <h4>- Hamza L.</h4>
+                        </div>
+                        <div class="card">
+                            <div class="cir"></div>
+                            <p>“Didn't expect it to turn out this amazing. The quality and details are on point!”</p>
+                            <h4>- Ayesha M.</h4>
+                        </div>
+                        <div class="card" style="background: transparent; box-shadow: unset;cursor: default;"></div>
+                    </div>
+                </div>
+                <div class="arrow right-arrow" onclick="slide(1)"><i class="fa-solid fa-chevron-right"></i></div>
+            </div>
+            <div class="dots" id="dots"></div>
+        </div>
+
+        <!-- FAQ's Section -->
+        <div id="Faqs" class="faqs-con">
+            <div class="faq-heading">FAQs About:</div>
+            <div class="faq">
+                <div class="faq-topic">
+                    <div class="faq-topic-text">Orders & Shipping</div>
+                    <i class="fa-solid fa-chevron-down extender"></i>
+                </div>
+                <div class="extender-con">
+                    <div class="que-ans-con">
+                        <div class="question">Q: How long does shipping take?</div>
+                        <div class="answer">A: Shipping usually takes 3-7 business days, depending on your location.
+                        </div>
+                        <div class="question">Q: Do you offer cash on delivery (COD)?</div>
+                        <div class="answer">A: Yes, we offer Cash on Delivery (COD) for orders within Pakistan.</div>
+                        <div class="question">Q: How can I track my order?</div>
+                        <div class="answer">A: Once your order is shipped, we will send you a tracking number via email
+                            or SMS.</div>
+                        <div class="question"></div>
+                        <div class="answer"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="faq">
+                <div class="faq-topic">
+                    <div class="faq-topic-text">Payments & Refunds</div>
+                    <i class="fa-solid fa-chevron-down extender"></i>
+                </div>
+                <div class="extender-con">
+                    <div class="que-ans-con">
+                        <div class="question">Q: What payment methods do you accept?</div>
+                        <div class="answer">A: We accept COD, Bank Transfer, Easypaisa, and JazzCash.</div>
+                        <div class="question">Q: Can I cancel my order after placing it?</div>
+                        <div class="answer">A: Orders can be canceled within 24 hours of placement. After that, they are
+                            processed for shipping.</div>
+                        <div class="question">Q: Do you offer refunds or exchanges?</div>
+                        <div class="answer">A: Yes, we offer 7-day returns & exchanges if the product is damaged or
+                            incorrect.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="faq">
+                <div class="faq-topic">
+                    <div class="faq-topic-text">Product & Customization</div>
+                    <i class="fa-solid fa-chevron-down extender"></i>
+                </div>
+                <div class="extender-con">
+                    <div class="que-ans-con">
+                        <div class="question">Q: Can I customize my product?</div>
+                        <div class="answer">A: Yes! You can upload your own design for custom T-shirts, mugs, and
+                            hoodies.</div>
+                        <div class="question">Q: What sizes do you offer?</div>
+                        <div class="answer">A: We offer S, M, L, XL, and XXL. Please check our size chart before
+                            ordering.</div>
+                        <div class="question">Q: Are your T-shirts/mugs high quality?</div>
+                        <div class="answer">A: Yes! We use premium fabric and high-quality printing for long-lasting
+                            products.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="faq">
+                <div class="faq-topic">
+                    <div class="faq-topic-text">Customer Support</div>
+                    <i class="fa-solid fa-chevron-down extender"></i>
+                </div>
+                <div class="extender-con">
+                    <div class="que-ans-con">
+                        <div class="question">Q: How can I contact customer support?</div>
+                        <div class="answer">A: You can contact us via WhatsApp, email, or live chat. Our support team is
+                            available 9 AM – 9 PM.</div>
+                        <div class="question">Q: What if I receive a damaged or wrong product?</div>
+                        <div class="answer">A: Please contact us within 24 hours of receiving your order with pictures,
+                            and we will replace it.</div>
+                        <div class="question"></div>
+                        <div class="answer"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="faq">
+                <div class="faq-topic">
+                    <div class="faq-topic-text">Privacy & Security</div>
+                    <i class="fa-solid fa-chevron-down extender"></i>
+                </div>
+                <div class="extender-con">
+                    <div class="que-ans-con">
+                        <div class="question">Q: Is it safe to enter my payment details on your website?</div>
+                        <div class="answer">A: Yes, we use industry-standard encryption to ensure your payment details
+                            are secure.</div>
+                        <div class="question">Q: Will my personal information be shared with third parties?</div>
+                        <div class="answer">A: No, we respect your privacy. Your personal information is only used to
+                            process orders and communicate with you about your account and orders.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Area -->
+    <footer>
+        <!-- Usefull Links -->
+        <div class="footer-con">
+            <div class="footer-info">
+                <div class="footer-headings">Quick Links</div>
+                <a href="" class="links">Home</a>
+                <button class="links">About Us</button>
+                <button class="links">Shop Now</button>
+                <button class="links">Blog</button>
+                <button class="links">Contact Us</button>
+            </div>
+            <div class="footer-info">
+                <div class="footer-headings">Customer Support</div>
+                <a href="#" class="links">Email</a>
+                <a href="#" class="links">WhatsApp</a>
+                <a href="#" class="links">Address</a>
+                <a href="#" class="links">Support Timing</a>
+            </div>
+            <div class="footer-info">
+                <div class="footer-headings">Policies & Legal</div>
+                <a href="#" class="links">Return & Refund Policy</a>
+                <a href="#" class="links">Shipping Policy</a>
+                <a href="#" class="links">Privacy Policy</a>
+                <a href="#" class="links">Terms & Conditions</a>
+            </div>
+            <div class="footer-info">
+                <div class="footer-headings">Follow Us</div>
+                <a href="#" class="links">Twitter/X</a>
+                <a href="#" class="links">Facebook</a>
+                <a href="#" class="links">Instagram</a>
+                <a href="#" class="links">YouTube</a>
+                <a href="#" class="links">TikTok</a>
+            </div>
+        </div>
+
+        <!-- Copyrights -->
+        <div class="copytext">
+            &copy; 2025 QuickCart - All Rights Reserved
+        </div>
+    </footer>
+
+    <script src="/js/home.js"></script>
+</body>
+
+</html>
