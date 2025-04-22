@@ -49,6 +49,10 @@ main {
     box-shadow: #000000c9 0px 2px 20px;
 }
 
+.nav-links{
+    display: flex;
+}
+
 .nav-links a,
 .nav-links button {
     position: relative;
@@ -58,6 +62,7 @@ main {
     color: var(--Heading);
     padding: 4px 10px;
     transition: color 0.3s ease;
+    display: flex;
 }
 
 .nav-links a::after,
@@ -78,6 +83,14 @@ main {
 .nav-links button:hover::after {
     transform: scaleX(1);
     transform-origin: left;
+}
+
+.review-btn{
+    display: none;
+}
+
+.contact-btn{
+    display: none;
 }
 
 .logo-con {
@@ -512,8 +525,23 @@ main {
     background: var(--Accent);
 }
 
-.register-btn:hover {
-    background: #034c70;
+.shop-btn {
+    padding: 5px 20px;
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--Secondary);
+    border: 2px solid var(--Secondary);
+    cursor: pointer;
+    background-image: url("/assets/blueLiquid.png");
+    border-radius: 5px;
+    background-repeat: repeat-x;
+    background-position: 0 -100%;
+    transition: .7s ease;
+}
+
+.shop-btn:hover {
+    color: white;
+    background-position: center;
 }
 
 .login-btn:hover {
@@ -646,16 +674,6 @@ main {
     display: flex;
     padding: 0px 0px 0px 35px;
 }
-
-/* .main-cir {
-    width: 200px;
-    height: 200px;
-    position: absolute;
-    left: -30px;
-    background-color: var(--Accent);
-    border-radius: 50%;
-    filter: blur(10px);
-} */
 
 .cust-left div {
     display: flex;
@@ -831,7 +849,7 @@ main {
     color: var(--Accent);
     border: 2px solid var(--Accent);
     cursor: pointer;
-    background-image: url("https://devmaster7.github.io/Pages-for-Mega-Project/assets/liquid.png");
+    background-image: url("/assets/orangeLiquid.png");
     border-radius: 12px;
     background-repeat: repeat-x;
     background-position: 0 -100%;
@@ -891,6 +909,7 @@ main {
     align-items: center;
     width: 100%;
     border-bottom: 2px solid var(--Primary);
+    scroll-margin-top: 60px;
 }
 
 .review-heading {
@@ -1110,7 +1129,7 @@ footer {
     transition: .2s ease;
 }
 
-.links{
+.links {
     position: relative;
     transition: color 0.3s ease;
 }

@@ -94,7 +94,7 @@ html {
     color: var(--Accent);
     border: 2px solid var(--Accent);
     cursor: pointer;
-    background-image: url(https://devmaster7.github.io/Pages-for-Mega-Project/assets/liquid.png);
+    background-image: url(/assets/orangeLiquid.png);
     border-radius: 12px;
     background-repeat: repeat-x;
     background-position: 0 -100%;

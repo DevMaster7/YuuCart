@@ -23,6 +23,22 @@ let dotsContainer = document.getElementById("dots");
 let faq_btn = document.querySelectorAll(".faq-topic")
 let down = document.querySelectorAll(".extender")
 
+// Login and Register
+if (document.cookie.includes("token")) {
+    document.querySelector("#login").style.display = "none";
+    document.querySelector("#register").style.display = "none";
+    document.querySelector(".register-btn").style.display = "none";
+    document.querySelector(".login-btn").style.display = "none";
+    document.querySelector(".shop-btn").style.display = "block";
+    document.querySelector(".contact-btn").style.display = "block";
+    document.querySelector(".review-btn").style.display = "block";
+}
+else{
+    document.querySelector(".shop-btn").style.display = "none";
+    document.querySelector(".contact-btn").style.display = "none";
+    document.querySelector(".review-btn").style.display = "none";
+}
+
 // Logo Animation
 icon.addEventListener("animationend", function () {
     icon.style.animation = "bounce .5s ease-in-out 2";
@@ -297,6 +313,10 @@ updateSlider();
 addClickListeners();
 startAutoScroll();
 
+
+document.querySelector(".shop-btn").addEventListener("click", () => {
+    window.location.href = '/shop';
+})
 document.getElementById("shop").addEventListener("click", () => {
     window.location.href = '/shop';
 })

@@ -50,12 +50,12 @@ html {
 
 @keyframes rise {
     0% {
-        transform: translateY(0) scale(1);
+        transform: translateY(0vh) scale(1);
         opacity: 0.8;
     }
 
     100% {
-        transform: translateY(-120vh) scale(1.7);
+        transform: translateY(-180vh) scale(1.7);
         opacity: 0;
     }
 }
@@ -221,20 +221,20 @@ html {
     cursor: pointer;
 }
 
-.terms{
+.terms {
     width: 95%;
     padding-left: 4px;
 }
 
-.terms input{
+.terms input {
     width: 13px !important;
 }
 
-.terms label{
+.terms label {
     color: #021c29 !important;
 }
 
-.terms-btn{
+.terms-btn {
     cursor: pointer;
     color: var(--Accent);
     text-decoration: underline;
@@ -249,7 +249,7 @@ html {
     color: var(--Accent);
     border: 2px solid var(--Accent);
     cursor: pointer;
-    background-image: url(https://devmaster7.github.io/Pages-for-Mega-Project/assets/liquid.png);
+    background-image: url(/assets/orangeLiquid.png);
     border-radius: 12px;
     background-repeat: repeat-x;
     background-position: 0 -100%;
@@ -272,6 +272,23 @@ html {
     text-decoration: underline solid var(--Accent);
 }
 
+.mobile-txt {
+    display: none;
+}
+
+.heading2{
+    text-align: center;
+    color: var(--Accent);
+    font-size: 18px;
+    font-weight: 800;
+    padding: 0px 8px;
+}
+
+.text2{
+    text-align: center;
+    color: var(--Heading);
+    padding: 8px 8px 0px;
+}
 
 /* TODO: Media Queries */
 
@@ -301,11 +318,47 @@ html {
 }
 
 @media (max-width: 590px) {
+
+    .main-container {
+        height: unset;
+        overflow: hidden !important;
+        position: absolute;
+        z-index: 100;
+    }
+
     .left {
         display: none;
     }
 
-    .right{
+    .right {
         width: 100%;
+        height: auto;
+        background: var(--Primary);
+        gap: 20px;
+        padding: 20px 10px;
+        overflow: hidden !important;
+    }
+
+    .terms {
+        width: unset;
+    }
+
+    .terms label {
+        color: var(--Highlight) !important;
+    }
+
+    .have-acc {
+        color: var(--Highlight);
+    }
+
+    .heading {
+        display: none;
+    }
+
+    .mobile-txt{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
 }

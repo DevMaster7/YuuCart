@@ -1,6 +1,12 @@
 let bubbleCon = document.querySelector(".left")
 let showPass = document.querySelectorAll(".eye")
 
+setInterval(() => {
+    const style = window.getComputedStyle(bubbleCon);
+    if(style.display ==="none"){
+        bubbleCon = document.querySelector(".right")
+    }
+}, 1000);
 function createBubble() {
     let bubble = document.createElement('div');
     bubble.className = 'bubble';
@@ -47,5 +53,5 @@ document.querySelector(".login-btn").addEventListener("click", () => {
     window.location.href = '/login';
 })
 document.querySelector(".terms-btn").addEventListener("click", () => {
-    window.location.href = '/terms&conditions';
+    window.location.href = '/register/terms-and-conditions';
 })
