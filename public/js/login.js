@@ -1,5 +1,12 @@
 let bubbleCon = document.querySelector(".right")
 let showPass = document.querySelectorAll(".eye")
+setInterval(() => {
+    const style = window.getComputedStyle(bubbleCon);
+    if(style.display ==="none"){
+        bubbleCon = document.querySelector(".left")
+    }
+}, 1000);
+
 
 function createBubble() {
     let bubble = document.createElement('div');

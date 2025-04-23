@@ -124,6 +124,7 @@ input[type="search"]::-webkit-search-results-decoration {
 .right {
     display: flex;
     align-items: center;
+    position: relative;
 }
 
 .user-con {
@@ -135,7 +136,58 @@ input[type="search"]::-webkit-search-results-decoration {
     display: none;
 }
 
-.right button {
+.user-content-con {
+    width: 180px;
+    height: 200px;
+    border-radius: 3px;
+    position: absolute;
+    background: var(--Highlight);
+    top: -4px;
+    right: 42px;
+    display: none;
+    justify-content: space-around;
+    flex-direction: column;
+    padding: 5px 0px;
+}
+
+.user-content-con::after {
+    content: "";
+    position: absolute;
+    right: -10px;
+    top: 10px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid var(--Highlight);
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+}
+
+.user-content-con button {
+    position: relative;
+    text-decoration: none;
+    font-size: 17px;
+    font-weight: 500;
+    color: #011d2b;
+    padding: 4px 10px;
+    cursor: pointer;
+    text-align: left;
+    transition: .1s linear;
+    width: fit-content;
+    max-width: 100%;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.user-content-con button:hover{
+    color: var(--Accent);
+    text-decoration: underline;
+}
+
+.user-content-con button i{
+    margin-right: 10px;
+}
+
+.right .btns {
     position: relative;
     text-decoration: none;
     font-size: 18px;
@@ -145,7 +197,7 @@ input[type="search"]::-webkit-search-results-decoration {
     transition: color 0.3s ease;
 }
 
-.right button::after {
+.right .btns::after {
     content: "";
     position: absolute;
     left: 13%;
@@ -158,7 +210,7 @@ input[type="search"]::-webkit-search-results-decoration {
     transition: transform 0.3s ease-in-out;
 }
 
-.right button:hover::after {
+.right .btns:hover::after {
     transform: scaleX(1);
     transform-origin: left;
 }
@@ -325,7 +377,6 @@ input[type="search"]::-webkit-search-results-decoration {
 
     .left,
     .right {
-        width: 48%;
         display: flex;
         justify-content: center;
     }
@@ -360,10 +411,6 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 
 @media (max-width:360px) {
-    .right button {
-        display: none;
-    }
-
     .right {
         width: unset;
     }

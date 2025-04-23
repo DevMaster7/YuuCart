@@ -1,14 +1,6 @@
 let nav_bar = document.querySelector(".nav-container")
 let icon = document.querySelector(".icon-con")
 let themeBtn = document.querySelector(".switch")
-let mobileBars = document.querySelectorAll(".bars-cross-mobile")[0]
-let mobileCross = document.querySelectorAll(".bars-cross-mobile")[1]
-let mobileDrop = document.querySelector(".useless-dropdown-mobile")
-let mobileDropCon = document.querySelector(".dropdown-con-mobile")
-let landBars = document.querySelectorAll(".bars-cross-land")[0]
-let landCross = document.querySelectorAll(".bars-cross-land")[1]
-let landDrop = document.querySelector(".useless-dropdown-land")
-let landDropCon = document.querySelector(".dropdown-con-land")
 let customizeRight = document.querySelector(".cust-right")
 let customizeBox = customizeRight.querySelector(".right")
 let customizePic = document.querySelector(".preview-pic").getElementsByTagName("img")[1]
@@ -59,30 +51,6 @@ function toggleTheme() {
     const btn = document.querySelector(".theme__icon");
     btn.classList.toggle("clicked");
 }
-
-// Hamburger Menu
-mobileBars.addEventListener("click", () => {
-    mobileDropCon.style.display = "flex";
-})
-mobileDrop.addEventListener("click", () => {
-    mobileDropCon.style.display = "none"
-})
-mobileCross.addEventListener("click", () => {
-    mobileDropCon.style.display = "none"
-})
-landBars.addEventListener("click", () => {
-    landDropCon.style.display = "flex";
-    landCross.style.position = "fixed";
-    landCross.style.top = "20px";
-    landCross.style.left = "20px";
-    landCross.style.zIndex = "11";
-})
-landDrop.addEventListener("click", () => {
-    landDropCon.style.display = "none"
-})
-landCross.addEventListener("click", () => {
-    landDropCon.style.display = "none"
-})
 
 // Change Products
 picBoxes.forEach((e) => {

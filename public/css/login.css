@@ -233,6 +233,24 @@ html {
     color: #ea0000;
 }
 
+.mobile-txt {
+    display: none;
+}
+
+.heading2 {
+    text-align: center;
+    color: var(--Accent);
+    font-size: 23px;
+    font-weight: 800;
+    padding: 0px 8px;
+}
+
+.text2 {
+    text-align: center;
+    color: var(--Heading);
+    padding: 8px 8px 0px;
+}
+
 
 /* TODO: Media Queries */
 
@@ -252,12 +270,52 @@ html {
         font-size: 28px;
         font-weight: 700;
     }
-    
+
     .right .text {
         font-size: 14px;
     }
 
-    .social-links{
+    .social-links {
         margin-top: 10px;
+    }
+}
+
+@media (max-width:630px) {
+    .main-container {
+        position: absolute;
+        z-index: 100;
+        height: auto;
+        overflow: hidden !important;
+    }
+
+    .right {
+        display: none;
+    }
+
+    .left {
+        width: 100%;
+        height: 100%;
+        padding: 20px 10px;
+        gap: 20px;
+        background: var(--Primary);
+    }
+
+    .forgot-btn {
+        color: var(--Highlight);
+    }
+
+    .have-acc {
+        color: var(--Highlight);
+    }
+
+    .heading {
+        display: none;
+    }
+
+    .mobile-txt {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
 }
