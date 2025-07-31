@@ -2,7 +2,7 @@ let bubbleCon = document.querySelector(".right")
 let showPass = document.querySelectorAll(".eye")
 setInterval(() => {
     const style = window.getComputedStyle(bubbleCon);
-    if(style.display ==="none"){
+    if (style.display === "none") {
         bubbleCon = document.querySelector(".left")
     }
 }, 1000);
@@ -45,5 +45,30 @@ document.querySelector(".icon").addEventListener("click", () => {
     window.location.href = '/';
 })
 document.querySelector(".register-btn").addEventListener("click", () => {
-    window.location.href = '/register';
+    window.location.href = '/user/register';
 })
+let err = document.querySelector(".err-msg")
+document.getElementById('loginForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    const res = await fetch('/user/login', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json();
+    if (data.message === "Admin") {
+        return window.location.href = '/admin'
+    }
+    else if (data.message === "User") {
+        return window.location.href = '/shop'
+    }
+    else {
+        err.innerHTML = data.message
+        err.style.display = "block"
+    }
+});

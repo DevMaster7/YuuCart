@@ -1,0 +1,342 @@
+:root {
+    --Primary: #023047;
+    --Secondary: #219EBC;
+    --Accent: #FB8500;
+    --Highlight: #F8F9FA;
+    --Heading: #CCD6F6;
+}
+
+.content-con {
+    width: 100%;
+}
+
+.show-products {
+    width: 100%;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.main-con {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--Heading);
+    border-radius: 5px;
+}
+
+.filter-bar-con {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid var(--Heading);
+}
+
+.filter-bar-con .text {
+    font-weight: 700;
+    font-size: 16px;
+    color: #555;
+}
+
+.filter-bar-con .text span {
+    font-weight: 500;
+}
+
+.filter-btns {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.filter-btns select {
+    border: 1px solid #dddddd;
+    padding: 0px 5px;
+    text-align: center;
+    outline: none;
+    border-radius: 3px;
+}
+
+.add-pro-btn-con {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px;
+}
+
+.add-pro-btn {
+    font-size: 17px;
+    color: var(--Accent);
+    cursor: pointer;
+}
+
+.product-container {
+    padding: 0px 15px 15px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.product-card {
+    height: fit-content;
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 6px 15px rgb(0 0 0 / 16%);
+    scroll-margin-top: 15px;
+    transition: 0.3s;
+}
+
+.product-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: contain;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.product-card .extra-pics {
+    width: 100%;
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.product-card .extra-pics .box {
+    width: 50px;
+    height: 50px;
+    position: relative;
+    object-fit: contain;
+    border-radius: 5px;
+    cursor: pointer;
+    overflow: hidden;
+    border: 1px solid var(--Heading);
+}
+
+.product-card .extra-pics .box img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.product-card .extra-pics .box div {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #55555525;
+    transition: .2s ease;
+}
+
+.product-card .extra-pics .box div svg {
+    width: 25px;
+    height: 25px;
+    fill: #555;
+}
+
+.product-card .extra-pics .box:hover div {
+    opacity: 1;
+}
+
+.add-image-label {
+    text-align: center;
+    font-size: 30px;
+    font-weight: 600;
+    color: #555;
+    cursor: pointer;
+    user-select: none;
+}
+
+.product-card .proName {
+    font-size: 20px;
+    font-weight: 600;
+    color: #0a2f41;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.product-card .info {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.product-card .info div {
+    flex-shrink: 0;
+    font-weight: 700;
+    font-size: 15px;
+    color: #555;
+}
+
+.product-card .info input,
+.product-card .info nav,
+.product-card .info span {
+    font-weight: 500;
+    font-size: 15px;
+    color: #555;
+}
+
+.product-card .info .value-btn {
+    cursor: pointer;
+    user-select: none;
+}
+
+.product-card .input-info {
+    outline: none;
+    border-radius: 2px;
+    width: 100%;
+    box-shadow: 0px 0px 3px var(--Secondary);
+}
+
+.info .down-btn i {
+    position: relative;
+}
+
+.dropdown-options {
+    width: 100%;
+    position: absolute;
+    top: -5px;
+    left: 15px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    width: max-content;
+    font-family: sans-serif;
+    padding: 7px;
+    display: none;
+    cursor: default;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.dropdown-options .info {
+    display: flex;
+    gap: 7px;
+}
+
+.dropdown-options .input-info {
+    width: fit-content;
+}
+
+.dropdown-options .info .color-info {
+    width: 25px;
+    height: 15px;
+    border: 1px solid var(--Heading);
+    border-radius: 5px;
+}
+
+input[type="color"].color-info {
+    appearance: auto !important;
+    -webkit-appearance: auto !important;
+    background-color: initial !important;
+}
+
+.product-card .btn-con {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.product-card .btn {
+    text-align: center;
+    font-size: 19px;
+    font-weight: 600;
+    padding: 5px 15px;
+    margin-top: 5px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.product-card .delete-btn {
+    color: rgb(255, 0, 0);
+}
+
+.product-card .edit-btn {
+    color: var(--Secondary);
+}
+
+.product-card .save-btn {
+    display: none;
+    color: var(--Primary);
+}
+
+.product-card .cancel-btn {
+    display: none;
+    color: var(--Accent);
+}
+
+.product-card .delete-btn:hover {
+    color: var(--Highlight);
+    background: rgb(255, 0, 0);
+}
+
+.product-card .edit-btn:hover {
+    color: var(--Highlight);
+    background: var(--Secondary);
+}
+
+.product-card .save-btn:hover {
+    color: var(--Highlight);
+    background: var(--Primary);
+}
+
+.product-card .cancel-btn:hover {
+    color: var(--Highlight);
+    background: var(--Accent);
+}
+
+.wrapper-confirmation {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9;
+    background: rgba(0, 0, 0, 0.356);
+    backdrop-filter: blur(3px);
+}
+
+.conformation-con {
+    background: var(--Primary);
+    border-radius: 5px;
+    padding: 30px 20px;
+}
+
+.conformation-con .text {
+    text-align: center;
+    color: var(--Highlight);
+    font-size: 19px;
+    font-weight: 400;
+}
+
+.conformation-con .btn-con {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 10px;
+}
+
+.conformation-con .btn-con div {
+    padding: 3px 50px;
+    border-radius: 3px;
+    color: var(--Accent);
+    font-weight: 500;
+    cursor: pointer;
+    transition: .2s ease;
+    background: var(--Highlight);
+}

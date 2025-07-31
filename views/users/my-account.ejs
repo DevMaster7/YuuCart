@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head data-page="My Account" data-img="<%= user.userImg %>" data-fullname="<%= user.fullname %>">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/css/output.css">
+    <link rel="stylesheet" href="/css/common/loader.css">
+    <link rel="stylesheet" href="/css/user.css">
+    <link rel="stylesheet" href="/css/users/my-acc.css">
+    <link rel="stylesheet" href="/css/common/logout.css">
+    <link rel="stylesheet" href="/css/common/footer.css">
+    <title>Manage Your Account - QuickCart</title>
+</head>
+
+<body>
+    <div class="nav-con">
+        <div class="left">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+        <div class="center">
+            <div class="logo-text">QuickCart</div>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 3H6L9 15H19L22 6H7" stroke="#64B6AC" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                <circle cx="10" cy="18" r="2" stroke="#CCD6F6" stroke-width="2" fill="none" />
+                <circle cx="18" cy="18" r="2" stroke="#CCD6F6" stroke-width="2" fill="none" />
+                <g class="tag">
+                    <path d="M15 5L18 8L16 10L13 7L15 5Z" stroke-linecap="round" stroke-linejoin="round" fill="#FF6F00"
+                        stroke="#FF6F00" stroke-width="1.5" />
+                    <circle cx="15" cy="7" r="0.8" fill="#0A192F" />
+                </g>
+            </svg>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="side-nav-con">
+        </div>
+        <div class="personal-container">
+            <div class="heading">Your Personal Information</div>
+            <div class="edit-con">
+                <form action="/user/updateProfilePic" method="POST" enctype="multipart/form-data" id="profilePicForm">
+                    <div class="edit-img-con">
+                        <img src="<%= user.userImg %>" alt="user" />
+                        <input type="file" name="file" id="fileInput" style="display: none;" />
+                        <div class="pencil">
+                            <i class="fa-solid fa-pencil"></i>
+                        </div>
+                    </div>
+                </form>
+                <div class="edit-btn">
+                    <div class="flex gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                            fill="#e3e3e3">
+                            <path
+                                d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h357l-80 80H200v560h560v-278l80-80v358q0 33-23.5 56.5T760-120H200Zm280-360ZM360-360v-170l367-367q12-12 27-18t30-6q16 0 30.5 6t26.5 18l56 57q11 12 17 26.5t6 29.5q0 15-5.5 29.5T897-728L530-360H360Zm481-424-56-56 56 56ZM440-440h56l232-232-28-28-29-28-231 231v57Zm260-260-29-28 29 28 28 28-28-28Z" />
+                        </svg>
+                        <div>Change Profile Information</div>
+                    </div>
+                </div>
+            </div>
+            <div class="personal-detail-con">
+                <span style="width: 80%;display: flex;justify-content: space-between; align-items: center; gap: 20px;">
+                    <div class="personal-detail">
+                        <div class="name">Name:</div>
+                        <div class="value">
+                            <%= user.fullname %>
+                        </div>
+                    </div>
+                    <div class="personal-detail">
+                        <div class="name">Username:</div>
+                        <div class="value">
+                            <%= user.username %>
+                        </div>
+                    </div>
+                </span>
+                <div class="personal-detail">
+                    <div class="name">Email:</div>
+                    <div class="value">
+                        <%= user.email %>
+                    </div>
+                </div>
+                <div class="personal-detail">
+                    <div class="name">Phone Number:</div>
+                    <div class="value">
+                        <%= user.phone %>
+                    </div>
+                </div>
+                <div class="personal-detail">
+                    <div class="name">City:</div>
+                    <div class="value">
+                        <%= user.city %>
+                    </div>
+                </div>
+                <div class="personal-detail">
+                    <div class="name">Address:</div>
+                    <div class="value">
+                        <%= user.address %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/common/loader.js"></script>
+    <script src="/js/user.js"></script>
+    <script src="/js/common/user-sidebar.js"></script>
+    <script src="/js/users/my-acc.js"></script>
+    <script src="/js/common/footer.js"></script>
+</body>
+
+</html>

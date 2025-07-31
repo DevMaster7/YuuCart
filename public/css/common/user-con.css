@@ -1,0 +1,80 @@
+:root {
+    --Primary: #023047;
+    --Secondary: #219EBC;
+    --Accent: #FB8500;
+    --Highlight: #F8F9FA;
+    --Heading: #CCD6F6;
+}
+
+.user-con {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    overflow: hidden;
+    display: flex;
+}
+
+.user-con img{
+    object-fit: cover;
+}
+
+.user-content-con {
+    width: 180px;
+    border-radius: 3px;
+    position: absolute;
+    z-index: 9;
+    background: var(--Highlight);
+    top: -4px;
+    right: 42px;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    padding: 5px;
+    border: 1px solid var(--Heading);
+}
+
+.user-content-con::after {
+    content: "";
+    position: absolute;
+    right: -10px;
+    top: 10px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid var(--Highlight);
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+}
+
+.user-content-con .side-btns {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    position: relative;
+    font-size: 19px;
+    font-weight: 500;
+    color: var(--Primary);
+    transition: .1s ease;
+}
+
+.user-content-con .icon {
+    width: 25px;
+    height: 25px;
+    fill: var(--Primary);
+    transition: .1s ease;
+}
+
+.side-btns:hover {
+    color: var(--Accent);
+}
+
+.side-btns:hover .icon {
+  fill: var(--Accent);
+}
+
+@media (max-width: 450px) {
+    .user-con{
+        width: 29px;
+        height: 29px;
+    }
+}

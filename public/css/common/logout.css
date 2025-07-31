@@ -1,0 +1,54 @@
+:root {
+    --Primary: #023047;
+    --Secondary: #219EBC;
+    --Accent: #FB8500;
+    --Highlight: #F8F9FA;
+    --Heading: #CCD6F6;
+}
+
+.log-main {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 99;
+    justify-content: center;
+    align-items: center;
+    background: #02304727;
+    backdrop-filter: blur(3px);
+    display: flex;
+}
+
+.logout-con {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    gap: 20px;
+    border-radius: 4px;
+    background: var(--Highlight);
+    border: 1px solid var(--Heading);
+}
+
+.logout-con .text {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--Primary);
+}
+
+.logout-con .btn-con {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.logout-con .btn-con .btn {
+    cursor: pointer;
+    padding: 0px 25px;
+    border-radius: 2px;
+    color: var(--Primary);
+    border: 1px solid var(--Heading);
+}

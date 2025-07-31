@@ -19,8 +19,21 @@ html {
     width: 100vw;
     height: 100vh;
     display: flex;
+    justify-content: center;
     align-items: center;
     background-color: var(--Highlight);
+}
+
+.error{
+    position: fixed;
+    top: 0;
+    user-select: none;
+    background: #00000085;
+    color: var(--Highlight);
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    padding: 10px;
+    display: none;
 }
 
 .left {
@@ -53,7 +66,7 @@ html {
     transition: .2s ease;
     border-radius: 5px;
     border: .5px solid var(--Heading);
-    box-shadow: inset 0px 0px 2px #00000056;
+    /* box-shadow: inset 0px 0px 2px #00000056; */
 }
 
 .left form input::placeholder {
@@ -76,6 +89,14 @@ html {
     right: 7px;
     color: #383838;
     cursor: pointer;
+}
+
+.err-msg{
+    position: absolute;
+    margin-top: 15px;
+    font-size: 13px;
+    color: red;
+    display: none;
 }
 
 .forgot-btn {
@@ -251,6 +272,10 @@ html {
     padding: 8px 8px 0px;
 }
 
+.mob{
+    display: none;
+}
+
 
 /* TODO: Media Queries */
 
@@ -284,7 +309,6 @@ html {
     .main-container {
         position: absolute;
         z-index: 100;
-        height: auto;
         overflow: hidden !important;
     }
 
@@ -295,8 +319,8 @@ html {
     .left {
         width: 100%;
         height: 100%;
-        padding: 20px 10px;
-        gap: 20px;
+        padding: 10px 10px;
+        gap: 0px;
         background: var(--Primary);
     }
 
@@ -317,5 +341,13 @@ html {
         flex-direction: column;
         justify-content: center;
         align-items: center;
+    }
+
+    .mob{
+        display: flex;
+    }
+
+    .social-links {
+        margin-top: 0px;
     }
 }

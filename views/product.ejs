@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head data-page="product">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/css/output.css">
+    <link rel="stylesheet" href="/css/common/loader.css">
+    <link rel="stylesheet" href="/css/common/logo.css">
+    <link rel="stylesheet" href="/css/common/user-con.css">
+    <link rel="stylesheet" href="/css/common/logout.css">
+    <link rel="stylesheet" href="/css/common/search.css">
+    <link rel="stylesheet" href="/css/product.css">
+    <link rel="stylesheet" href="/css/common/footer.css">
+    <title>
+        <%= product.proName %> - QuickCart
+    </title>
+</head>
+
+<body>
+    <!-- NavBar -->
+    <div class="nav-con">
+        <a href="/shop" class="left">
+            <div class="logo-text">QuickCart</div>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 3H6L9 15H19L22 6H7" stroke="#64B6AC" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                <circle cx="10" cy="18" r="2" stroke="#CCD6F6" stroke-width="2" fill="none" />
+                <circle cx="18" cy="18" r="2" stroke="#CCD6F6" stroke-width="2" fill="none" />
+                <g class="tag">
+                    <path d="M15 5L18 8L16 10L13 7L15 5Z" stroke-linecap="round" stroke-linejoin="round" fill="#FF6F00"
+                        stroke="#FF6F00" stroke-width="1.5" />
+                    <circle cx="15" cy="7" r="0.8" fill="#0A192F" />
+                </g>
+            </svg>
+        </a>
+        <div class="center">
+            <div class="search-con">
+                <input type="search" name="search" id="search" placeholder="Search...">
+                <button id="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+            <a href="/shop/cart" class="cart-con">
+                <svg width="25" height="25" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M4.51345 5H1.33325V3H6.15306L7.21972 8.33333H30.5315L27.5012 25H8.51345L4.51345 5ZM7.61972 10.3333L10.1531 23H25.832L28.135 10.3333H7.61972Z"
+                        fill="#FB8500"></path>
+                    <path
+                        d="M11.9999 28C11.9999 28.7364 11.403 29.3333 10.6666 29.3333C9.93021 29.3333 9.33325 28.7364 9.33325 28C9.33325 27.2636 9.93021 26.6667 10.6666 26.6667C11.403 26.6667 11.9999 27.2636 11.9999 28Z"
+                        fill="#CCD6F6"></path>
+                    <path
+                        d="M25.3333 29.3333C26.0696 29.3333 26.6666 28.7364 26.6666 28C26.6666 27.2636 26.0696 26.6667 25.3333 26.6667C24.5969 26.6667 23.9999 27.2636 23.9999 28C23.9999 28.7364 24.5969 29.3333 25.3333 29.3333Z"
+                        fill="#CCD6F6"></path>
+                </svg>
+                <sup class="super">
+                    <%= userCart.length %>
+                </sup>
+            </a>
+        </div>
+        <div class="right" data-userimg="<%= user.userImg %>">
+        </div>
+    </div>
+
+    <!-- Main Product -->
+    <div class="product-con">
+        <div class="extra-pics-videos">
+            <div class="activeBox"><img src="<%= product.image %>" alt=""></div>
+            <% product.galleryImages.forEach(image => { %>
+            <div><img src="<%= image %>" alt=""></div>
+            <% }) %>
+        </div>
+        <div class="product-pic-con" data-id="<%= product._id %>">
+            <img src="<%= product.image %>" alt="" class="zoom-image">
+        </div>
+        <div class="extra-pics-videos-land">
+            <div class="activeBox"><img src="<%= product.image %>" alt=""></div>
+            <% product.galleryImages.forEach(image => { %>
+            <div><img src="<%= image %>" alt=""></div>
+            <% }) %>
+        </div>
+        <div class="product-details">
+            <div class="product-name">
+                <%= product.proName %>
+            </div>
+            <div class="product-rate">
+                <% for(let i=1; i <=5; i++) { %>
+                <% if (i <=product.proRating) { %>
+                <i class="fa-solid fa-star"></i>
+                <% } else { %>
+                <i class="fa-regular fa-star"></i>
+                <% } %>
+                <% } %>
+                <span class="product-reviews">Ratings <%= product.proNoOfReviews %></span>
+                <% if (user.userWishlist) { %>
+                <i class=" <% if(user.userWishlist.includes(product._id)) { %> fa-solid <% } else { %> fa-regular <% } %> fa-heart heart"
+                    title="<% if(user.userWishlist.includes(product._id)) { %> Remove From Wishlist <% } else { %> Add To Wishlist <% } %>">
+                </i>
+                <% } else { %>
+                <i class="fa-regular fa-heart heart" style="opacity: 0.4;cursor: not-allowed;"></i>
+                <% } %>
+            </div>
+            <input type="hidden" id="basePrice" value="<%= product.proPrice %>">
+
+            <div class="product-price" data-price="<%= product.proPrice %>">Rs.<%= product.proPrice %>
+            </div>
+            <div class="product-discount-con">
+                <div data-orignalprice="<%= product.proOrignalPrice %>" class="product-orignal-price">Rs.<%=
+                        product.proOrignalPrice %>
+                </div>
+                <div class="product-discount">-<%= product.proDiscount %>%</div>
+            </div>
+
+            <% if (product.customization) { %>
+            <div class="customize-con-mobile true">
+                <div class="customize-title">Here You Can Customize Your Product:</div>
+                <label for="image-upload" class="upload-label">Add Your Fav Logo</label>
+                <input name="image" type="file" id="image-upload" class="image-upload-input" accept="image/*">
+                <div
+                    style="display: flex; width: 100%; <% if (product.sizeAndPrice.length> 2){ %> flex-direction: column; <%} %>">
+                    <% if (product.sizeAndPrice && product.sizeAndPrice.length> 0) { %>
+                    <div class="cust-con">
+                        <div class="cust-title">Your Size:</div>
+                        <div class="cust-inner-con">
+                            <% product.sizeAndPrice.forEach(sp=> { %>
+                            <div class="cust-size option-size" data-sizeprice="<%= sp.price %>">
+                                <%= sp.size %>
+                            </div>
+                            <% }) %>
+                        </div>
+                    </div>
+                    <% }else{ %>
+                    <% } %>
+                    <% if (product.colorAndPrice && product.colorAndPrice.length> 0) { %>
+                    <div class="cust-con">
+                        <div class="cust-title">Your Color:</div>
+                        <div class="cust-inner-con">
+                            <% product.colorAndPrice.forEach(cp=> { %>
+                            <div class="cust-color option-color" data-colorprice="<%= cp.price %>"
+                                data-color="<%= cp.color %>" style="background: <%= cp.color %>;"></div>
+                            <% }) %>
+                        </div>
+                    </div>
+                    <% }else{ %>
+                    <% } %>
+                </div>
+            </div>
+            <% } else { %>
+            <div class="customize-con-mobile">
+                No Customizeable
+            </div>
+            <% } %>
+            <div class="product-quantity-con">
+                <div class="product-quantity">Quantity:</div>
+                <div class="quantity-btn-con">
+                    <button class="product-quantity-btn minus" style="opacity: 0.5;">-</button>
+                    <div class="product-quantity-value">1</div>
+                    <button class="product-quantity-btn plus">+</button>
+                </div>
+            </div>
+            <div class="purchase-btns">
+                <button class="buy-btn">Buy Now</button>
+                <button class="add-cart-btn">Add To Cart</button>
+            </div>
+        </div>
+        <% if (product.customization) { %>
+        <div class="customize-con true">
+            <div class="customize-title">Here You Can Customize Your Product:</div>
+            <label for="image-upload" class="upload-label">Add Your Fav Logo</label>
+            <input name="product-logo" type="file" id="image-upload" class="image-upload-input" accept="image/*">
+            <% if (product.sizeAndPrice && product.sizeAndPrice.length> 0) { %>
+            <div class="cust-con">
+                <div class="cust-title">Your Size:</div>
+                <div class="cust-inner-con">
+                    <% product.sizeAndPrice.forEach(sp=> { %>
+                    <div class="cust-size option-size" data-sizeprice="<%= sp.price %>">
+                        <%= sp.size %>
+                    </div>
+                    <% }) %>
+                </div>
+            </div>
+            <% }else{ %>
+            <% } %>
+            <% if (product.colorAndPrice && product.colorAndPrice.length> 0) { %>
+            <div class="cust-con">
+                <div class="cust-title">Your Color:</div>
+                <div class="cust-inner-con">
+                    <% product.colorAndPrice.forEach(cp=> { %>
+                    <div class="cust-color option-color" data-colorprice="<%= cp.price %>" data-color="<%= cp.color %>"
+                        style="background: <%= cp.color %>;"></div>
+                    <% }) %>
+                </div>
+            </div>
+            <% }else{ %>
+            <% } %>
+            <% } else { %>
+            <div class="customize-con">
+                No Customizeable
+            </div>
+            <% } %>
+        </div>
+    </div>
+
+    <script src="/js/common/loader.js"></script>
+    <script src="/js/product.js"></script>
+    <script src="/js/common/nav-bar.js"></script>
+    <script src="/js/common/search.js"></script>
+    <script src="/js/common/wishlist.js"></script>
+    <script src="/js/common/footer.js"></script>
+</body>
+
+</html>

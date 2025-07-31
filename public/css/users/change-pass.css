@@ -1,0 +1,74 @@
+:root {
+    --Primary: #023047;
+    --Secondary: #219EBC;
+    --Accent: #FB8500;
+    --Highlight: #F8F9FA;
+    --Heading: #CCD6F6;
+}
+
+.change-pass-con {
+    width: 100%;
+    padding: 10px 20px;
+}
+
+.change-pass-con .heading {
+    font-size: 30px;
+    color: var(--Accent);
+    font-weight: 600;
+}
+
+.pass-con {
+    width: 100%;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ccd6f680;
+    margin-top: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.pass-con label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: var(--Primary);
+}
+
+.pass-con input {
+    width: 100%;
+    outline: none;
+    padding: 10px 14px;
+    margin-bottom: 18px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+.pass-con button {
+    width: 100%;
+    background-color: var(--Secondary);
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.pass-con button:hover {
+    background: #1a829c;
+}
+
+.pass-con .message {
+    text-align: center;
+    margin-top: 5px;
+    font-size: 15px;
+}
+
+.pass-con .success {
+    color: rgb(0, 200, 0);
+}
+
+.pass-con .error {
+    color: red;
+}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/css/output.css">
+    <link rel="stylesheet" href="/css/admin/admin-sidebar.css">
+    <link rel="stylesheet" href="/css/common/logo.css">
+    <link rel="stylesheet" href="/css/common/loader.css">
+    <link rel="stylesheet" href="/css/common/footer.css">
+    <title>Admin - Manage Coupans</title>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="main-form">
+            <form id="coupanForm" class="form" action="/admin/add-coupan" method="post">
+                <div class="inputs">
+                    <input id="coupanCode" type="text" name="coupanCode" placeholder="Coupan Code" required>
+                    <input id="coupanDiscount" type="number" name="coupanDiscount" placeholder="Coupan Discount"
+                        required>
+                    <input id="coupanLimit" type="number" name="coupanLimit" placeholder="Coupan Limit">
+                    <div style="display: flex; width: 100%; gap: 20px;justify-content: center;">
+                        <div style="display: flex;flex-direction: column;">
+                            <label for="coupanStartDate">Coupan Starting Date</label>
+                            <input id="coupanStartDate" type="date" name="coupanStartDate" required>
+                        </div>
+                        <div style="display: flex;flex-direction: column;">
+                            <label for="coupanEndDate">Coupan Ending Date</label>
+                            <input id="coupanEndDate" type="date" name="coupanEndDate" required>
+                        </div>
+                    </div>
+                    <div class="choose-con">
+                        <label for="choose">Status:</label>
+                        <select id="choose" name="choose" required>
+                            <option value="false">False</option>
+                            <option value="true">True</option>
+                        </select>
+                    </div>
+                    <input id="coupanDescription" type="text" name="coupanDescription" placeholder="Coupan Description"
+                        required>
+                </div>
+                <button class="btn-submit">Add Coupan</button>
+            </form>
+        </div>
+    </div>
+    
+    <script src="/js/common/loader.js"></script>
+    <script src="/js/admin/admin-sidebar.js"></script>
+    <script src="/js/common/footer.js"></script>
+</body>
+
+</html>

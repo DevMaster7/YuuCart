@@ -1,0 +1,52 @@
+:root {
+    --Primary: #023047;
+    --Secondary: #219EBC;
+    --Accent: #FB8500;
+    --Highlight: #F8F9FA;
+    --Heading: #CCD6F6;
+}
+
+.search-con {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 300px;
+    max-width: 600px;
+}
+
+.search-con input {
+    border: none;
+    outline: none;
+    height: 35px;
+    width: 100%;
+    max-width: 300px;
+    border-radius: 3px;
+    font-size: 15px;
+    padding: 0px 35px 0px 5px;
+    color: var(--Primary);
+    background-color: var(--Highlight);
+    transition: .1s ease;
+}
+
+.search-con input:focus {
+    border: 2px solid var(--Accent);
+}
+
+.search-con button {
+    position: absolute;
+    right: 0px;
+    height: 80%;
+    width: 30px;
+    border-left: 2px solid #02304770;
+}
+
+.search-con button i {
+    color: var(--Primary);
+}
+
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+    display: none;
+}

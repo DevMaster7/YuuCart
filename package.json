@@ -9,22 +9,39 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "devDependencies": {
     "autoprefixer": "^10.4.21",
-    "postcss": "^8.5.3",
+    "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "cloudinary": "^1.41.3",
     "cookie-parser": "^1.4.7",
     "cookieparser": "^0.1.0",
     "dotenv": "^16.5.0",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
+    "express-session": "^1.18.1",
     "express-validator": "^7.2.1",
     "jsonwebtoken": "^9.0.2",
+    "moment-timezone": "^0.6.0",
     "mongoose": "^8.13.2",
-    "morgan": "^1.10.0"
-  }
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.2",
+    "multer-storage-cloudinary": "^4.0.0",
+    "ngrok": "^5.0.0-beta.2",
+    "nodemailer": "^7.0.3",
+    "nodemon": "^3.1.10",
+    "slugify": "^1.6.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DevMaster7/QuickCart.git"
+  },
+  "bugs": {
+    "url": "https://github.com/DevMaster7/QuickCart/issues"
+  },
+  "homepage": "https://github.com/DevMaster7/QuickCart#readme",
+  "description": ""
 }

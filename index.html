@@ -1,64 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Message Box</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #e5ddd5;
-      padding: 40px;
-    }
-
-    .chat-container {
-      max-width: 400px;
-      margin: 0 auto;
-    }
-
-    .message-box {
-      position: relative;
-      background-color: #dcf8c6; /* light green like WhatsApp */
-      padding: 10px 15px;
-      border-radius: 10px;
-      margin: 10px 0;
-      width: fit-content;
-      max-width: 80%;
-      align-self: flex-end;
-    }
-
-    .message-box::after {
-      content: "";
-      position: absolute;
-      right: -10px;
-      top: 10px;
-      width: 0;
-      height: 0;
-      border-left: 10px solid #dcf8c6;
-      border-top: 10px solid transparent;
-      border-bottom: 10px solid transparent;
-    }
-
-    .received {
-      background-color: #fff;
-      align-self: flex-start;
-    }
-
-    .received::after {
-      left: -10px;
-      right: auto;
-      border-left: none;
-      border-right: 10px solid #fff;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="public/css/common/loader.css">
+  <title>Professional eCommerce Loader</title>
 </head>
+
 <body>
-  <div class="chat-container">
-    <div class="message-box received">
-      Salam! Kia haal hai?
-    </div>
-    <div class="message-box">
-      Walikum Salam! Sab theek Alhamdulillah.
-    </div>
+
+  <div class="loader-wrapper">
+    <div class="shapes"></div>
+  </div>
+
+  <script>
+  </script>
+  <div class="info">
+    <div>Sizes:</div>&nbsp;
+    <span class="boxes">
+      <% product.sizeAndPrice.forEach(s_p => { %>
+      <div class="box"><%= s_p.size %> = Rs.<%= s_p.price %></div>
+      <% }) %>
+      <div class="box add-cust">+</div>
+    </span>
+  </div>
+  <div class="info">
+    <div>Colors:</div>&nbsp;
+    <span class="boxes">
+      <% product.colorAndPrice.forEach(c_p => { %>
+      <div class="box"><%= c_p.size %> = Rs.<%= c_p.price %></div>
+      <% }) %>
+      <div class="box add-cust">+</div>
+    </span>
   </div>
 </body>
+
 </html>

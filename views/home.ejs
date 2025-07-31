@@ -1,24 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head data-page="home">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
         integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="shortcut icon" href="assets/favicon.png" type="image/x-icon">
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/css/output.css">
+    <link rel="stylesheet" href="/css/common/loader.css">
+    <link rel="stylesheet" href="/css/common/logout.css">
     <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="/css/common/footer.css">
     <title>QuickCart - Home</title>
 </head>
 
 <body>
-    <!-- NavBar / Header -->
-    <section class="nav-container">
+    <section class="nav-con">
         <div class="nav-links">
-            <a href="#Faqs">FAQ's</a>
-            <button id="shop" style="margin-left: 10px;">Shop</button>
+            <a href="#Faqs" class="btns">FAQ's</a>
+            <a href="/shop" class="btns" style="margin-left: 10px;">Shop</a>
         </div>
         <div class="logo-con">
             <a href="" class="icon-con">
@@ -38,25 +40,14 @@
                 <div class="logo-text">QuickCart</div>
             </a>
         </div>
-        <div class="nav-links op">
-            <button class="contact-btn">Contact Us</button>
-            <a class="review-btn" href="#reviews">Reviews</a>
-            <button id="register">Get Started</button>
-            <button id="login">Sign In</button>
+        <div class="nav-links op right">
         </div>
-        <button class="theme__icon" onclick="toggleTheme()">
-            <span></span>
-            <span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-            </span>
-            <span></span>
-        </button>
+        <div class="user-con">
+            <img src="<%= user.userImg %>" alt="" class="user">
+        </div>
+
     </section>
 
-    <!-- Main Landing Page -->
     <main>
         <section class="landing-page">
             <div class="landing-left">
@@ -67,14 +58,12 @@
                     Welcome to <div><span>QuickCart</span></div> Your Trusted Shopping Platform
                 </div>
                 <div class="other-text">
-                    QuickCart is a platform built for your creativity. Design custom T-shirts, mugs, and more — tailored to
+                    QuickCart is a platform built for your creativity. Design custom T-shirts, mugs, and more — tailored
+                    to
                     your unique style. Now offering up to 30% off across selected products for a limited time. Premium
                     quality, fast delivery, and effortless customization.
                 </div>
-                <div class="btns">
-                    <button class="shop-btn">Shop Now!</button>
-                    <button class="register-btn">Get Started</button>
-                    <button class="login-btn">Sign In</button>
+                <div class="btn-con">
                 </div>
                 <div class="sale-text">SPECIAL DISCOUNT<br><span>UPTO 15% OFF ON ALL ITEMS</span></div>
             </div>
@@ -85,11 +74,11 @@
                         <a class="circle twi" href="#">
                             <i class="fa-brands fa-x-twitter"></i>
                         </a>
-                        <a class="circle face" href="#">
-                            <i class="fa-brands fa-facebook-f"></i>
-                        </a>
                         <a class="circle insta" href="#">
                             <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a class="circle face" href="#">
+                            <i class="fa-brands fa-facebook-f"></i>
                         </a>
                         <a class="circle you" href="#">
                             <i class="fa-brands fa-youtube"></i>
@@ -102,9 +91,7 @@
         </section>
     </main>
 
-    <!-- Main Content Area -->
     <section class="content-page">
-        <!-- Customize Section -->
         <div class="customize-con">
             <div class="cust-left">
                 <div>
@@ -136,12 +123,12 @@
                         <div class="img-box dis"><img src="assets/customizabale/Perfume.png" alt=""></div>
                     </div>
                     <div class="color-selection">
-                        <div class="color-box white" style="background-color: hsl(0, 0%, 100%);"></div>
-                        <div class="color-box black" style="background-color: hsl(0, 2%, 24%);"></div>
-                        <div class="color-box red" style="background-color: hsl(358, 75%, 56%);"></div>
-                        <div class="color-box blue" style="background-color: hsl(216, 58%, 65%);"></div>
-                        <div class="color-box orange" style="background-color: hsl(28, 87%, 57%);"></div>
-                        <div class="color-box green" style="background-color: hsl(75, 62%, 67%);"></div>
+                        <div class="color-box white" style="background-color: #ffffff;"></div>
+                        <div class="color-box black" style="background-color: #3e3c3c;"></div>
+                        <div class="color-box red" style="background-color: #e33b40;"></div>
+                        <div class="color-box blue" style="background-color: #729bda;"></div>
+                        <div class="color-box orange" style="background-color: #f18b32;"></div>
+                        <div class="color-box green" style="background-color: #c5df77;"></div>
                     </div>
                     <label for="fileInput" class="custom-file-upload">Your Logo</label>
                     <input type="file" id="fileInput" accept="image/*" hidden>
@@ -149,7 +136,6 @@
             </div>
         </div>
 
-        <!-- About Delivery Section -->
         <div class="delivery-con">
             <div class="left">
                 <img src="assets/deliveryGIF.gif" alt="">
@@ -163,7 +149,6 @@
             </div>
         </div>
 
-        <!-- Our Reviews Section -->
         <div class="review" id="reviews">
             <div class="review-heading">Typical Reviews Of Our QuickCart</div>
             <div class="carousel-wrapper">
@@ -234,7 +219,6 @@
             <div class="dots" id="dots"></div>
         </div>
 
-        <!-- FAQ's Section -->
         <div id="Faqs" class="faqs-con">
             <div class="faq-heading">FAQs About:</div>
             <div class="faq">
@@ -331,49 +315,10 @@
         </div>
     </section>
 
-    <!-- Footer Area -->
-    <footer>
-        <!-- Usefull Links -->
-        <div class="footer-con">
-            <div class="footer-info">
-                <div class="footer-headings">Quick Links</div>
-                <a href="" class="links">Home</a>
-                <button class="links">About Us</button>
-                <button class="links">Shop Now</button>
-                <button class="links">Blog</button>
-                <button class="links">Contact Us</button>
-            </div>
-            <div class="footer-info">
-                <div class="footer-headings">Customer Support</div>
-                <a href="#" class="links">Email</a>
-                <a href="#" class="links">WhatsApp</a>
-                <a href="#" class="links">Address</a>
-                <a href="#" class="links">Support Timing</a>
-            </div>
-            <div class="footer-info">
-                <div class="footer-headings">Policies & Legal</div>
-                <a href="#" class="links">Return & Refund Policy</a>
-                <a href="#" class="links">Shipping Policy</a>
-                <a href="#" class="links">Privacy Policy</a>
-                <a href="#" class="links">Terms & Conditions</a>
-            </div>
-            <div class="footer-info">
-                <div class="footer-headings">Follow Us</div>
-                <a href="#" class="links">Twitter/X</a>
-                <a href="#" class="links">Facebook</a>
-                <a href="#" class="links">Instagram</a>
-                <a href="#" class="links">YouTube</a>
-                <a href="#" class="links">TikTok</a>
-            </div>
-        </div>
-
-        <!-- Copyrights -->
-        <div class="copytext">
-            &copy; 2025 QuickCart - All Rights Reserved
-        </div>
-    </footer>
-
+    <script src="/js/common/loader.js"></script>
     <script src="/js/home.js"></script>
+    <script src="/js/common/nav-bar.js"></script>
+    <script src="/js/common/footer.js"></script>
 </body>
 
 </html>

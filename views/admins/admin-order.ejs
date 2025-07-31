@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head data-page="orders">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/css/output.css">
+    <link rel="stylesheet" href="/css/admin/admin-sidebar.css">
+    <link rel="stylesheet" href="/css/admin/admin-orders.css">
+    <link rel="stylesheet" href="/css/common/logo.css">
+    <link rel="stylesheet" href="/css/common/loader.css">
+    <link rel="stylesheet" href="/css/admin/admin-search.css">
+    <link rel="stylesheet" href="/css/common/footer.css">
+    <title>Admin - Manage Orders</title>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="content-con">
+            <div class="search-con">
+                <input type="search" name="search" id="search" placeholder="Search Orders..." />
+                <button id="search-btn">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </div>
+            <div style="width: 100%;">
+                <div class="tab-bar">
+                    <button class="tab activeTab" data-status="All">All
+                        <span>(<%= orders.length %>)</span></button>
+                    <button class="tab" data-status="Pending">Pending
+                        (<%= orders.filter((order) => order.orderInfo.orderStatus === "Pending").length %>)
+                    </button>
+                    <button class="tab" data-status="Delivered">Delivered
+                        (<%= orders.filter((order) => order.orderInfo.orderStatus === "Delivered").length %>)
+                    </button>
+                    <button class="tab" style="border-right: none;" data-status="Cancelled">Cancelled
+                        (<%= orders.filter((order) => order.orderInfo.orderStatus === "Cancelled").length %>)
+                    </button>
+                </div>
+                <div class="filter-bar-con">
+                </div>
+                <div class="orders-con" id="orderCon">
+                    <% if (orders.length !== 0) { %>
+                    <% orders.reverse().forEach((order) =>{ %>
+                    <div class="order-box" id="<%= order._id %>" data-status="<%= order.orderInfo.orderStatus %>">
+                        <div class="heading">User Details</div>
+                        <div class="user-info">
+                            <a href="/admin/manage-users#<%= order.userDetails.userId %>" class="info-text">User ID:
+                                <span class="user-id"><%= order.userDetails.userId %></span>
+                            </a>
+                            <div class="info-text">Name: <span><%= order.userDetails.fullname %></span></div>
+                            <div class="info-text">Username: <span><%= order.userDetails.username %></span></div>
+                            <div class="info-text">Email: <span><%= order.userDetails.email %></span></div>
+                            <div class="info-text">Phone: <span><%= order.userDetails.phone %></span></div>
+                            <div class="info-text">City: <span><%= order.userDetails.city %></span></div>
+                            <div class="info-text">Address: <span><%= order.userDetails.address %></span></div>
+                        </div>
+                        <div class="heading">Order Details</div>
+                        <% order.productDetails.forEach((orderdetail) =>{ %>
+                        <div class="inner-con">
+                            <div class="img-box">
+                                <img src="<%= orderdetail.productImg %>" alt="Product Image">
+                            </div>
+                            <div class="order-product-info">
+                                <h2><%= orderdetail.productName %></h2>
+                                <p class="price">Rs. <%= orderdetail.basePrice %></p>
+                                <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+                                    <div class="add-info-con">
+                                        <% if (orderdetail.productCustomizeStatus === true) { %>
+                                        <p class="add-info info-box">Size: <%= orderdetail.productSize %> = Rs.
+                                            <%= orderdetail.productSizePrice %></p>
+                                        <p class="add-info info-box">Color: <span class="color"
+                                                style="background: <%= orderdetail.productColor %>;"></span> = Rs.
+                                            <%= orderdetail.productColorPrice %></p>
+                                        <% } %>
+                                        <p class="add-info">Quantity: <%= orderdetail.productQuantity %></p>
+                                    </div>
+                                    <% if (order.productDetails.length > 1) { %>
+                                    <p class="sub-total">SubTotal: Rs. <%= orderdetail.subTotalPrice %></p>
+                                    <% } %>
+                                </div>
+                                <a href="/admin/manage-products#<%= orderdetail.productId %>">
+                                    <div class="info-text">Product ID: <span><%= orderdetail.productId %></span></div>
+                                </a>
+                            </div>
+                        </div>
+                        <% }) %>
+                        <div class="order-card-footer">
+                            <div>
+                                <div class="info-text">Admin OID: <span class="admin-oid"><%= order._id %></span></div>
+                                <div class="info-text">Order ID: <span><%= order.orderInfo._id %></span></div>
+                                <div class="info-text">Date: <span><%= order.orderInfo.orderDate %></span></div>
+                                <div class="info-text">Status:
+                                    <div class="badge-container">
+                                        <span
+                                            class="badge <% if (order.orderInfo.orderStatus === "Pending") { %>pending<% } else if (order.orderInfo.orderStatus === "Delivered") { %>delivered<% } else { %>cancelled<% } %>"><%= order.orderInfo.orderStatus %>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="padding-right: 3px;">
+                                <% if (order.productDetails[0].coupanName === "none") { %>
+                                <div class="total">Total Amount: <span>Rs.
+                                        <%= order.productDetails[0].totalBeforeCoupan %></span>
+                                </div>
+                                <% }else{ %>
+                                <div class="total"
+                                    style="opacity: 0.4; font-size: 14px; cursor: default; user-select: none;">Total
+                                    Amount: <span>Rs.
+                                        <%= order.productDetails[0].totalBeforeCoupan %></span></div>
+                                <div class="info-text">Coupan: <span><%= order.productDetails[0].coupanName %></span>
+                                </div>
+                                <div class="info-text">Discount:
+                                    <span><%= order.productDetails[0].coupanDiscount %></span></div>
+                                <div class="total">Total Amount: <span>Rs.
+                                        <%= order.productDetails[0].totalAfterCoupan %></span>
+                                </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                    <% }) %>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/common/loader.js"></script>
+    <script src="/js/admin/admin-orders.js"></script>
+    <script src="/js/admin/admin-sidebar.js"></script>
+    <script src="/js/admin/admin-search.js"></script>
+    <script src="/js/common/footer.js"></script>
+</body>
+
+</html>
