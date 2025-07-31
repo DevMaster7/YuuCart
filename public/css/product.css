@@ -213,7 +213,6 @@ html {
     display: flex;
     align-items: center;
     gap: 5px;
-    border-bottom: 1px solid var(--Heading);
     padding-bottom: 12px;
 }
 
@@ -232,7 +231,8 @@ html {
 .product-quantity-con {
     display: flex;
     gap: 30px;
-    margin-top: 30px;
+    padding-top: 30px;
+    border-top: 1px solid var(--Heading);
 }
 
 .product-quantity {

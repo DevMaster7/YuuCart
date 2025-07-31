@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="/css/user.css">
     <link rel="stylesheet" href="/css/users/my-wishlist.css">
     <link rel="stylesheet" href="/css/common/logout.css">
+    <link rel="stylesheet" href="/css/common/empty.css">
     <link rel="stylesheet" href="/css/common/footer.css">
     <title>Your Wishlist - QuickCart</title>
 </head>
@@ -47,14 +48,14 @@
         </div>
         <div class="content-con">
             <div class="heading">Your Wishlist</div>
+            <% if(products.length!==0) { %>
             <div class="tab-bar-con">
-                <% if(products.length!==0) { %>
                 <div class="products-count">
                     I Hope You Will Get <%= products.length==1 ? "That" : "These" %> "<%= products.length %>" <%=
                                     products.length==1 ? "Product" : "Products" %> As Soon As Possible
                 </div>
-                <% } %>
             </div>
+            <% } %>
             <div class="products-list-con">
                 <% if(products.length!==0) { %>
                 <% products.forEach(product=> { %>
@@ -137,7 +138,12 @@
                 </a>
                 <% }) %>
                 <% } else { %>
-                <H1>Your Wishlist is Empty</H1>
+                <div class="empty-con">
+                    <img src="/assets/wish-list.png" alt="Empty Wishlist" />
+                    <h3>Your Wishlist is Empty</h3>
+                    <p>Start adding your favorite products!</p>
+                    <a href="/shop" class="explore-btn">Explore Products</a>
+                </div>
                 <% } %>
             </div>
         </div>

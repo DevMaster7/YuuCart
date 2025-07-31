@@ -142,8 +142,8 @@ document.querySelector(".buy-btn").addEventListener("click", async () => {
     let productImg = document.querySelector(".zoom-image").src
     let productName = document.querySelector(".product-name").innerHTML.trim()
     let productMainPrice = Number(document.querySelector(".product-price").dataset.price)
-    let productOrignalPrice = Number(document.querySelector(".product-orignal-price").dataset.orignalprice)
-    let productDiscount = document.querySelector(".product-discount").innerHTML.trim()
+    let productOrignalPrice = document.querySelector(".product-orignal-price") == null ? 0 : Number(document.querySelector(".product-orignal-price").dataset.orignalprice)
+    let productDiscount = document.querySelector(".product-discount") == null ? 0 : document.querySelector(".product-discount").innerHTML.trim()
     let productQuantity = Number(document.querySelector(".product-quantity-value").innerHTML.trim())
     let productSize;
     let productSizePrice;

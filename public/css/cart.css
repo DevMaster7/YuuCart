@@ -393,7 +393,7 @@ html {
     background: var(--Highlight);
 }
 
-.content-container .right .detail{
+.content-container .right .detail {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -417,7 +417,7 @@ html {
     font-weight: 600;
 }
 
-.content-container .right .err{
+.content-container .right .err {
     font-size: 14px;
     color: red;
     text-align: center;

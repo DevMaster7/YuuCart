@@ -74,10 +74,12 @@
                                     <div class="orignal-price-con">
                                         <div class="pro-price">Rs. <%= product.productMainPrice %>
                                         </div>
+                                        <% if (product.productOrignalPrice!==0||product.productDiscount!==0) { %>
                                         <div class="before-dis">Rs. <%= product.productOrignalPrice %>
                                         </div>
                                         <div class="pro-discount">-<%= product.productDiscount %>
                                         </div>
+                                        <% } %>
                                     </div>
                                 </div>
                                 <% if (product.productCutomzie=="true" ) { %>

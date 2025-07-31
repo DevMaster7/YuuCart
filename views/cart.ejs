@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="/css/common/user-con.css">
     <link rel="stylesheet" href="/css/common/logout.css">
     <link rel="stylesheet" href="/css/common/search.css">
+    <link rel="stylesheet" href="/css/common/empty.css">
     <link rel="stylesheet" href="/css/cart.css">
     <link rel="stylesheet" href="/css/common/footer.css">
     <title>
@@ -46,6 +47,8 @@
         <div class="right" data-userimg="<%= user.userImg %>">
         </div>
     </div>
+
+    <% if (products.length !== 0) { %>
 
     <div class="bar">
         <div class="text">There are "<%= products.length %>" Product in Your Cart</div>
@@ -178,6 +181,14 @@
             </div>
         </div>
     </div>
+    <% } else { %>
+    <div class="empty-con">
+        <img src="/assets/emptycart.png" alt="Empty Cart" />
+        <h3>Your Cart is Empty</h3>
+        <p>Looks like you haven’t added anything yet.</p>
+        <a href="/shop" class="explore-btn">Shop Now</a>
+    </div>
+    <% } %>
 
     <script src="/js/common/loader.js"></script>
     <script src="/js/cart.js"></script>

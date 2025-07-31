@@ -226,7 +226,7 @@ document.querySelectorAll(".cards").forEach(product => {
 });
 
 document.querySelector(".checkout-btn").addEventListener("click", async () => {
-    let productData = [      ]
+    let productData = []
     let selectedProduct = document.querySelectorAll(".activeCard")
     if (selectedProduct.length > 0) {
         selectedProduct.forEach(product => {
@@ -235,8 +235,8 @@ document.querySelector(".checkout-btn").addEventListener("click", async () => {
             const productImg = product.querySelector(".product-img").getElementsByTagName("img")[0].src;
             const productName = product.querySelector(".pro-name").innerHTML.trim();
             const productMainPrice = Number(product.querySelector(".pro-price").dataset.baseprice);
-            const productOrignalPrice = Number(product.querySelector(".before-dis").innerHTML.split("Rs.")[1].trim());
-            const productDiscount = product.querySelector(".discount").innerHTML.slice(10, -2).trim();
+            const productOrignalPrice = product.querySelector(".before-dis") == null ? 0 : Number(product.querySelector(".before-dis").innerHTML.split("Rs.")[1].trim());
+            const productDiscount = product.querySelector(".discount") == null ? 0 : product.querySelector(".discount").innerHTML.slice(10, -2).trim();
             const productQuantity = Number(product.querySelector(".product-quantity-value").innerHTML.trim());
             const productSize = product.querySelector(".activeSize")?.innerHTML.trim();
             const productSizePrice = product.querySelector(".activeSize")?.dataset.sizeprice;
