@@ -3,7 +3,7 @@ let showPass = document.querySelectorAll(".eye")
 
 setInterval(() => {
     const style = window.getComputedStyle(bubbleCon);
-    if(style.display ==="none"){
+    if (style.display === "none") {
         bubbleCon = document.querySelector(".right")
     }
 }, 1000);
@@ -50,8 +50,30 @@ document.querySelector(".icon").addEventListener("click", () => {
     window.location.href = '/';
 })
 document.querySelector(".login-btn").addEventListener("click", () => {
-    window.location.href = '/login';
+    window.location.href = '/user/login';
 })
-document.querySelector(".terms-btn").addEventListener("click", () => {
-    window.location.href = '/register/terms-and-conditions';
-})
+let err = document.querySelector(".err-msg")
+document.getElementById("registerForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const fullname = document.getElementById('fullname').value;
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const address = document.getElementById('address').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const city = document.getElementById('citySelect').value;
+    const res = await fetch('/user/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fullname, username, email, password, confirmPassword, city, phone, address })
+    });
+    const data = await res.json();
+    if (data.message === "User registered successfully") {
+        window.location.href = '/user/login'
+    }
+    else {
+        err.innerHTML = data.message
+        err.style.display = "block"
+    }
+});

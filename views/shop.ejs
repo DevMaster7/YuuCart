@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head data-page="shop">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
         integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -11,113 +11,204 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://www.google.com/recaptcha/api.js"></script>
-    <link rel="shortcut icon" href="assets/favicon.png" type="image/x-icon">
-    <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="/css/shop.css">
+    <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon" />
+    <link rel="stylesheet" href="/css/output.css" />
+    <link rel="stylesheet" href="/css/common/loader.css" />
+    <link rel="stylesheet" href="/css/common/logo.css" />
+    <link rel="stylesheet" href="/css/common/user-con.css" />
+    <link rel="stylesheet" href="/css/common/logout.css" />
+    <link rel="stylesheet" href="/css/common/search.css" />
+    <link rel="stylesheet" href="/css/shop.css" />
+    <link rel="stylesheet" href="/css/common/footer.css" />
     <title>QuickCart - Shop</title>
 </head>
 
 <body>
-    <!-- NavBar -->
     <div class="nav-con">
-        <div class="left">
-            <div class="logo-text">QuickCart</div>
-            <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M3 3H6L9 15H19L22 6H7" stroke="#64B6AC" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round" />
-                <circle cx="10" cy="18" r="2" stroke="#CCD6F6" stroke-width="2" fill="none" />
-                <circle cx="18" cy="18" r="2" stroke="#CCD6F6" stroke-width="2" fill="none" />
-                <g class="tag">
-                    <path d="M15 5L18 8L16 10L13 7L15 5Z" stroke-linecap="round" stroke-linejoin="round" fill="#FF6F00"
-                        stroke="#FF6F00" stroke-width="1.5" />
-                    <circle cx="15" cy="7" r="0.8" fill="#0A192F" />
-                </g>
-            </svg>
-        </div>
-        <div class="center">
-            <div class="search-con">
-                <input type="search" name="search" id="search" placeholder="Search...">
-                <button id="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
-            </div>
-            <div class="cart-con">
-                <svg width="25" height="25" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd"
-                        d="M4.51345 5H1.33325V3H6.15306L7.21972 8.33333H30.5315L27.5012 25H8.51345L4.51345 5ZM7.61972 10.3333L10.1531 23H25.832L28.135 10.3333H7.61972Z"
-                        fill="#FB8500"></path>
-                    <path
-                        d="M11.9999 28C11.9999 28.7364 11.403 29.3333 10.6666 29.3333C9.93021 29.3333 9.33325 28.7364 9.33325 28C9.33325 27.2636 9.93021 26.6667 10.6666 26.6667C11.403 26.6667 11.9999 27.2636 11.9999 28Z"
-                        fill="#CCD6F6"></path>
-                    <path
-                        d="M25.3333 29.3333C26.0696 29.3333 26.6666 28.7364 26.6666 28C26.6666 27.2636 26.0696 26.6667 25.3333 26.6667C24.5969 26.6667 23.9999 27.2636 23.9999 28C23.9999 28.7364 24.5969 29.3333 25.3333 29.3333Z"
-                        fill="#CCD6F6"></path>
+        <div class="nav-main">
+            <a href="/shop" class="left">
+                <div class="logo-text">QuickCart</div>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 3H6L9 15H19L22 6H7" stroke="#64B6AC" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <circle cx="10" cy="18" r="2" stroke="#CCD6F6" stroke-width="2" fill="none" />
+                    <circle cx="18" cy="18" r="2" stroke="#CCD6F6" stroke-width="2" fill="none" />
+                    <g class="tag">
+                        <path d="M15 5L18 8L16 10L13 7L15 5Z" stroke-linecap="round" stroke-linejoin="round"
+                            fill="#FF6F00" stroke="#FF6F00" stroke-width="1.5" />
+                        <circle cx="15" cy="7" r="0.8" fill="#0A192F" />
+                    </g>
                 </svg>
-                <sup class="super">0</sup>
+            </a>
+            <div class="center">
+                <div class="search-con">
+                    <input type="search" name="search" id="search" placeholder="Search..." />
+                    <button id="search-button">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
+                <a href="/shop/cart" class="cart-con">
+                    <svg width="25" height="25" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M4.51345 5H1.33325V3H6.15306L7.21972 8.33333H30.5315L27.5012 25H8.51345L4.51345 5ZM7.61972 10.3333L10.1531 23H25.832L28.135 10.3333H7.61972Z"
+                            fill="#FB8500"></path>
+                        <path
+                            d="M11.9999 28C11.9999 28.7364 11.403 29.3333 10.6666 29.3333C9.93021 29.3333 9.33325 28.7364 9.33325 28C9.33325 27.2636 9.93021 26.6667 10.6666 26.6667C11.403 26.6667 11.9999 27.2636 11.9999 28Z"
+                            fill="#CCD6F6"></path>
+                        <path
+                            d="M25.3333 29.3333C26.0696 29.3333 26.6666 28.7364 26.6666 28C26.6666 27.2636 26.0696 26.6667 25.3333 26.6667C24.5969 26.6667 23.9999 27.2636 23.9999 28C23.9999 28.7364 24.5969 29.3333 25.3333 29.3333Z"
+                            fill="#CCD6F6"></path>
+                    </svg>
+                    <sup class="super">
+                        <%= userCart.length %>
+                    </sup>
+                </a>
             </div>
+            <div class="right" data-userimg="<%= user.userImg %>"></div>
         </div>
-        <div class="right">
-            <div class="user-con">
-                <img src="assets/user.png" alt="" class="user">
-            </div>
-            <div class="user-content-con">
-                <button><i class="fa-solid fa-user"></i>My Account</button>
-                <button><i class="fa-solid fa-box"></i>My Orders</button>
-                <button><i class="fa-solid fa-star"></i>My Reviews</button>
-                <button><i class="fa-solid fa-gear"></i>Settings</button>
-                <button class="logout"><i class="fa-solid fa-right-from-bracket"></i>Logout</button>
-            </div>
-            <button class="btns" id="register">Get Started</button>
-            <button class="btns" id="login">Sign In</button>
+        <!-- Categories -->
+        <div class="show-categories-con">
+            <div class="category" id="all">All</div>
+            <div class="category" id="electronics">> Electronics</div>
         </div>
     </div>
 
-    <!-- Categories -->
-    <div class="categories-con">
-        <div class="category" id="all">All</div>
-        <div class="category" id="electronics">> Electronics</div>
-    </div>
-
-    <!-- Advertisement and Vouchers -->
     <div class="ads-vouchers-con">
         <div class="ads-con">
-            <div class="icon-cir" style="left: 0;border-top-right-radius: 15px;border-bottom-right-radius: 15px;">
+            <div class="icon-cir" style="
+            left: 0;
+            border-top-right-radius: 15px;
+            border-bottom-right-radius: 15px;
+          ">
                 <i class="fa-solid fa-chevron-left"></i>
             </div>
-            <div class="icon-cir" style="right: 0;border-top-left-radius: 15px;border-bottom-left-radius: 15px;">
+            <div class="icon-cir" style="
+            right: 0;
+            border-top-left-radius: 15px;
+            border-bottom-left-radius: 15px;
+          ">
                 <i class="fa-solid fa-chevron-right"></i>
             </div>
         </div>
-        <div class="vouchers-con">
-
-        </div>
+        <div class="vouchers-con"></div>
     </div>
 
-    <!-- Products -->
-    <div class="products-con">
-        <div class="cards">
-            <img src="/assets/product.webp" alt="">
-            <div class="pro-details">
-                <div class="pro-name">
-                    Online Karachi Bamboo Handle Pizza Rolling Cutter Steel/1pcs Pizza Cutter Wheel Shaped Stainless
-                    Steel Pizza With Bamboo Handles And Sharp Rotating Blades Pizza Slicer Roll
-                </div>
-                <div class="pro-price-con">
-                    <div class="pro-price">Rs.950</div>
-                    <div class="before-dis">Rs.1000</div>
-                    <div class="discount">-5%</div>
-                </div>
-                <div class="pro-info">
-                    <div class="pro-buyer">11 Sold</div>
-                    <div class="pro-rate">
-                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                            class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                            class="fa-regular fa-star"></i><span class="pro-revs"> (10)</span>
+    <div class="products-categories-con">
+        <div class="category-con" id="customizeProducts">
+            <div class="product-headings">Customizable Products</div>
+            <div class="products-con">
+                <% products.reverse().forEach(product=> { %> <% if (product.customization) { %>
+                <a class="main-card" href="/shop/<%= slugify(product.proName, { lower: true }) %>-<%= product._id %>">
+                    <div class="cards">
+                        <div class="product-img">
+                            <img src="<%= product.image %>" alt="" />
+                        </div>
+                        <div class="pro-details">
+                            <div class="pro-name">
+                                <%= product.proName %>
+                            </div>
+                            <div class="pro-price-con">
+                                <div class="pro-price">Rs.<%= product.proPrice %>
+                                </div>
+                                <div class="before-dis">
+                                    Rs.<%= product.proOrignalPrice %>
+                                </div>
+                                <div class="discount">-<%= product.proDiscount %>%</div>
+                            </div>
+                            <div class="pro-info">
+                                <div style="display: flex; align-items: center; gap: 4px">
+                                    <div class="pro-buyer">
+                                        <%= product.proBuyer %> Sold
+                                    </div>
+                                    <div class="pro-rate">
+                                        <% for(let i=1; i <=5; i++) { %>
+                                        <% if (i <=product.proRating) { %>
+                                        <i class="fa-solid fa-star"></i>
+                                        <% } else { %>
+                                        <i class="fa-regular fa-star"></i>
+                                        <% } %>
+                                        <% } %>
+                                        <span class="pro-revs">(<%= product.proNoOfReviews%>)</span>
+                                    </div>
+                                </div>
+                                <div class="customizeable">
+                                    <% if (product.customization) { %> Customizeable <% } else { %> Non
+                                    Customizeable <% } %>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </a>
+                <% } else { %>
+                <% } %>
+                <% }) %>
+            </div>
+        </div>
+
+        <div class="category-con" id="saleProducts">
+            <div class="product-headings">On Sale!</div>
+            <div class="products-con"></div>
+        </div>
+
+        <div class="category-con" id="newProducts">
+            <div class="product-headings">New Arrivals!</div>
+            <div class="products-con"></div>
+        </div>
+
+        <div class="category-con" id="allProducts">
+            <div class="product-headings">Shop All</div>
+            <div class="products-con">
+                <% products.forEach(product=> { %>
+                <a class="main-card" href="/shop/<%= slugify(product.proName, { lower: true }) %>-<%= product._id %>">
+                    <div class="cards">
+                        <div class="product-img">
+                            <img src="<%= product.image %>" alt="" />
+                        </div>
+                        <div class="pro-details">
+                            <div class="pro-name">
+                                <%= product.proName %>
+                            </div>
+                            <div class="pro-price-con">
+                                <div class="pro-price">Rs.<%= product.proPrice %>
+                                </div>
+                                <div class="before-dis">
+                                    Rs.<%= product.proOrignalPrice %>
+                                </div>
+                                <div class="discount">-<%= product.proDiscount %>%</div>
+                            </div>
+                            <div class="pro-info">
+                                <div style="display: flex; align-items: center; gap: 4px">
+                                    <div class="pro-buyer">
+                                        <%= product.proBuyer %> Sold
+                                    </div>
+                                    <div class="pro-rate">
+                                        <% for(let i=1; i <=5; i++) { %>
+                                        <% if (i <=product.proRating) { %>
+                                        <i class="fa-solid fa-star"></i>
+                                        <% } else { %>
+                                        <i class="fa-regular fa-star"></i>
+                                        <% } %>
+                                        <% } %>
+                                        <span class="pro-revs">(<%= product.proNoOfReviews %>)</span>
+                                    </div>
+                                </div>
+                                <div class="customizeable">
+                                    <% if (product.customization) { %> Customizeable <% } else { %> Non
+                                    Customizeable <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <% }) %>
             </div>
         </div>
     </div>
-
+    <script src="/js/common/loader.js"></script>
     <script src="/js/shop.js"></script>
+    <script src="/js/common/nav-bar.js"></script>
+    <script src="/js/common/search.js"></script>
+    <script src="/js/common/footer.js"></script>
 </body>
 
 </html>

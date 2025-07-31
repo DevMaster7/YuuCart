@@ -1,16 +1,16 @@
 const jwt = require("jsonwebtoken");
+const userModel = require("../models/usersModel");
 
-function verifyAdmin(req, res, next) {
-  const token = req.cookies.token;
-  if (!token) return res.redirect("/login");
-
+async function verifyAdmin(req, res, next) {
+  const token = req.cookies.ULGG;
   try {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
-    if (!decoded.isAdmin) return res.status(403).send("Access denied");
+    const newUser = await userModel.findById(decoded._QCUI_UI);
+    if (!newUser.isAdmin) return res.status(403).render("PNF");
     req.user = decoded;
     next();
   } catch (err) {
-    return res.status(401).send("Invalid token");
+    return res.status(401).render("PNF");
   }
 }
 

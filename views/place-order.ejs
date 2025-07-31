@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/css/output.css">
+    <link rel="stylesheet" href="/css/common/loader.css">
+    <link rel="stylesheet" href="/css/place-order.css">
+    <title>CheckOut Your Order</title>
+</head>
+
+<body>
+    <div class="main-container">
+        <div class="main-heading">CheckOut Your Order Details!</div>
+        <div class="boxs-container">
+            <div class="left">
+                <div class="box-con">
+                    <div class="box-bar-con">
+                        <div class="box-heading">Your And Your Delivery Address Details</div>
+                        <div class="box-change acc-btn">Change</div>
+                    </div>
+                    <div class="user-details-con">
+                        <div>
+                            <span>Full-Name:</span>
+                            <div class="name">
+                                <%= user.fullname %>
+                            </div>
+                        </div>
+                        <div>
+                            <span>Phone:</span>
+                            <div class="phone">
+                                <%= user.phone %>
+                            </div>
+                        </div>
+                        <div>
+                            <span>City:</span>
+                            <div class="city">
+                                <%= user.city %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="address-text">
+                        <span>Address:</span>
+                        <div>
+                            <%= user.address %>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-con">
+                    <div class="box-bar-con">
+                        <div class="box-heading">Your Product<%= productData.length>1 ? 's' : '' %> Details</div>
+                        <div class="box-change edit">Edit</div>
+                    </div>
+                    <% productData.forEach(product=> { %>
+                    <div class="product-detail-con">
+                        <div class="product-img" data-xmghtml="<%= product.productId %>">
+                            <img src="<%= product.productImg %>" alt="">
+                        </div>
+                        <div class="product-details">
+                            <div class="additional-details">
+                                <div>
+                                    <div class="product-name">
+                                        <%= product.productName %>
+                                    </div>
+                                    <div class="orignal-price-con">
+                                        <div class="pro-price">Rs. <%= product.productMainPrice %>
+                                        </div>
+                                        <div class="before-dis">Rs. <%= product.productOrignalPrice %>
+                                        </div>
+                                        <div class="pro-discount">-<%= product.productDiscount %>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% if (product.productCutomzie=="true" ) { %>
+                                <div data-modi-pro="<%= product.productCutomzie %>"
+                                    class="product-size-color product-size">Size:
+                                    <div class="pro-size-select">
+                                        <%= product.productSize %>
+                                    </div>
+                                    <div class="select-cust-price size-price">= &nbsp;&nbsp;&nbsp;
+                                        Rs. <%=product.productSizePrice %>
+                                    </div>
+                                </div>
+                                <div class="product-size-color product-color">Color:
+                                    <div class="pro-color-select" style="background: <%= product.productColor %>;">
+                                    </div>
+                                    <div class="select-cust-price color-price">= &nbsp;&nbsp;&nbsp;
+                                        Rs. <%=product.productColorPrice %>
+                                    </div>
+                                </div>
+                                <% } %>
+                            </div>
+                            <div class="mini-price-con">
+                                <div class="pro-quantity"><span>Quantity:</span>
+                                    <%= product.productQuantity %>
+                                </div>
+                                <div class="pro-price total">Rs. <%= product.totalPrice %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <% }) %>
+                </div>
+            </div>
+
+            <div class="right">
+                <div class="input-coupan-con">
+                    <input class="input-coupan" type="text" name="coupon" placeholder="Enter Coupan Code Here...">
+                    <button class="coupan-btn">Apply</button>
+                </div>
+                <div class="msg"></div>
+                <div class="prices-con">
+                    <div>
+                        <div class="price-detail delivery">Delivery Charges: <span>Free</span></div>
+                        <div class="total-price">Total Price: Rs.
+                            <%= productData[0].cartTotal==0 ? productData[0].totalPrice : productData[0].cartTotal %>
+                        </div>
+                    </div>
+                    <div class="coupan-con">
+                        <div class="price-detail c-name">Coupan Name: <span>--</span></div>
+                        <div class="price-detail c-discount">Coupan Save Upto: <span>--</span></div>
+                        <div class="total-price-with-coupan"></div>
+                    </div>
+                    <div class="payment-con">
+                        <div class="heading">Select Payment Method:</div>
+                        <div class="pics">
+                            <div class="payment-options active" data-UPM="Cash">
+                                <img src="/assets/cash.png" alt="">
+                            </div>
+                            <div class="payment-options">
+                                <img class="easypaisa" src="/assets/easypaisa.png" alt="">
+                            </div>
+                            <div class="payment-options">
+                                <img class="jazzcash" src="/assets/jazzcash.png" alt="">
+                            </div>
+                        </div>
+                        <button>Place Order</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/js/common/loader.js"></script>
+    <script src="/js/place-order.js"></script>
+</body>
+
+</html>

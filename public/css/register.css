@@ -13,20 +13,29 @@ html {
     padding: 0;
     background-color: #F8F9FA;
     scroll-behavior: smooth;
-    height: 100vh;
 }
 
 .main-container {
-    width: 100vw;
-    height: 100vh;
     display: flex;
-    align-items: center;
+    justify-content: center;
     background-color: var(--Highlight);
+}
+
+.error {
+    position: fixed;
+    top: 0;
+    z-index: 9;
+    user-select: none;
+    background: #00000085;
+    color: var(--Highlight);
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    padding: 10px;
+    display: none;
 }
 
 .left {
     width: 40%;
-    height: 100%;
     overflow: hidden;
     display: flex;
     gap: 5px;
@@ -142,12 +151,13 @@ html {
 
 .right {
     width: 60%;
-    height: 100%;
-    padding: 0px 30px 0px 10px;
+    /* height: 100%; */
+    padding: 10px 30px 10px 10px;
     display: flex;
     justify-content: space-around;
     align-items: center;
     flex-direction: column;
+    gap: 15px;
 }
 
 .right .heading {
@@ -172,7 +182,7 @@ html {
     transition: .2s ease;
     border-radius: 5px;
     border: .5px solid var(--Heading);
-    box-shadow: inset 0px 0px 2px #00000056;
+    /* box-shadow: inset 0px 0px 2px #00000056; */
 }
 
 .select2-container--default .select2-selection--single {
@@ -185,7 +195,7 @@ html {
     transition: .2s ease;
     border-radius: 5px;
     border: .5px solid var(--Heading);
-    box-shadow: inset 0px 0px 2px #00000056;
+    /* box-shadow: inset 0px 0px 2px #00000056; */
 }
 
 .select2-results__option--selectable,
@@ -240,6 +250,14 @@ html {
     text-decoration: underline;
 }
 
+.err-msg{
+    position: absolute;
+    margin-top: 15px;
+    font-size: 13px;
+    color: red;
+    display: none;
+}
+
 .right form .submit-btn {
     padding: 7px 0px;
     width: 130px;
@@ -276,7 +294,7 @@ html {
     display: none;
 }
 
-.heading2{
+.heading2 {
     text-align: center;
     color: var(--Accent);
     font-size: 23px;
@@ -284,26 +302,22 @@ html {
     padding: 0px 8px;
 }
 
-.text2{
+.text2 {
     text-align: center;
     color: var(--Heading);
     padding: 8px 8px 0px;
+}
+
+.mob {
+    display: none;
 }
 
 /* TODO: Media Queries */
 
 
 @media (max-width: 1116px) {
-    /* .left {
-        background: #ffa32b;
-    } */
-
-    .main-container {
-        height: 160vh;
-    }
-
     .right {
-        padding: 0px 10px;
+        padding: 10px;
     }
 }
 
@@ -355,10 +369,18 @@ html {
         display: none;
     }
 
-    .mobile-txt{
+    .mobile-txt {
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
+    }
+
+    .mob {
+        display: flex;
+    }
+
+    .social-links {
+        margin-top: 5px;
     }
 }

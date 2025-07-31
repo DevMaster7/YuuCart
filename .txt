@@ -1,0 +1,30 @@
+<div class="data-con">
+                <% users.forEach(user => { %>
+                <div class="data-box">
+                    <div class="data">
+                        <p class="data-title">Full Name</p>
+                        <p class="data-value"><%= user.fullname %></p>
+                    </div>
+                    <div class="data">
+                        <p class="data-title">User Name</p>
+                        <p class="data-value"><%= user.username %></p>
+                    </div>
+                    <div class="data">
+                        <p class="data-title">Email</p>
+                        <p class="data-value"><%= user.email %></p>
+                    </div>
+                    <div class="data">
+                        <p class="data-title">Phone</p>
+                        <p class="data-value"><%= user.phone %></p>
+                    </div>
+                    <div class="data">
+                        <p class="data-title">Address</p>
+                        <p class="data-value"><%= user.address %></p>
+                    </div>
+                    <div class="data">
+                        <p class="data-title">City</p>
+                        <p class="data-value"><%= user.city %></p>
+                    </div>
+                </div>
+                <% }) %>
+            </div>

@@ -1,0 +1,171 @@
+@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
+
+:root {
+    --Primary: #023047;
+    --Secondary: #219EBC;
+    --Accent: #FB8500;
+    --Highlight: #F8F9FA;
+    --Heading: #CCD6F6;
+}
+
+.footer {
+    background-color: #023047;
+    color: #F8F9FA;
+    padding: 40px 20px 20px;
+    font-family: 'Arial', sans-serif;
+}
+
+.footer-container {
+    padding-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 30px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.footer-container .logo-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.footer-container .logo-con {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.footer-container #logo-txt {
+    font-family: 'Indie Flower', cursive;
+    font-size: 33px;
+    color: var(--Heading);
+    user-select: none;
+}
+
+.footer-container .icon {
+    width: 40px;
+}
+
+.footer-container .tag {
+    transform-origin: top center;
+    animation: dangle 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes dangle {
+    0% {
+        transform: rotate(-10deg);
+    }
+
+    100% {
+        transform: rotate(20deg);
+    }
+}
+
+@media (max-width:800px) {
+    .footer-container .logo-text {
+        font-size: 22px;
+    }
+
+    .footer-container .icon {
+        width: 35px;
+    }
+}
+
+.footer-section {
+    padding: 0px 30px;
+}
+
+.footer-section h3 {
+    font-size: 1.2rem;
+    margin-bottom: 7px;
+    color: #CCD6F6;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-section ul li {
+    margin-bottom: 2px;
+}
+
+.footer-section ul li a {
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.footer-section ul li a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    width: 100%;
+    height: 2px;
+    background: var(--Accent);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.3s ease-in-out;
+}
+
+.footer-section ul li a:hover::after {
+    transform: scaleX(1);
+    transform-origin: center;
+}
+
+.social-icons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.social-link {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    border: 1px solid transparent;
+    transition: .2s ease;
+}
+
+.social-link i {
+    font-size: 1.2rem;
+    color: var(--Highlight);
+    transition: .2s ease;
+}
+
+.social-link i:hover {
+    color: var(--Accent);
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid var(--Heading);
+    font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+    .footer-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 40px;
+    }
+
+    .footer-section {
+        flex: 1 1 100%;
+    }
+
+    .social-icons {
+        justify-content: center;
+        margin-top: 10px;
+    }
+
+    .footer-bottom {
+        font-size: 1rem;
+    }
+}

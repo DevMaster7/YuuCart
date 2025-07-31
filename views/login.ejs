@@ -7,8 +7,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
         integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="shortcut icon" href="assets/favicon.png" type="image/x-icon">
-    <link rel="stylesheet" href="/style.css">
+    <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/css/output.css">
+    <link rel="stylesheet" href="/css/common/loader.css">
     <link rel="stylesheet" href="/css/login.css">
     <title>QuickCart - Login</title>
 </head>
@@ -26,18 +27,33 @@
                 </div>
             </div>
             <span class="heading">Get Signed In!</span>
-            <form action="/login" method="post">
-                <input type="email" placeholder="Email" name="email">
+            <form id="loginForm" action="/user/login" method="post">
+                <input type="email" id="email" placeholder="Email" name="email">
                 <div class="password">
-                    <input type="password" placeholder="Password" name="password">
+                    <input type="password" id="password" placeholder="Password" name="password">
                     <i class="fa-solid fa-eye eye"></i>
                 </div>
+                <div class="err-msg"></div>
                 <div class="forgot-btn">Forgot Password?</div>
                 <div style="width: 100%;text-align: center;">
                     <button>Sign In</button>
                 </div>
             </form>
             <div class="have-acc">Don't have an account? <button class="register-btn">Create account</button></div>
+            <div class="social-links mob">
+                <a class="circle twi" href="#">
+                    <i class="fa-brands fa-x-twitter"></i>
+                </a>
+                <a class="circle face" href="#">
+                    <i class="fa-brands fa-facebook-f"></i>
+                </a>
+                <a class="circle insta" href="#">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+                <a class="circle you" href="#">
+                    <i class="fa-brands fa-youtube"></i>
+                </a>
+            </div>
         </div>
         <div class="right">
             <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -73,6 +89,7 @@
             </div>
         </div>
     </div>
+    <script src="/js/common/loader.js"></script>
     <script src="/js/login.js"></script>
 </body>
 

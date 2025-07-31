@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head data-page="cart">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/css/output.css">
+    <link rel="stylesheet" href="/css/common/loader.css">
+    <link rel="stylesheet" href="/css/common/logo.css">
+    <link rel="stylesheet" href="/css/common/user-con.css">
+    <link rel="stylesheet" href="/css/common/logout.css">
+    <link rel="stylesheet" href="/css/common/search.css">
+    <link rel="stylesheet" href="/css/cart.css">
+    <link rel="stylesheet" href="/css/common/footer.css">
+    <title>
+        (<%= products.length %>) Items in Your Cart - QuickCart
+    </title>
+</head>
+
+<body>
+    <div class="nav-con">
+        <a href="/shop" class="left">
+            <div class="logo-text">QuickCart</div>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 3H6L9 15H19L22 6H7" stroke="#64B6AC" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                <circle cx="10" cy="18" r="2" stroke="#CCD6F6" stroke-width="2" fill="none" />
+                <circle cx="18" cy="18" r="2" stroke="#CCD6F6" stroke-width="2" fill="none" />
+                <g class="tag">
+                    <path d="M15 5L18 8L16 10L13 7L15 5Z" stroke-linecap="round" stroke-linejoin="round" fill="#FF6F00"
+                        stroke="#FF6F00" stroke-width="1.5" />
+                    <circle cx="15" cy="7" r="0.8" fill="#0A192F" />
+                </g>
+            </svg>
+        </a>
+        <div class="center">
+            <div class="search-con">
+                <input type="search" name="search" id="search" placeholder="Search...">
+                <button id="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+        </div>
+        <div class="right" data-userimg="<%= user.userImg %>">
+        </div>
+    </div>
+
+    <div class="bar">
+        <div class="text">There are "<%= products.length %>" Product in Your Cart</div>
+        <i class="fa-regular fa-trash-can trash-btn"></i>
+    </div>
+
+    <div class="content-container">
+        <div class="left">
+            <div class="select">Select All</div>
+            <% products.forEach(product=> { %>
+            <div class="cards">
+                <div class="product-img" data-productid="<%= product._id %>">
+                    <img src="<%= product.image %>" alt="">
+                </div>
+                <div class="pro-details">
+                    <div>
+                        <div class="sub-pro-details">
+                            <div class="pro-name">
+                                <%= product.proName %>
+                            </div>
+                            <div class="pro-price-con">
+                                <div>
+                                    <div class="pro-price" data-baseprice="<%= product.proPrice %>">Rs.
+                                        <%= product.proPrice %>
+                                    </div>
+                                    <div class="pro-cust-price">Rs. <%= product.proPrice %>
+                                    </div>
+                                    <div class="before-dis">Rs.
+                                        <%= product.proOrignalPrice %>
+                                    </div>
+                                    <div class="discount">-
+                                        <%= product.proDiscount %>%
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pro-info">
+                                <div class="product-quantity-con">
+                                    <div class="product-quantity">Quantity:</div>
+                                    <div class="quantity-btn-con">
+                                        <button class="product-quantity-btn minus"
+                                            style="opacity: 0.5;cursor: not-allowed;">-</button>
+                                        <div class="product-quantity-value">1</div>
+                                        <button class="product-quantity-btn plus">+</button>
+                                    </div>
+                                </div>
+                                <div class="another">
+                                    <div class="pro-buyer">
+                                        <%= product.proBuyer %> Sold
+                                    </div>
+                                    <div class="pro-rate">
+                                        <% for (let i=1; i <=5; i++) { %>
+                                        <% if (i <=product.proRating) { %>
+                                        <i class="fa-solid fa-star"></i>
+                                        <% } else { %><i class="fa-regular fa-star"></i>
+                                        <% } %>
+
+                                        <% } %><span class="pro-revs">
+                                            (<%= product.proNoOfReviews %>)</span>
+                                        <i class=" <% if(user.userWishlist.includes(product._id)) { %> fa-solid <% } else { %> fa-regular <% } %> fa-heart heart"
+                                            title="<% if(user.userWishlist.includes(product._id)) { %> Remove From Wishlist <% } else { %> Add To Wishlist <% } %>"></i>
+                                    </div>
+                                    <div class="customizeable" data-choose="<%= product.customization %>">
+                                        <% if (product.customization) { %>
+                                        Customizeable
+                                        <% } else { %>
+                                        Non Customizeable
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <% if (product.customization) { %>
+                        <div class="main-cust-con">
+                            <div class="cust-con">
+                                <div class="heading">Size:</div>
+                                <div class="btn-con">
+                                    <% product.sizeAndPrice.forEach(sp=> { %>
+                                    <div data-sizeprice="<%= sp.price%>" class="cust-size">
+                                        <%= sp.size %>
+                                    </div>
+                                    <% }) %>
+                                </div>
+                            </div>
+                            <div class="cust-con">
+                                <div class="heading">Color:</div>
+                                <div class="btn-con">
+                                    <% product.colorAndPrice.forEach(cp=> { %>
+                                    <div data-colorprice="<%= cp.price%>" data-color=" <%= cp.color %>"
+                                        class="cust-color" style="background: <%= cp.color %>;">
+                                    </div>
+                                    <% }) %>
+                                </div>
+                            </div>
+                        </div>
+                        <% } %>
+                    </div>
+                    <div class="pro-price-con">
+                        <div>
+                            <div class="pro-price" data-baseprice="<%= product.proPrice %>">
+                                Rs. <%= product.proPrice %>
+                            </div>
+                            <div class="pro-cust-price">Rs. <%= product.proPrice %>
+                            </div>
+                            <div class="before-dis">Rs.
+                                <%= product.proOrignalPrice %>
+                            </div>
+                            <div class="discount">-
+                                <%= product.proDiscount %>%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <% }) %>
+        </div>
+        <div class="right">
+            <div class="detail">
+                <div class="heading">Order Summary:</div>
+                <div class="total-item">Selected Product: (0)</div>
+                <div class="total">Total Price: Rs. 0</div>
+            </div>
+            <div>
+                <div class="err">Select At Least One Product!</div>
+                <button class="checkout-btn">Procced to CheckOut!</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/common/loader.js"></script>
+    <script src="/js/cart.js"></script>
+    <script src="/js/common/nav-bar.js"></script>
+    <script src="/js/common/search.js"></script>
+    <script src="/js/common/wishlist.js"></script>
+    <script src="/js/common/footer.js"></script>
+</body>
+
+</html>

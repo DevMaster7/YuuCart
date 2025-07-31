@@ -1,0 +1,35 @@
+.logo-text {
+    font-family: 'Indie Flower', cursive;
+    font-size: 28px;
+    color: var(--Heading);
+    user-select: none;
+}
+
+.icon {
+    width: 40px;
+}
+
+.tag {
+    transform-origin: top center;
+    animation: dangle 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes dangle {
+    0% {
+        transform: rotate(-10deg);
+    }
+
+    100% {
+        transform: rotate(20deg);
+    }
+}
+
+@media (max-width:800px) {
+    .logo-text {
+        font-size: 22px;
+    }
+
+    .icon {
+        width: 35px;
+    }
+}

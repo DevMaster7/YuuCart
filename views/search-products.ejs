@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head data-page="search-product">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/css/output.css">
+    <link rel="stylesheet" href="/css/common/loader.css">
+    <link rel="stylesheet" href="/css/common/logo.css">
+    <link rel="stylesheet" href="/css/common/user-con.css">
+    <link rel="stylesheet" href="/css/common/logout.css">
+    <link rel="stylesheet" href="/css/common/search.css">
+    <link rel="stylesheet" href="/css/search-products.css">
+    <link rel="stylesheet" href="/css/common/footer.css">
+    <title></title>
+</head>
+
+<body>
+    <div class="nav-con">
+        <div class="nav-main">
+            <a href="/shop" class="left">
+                <div class="logo-text">QuickCart</div>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 3H6L9 15H19L22 6H7" stroke="#64B6AC" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <circle cx="10" cy="18" r="2" stroke="#CCD6F6" stroke-width="2" fill="none" />
+                    <circle cx="18" cy="18" r="2" stroke="#CCD6F6" stroke-width="2" fill="none" />
+                    <g class="tag">
+                        <path d="M15 5L18 8L16 10L13 7L15 5Z" stroke-linecap="round" stroke-linejoin="round"
+                            fill="#FF6F00" stroke="#FF6F00" stroke-width="1.5" />
+                        <circle cx="15" cy="7" r="0.8" fill="#0A192F" />
+                    </g>
+                </svg>
+            </a>
+            <div class="center">
+                <div class="search-con">
+                    <input type="search" name="search" id="search" placeholder="Search...">
+                    <button id="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </div>
+                <a href="/shop/cart" class="cart-con">
+                    <svg width="25" height="25" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M4.51345 5H1.33325V3H6.15306L7.21972 8.33333H30.5315L27.5012 25H8.51345L4.51345 5ZM7.61972 10.3333L10.1531 23H25.832L28.135 10.3333H7.61972Z"
+                            fill="#FB8500"></path>
+                        <path
+                            d="M11.9999 28C11.9999 28.7364 11.403 29.3333 10.6666 29.3333C9.93021 29.3333 9.33325 28.7364 9.33325 28C9.33325 27.2636 9.93021 26.6667 10.6666 26.6667C11.403 26.6667 11.9999 27.2636 11.9999 28Z"
+                            fill="#CCD6F6"></path>
+                        <path
+                            d="M25.3333 29.3333C26.0696 29.3333 26.6666 28.7364 26.6666 28C26.6666 27.2636 26.0696 26.6667 25.3333 26.6667C24.5969 26.6667 23.9999 27.2636 23.9999 28C23.9999 28.7364 24.5969 29.3333 25.3333 29.3333Z"
+                            fill="#CCD6F6"></path>
+                    </svg>
+                    <sup class="super">
+                        <%= userCart.length %>
+                    </sup>
+                </a>
+            </div>
+            <div class="right" data-userimg="<%= user.userImg %>">
+            </div>
+        </div>
+        <div class="show-categories-con">
+            <div class="category" id="all">All</div>
+            <div class="category" id="electronics">> Electronics</div>
+        </div>
+    </div>
+
+    <div class="content-con">
+        <% if (products.length==0) { %>
+        <div class="no-products">
+            <div class="heading">You Search is Out From Our Imagination</div>
+            <img src="/assets/noResult.png" alt="">
+            <div class="products-count">0 Items Found Related To Your Search: "<span class="no-search"></span>"
+            </div>
+        </div>
+        <% } else { %>
+        <div class="additional-con">
+            <div class="products-count">
+                <%= products.length %> Items Found Related To Your Search: "<span></span>"
+            </div>
+            <div class="view-icons">
+                <i class="iactive fa-solid fa-list list-btn"></i>
+                <i class="icon-grid grid-btn">
+                    <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true">
+                        <rect x="3" y="3" width="8" height="8" rx="1.5" />
+                        <rect x="13" y="3" width="8" height="8" rx="1.5" />
+                        <rect x="3" y="13" width="8" height="8" rx="1.5" />
+                        <rect x="13" y="13" width="8" height="8" rx="1.5" />
+                    </svg>
+                </i>
+            </div>
+        </div>
+        <div class="products-grid-con">
+            <% products.forEach(product=> { %>
+            <a class="main-card" href="/shop/<%= slugify(product.proName, {lower: true}) %>-<%= product._id %>">
+                <div class="cards">
+                    <div class="product-img">
+                        <img src="<%= product.image %>" alt="">
+                    </div>
+                    <div class="pro-details">
+                        <div class="pro-name">
+                            <%= product.proName %>
+                        </div>
+                        <div class="pro-price-con">
+                            <div class="pro-price">Rs.
+                                <%= product.proPrice %>
+                            </div>
+                            <div class="before-dis">Rs.
+                                <%= product.proOrignalPrice %>
+                            </div>
+                            <div class="discount">-
+                                <%= product.proDiscount %>%
+                            </div>
+                        </div>
+                        <div class="pro-info">
+                            <div class="another">
+                                <div class="pro-buyer">
+                                    <%= product.proBuyer %>
+                                    Sold
+                                </div>
+                                <div class="pro-rate">
+                                    <% for (let i=1; i <=5; i++) { %>
+                                    <% if (i <=product.proRating) { %>
+                                    <i class="fa-solid fa-star"></i>
+                                    <% } else { %><i class="fa-regular fa-star"></i>
+                                    <% } %>
+
+                                    <% } %><span class="pro-revs">
+                                        (<%= product.proNoOfReviews %>)</span>
+
+                                </div>
+                            </div>
+                            <div class="customizeable">
+                                <% if (product.customization) { %>
+                                Customizeable
+                                <% } else { %>
+                                Non Customizeable
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <% }) %>
+        </div>
+        <div class="products-list-con">
+            <% products.forEach(product=> { %>
+            <a href="/shop/<%= slugify(product.proName, {lower: true}) %>-<%= product._id %>">
+                <div class="cards">
+                    <div class="product-img" data-productid="<%= product._id %>">
+                        <img src="<%= product.image %>" alt="">
+                    </div>
+                    <div class="pro-details">
+                        <div>
+                            <div class="pro-name">
+                                <%= product.proName %>
+                            </div>
+                            <div class="pro-price-con">
+                                <div>
+                                    <div class="pro-price">Rs.
+                                        <%= product.proPrice %>
+                                    </div>
+                                    <div class="before-dis">Rs.
+                                        <%= product.proOrignalPrice %>
+                                    </div>
+                                    <div class="discount">-
+                                        <%= product.proDiscount %>%
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pro-info">
+                                <div class="another">
+                                    <div class="pro-buyer">
+                                        <%= product.proBuyer %> Sold
+                                    </div>
+                                    <div class="pro-rate">
+                                        <% for (let i=1; i <=5; i++) { %>
+                                        <% if (i <=product.proRating) { %>
+                                        <i class="fa-solid fa-star"></i>
+                                        <% } else { %><i class="fa-regular fa-star"></i>
+                                        <% } %>
+
+                                        <% } %><span class="pro-revs">
+                                            (<%= product.proNoOfReviews %>)</span>
+                                        <% if (user.userWishlist) { %>
+                                        <i onclick="handleButtonClick(event)"
+                                            class=" <% if(user.userWishlist.includes(product._id)) { %> fa-solid <% } else { %> fa-regular <% } %> fa-heart heart"
+                                            title="<% if(user.userWishlist.includes(product._id)) { %> Remove From Wishlist <% } else { %> Add To Wishlist <% } %>">
+                                        </i>
+                                        <% } else { %>
+                                        <i class="fa-regular fa-heart heart"
+                                            style="opacity: 0.4;cursor: not-allowed;"></i>
+                                        <% } %>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="customizeable">
+                                <% if (product.customization) { %>
+                                Customizeable
+                                <% } else { %>
+                                Non Customizeable
+                                <% } %>
+                            </div>
+                            <button class="add-cart-btn mobile-cart-btn" onclick="handleButtonClick(event)">Add To
+                                Cart</button>
+                        </div>
+                        <div class="pro-price-con">
+                            <div>
+                                <div class="pro-price">Rs.
+                                    <%= product.proPrice %>
+                                </div>
+                                <div class="before-dis">Rs.
+                                    <%= product.proOrignalPrice %>
+                                </div>
+                                <div class="discount">-
+                                    <%= product.proDiscount %>%
+                                </div>
+                            </div>
+                            <button class="cart-btn add-cart-btn" onclick="handleButtonClick(event)">Add To
+                                Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <% }) %>
+        </div>
+        <% } %>
+    </div>
+
+    <script src="/js/common/loader.js"></script>
+    <script src="/js/search-products.js"></script>
+    <script src="/js/common/nav-bar.js"></script>
+    <script src="/js/common/search.js"></script>
+    <script src="/js/common/wishlist.js"></script>
+    <script src="/js/common/footer.js"></script>
+</body>
+
+</html>

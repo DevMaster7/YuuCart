@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/css/output.css">
+    <link rel="stylesheet" href="/css/admin/admin-sidebar.css">
+    <link rel="stylesheet" href="/css/admin/dashboard.css">
+    <link rel="stylesheet" href="/css/common/logo.css">
+    <link rel="stylesheet" href="/css/common/loader.css">
+    <link rel="stylesheet" href="/css/common/footer.css">
+    <title>Admin - Dashboard</title>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="main">
+            <h1>Welcome, Admin</h1>
+            <div class="cards">
+                <div style="min-width: 100% !important;" class="card">
+                    <p>Total Revenue</p>
+                    <p class="total-txt">$12,300</p>
+                </div>
+                <div class="card">
+                    <p>Total Orders</p>
+                    <p class="total-txt"><%= orders.length %></p>
+                    <canvas id="ordersChart" data-pending="<%= orders.map(order => order.orderInfo.orderStatus).filter(status => status === 'Pending').length %>" data-delivered="<%= orders.map(order => order.orderInfo.orderStatus).filter(status => status === 'Delivered').length %>" data-cancelled="<%= orders.map(order => order.orderInfo.orderStatus).filter(status => status === 'Cancelled').length %>"></canvas>
+                </div>
+                <div class="card">
+                    <p>Total Users</p>
+                    <p class="total-txt"><%= users.length %></p>
+                    <canvas id="usersChart"></canvas>
+                </div>
+                <div class="card">
+                    <p>Total Products</p>
+                    <p class="total-txt"><%= products.length %></p>
+                    <canvas id="productsChart"></canvas>
+                </div>
+                <div class="card">
+                    <p>Total Coupans</p>
+                    <p class="total-txt"><%= coupans.length %></p>
+                    <canvas id="coupansChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/common/loader.js"></script>
+    <script src="/js/admin/admin-sidebar.js"></script>
+    <script src="/js/admin/dashboard.js"></script>
+    <script src="/js/common/footer.js"></script>
+</body>
+
+</html>

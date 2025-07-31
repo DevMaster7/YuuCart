@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head data-page="products">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/css/output.css">
+    <link rel="stylesheet" href="/css/admin/admin-sidebar.css">
+    <link rel="stylesheet" href="/css/admin/add-product.css">
+    <link rel="stylesheet" href="/css/admin/admin-search.css">
+    <link rel="stylesheet" href="/css/common/logo.css">
+    <link rel="stylesheet" href="/css/common/loader.css">
+    <link rel="stylesheet" href="/css/common/footer.css">
+    <title>Admin - Manage Products</title>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="content-con">
+            <div class="show-products">
+                <div class="search-con">
+                    <input type="search" name="search" id="search" placeholder="Search Products..." />
+                    <button id="search-btn">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
+                <div class="main-con">
+                    <div class="filter-bar-con">
+                        <div class="text">Filtered Items: <span>(<%= products.length %>)</span></div>
+                        <div class="filter-btns">
+                            <label for="filter">Add Filters:</label>
+                            <select name="filter">
+                                <option value="false">False</option>
+                                <option value="true">True</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="add-pro-btn-con">
+                        <a href="/admin/manage-products/add-products" class="add-pro-btn">Add New Products!</a>
+                    </div>
+                    <div id="productContainer" class="product-container">
+                        <% products.reverse().forEach(product => { %>
+                        <form data-product='<%- JSON.stringify(product) %>' action="/admin/manage-products/edit-product"
+                            method="post" class="product-card form" id="<%= product._id %>">
+                            <img src="<%= product.image %>" alt="Product" />
+                            <div class="extra-pics">
+                                <% for( let i = 0; i < product.galleryImages.length + 1; i++ ) { %>
+                                <% if (product.galleryImages.length !== i) { %>
+                                <div class="box">
+                                    <img src="<%= product.galleryImages[i] %>" alt="Product">
+                                    <div>
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
+                                            width="24px" fill="#e3e3e3">
+                                            <path
+                                                d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <% } else { %>
+                                <label for="images-upload-<%= product._id %>" class="box add-image-label">+</label>
+                                <input type="file" name="galleryURLs" id="images-upload-<%= product._id %>"
+                                    class="input-images" style="display: none;" multiple>
+                                <% } %>
+                                <% } %>
+                            </div>
+                            <span class="edit-info proName"><%= product.proName %></span>
+                            <div class="info">
+                                <div>Added By:</div>&nbsp;
+                                <span>
+                                    <a href="/admin/manage-users/#<%= product.AddedBy %>">
+                                        <%= product.AddedBy %>
+                                    </a>
+                                </span>
+                            </div>
+                            <div class="info">
+                                <div>Product ID:</div>&nbsp;
+                                <span id="product_id">
+                                    <a href="/shop/<%= slugify(product.proName, { lower: true }) %>-<%= product._id %>">
+                                        <%= product._id %>
+                                    </a>
+                                </span>
+                            </div>
+                            <div class="info">
+                                <div>Price:</div>&nbsp;
+                                <nav>Rs.</nav>
+                                <span class="edit-info"><%= product.proPrice %></span>
+                            </div>
+                            <div class="info">
+                                <div>Without Dis... Price:</div>&nbsp;
+                                <nav>Rs.</nav>
+                                <span class="edit-info"><%= product.proOrignalPrice %></span>
+                            </div>
+                            <div class="info">
+                                <div>Sale Discount:</div>&nbsp;
+                                <span class="edit-info"><%= product.proDiscount %></span>
+                                <nav>%</nav>
+                            </div>
+                            <div class="info">
+                                <div>Category:</div>&nbsp;
+                                <span class="edit-info"><%= product.proCategory %></span>
+                            </div>
+                            <div class="info">
+                                <div>Buyers:</div>&nbsp;
+                                <span class="edit-info"><%= product.proBuyer %></span>
+                            </div>
+                            <div class="info">
+                                <div>Reviews:</div>&nbsp;
+                                <span class="edit-info"><%= product.proNoOfReviews %></span>
+                            </div>
+                            <div class="info">
+                                <div>Rating:</div>&nbsp;
+                                <span class="edit-info"><%= product.proRating %></span>
+                                <nav>⭐</nav>
+                            </div>
+                            <div class="info">
+                                <div>Stock:</div>&nbsp;
+                                <span class="value-btn" style="color: <%= product.stock ? "#00bb00" : "#ff0000" %>;">
+                                    <%= String(product.stock).charAt(0).toUpperCase() + String(product.stock).slice(1) %>
+                                </span>
+                            </div>
+                            <div class="info">
+                                <div>Customization:</div>&nbsp;
+                                <span class="value-btn"
+                                    style="color: <%= product.customization ? "#00bb00" : "#ff0000" %>;">
+                                    <%= String(product.customization).charAt(0).toUpperCase() + String(product.customization).slice(1) %>
+                                </span>
+                            </div>
+                            <% if (product.customization) { %>
+                            <div class="info">
+                                <div>Sizes:</div>&nbsp;
+                                <span class="down-btn" style="cursor: pointer;">(<%= product.sizeAndPrice.length %>)
+                                    <i class="fa-solid fa-chevron-up">
+                                        <div class="dropdown-options">
+                                            <% product.sizeAndPrice.forEach((s_p)=>{ %>
+                                            <div class="info">
+                                                <div class="edit-info size-info"><%= s_p.size %></div>
+                                                <nav style="display: flex; flex-shrink: 0;">= Rs.</nav>
+                                                <span class="edit-info"><%= s_p.price %></span>
+                                            </div>
+                                            <% }); %>
+                                        </div>
+                                    </i>
+                                </span>
+                            </div>
+                            <div class="info">
+                                <div>Colors:</div>&nbsp;
+                                <span class="down-btn" style="cursor: pointer;">(<%= product.colorAndPrice.length %>)
+                                    <i class="fa-solid fa-chevron-up">
+                                        <div class="dropdown-options">
+                                            <% product.colorAndPrice.forEach((c_p)=>{ %>
+                                            <div class="info">
+                                                <div class="color-info edit-info" data-color="<%= c_p.color %>"
+                                                    style="background: <%= c_p.color %>;">
+                                                </div>
+                                                <nav style="display: flex; flex-shrink: 0;">= Rs.</nav>
+                                                <span class="edit-info"><%= c_p.price %></span>
+                                            </div>
+                                            <% }); %>
+                                        </div>
+                                    </i>
+                                </span>
+                            </div>
+                            <% } %>
+                            <div class=" btn-con">
+                                <div class="btn edit-btn">Edit</div>
+                                <div class="btn delete-btn">Delete</div>
+                                <div class="btn save-btn">Save</div>
+                                <div class="btn cancel-btn">Cancel</div>
+                            </div>
+                        </form>
+                        <% }) %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/js/common/loader.js"></script>
+    <script src="/js/admin/add-product.js"></script>
+    <script src="/js/admin/admin-sidebar.js"></script>
+    <script src="/js/admin/admin-search.js"></script>
+    <script src="/js/common/footer.js"></script>
+</body>
+
+</html>
