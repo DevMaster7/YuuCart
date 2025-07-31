@@ -3,7 +3,6 @@
 //     e.preventDefault()
 // }, false)
 
-
 // Edit Buttons Function 
 function btnFunctions(main) {
     main.querySelectorAll(".edit-info").forEach((e) => {
