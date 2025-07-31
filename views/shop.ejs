@@ -110,10 +110,12 @@
                             <div class="pro-price-con">
                                 <div class="pro-price">Rs.<%= product.proPrice %>
                                 </div>
+                                <% if (product.proDiscount !== 0 || product.proOrignalPrice !== 0) { %>
                                 <div class="before-dis">
                                     Rs.<%= product.proOrignalPrice %>
                                 </div>
                                 <div class="discount">-<%= product.proDiscount %>%</div>
+                                <% } %>
                             </div>
                             <div class="pro-info">
                                 <div style="display: flex; align-items: center; gap: 4px">
@@ -147,12 +149,55 @@
 
         <div class="category-con" id="saleProducts">
             <div class="product-headings">On Sale!</div>
-            <div class="products-con"></div>
-        </div>
-
-        <div class="category-con" id="newProducts">
-            <div class="product-headings">New Arrivals!</div>
-            <div class="products-con"></div>
+            <div class="products-con">
+                <% products.forEach(product=> { %>
+                <% if (product.proDiscount !== 0 || product.proOrignalPrice !== 0) { %>
+                <a class="main-card" href="/shop/<%= slugify(product.proName, { lower: true }) %>-<%= product._id %>">
+                    <div class="cards">
+                        <div class="product-img">
+                            <img src="<%= product.image %>" alt="" />
+                        </div>
+                        <div class="pro-details">
+                            <div class="pro-name">
+                                <%= product.proName %>
+                            </div>
+                            <div class="pro-price-con">
+                                <div class="pro-price">Rs.<%= product.proPrice %>
+                                </div>
+                                <% if (product.proDiscount !== 0 || product.proOrignalPrice !== 0) { %>
+                                <div class="before-dis">
+                                    Rs.<%= product.proOrignalPrice %>
+                                </div>
+                                <div class="discount">-<%= product.proDiscount %>%</div>
+                                <% } %>
+                            </div>
+                            <div class="pro-info">
+                                <div style="display: flex; align-items: center; gap: 4px">
+                                    <div class="pro-buyer">
+                                        <%= product.proBuyer %> Sold
+                                    </div>
+                                    <div class="pro-rate">
+                                        <% for(let i=1; i <=5; i++) { %>
+                                        <% if (i <=product.proRating) { %>
+                                        <i class="fa-solid fa-star"></i>
+                                        <% } else { %>
+                                        <i class="fa-regular fa-star"></i>
+                                        <% } %>
+                                        <% } %>
+                                        <span class="pro-revs">(<%= product.proNoOfReviews %>)</span>
+                                    </div>
+                                </div>
+                                <div class="customizeable">
+                                    <% if (product.customization) { %> Customizeable <% } else { %> Non
+                                    Customizeable <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <% } %>
+                <% }) %>
+            </div>
         </div>
 
         <div class="category-con" id="allProducts">
@@ -171,10 +216,12 @@
                             <div class="pro-price-con">
                                 <div class="pro-price">Rs.<%= product.proPrice %>
                                 </div>
+                                <% if (product.proDiscount !== 0 || product.proOrignalPrice !== 0) { %>
                                 <div class="before-dis">
                                     Rs.<%= product.proOrignalPrice %>
                                 </div>
                                 <div class="discount">-<%= product.proDiscount %>%</div>
+                                <% } %>
                             </div>
                             <div class="pro-info">
                                 <div style="display: flex; align-items: center; gap: 4px">

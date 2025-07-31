@@ -85,6 +85,7 @@
             <div><img src="<%= image %>" alt=""></div>
             <% }) %>
         </div>
+
         <div class="product-details">
             <div class="product-name">
                 <%= product.proName %>
@@ -110,13 +111,15 @@
 
             <div class="product-price" data-price="<%= product.proPrice %>">Rs.<%= product.proPrice %>
             </div>
+            <% if (product.proDiscount !== 0 || product.proOrignalPrice !== 0) { %>
             <div class="product-discount-con">
                 <div data-orignalprice="<%= product.proOrignalPrice %>" class="product-orignal-price">Rs.<%=
                         product.proOrignalPrice %>
                 </div>
                 <div class="product-discount">-<%= product.proDiscount %>%</div>
             </div>
-
+            <% } %>
+            
             <% if (product.customization) { %>
             <div class="customize-con-mobile true">
                 <div class="customize-title">Here You Can Customize Your Product:</div>

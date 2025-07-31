@@ -73,12 +73,14 @@
                                     </div>
                                     <div class="pro-cust-price">Rs. <%= product.proPrice %>
                                     </div>
+                                    <% if (product.proDiscount !== 0 || product.proOrignalPrice !== 0) { %>
                                     <div class="before-dis">Rs.
                                         <%= product.proOrignalPrice %>
                                     </div>
                                     <div class="discount">-
                                         <%= product.proDiscount %>%
                                     </div>
+                                    <% } %>
                                 </div>
                             </div>
                             <div class="pro-info">
@@ -149,12 +151,14 @@
                             </div>
                             <div class="pro-cust-price">Rs. <%= product.proPrice %>
                             </div>
+                            <% if (product.proDiscount !== 0 || product.proOrignalPrice !== 0) { %>
                             <div class="before-dis">Rs.
                                 <%= product.proOrignalPrice %>
                             </div>
                             <div class="discount">-
                                 <%= product.proDiscount %>%
                             </div>
+                            <% } %>
                         </div>
                     </div>
                 </div>

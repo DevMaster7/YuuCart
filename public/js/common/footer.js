@@ -24,9 +24,8 @@ function footer() {
                 <h3>Quick Links</h3>
                 <ul>
                     <li><a href="/">Home</a></li>
-                    <li><a href="/shop">Shop All</a></li>
+                    <li><a href="/shop/#allProducts">Shop All</a></li>
                     <li><a href="/shop/#saleProducts">On Sale</a></li>
-                    <li><a href="/shop/#newProducts">New Arrivals</a></li>
                     <li><a href="/shop/#customizeProducts">Customizeable</a></li>
                 </ul>
             </div>
