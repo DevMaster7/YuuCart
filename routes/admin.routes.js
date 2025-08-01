@@ -137,9 +137,23 @@ router.post("/manage-products/delete-product", async (req, res) => {
   res.status(200).json({ success: true });
 });
 router.post("/manage-products/edit-product", async (req, res) => {
-  const { galleryURLs } = req.body
-  // console.log(`Hello`);
-  res.send(galleryURLs);
+  const data = req.body.newData;
+  const product = await productModel.findById(data._id);
+  product.proName = data.proName
+  product.proPrice = data.proPrice
+  product.proOrignalPrice = data.proOrignalPrice
+  product.proDiscount = data.proDiscount
+  product.proBuyer = data.proBuyer
+  product.proRating = data.proRating
+  product.proNoOfReviews = data.proNoOfReviews
+  product.proCategory = data.proCategory
+  product.stock = data.stock
+  product.customization = data.customization
+  product.sizeAndPrice = data.sizeAndPrice
+  product.colorAndPrice = data.colorAndPrice
+  // product.stock = data.stock
+  await product.save();
+  res.status(200).json({ success: true });
 });
 router.get("/manage-products/add-products", verifyAdmin, (req, res) => {
   res.render("admins/admin-add-products")

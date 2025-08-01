@@ -4,31 +4,119 @@
 // }, false)
 
 // Edit Buttons Function 
+// function btnFunctions(main) {
+//     main.querySelectorAll(".edit-info").forEach((e) => {
+//         let input = document.createElement("input");
+//         input.classList.add("edited-data")
+//         let isColorInput = false;
+//         if (e.classList.contains("color-info")) {
+//             input.setAttribute("type", "color");
+//             isColorInput = true;
+//             let c = e.dataset.color;
+//             function convertToHexColor(input) {
+//                 input = input.trim().toLowerCase();
+
+//                 if (/^#[0-9a-f]{6}$/.test(input)) return input;
+
+//                 if (/^#[0-9a-f]{3}$/.test(input)) {
+//                     return '#' + input.slice(1).split('').map(ch => ch + ch).join('');
+//                 }
+
+//                 if (input.startsWith('rgb')) {
+//                     let [r, g, b] = input.match(/\d+/g).map(Number);
+//                     return (
+//                         '#' +
+//                         [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('')
+//                     );
+//                 }
+
+//                 if (input.startsWith('hsl')) {
+//                     let [h, s, l] = input.match(/[\d.]+/g).map(Number);
+//                     s /= 100;
+//                     l /= 100;
+//                     const a = s * Math.min(l, 1 - l);
+//                     const f = n => {
+//                         const k = (n + h / 30) % 12;
+//                         const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+//                         return Math.round(255 * color).toString(16).padStart(2, '0');
+//                     };
+//                     return `#${f(0)}${f(8)}${f(4)}`;
+//                 }
+
+//                 return '#000000';
+//             }
+//             input.value = convertToHexColor(c);
+//         } else {
+//             input.classList.add("input-info");
+//             if (e.classList.contains("proName")) {
+//                 input.classList.add("proName");
+//             }
+//             let text = e.innerHTML.trim();
+//             input.value = text;
+//         }
+//         e.replaceWith(input);
+//     });
+
+//     let editBtn = main.querySelector(".edit-btn")
+//     let deleteBtn = main.querySelector(".delete-btn")
+//     let saveBtn = main.querySelector(".save-btn")
+//     let cancelBtn = main.querySelector(".cancel-btn")
+//     editBtn.style.display = "none"
+//     deleteBtn.style.display = "none"
+//     saveBtn.style.display = "flex"
+//     cancelBtn.style.display = "flex"
+
+//     cancelBtn.addEventListener("click", () => {
+//         window.location.reload()
+//     })
+//     saveBtn.addEventListener("click", async () => {
+//         let newData = {};
+//         main.querySelectorAll(".edited-data").forEach((e) => {
+//             if (e.classList.contains("proName")) {
+//                 e.setAttribute("data-info", "proName")
+//             }
+//             else if (!e.classList.contains("value-btn")) {
+//                 let dataName = e.parentElement.dataset.info
+//                 e.setAttribute("data-info", dataName)
+//             }
+//             let key;
+//             let value;
+//             if (e.classList.contains("value-btn")) {
+//                 key = e.dataset.info
+//                 value = Boolean(e.innerText.trim().toLowerCase)
+//             }
+//             else {
+//                 key = e.dataset.info
+//                 value = e.value
+//             }
+//             newData[key] = value;
+//         })
+
+//         console.log(newData);
+//     });
+// }
+
 function btnFunctions(main) {
     main.querySelectorAll(".edit-info").forEach((e) => {
         let input = document.createElement("input");
+        input.classList.add("edited-data")
         let isColorInput = false;
+
         if (e.classList.contains("color-info")) {
             input.setAttribute("type", "color");
             isColorInput = true;
             let c = e.dataset.color;
+
             function convertToHexColor(input) {
                 input = input.trim().toLowerCase();
-
                 if (/^#[0-9a-f]{6}$/.test(input)) return input;
-
                 if (/^#[0-9a-f]{3}$/.test(input)) {
                     return '#' + input.slice(1).split('').map(ch => ch + ch).join('');
                 }
-
                 if (input.startsWith('rgb')) {
                     let [r, g, b] = input.match(/\d+/g).map(Number);
-                    return (
-                        '#' +
-                        [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('')
-                    );
+                    return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
                 }
-
                 if (input.startsWith('hsl')) {
                     let [h, s, l] = input.match(/[\d.]+/g).map(Number);
                     s /= 100;
@@ -41,11 +129,25 @@ function btnFunctions(main) {
                     };
                     return `#${f(0)}${f(8)}${f(4)}`;
                 }
-
                 return '#000000';
             }
             input.value = convertToHexColor(c);
-        } else {
+
+            const colorPriceSpan = e.parentElement.querySelector('.color-price');
+            if (colorPriceSpan) {
+                const priceInput = document.createElement("input");
+                priceInput.classList.add("edited-data", "color-price", "input-info");
+                priceInput.setAttribute("type", "number");
+                priceInput.setAttribute("min", "0");
+                priceInput.value = colorPriceSpan.innerText.trim();
+                colorPriceSpan.replaceWith(priceInput);
+            }
+        }
+        else if (e.classList.contains("size-info")) {
+            input.classList.add("input-info", "size-info")
+            input.value = e.innerText.trim()
+        }
+        else {
             input.classList.add("input-info");
             if (e.classList.contains("proName")) {
                 input.classList.add("proName");
@@ -53,87 +155,10 @@ function btnFunctions(main) {
             let text = e.innerHTML.trim();
             input.value = text;
         }
+
         e.replaceWith(input);
     });
 
-    // main.querySelectorAll(".edit-info").forEach((e) => {
-    //     let input = document.createElement("input")
-    //     input.classList.add("input-info")
-    //     if (e.classList.contains("proName")) {
-    //         input.classList.add("input-info", "proName")
-    //     }
-    //     if (e.classList.contains("color-info")) {
-    //         input.setAttribute("type", "color")
-    //         // input.removeAttribute("class")
-    //         let c = e.dataset.color
-    //         function convertToHexColor(input) {
-    //             input = input.trim().toLowerCase();
-
-    //             // If it's already valid 6-digit hex
-    //             if (/^#[0-9a-f]{6}$/.test(input)) {
-    //                 return input;
-    //             }
-
-    //             // If it's short 3-digit hex like #fff
-    //             if (/^#[0-9a-f]{3}$/.test(input)) {
-    //                 return '#' + input.slice(1).split('').map(ch => ch + ch).join('');
-    //             }
-
-    //             // If it's RGB
-    //             if (input.startsWith('rgb')) {
-    //                 let [r, g, b] = input.match(/\d+/g).map(Number);
-    //                 return (
-    //                     '#' +
-    //                     [r, g, b]
-    //                         .map(x => x.toString(16).padStart(2, '0'))
-    //                         .join('')
-    //                 );
-    //             }
-
-    //             // If it's HSL
-    //             if (input.startsWith('hsl')) {
-    //                 let [h, s, l] = input.match(/[\d.]+/g).map(Number);
-    //                 s /= 100;
-    //                 l /= 100;
-    //                 const a = s * Math.min(l, 1 - l);
-    //                 const f = n => {
-    //                     const k = (n + h / 30) % 12;
-    //                     const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-    //                     return Math.round(255 * color).toString(16).padStart(2, '0');
-    //                 };
-    //                 return `#${f(0)}${f(8)}${f(4)}`;
-    //             }
-
-    //             // Default fallback
-    //             return '#000000'; // If nothing matched
-    //         }
-    //         input.value = convertToHexColor(c)
-    //         console.log(input.value);
-    //         // let color = convertToHexColor(c)
-    //         // newColor = String(color)
-    //         // input.setAttribute("value", newColor)
-    //         // input.value = convertToHexColor(c)
-    //         // let color = 
-
-    //         // input.setAttribute("value", color)
-    //         // let att = { value: convertToHexColor(c) }
-
-    //         // console.log(att);
-    //         // console.log(input.attributes);
-    //         // console.log(Array.from(input.attributes));
-    //         // input.value = convertToHexColor(c);
-    //         // console.log(e.dataset.color);
-    //         // let styles = window.getComputedStyle(e)
-    //         // input.value = e.dataset.color
-
-    //         // console.log(e);
-    //     }
-    //     else {
-    //         let text = e.innerHTML
-    //         input.value = text.trim()
-    //         e.replaceWith(input)
-    //     }
-    // })
     let editBtn = main.querySelector(".edit-btn")
     let deleteBtn = main.querySelector(".delete-btn")
     let saveBtn = main.querySelector(".save-btn")
@@ -145,27 +170,66 @@ function btnFunctions(main) {
 
     cancelBtn.addEventListener("click", () => {
         window.location.reload()
-    })
+    });
+
     saveBtn.addEventListener("click", async () => {
-        console.log(main);
-        main.submit()
-        // let form = main.querySelector(".form")
-        // window.location.reload()
-        // saveBtn.style.display = "none"
-        // cancelBtn.style.display = "none"
-        // editBtn.style.display = "flex"
-        // deleteBtn.style.display = "flex"
-        // main.querySelectorAll(".input-info").forEach((e) => {
-        //     let span = document.createElement("span")
-        //     if (e.classList.contains("proName")) {
-        //         span.classList.add("edit-info", "proName")
-        //     }
-        //     span.classList.add("edit-info")
-        //     let text = e.value
-        //     span.innerHTML = text
-        //     e.replaceWith(span)
-        // })
-    })
+        let newData = {
+            _id: main.querySelector("#product_id").getElementsByTagName("a")[0].innerText
+        };
+        main.querySelectorAll(".edited-data").forEach((e) => {
+            if (e.classList.contains("proName")) {
+                e.setAttribute("data-info", "proName");
+            } else if (!e.classList.contains("value-btn")) {
+                let dataName = e.parentElement.dataset.info;
+                e.setAttribute("data-info", dataName);
+            }
+
+            let key, value;
+
+            if (e.classList.contains("value-btn")) {
+                key = e.dataset.info;
+                value = e.innerText.toLowerCase();
+            } else {
+                function autoConvert(value) {
+                    return /^\d+(\.\d+)?$/.test(value) ? Number(value) : value;
+                }
+                key = e.dataset.info;
+                value = autoConvert(e.value);
+            }
+            newData[key] = value;
+        });
+
+        // ColorAndPrice
+        if (newData.customization == "true") {
+            newData.colorAndPrice = [];
+            const colorInputs = main.querySelectorAll('input[type="color"]');
+            colorInputs.forEach(input => {
+                let priceEl = input.parentElement.querySelector('.color-price');
+                let color = input.value;
+                let price = priceEl ? Number(priceEl.value.trim()) : 0;
+                newData.colorAndPrice.push({ color, price });
+            });
+
+            // SizeAndPrice
+            newData.sizeAndPrice = [];
+            let sizeInputs = main.querySelectorAll(".size-info");
+            sizeInputs.forEach((e) => {
+                let size = e.value
+                let price = Number(e.parentElement.lastElementChild.value)
+                newData.sizeAndPrice.push({ size, price })
+            })
+        }
+        const res = await fetch("/admin/manage-products/edit-product", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ newData }),
+        })
+        const res1 = await res.json()
+        if (res1) {
+            window.location.reload()
+        }
+        console.log(newData);
+    });
 }
 
 // Edit Buttons

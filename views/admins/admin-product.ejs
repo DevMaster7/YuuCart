@@ -67,7 +67,7 @@
                                 <% } %>
                                 <% } %>
                             </div>
-                            <span class="edit-info proName"><%= product.proName %></span>
+                            <span class="edit-info proName" data-info="proName"><%= product.proName %></span>
                             <div class="info">
                                 <div>Added By:</div>&nbsp;
                                 <span>
@@ -85,46 +85,50 @@
                                 </span>
                             </div>
                             <div class="info">
+                                <div>No. of Edits:</div>&nbsp;
+                                <span><%= product.__v %></span>
+                            </div>
+                            <div class="info" data-info="proPrice">
                                 <div>Price:</div>&nbsp;
                                 <nav>Rs.</nav>
                                 <span class="edit-info"><%= product.proPrice %></span>
                             </div>
-                            <div class="info">
+                            <div class="info" data-info="proOrignalPrice">
                                 <div>Without Dis... Price:</div>&nbsp;
                                 <nav>Rs.</nav>
                                 <span class="edit-info"><%= product.proOrignalPrice %></span>
                             </div>
-                            <div class="info">
+                            <div class="info" data-info="proDiscount">
                                 <div>Sale Discount:</div>&nbsp;
                                 <span class="edit-info"><%= product.proDiscount %></span>
                                 <nav>%</nav>
                             </div>
-                            <div class="info">
+                            <div class="info" data-info="proCategory">
                                 <div>Category:</div>&nbsp;
                                 <span class="edit-info"><%= product.proCategory %></span>
                             </div>
-                            <div class="info">
+                            <div class="info" data-info="proBuyer">
                                 <div>Buyers:</div>&nbsp;
                                 <span class="edit-info"><%= product.proBuyer %></span>
                             </div>
-                            <div class="info">
+                            <div class="info" data-info="proNoOfReviews">
                                 <div>Reviews:</div>&nbsp;
                                 <span class="edit-info"><%= product.proNoOfReviews %></span>
                             </div>
-                            <div class="info">
+                            <div class="info" data-info="proRating">
                                 <div>Rating:</div>&nbsp;
                                 <span class="edit-info"><%= product.proRating %></span>
                                 <nav>⭐</nav>
                             </div>
                             <div class="info">
                                 <div>Stock:</div>&nbsp;
-                                <span class="value-btn" style="color: <%= product.stock ? "#00bb00" : "#ff0000" %>;">
+                                <span class="value-btn edited-data" data-info="stock" style="color: <%= product.stock ? "#00bb00" : "#ff0000" %>;">
                                     <%= String(product.stock).charAt(0).toUpperCase() + String(product.stock).slice(1) %>
                                 </span>
                             </div>
                             <div class="info">
                                 <div>Customization:</div>&nbsp;
-                                <span class="value-btn"
+                                <span class="value-btn edited-data" data-info="customization"
                                     style="color: <%= product.customization ? "#00bb00" : "#ff0000" %>;">
                                     <%= String(product.customization).charAt(0).toUpperCase() + String(product.customization).slice(1) %>
                                 </span>
@@ -137,9 +141,9 @@
                                         <div class="dropdown-options">
                                             <% product.sizeAndPrice.forEach((s_p)=>{ %>
                                             <div class="info">
-                                                <div class="edit-info size-info"><%= s_p.size %></div>
+                                                <div class="size-info edit-info"><%= s_p.size %></div>
                                                 <nav style="display: flex; flex-shrink: 0;">= Rs.</nav>
-                                                <span class="edit-info"><%= s_p.price %></span>
+                                                <span class="edit-info size-price"><%= s_p.price %></span>
                                             </div>
                                             <% }); %>
                                         </div>
@@ -157,7 +161,7 @@
                                                     style="background: <%= c_p.color %>;">
                                                 </div>
                                                 <nav style="display: flex; flex-shrink: 0;">= Rs.</nav>
-                                                <span class="edit-info"><%= c_p.price %></span>
+                                                <span class="edit-info color-price"><%= c_p.price %></span>
                                             </div>
                                             <% }); %>
                                         </div>
