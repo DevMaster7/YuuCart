@@ -4,98 +4,7 @@
 // }, false)
 
 // Edit Buttons Function 
-// function btnFunctions(main) {
-//     main.querySelectorAll(".edit-info").forEach((e) => {
-//         let input = document.createElement("input");
-//         input.classList.add("edited-data")
-//         let isColorInput = false;
-//         if (e.classList.contains("color-info")) {
-//             input.setAttribute("type", "color");
-//             isColorInput = true;
-//             let c = e.dataset.color;
-//             function convertToHexColor(input) {
-//                 input = input.trim().toLowerCase();
-
-//                 if (/^#[0-9a-f]{6}$/.test(input)) return input;
-
-//                 if (/^#[0-9a-f]{3}$/.test(input)) {
-//                     return '#' + input.slice(1).split('').map(ch => ch + ch).join('');
-//                 }
-
-//                 if (input.startsWith('rgb')) {
-//                     let [r, g, b] = input.match(/\d+/g).map(Number);
-//                     return (
-//                         '#' +
-//                         [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('')
-//                     );
-//                 }
-
-//                 if (input.startsWith('hsl')) {
-//                     let [h, s, l] = input.match(/[\d.]+/g).map(Number);
-//                     s /= 100;
-//                     l /= 100;
-//                     const a = s * Math.min(l, 1 - l);
-//                     const f = n => {
-//                         const k = (n + h / 30) % 12;
-//                         const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-//                         return Math.round(255 * color).toString(16).padStart(2, '0');
-//                     };
-//                     return `#${f(0)}${f(8)}${f(4)}`;
-//                 }
-
-//                 return '#000000';
-//             }
-//             input.value = convertToHexColor(c);
-//         } else {
-//             input.classList.add("input-info");
-//             if (e.classList.contains("proName")) {
-//                 input.classList.add("proName");
-//             }
-//             let text = e.innerHTML.trim();
-//             input.value = text;
-//         }
-//         e.replaceWith(input);
-//     });
-
-//     let editBtn = main.querySelector(".edit-btn")
-//     let deleteBtn = main.querySelector(".delete-btn")
-//     let saveBtn = main.querySelector(".save-btn")
-//     let cancelBtn = main.querySelector(".cancel-btn")
-//     editBtn.style.display = "none"
-//     deleteBtn.style.display = "none"
-//     saveBtn.style.display = "flex"
-//     cancelBtn.style.display = "flex"
-
-//     cancelBtn.addEventListener("click", () => {
-//         window.location.reload()
-//     })
-//     saveBtn.addEventListener("click", async () => {
-//         let newData = {};
-//         main.querySelectorAll(".edited-data").forEach((e) => {
-//             if (e.classList.contains("proName")) {
-//                 e.setAttribute("data-info", "proName")
-//             }
-//             else if (!e.classList.contains("value-btn")) {
-//                 let dataName = e.parentElement.dataset.info
-//                 e.setAttribute("data-info", dataName)
-//             }
-//             let key;
-//             let value;
-//             if (e.classList.contains("value-btn")) {
-//                 key = e.dataset.info
-//                 value = Boolean(e.innerText.trim().toLowerCase)
-//             }
-//             else {
-//                 key = e.dataset.info
-//                 value = e.value
-//             }
-//             newData[key] = value;
-//         })
-
-//         console.log(newData);
-//     });
-// }
-
+let newFilesMap = new Map();
 function btnFunctions(main) {
     main.querySelectorAll(".edit-info").forEach((e) => {
         let input = document.createElement("input");
@@ -174,8 +83,11 @@ function btnFunctions(main) {
 
     saveBtn.addEventListener("click", async () => {
         let newData = {
-            _id: main.querySelector("#product_id").getElementsByTagName("a")[0].innerText
+            _id: main.querySelector("#product_id").getElementsByTagName("a")[0].innerText,
+            galleryImages: []
         };
+
+        // Product Details
         main.querySelectorAll(".edited-data").forEach((e) => {
             if (e.classList.contains("proName")) {
                 e.setAttribute("data-info", "proName");
@@ -196,10 +108,11 @@ function btnFunctions(main) {
                 key = e.dataset.info;
                 value = autoConvert(e.value);
             }
+
             newData[key] = value;
         });
 
-        // ColorAndPrice
+        // Color and Size
         if (newData.customization == "true") {
             newData.colorAndPrice = [];
             const colorInputs = main.querySelectorAll('input[type="color"]');
@@ -210,25 +123,42 @@ function btnFunctions(main) {
                 newData.colorAndPrice.push({ color, price });
             });
 
-            // SizeAndPrice
             newData.sizeAndPrice = [];
             let sizeInputs = main.querySelectorAll(".size-info");
             sizeInputs.forEach((e) => {
-                let size = e.value
-                let price = Number(e.parentElement.lastElementChild.value)
-                newData.sizeAndPrice.push({ size, price })
-            })
+                let size = e.value;
+                let price = Number(e.parentElement.lastElementChild.value);
+                newData.sizeAndPrice.push({ size, price });
+            });
         }
-        const res = await fetch("/admin/manage-products/edit-product", {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ newData }),
-        })
-        const res1 = await res.json()
-        if (res1) {
-            window.location.reload()
+
+        // Product Images
+        const formData = new FormData();
+        main.querySelectorAll(".box").forEach((e) => {
+            if (!e.classList.contains("add-image-label")) {
+                const img = e.querySelector("img");
+                const src = img.src;
+
+                if (src.includes("cloudinary.com")) {
+                    newData.galleryImages.push(src);
+                } else if (src.startsWith("blob:")) {
+                    const file = newFilesMap.get(src);
+                    if (file) {
+                        formData.append("notIncludedImgs", file);
+                    }
+                }
+            }
+        });
+        formData.append("newData", JSON.stringify(newData));
+
+        const response = await fetch("/admin/manage-products/edit-product", {
+            method: "POST",
+            body: formData,
+        });
+        const data = await response.json();
+        if (data.success) {
+            window.location.reload();
         }
-        console.log(newData);
     });
 }
 
@@ -293,10 +223,13 @@ removeImage()
 document.querySelectorAll(".input-images").forEach((input) => {
     input.addEventListener("change", () => {
         Array.from(input.files).forEach((file) => {
+            let blobUrl = URL.createObjectURL(file);
+            newFilesMap.set(blobUrl, file);
+            console.log(newFilesMap);
             let main = input.closest(".product-card")
             let html = `
             <div class="box">
-                <img src="${URL.createObjectURL(file)}" alt="Product">
+                <img src="${blobUrl}" alt="Product">
                 <div>
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
                         width="24px" fill="#e3e3e3">

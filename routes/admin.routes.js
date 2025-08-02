@@ -136,36 +136,50 @@ router.post("/manage-products/delete-product", async (req, res) => {
   if (!product) return res.status(404).json({ success: false, message: "Product not found" });
   res.status(200).json({ success: true });
 });
-router.post("/manage-products/edit-product", async (req, res) => {
-  const data = req.body.newData;
-  const product = await productModel.findById(data._id);
-  product.proName = data.proName
-  product.proPrice = data.proPrice
-  product.proOrignalPrice = data.proOrignalPrice
-  product.proDiscount = data.proDiscount
-  product.proBuyer = data.proBuyer
-  product.proRating = data.proRating
-  product.proNoOfReviews = data.proNoOfReviews
-  product.proCategory = data.proCategory
-  product.stock = data.stock
-  product.customization = data.customization
-  product.sizeAndPrice = data.sizeAndPrice
-  product.colorAndPrice = data.colorAndPrice
-  // product.stock = data.stock
-  await product.save();
-  res.status(200).json({ success: true });
-});
+router.post("/manage-products/edit-product",
+  upload.array("notIncludedImgs"),
+  async (req, res) => {
+    const files = req.files;
+    const newData = JSON.parse(req.body.newData);
+
+    let folderName = "product_pics";
+    for (const file of files) {
+      const url = await uploadOnCloudinary(file.path, folderName);
+      if (!url) {
+        return res.status(500).json({ success: false, message: "Cloudinary upload failed" });
+      }
+      newData.galleryImages.push(url);
+    }
+
+    const product = await productModel.findById(newData._id);
+    product.proName = newData.proName
+    product.galleryImages = newData.galleryImages
+    product.proPrice = newData.proPrice
+    product.proOrignalPrice = newData.proOrignalPrice
+    product.proDiscount = newData.proDiscount
+    product.proBuyer = newData.proBuyer
+    product.proRating = newData.proRating
+    product.proNoOfReviews = newData.proNoOfReviews
+    product.proCategory = newData.proCategory
+    product.stock = newData.stock
+    product.customization = newData.customization
+    product.sizeAndPrice = newData.sizeAndPrice
+    product.colorAndPrice = newData.colorAndPrice
+    await product.save();
+    res.status(200).json({ success: true });
+  });
 router.get("/manage-products/add-products", verifyAdmin, (req, res) => {
   res.render("admins/admin-add-products")
 })
 router.post("/manage-products/add-products", optionalVerifyToken, upload.fields([
   { name: 'thumbnail', maxCount: 1 },
-  { name: 'galleryURLs', minCount: 2, maxCount: 10 }
+  { name: 'galleryURLs', minCount: 1, maxCount: 10 }
 ]), async (req, res) => {
   const token = req.user
   const user = await userModel.findById(token._QCUI_UI);
   let thumbnail = req.files['thumbnail'];
   thumbnail = thumbnail[0].path;
+
   let galleryURLs = req.files['galleryURLs'] || [];
   galleryURLs = galleryURLs.map((e) => {
     return e.path;
