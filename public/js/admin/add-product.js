@@ -126,7 +126,7 @@ function btnFunctions(main) {
             newData.sizeAndPrice = [];
             let sizeInputs = main.querySelectorAll(".size-info");
             sizeInputs.forEach((e) => {
-                let size = e.value;
+                let size = e.value.toUpperCase();
                 let price = Number(e.parentElement.lastElementChild.value);
                 newData.sizeAndPrice.push({ size, price });
             });
@@ -248,6 +248,7 @@ document.querySelectorAll(".input-images").forEach((input) => {
 function customizeDropdown() {
     document.querySelectorAll(".down-btn").forEach((btn) => {
         btn.addEventListener("click", (e) => {
+            let main = btn.closest(".product-card");
             e.stopPropagation();
 
             const dropdown = btn.querySelector(".dropdown-options");
@@ -283,6 +284,75 @@ function customizeDropdown() {
             i.classList.add("fa-chevron-up");
         });
     });
+
+
+    document.querySelectorAll(".btns").forEach((add_rem) => {
+        add_rem.addEventListener("click", (e) => {
+            let main = add_rem.closest(".product-card");
+            e.preventDefault();
+            btnFunctions(main)
+            dbClick(document)
+
+            let sizeHTML = `<div class="info cust-con">
+                                            <input class="edited-data input-info size-info">
+                                            <nav style="display: flex; flex-shrink: 0;">= Rs.</nav>
+                                            <input class="edited-data input-info">
+                                        </div>`
+            let colorHTML = `<div class="info cust-con">
+                                                                        <input class="edited-data" type="color">
+                                                                        <nav style="display: flex; flex-shrink: 0;">= Rs.</nav>
+                                                                        <input class="edited-data color-price input-info" type="number" min="0">
+                                         </div>`
+            let btn_con = add_rem.parentElement
+            if (btn_con.classList.contains("size")) {
+                if (add_rem.classList.contains("add")) {
+                    btn_con.insertAdjacentHTML("beforebegin", sizeHTML)
+                    dbClick(document)
+                }
+                else {
+                    dbClick(document)
+                    if (btn_con.parentElement.querySelectorAll(".active").length > 0) {
+                        btn_con.parentElement.querySelectorAll(".active").forEach((active) => {
+                            active.remove()
+                        })
+                    }
+                    else {
+                        btn_con.previousElementSibling.remove()
+                    }
+                }
+            }
+            else {
+                if (add_rem.classList.contains("add")) {
+                    btn_con.insertAdjacentHTML("beforebegin", colorHTML)
+                    dbClick(document)
+                }
+                else {
+                    dbClick(document)
+                    if (btn_con.parentElement.querySelectorAll(".active").length > 0) {
+                        btn_con.parentElement.querySelectorAll(".active").forEach((active) => {
+                            active.remove()
+                        })
+                    }
+                    else {
+                        btn_con.previousElementSibling.remove()
+                    }
+                }
+            }
+        })
+    })
+    dbClick(document)
+}
+function dbClick(section) {
+    section.querySelectorAll(".cust-con").forEach((cust) => {
+        cust.addEventListener("dblclick", () => {
+            if (!cust.classList.contains("active")) {
+                cust.classList.add("active");
+            }
+            else {
+                cust.classList.remove("active");
+            }
+        })
+    })
 }
 customizeDropdown()
 

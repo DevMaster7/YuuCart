@@ -223,8 +223,16 @@
 }
 
 .dropdown-options .info {
+    cursor: pointer;
+    user-select: none;
+    padding: 2px;
     display: flex;
     gap: 7px;
+}
+
+.dropdown-options .cust-con.active {
+    border: 1px solid var(--Accent);
+    border-radius: 2px;
 }
 
 .dropdown-options .input-info {
@@ -242,6 +250,23 @@ input[type="color"].color-info {
     appearance: auto !important;
     -webkit-appearance: auto !important;
     background-color: initial !important;
+}
+
+.add-rem-btns {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    justify-content: space-evenly;
+}
+
+.add-rem-btns .btns {
+    width: 30px;
+    height: 25px;
+    border-radius: 3px;
+    font-size: 19px;
+    font-weight: 600;
+    background: var(--Accent);
+    color: var(--Highlight);
 }
 
 .product-card .btn-con {

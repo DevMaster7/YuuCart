@@ -122,7 +122,8 @@
                             </div>
                             <div class="info">
                                 <div>Stock:</div>&nbsp;
-                                <span class="value-btn edited-data" data-info="stock" style="color: <%= product.stock ? "#00bb00" : "#ff0000" %>;">
+                                <span class="value-btn edited-data" data-info="stock"
+                                    style="color: <%= product.stock ? "#00bb00" : "#ff0000" %>;">
                                     <%= String(product.stock).charAt(0).toUpperCase() + String(product.stock).slice(1) %>
                                 </span>
                             </div>
@@ -140,12 +141,16 @@
                                     <i class="fa-solid fa-chevron-up">
                                         <div class="dropdown-options">
                                             <% product.sizeAndPrice.forEach((s_p)=>{ %>
-                                            <div class="info">
+                                            <div class="info cust-con">
                                                 <div class="size-info edit-info"><%= s_p.size %></div>
                                                 <nav style="display: flex; flex-shrink: 0;">= Rs.</nav>
                                                 <span class="edit-info size-price"><%= s_p.price %></span>
                                             </div>
                                             <% }); %>
+                                            <div class="add-rem-btns size">
+                                                <button class="btns add">+</button>
+                                                <button class="btns rem">-</button>
+                                            </div>
                                         </div>
                                     </i>
                                 </span>
@@ -156,7 +161,7 @@
                                     <i class="fa-solid fa-chevron-up">
                                         <div class="dropdown-options">
                                             <% product.colorAndPrice.forEach((c_p)=>{ %>
-                                            <div class="info">
+                                            <div class="info cust-con">
                                                 <div class="color-info edit-info" data-color="<%= c_p.color %>"
                                                     style="background: <%= c_p.color %>;">
                                                 </div>
@@ -164,6 +169,10 @@
                                                 <span class="edit-info color-price"><%= c_p.price %></span>
                                             </div>
                                             <% }); %>
+                                            <div class="add-rem-btns color">
+                                                <button class="btns add">+</button>
+                                                <button class="btns rem">-</button>
+                                            </div>
                                         </div>
                                     </i>
                                 </span>
@@ -182,7 +191,7 @@
             </div>
         </div>
     </div>
-    
+
     <script src="/js/common/loader.js"></script>
     <script src="/js/admin/add-product.js"></script>
     <script src="/js/admin/admin-sidebar.js"></script>
