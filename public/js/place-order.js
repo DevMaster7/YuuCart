@@ -8,6 +8,7 @@ document.querySelector(".acc-btn").addEventListener("click", () => {
 let msg = document.querySelector(".msg")
 document.querySelector(".coupan-btn").addEventListener("click", async () => {
     const coupanCode = document.querySelector(".input-coupan").value.trim();
+
     if (!coupanCode) {
         msg.classList.remove("success");
         msg.classList.add("err");
@@ -16,6 +17,7 @@ document.querySelector(".coupan-btn").addEventListener("click", async () => {
         }, 5000)
         return msg.innerHTML = "Please Enter a Valid Coupon Code!";
     }
+
     const response = await fetch("/shop/apply-coupon", {
         method: "POST",
         headers: {
@@ -23,7 +25,9 @@ document.querySelector(".coupan-btn").addEventListener("click", async () => {
         },
         body: JSON.stringify({ coupon: coupanCode }),
     });
+
     const result = await response.json();
+
     if (result.success) {
         let pricele = document.querySelector('.total-price');
         pricele.style.opacity = "0.4";
@@ -100,6 +104,16 @@ document.querySelector(".payment-con").getElementsByTagName("button")[0].addEven
             coupanName = document.querySelector(".c-name").getElementsByTagName("span")[0].innerHTML;
             coupanDiscount = document.querySelector(".c-discount").getElementsByTagName("span")[0].innerHTML;
             totalAfterCoupan = Number(document.querySelector(".total-price-with-coupan").innerHTML.split("Rs.")[1].trim());
+            async function applyCoupon() {
+                await fetch("/shop/applied-coupon", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ coupanName }),
+                })
+            }
+            applyCoupon();
         }
         x = {
             productId,

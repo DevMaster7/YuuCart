@@ -10,6 +10,7 @@
     <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="/css/output.css">
     <link rel="stylesheet" href="/css/admin/admin-sidebar.css">
+    <link rel="stylesheet" href="/css/admin/admin-coupan.css">
     <link rel="stylesheet" href="/css/common/logo.css">
     <link rel="stylesheet" href="/css/common/loader.css">
     <link rel="stylesheet" href="/css/common/footer.css">
@@ -19,31 +20,18 @@
 <body>
     <div class="wrapper">
         <div class="main-form">
-            <form id="coupanForm" class="form" action="/admin/add-coupan" method="post">
+            <form class="form" action="/admin/add-coupan" method="post">
                 <div class="inputs">
-                    <input id="coupanCode" type="text" name="coupanCode" placeholder="Coupan Code" required>
-                    <input id="coupanDiscount" type="number" name="coupanDiscount" placeholder="Coupan Discount"
-                        required>
-                    <input id="coupanLimit" type="number" name="coupanLimit" placeholder="Coupan Limit">
-                    <div style="display: flex; width: 100%; gap: 20px;justify-content: center;">
-                        <div style="display: flex;flex-direction: column;">
-                            <label for="coupanStartDate">Coupan Starting Date</label>
-                            <input id="coupanStartDate" type="date" name="coupanStartDate" required>
-                        </div>
-                        <div style="display: flex;flex-direction: column;">
-                            <label for="coupanEndDate">Coupan Ending Date</label>
-                            <input id="coupanEndDate" type="date" name="coupanEndDate" required>
-                        </div>
+                    <input type="text" name="coupanCode" placeholder="Coupan Code" required>
+                    <input type="number" name="coupanDiscount" placeholder="Coupan Discount" required>
+                    <input type="number" name="coupanLimit" placeholder="No. of Coupans" required>
+                    <input type="text" name="coupanDescription" placeholder="Coupan Description" required>
+
+                    <div class="coupan-date">
+                        <label for="coupanEndDate">Coupan Ending Date</label>
+                        <input id="coupanEndDate" type="date" name="coupanEndingDate" required>
                     </div>
-                    <div class="choose-con">
-                        <label for="choose">Status:</label>
-                        <select id="choose" name="choose" required>
-                            <option value="false">False</option>
-                            <option value="true">True</option>
-                        </select>
-                    </div>
-                    <input id="coupanDescription" type="text" name="coupanDescription" placeholder="Coupan Description"
-                        required>
+
                 </div>
                 <button class="btn-submit">Add Coupan</button>
             </form>

@@ -237,24 +237,26 @@ router.post("/manage-products/add-products", optionalVerifyToken, upload.fields(
     sizeAndPrice,
     colorAndPrice,
   })
-  res.redirect("/admin/manage-products")
+  res.redirect("/admin/manage-products/add-products")
 })
 
 router.get("/manage-coupans", verifyAdmin, allowPage("manageCoupans"), async (req, res) => {
   res.render("admins/admin-coupan");
 })
-router.post("/add-coupan", async (req, res) => {
-  const { coupanCode, coupanDiscount, coupanLimit, coupanStartDate, coupanEndDate, choose, coupanDescription } = req.body;
+router.post("/add-coupan", optionalVerifyToken, async (req, res) => {
+  const token = req.user
+  const user = await userModel.findById(token._QCUI_UI);
+  const { coupanCode, coupanDiscount, coupanLimit, coupanEndingDate, coupanDescription } = req.body;
   const newCoupan = await coupanModel.create({
+    AddedBy: user.username,
     coupanCode,
     coupanDiscount,
     coupanLimit,
-    coupanStartDate,
-    coupanEndDate,
-    choose,
-    coupanDescription
+    coupanDescription,
+    coupanEndingDate,
   })
-  res.redirect("/admin/manage-coupans")
+  console.log(newCoupan);
+  res.redirect("/admin/manage-coupans");
 })
 
 module.exports = router;

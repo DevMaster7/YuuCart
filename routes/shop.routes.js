@@ -177,27 +177,52 @@ router.post("/checkout", optionalVerifyToken, async (req, res) => {
 router.post("/apply-coupon", async (req, res) => {
     try {
         const { coupon } = req.body;
-        const coupan = await coupanModel.findOne({ coupanCode: coupon });
-        if (!coupan) {
+        const foundCoupan = await coupanModel.findOne({ coupanCode: coupon });
+        if (foundCoupan == null || !foundCoupan) {
             return res.status(400).json({ success: false, message: "Invalid Coupon Code!" });
         }
+        if (!foundCoupan.Status) {
+            return res.status(400).json({ success: false, message: "Coupon Not Available Now!" });
+        }
+        if (foundCoupan.coupanLimit <= 0) {
+            return res.status(400).json({ success: false, message: "Coupon Limit Reached!" });
+        }
+        if (new Date(foundCoupan.coupanEndingDate) < new Date()) {
+            return res.status(400).json({ success: false, message: "Coupon Expired!" });
+        }
+
         return res.json({
             success: true,
             message: "Coupon Applied Successfully!",
             coupon: {
-                code: coupan.coupanCode,
-                discount: coupan.coupanDiscount,
-                limit: coupan.coupanLimit,
-                startDate: coupan.coupanStartDate,
-                endDate: coupan.coupanEndDate,
-                description: coupan.coupanDescription,
+                code: foundCoupan.coupanCode,
+                discount: foundCoupan.coupanDiscount,
+                limit: foundCoupan.coupanLimit,
+                startDate: foundCoupan.coupanStartingDate,
+                endDate: foundCoupan.coupanEndingDate,
+                description: foundCoupan.coupanDescription,
             }
         });
+
     } catch (err) {
         console.error(err);
         return res.status(500).json({ success: false, message: "Server error occurred." });
     }
 });
+
+router.post("/applied-coupon", async (req, res) => {
+    const { coupanName } = req.body;
+    const foundCoupan = await coupanModel.findOne({ coupanCode: coupanName });
+    foundCoupan.coupanLimit -= 1;
+    if (foundCoupan.coupanLimit <= 0) {
+        foundCoupan.Status = false;
+    }
+    if (new Date(foundCoupan.coupanEndingDate) < new Date()) {
+        foundCoupan.Status = false;
+    }
+    await foundCoupan.save();
+    res.status(200).json({ success: true });
+})
 
 router.post("/place-order", optionalVerifyToken, async (req, res) => {
     const userID = req.user._QCUI_UI;

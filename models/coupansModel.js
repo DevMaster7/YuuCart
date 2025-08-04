@@ -1,13 +1,23 @@
 const mongoose = require("mongoose");
 
 const coupanSchema = new mongoose.Schema({
+    AddedBy: String,
+    Status: {
+        type: Boolean,
+        default: true
+    },
     coupanCode: String,
     coupanDiscount: Number,
-    coupanLimit: Number,
-    coupanStartDate: Date,
-    coupanEndDate: Date,
-    choose: Boolean,
+    coupanLimit: {
+        type: Number,
+        min: 1,
+    },
     coupanDescription: String,
+    coupanStartingDate: {
+        type: Date,
+        default: Date.now
+    },
+    coupanEndingDate: Date,
 })
 
 const coupanModel = mongoose.model("coupan", coupanSchema);
