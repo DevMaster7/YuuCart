@@ -3,6 +3,110 @@
 //     e.preventDefault()
 // }, false)
 
+// Filters
+function Filter() {
+    let products = document.querySelectorAll(".product-card");
+    let categories = [];
+    products.forEach((product) => {
+        let data = JSON.parse(product.dataset.product);
+        let categoryValue = data.proCategory.toLowerCase();
+        if (categories.includes(categoryValue)) {
+            return;
+        } else {
+            categories.push(categoryValue)
+        }
+    });
+    categories.forEach((category) => {
+        let option = document.createElement("option");
+        option.value = category;
+        option.innerHTML = category;
+        categoryFilter.append(option);
+    })
+    function applyFilters() {
+        let rating = document.getElementById("ratingFilter").value;
+        let discount = document.getElementById("discountFilter").value;
+        let price = document.getElementById("priceFilter").value;
+        let category = document.getElementById("categoryFilter").value;
+
+        let products = document.querySelectorAll(".product-card");
+        products.forEach((product) => {
+            let data = JSON.parse(product.dataset.product);
+
+            let ratingValue = data.proRating;
+            let discountValue = data.proDiscount;
+            let priceValue = data.proPrice;
+            let categoryValue = data.proCategory.toLowerCase();
+
+            let ratingMin = 0, ratingMax = 5;
+            if (rating !== "all") {
+                let [min, max] = rating.split("-").map(Number);
+                ratingMin = min;
+                ratingMax = max || min;
+            }
+
+            let discountMin = 0, discountMax = 100;
+            if (discount !== "all") {
+                let [min, max] = discount.split("-").map(Number);
+                discountMin = min;
+                discountMax = max || min;
+            }
+
+            let priceMin = 0, priceMax = Infinity;
+            if (price !== "all") {
+                [priceMin, priceMax] = price.split("-").map(Number);
+            }
+
+            let matchRating = (ratingValue >= ratingMin && ratingValue <= ratingMax);
+            let matchDiscount = (discountValue >= discountMin && discountValue <= discountMax);
+            let matchPrice = (priceValue >= priceMin && priceValue <= priceMax);
+            let matchCategory = (category === "all" || categoryValue === category);
+
+            if (matchCategory && matchPrice && matchRating && matchDiscount) {
+                product.style.display = "block";
+            } else {
+                product.style.display = "none";
+            }
+        });
+
+        let filterProducts = Array.from(products).filter((p) => p.style.display === "block");
+        document.querySelector(".text").innerHTML = `<i class="fa-solid fa-filter"></i> Filtered Items: <span>(${filterProducts.length})</span>`
+    }
+    document.getElementById("ratingFilter").addEventListener("change", applyFilters);
+    document.getElementById("discountFilter").addEventListener("change", applyFilters);
+    document.getElementById("priceFilter").addEventListener("change", applyFilters);
+    document.getElementById("categoryFilter").addEventListener("change", applyFilters);
+}
+Filter();
+
+// Applied Discount
+document.querySelector(".discount-btn").addEventListener("click", () => {
+    let dicountHTML = document.createElement("div")
+    dicountHTML.classList.add("wrapper-confirmation")
+    dicountHTML.innerHTML = `
+        <div class="conformation-con">
+        <div class="text">Add Discount!</div>
+        <input class="discount-inp" type="number" placeholder="Enter Discount Here...">
+        <div class="btn-con">
+        <div>Apply</div>
+        </div>
+        </div>`
+    confirmationWrapper(dicountHTML);
+    document.querySelector(".btn-con").getElementsByTagName("div")[0].addEventListener("click", async () => {
+        let discount = document.querySelector(".discount-inp").value;
+        let products = document.querySelectorAll(".product-card");
+
+        let filterProducts = Array.from(products).filter((p) => p.style.display === "block");
+        filterProducts = Array.from(filterProducts).map((product) => {
+            return JSON.parse(product.dataset.product)._id
+        })
+        await fetch(`/admin/manage-products/apply-discount`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ discount, filterProducts }),
+        })
+    })
+})
+
 // Edit Buttons Function 
 let newFilesMap = new Map();
 function btnFunctions(main) {
@@ -174,14 +278,17 @@ document.querySelectorAll(".edit-btn").forEach(edit_btn => {
 function confirmationWrapper(html) {
     document.getElementsByTagName("body")[0].prepend(html);
 
-    document.querySelector(".no").addEventListener("click", () => {
-        document.querySelector(".wrapper-confirmation").remove()
-    })
+    if (document.querySelector(".no")) {
+        document.querySelector(".no").addEventListener("click", () => {
+            document.querySelector(".wrapper-confirmation").remove()
+        })
+    }
     document.querySelector(".wrapper-confirmation").addEventListener('click', (e) => {
         let mainCon = document.querySelector(".conformation-con")
         let text = document.querySelector(".text")
+        let input = document.querySelector(".discount-inp")
         let btnCon = document.querySelector(".btn-con")
-        if (e.target == mainCon || e.target == text || e.target == btnCon) {
+        if (e.target == mainCon || e.target == text || e.target == input || e.target == btnCon) {
             return
         }
         else {

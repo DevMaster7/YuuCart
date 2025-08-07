@@ -168,6 +168,11 @@ router.post("/manage-products/edit-product",
     await product.save();
     res.status(200).json({ success: true });
   });
+router.post("/manage-products/apply-discount", async (req, res) => {
+  const { filterProducts, discount } = req.body;
+  await productModel.updateMany({ _id: { $in: filterProducts } }, { $set: { proDiscount: discount } });
+  res.status(200).json({ success: true });
+})
 router.get("/manage-products/add-products", verifyAdmin, (req, res) => {
   res.render("admins/admin-add-products")
 })
