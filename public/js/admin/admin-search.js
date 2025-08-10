@@ -8,6 +8,9 @@ else if (pageName == 'orders') {
 else if (pageName == 'products') {
     mainFun('products')
 }
+else if (pageName == 'coupans') {
+    mainFun('coupans')
+}
 
 function mainFun(page) {
     document.getElementById("search").addEventListener("keydown", (event) => {

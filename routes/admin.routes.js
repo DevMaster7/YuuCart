@@ -268,9 +268,28 @@ router.post("/manage-products/add-products", optionalVerifyToken, upload.fields(
 
 // Coupans
 router.get("/manage-coupans", verifyAdmin, allowPage("manageCoupans"), async (req, res) => {
-  res.render("admins/add-coupans");
+  res.render("admins/manage-coupans", { coupans: await coupanModel.find() });
 })
-router.post("/add-coupan", optionalVerifyToken, async (req, res) => {
+// router.get('/manage-coupans/search', async (req, res) => {
+//   const search = req.query.query;
+//   if (!search || search.trim() === "") {
+//     return res.status(400).render("PNF")
+//   }
+//   const orConditions = [
+//     { proName: { $regex: search, $options: 'i' } },
+//     { proCategory: { $regex: search, $options: 'i' } },
+//     { proDescription: { $regex: search, $options: 'i' } },
+//   ];
+//   if (mongoose.Types.ObjectId.isValid(search)) {
+//     orConditions.push({ _id: search });
+//   }
+//   const coupans = await productModel.find({ $or: orConditions });
+//   res.render("admins/manage-coupans", { coupans, slugify });
+// });
+router.get("/manage-coupans/add-coupans", verifyAdmin, (req, res) => {
+  res.render("admins/add-coupans")
+})
+router.post("/manage-coupans/add-coupans", optionalVerifyToken, async (req, res) => {
   const token = req.user
   const user = await userModel.findById(token._QCUI_UI);
   const { coupanCode, coupanDiscount, coupanLimit, coupanEndingDate, coupanDescription } = req.body;

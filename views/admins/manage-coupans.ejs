@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head data-page="coupans">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/css/output.css">
+    <link rel="stylesheet" href="/css/admin/admin-sidebar.css">
+    <link rel="stylesheet" href="/css/admin/manage-coupans.css">
+    <link rel="stylesheet" href="/css/admin/admin-search.css">
+    <link rel="stylesheet" href="/css/common/logo.css">
+    <link rel="stylesheet" href="/css/common/loader.css">
+    <link rel="stylesheet" href="/css/common/footer.css">
+    <title>Admin - Manage Coupans</title>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="content-con">
+            <div class="show-coupans">
+                <div class="search-con">
+                    <input type="search" name="search" id="search" placeholder="Search Coupans..." />
+                    <button id="search-btn">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
+                <div class="main-con">
+                    <div class="filter-bar-con">
+                        <div class="flex gap-2">
+                            <div class="text"><i class="fa-solid fa-filter"></i> Filtered Items:
+                                <span>(<%= coupans.length %>)</span></div>
+                            <div class="select-btn">Select All</div>
+                        </div>
+
+                        <div class="filters">
+
+                            <select id="ratingFilter">
+                                <option value="all">Rating</option>
+                                <option value="5">5★</option>
+                                <option value="4-4.9">4★ - 4.9★</option>
+                                <option value="3-3.9">3★ - 3.9★</option>
+                                <option value="2-2.9">2★ - 2.9★</option>
+                                <option value="1-1.9">1★ - 1.9★</option>
+                                <option value="0-0.9">0★ - 0.9★</option>
+                            </select>
+
+                            <select id="discountFilter">
+                                <option value="all">Discount</option>
+                                <option value="100">100%</option>
+                                <option value="90-99">90% - 99%</option>
+                                <option value="80-89">80% - 89%</option>
+                                <option value="70-79">70% - 79%</option>
+                                <option value="60-69">60% - 69%</option>
+                                <option value="50-59">50% - 59%</option>
+                                <option value="40-49">40% - 49%</option>
+                                <option value="30-39">30% - 39%</option>
+                                <option value="20-29">20% - 29%</option>
+                                <option value="10-19">10% - 19%</option>
+                                <option value="0-9">0% - 9%</option>
+                            </select>
+
+                            <select id="priceFilter">
+                                <option value="all">Prices</option>
+                                <option value="0-1000">Under 1,000</option>
+                                <option value="1000-3000">1,000 - 3,000</option>
+                                <option value="3000-10000">3,000 - 10,000</option>
+                            </select>
+
+                            <select id="categoryFilter" required>
+                                <option value="all">Categories</option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="new-btn-con">
+                        <a href="/admin/manage-coupans/add-coupans" class="btn">Create New Coupans!</a>
+                    </div>
+                    <div id="coupanContainer" class="coupan-container">
+                        <% coupans.forEach(coupan => { %>
+                        <div id="<%= coupan._id %>" class="coupan-box">
+                            <!-- <div class="left"> -->
+                            <div class="info-text">Added By: <span>
+                                    <a
+                                        href="/admin/manage-users/#<%= coupan.AddedBy %>"><%= coupan.AddedBy %></a></span>
+                            </div>
+                            <div class="info-text">Coupan ID: <span class="coupan-id"><%= coupan._id %></span></div>
+                            <div class="info-text">Version: <span><%= coupan.__v %></span></div>
+                            <div class="info-text">Coupan Code: <span><%= coupan.coupanCode %></span></div>
+                            <div class="info-text">Coupan Discount: <span><%= coupan.coupanDiscount %>%</span></div>
+                            <div class="info-text">Coupan Limit: <span><%= coupan.coupanLimit %></span></div>
+                            <div class="info-text">Coupan Description: <span><%= coupan.coupanDescription %></span>
+                            </div>
+                            <div class="info-text">Coupan StartingDate:
+                                <span><%= coupan.coupanStartingDate %></span></div>
+                            <div class="info-text">Coupan EndingDate: <span><%= coupan.coupanEndingDate %></span>
+                            </div>
+                            <!-- </div> -->
+                        </div>
+                        <% }) %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/common/loader.js"></script>
+    <script src="/js/admin/manage-coupans.js"></script>
+    <script src="/js/admin/admin-sidebar.js"></script>
+    <script src="/js/admin/admin-search.js"></script>
+    <script src="/js/common/footer.js"></script>
+</body>
+
+</html>
