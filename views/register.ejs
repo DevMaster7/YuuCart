@@ -14,6 +14,7 @@
     <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="/css/output.css">
     <link rel="stylesheet" href="/css/common/loader.css">
+    <link rel="stylesheet" href="/css/common/inputs.css">
     <link rel="stylesheet" href="/css/register.css">
     <title>QuickCart - Register</title>
 </head>
@@ -67,50 +68,65 @@
             </div>
             <span class="heading">Create Your Account!</span>
             <form id="registerForm" action="/user/register" method="post">
-                <input type="text" id="fullname" placeholder="Full Name" name="fullname" required>
-                <input type="text" id="username" placeholder="Username" name="username" required>
-                <input type="email" id="email" placeholder="Email" name="email" required>
-                <input type="text" id="phone" placeholder="Phone Number" name="phone" required>
-                <select name="city" id="citySelect" style="width: 300px; border: none; outline: none;" required>
-                    <option value="">-- Select a city --</option>
-                    <option value="Karachi">Karachi</option>
-                    <option value="Lahore">Lahore</option>
-                    <option value="Islamabad">Islamabad</option>
-                    <option value="Peshawar">Peshawar</option>
-                    <option value="Quetta">Quetta</option>
-                    <option value="Multan">Multan</option>
-                    <option value="Faisalabad">Faisalabad</option>
-                    <!-- aur bhi jitni marzi add karo -->
-                </select>
-                <input type="text" id="address" placeholder="Your Home Address" name="address" required>
-                <div class="password">
-                    <input type="password" id="password" placeholder="Password" name="password" required>
+                <div class="field">
+                    <input type="text" name="fullname" id="fullname" placeholder=" " required />
+                    <label for="fullname">Full-Name</label>
+                </div>
+                <div class="field">
+                    <input type="text" name="username" id="username" placeholder=" " required />
+                    <label for="username">Username</label>
+                </div>
+                <div class="field">
+                    <input type="email" id="email" placeholder=" " required />
+                    <label for="email">Email</label>
+                </div>
+                <div class="field">
+                    <input type="text" name="phone" id="phone" placeholder=" " required />
+                    <label for="phone">Phone</label>
+                </div>
+                <div class="field">
+                    <select id="city" name="city" required>
+                        <option value="" disabled selected hidden></option>
+                        <option value="Karachi">Karachi</option>
+                        <option value="Lahore">Lahore</option>
+                        <option value="Islamabad">Islamabad</option>
+                        <option value="Peshawar">Peshawar</option>
+                        <option value="Quetta">Quetta</option>
+                        <option value="Multan">Multan</option>
+                        <option value="Faisalabad">Faisalabad</option>
+                    </select>
+                    <label for="city">City</label>
+                </div>
+                <div class="field">
+                    <input type="text" name="address" id="address" placeholder=" " required />
+                    <label for="address">Address</label>
+                </div>
+                <div class="field">
+                    <input type="password" name="password" id="password" placeholder=" " required />
+                    <label for="password">Password</label>
                     <i class="fa-solid fa-eye eye"></i>
                 </div>
-                <div class="password">
-                    <input type="password" id="confirmPassword" placeholder="Confirm Password" name="confirmPassword"
-                        required>
+                <div class="field">
+                    <input type="password" name="confirmPassword" id="confirmPassword" placeholder=" " required />
+                    <label for="confirmPassword">Confirm Password</label>
                     <i class="fa-solid fa-eye eye"></i>
                 </div>
-                <div class="terms">
-                    <input type="checkbox" name="terms" id="terms" required>
-                    <label for="terms">I agree to the <a href="/terms-and-conditions" class="terms-btn">Terms &
-                            Conditions</a></label>
-                </div>
-                <div
-                    style="display: flex;justify-content: center;align-items: center;flex-direction: column;gap: 20px;">
-                    <!-- ngrok -->
-                    <div style="transform: scale(0.77);">
-                        <div class="g-recaptcha" style="user-select: none;"
-                            data-sitekey="6LfxaykrAAAAABn2Dli5hZqAReZmf9Qx--5GLp-x"></div>
+                <div>
+                    <div class="terms">
+                        <input type="checkbox" name="terms" id="terms" required>
+                        <label for="terms">I agree to the <a href="/terms-and-conditions" class="terms-btn">Terms &
+                                Conditions</a></label>
                     </div>
-                    <!-- localhost -->
-                    <!-- <div style="transform: scale(0.77);">
-                        <div class="g-recaptcha" style="user-select: none;"
-                            data-sitekey="6LdYwRwrAAAAAM0kqhiN1nA6STjhdvLLH-4XC58U"></div>
-                    </div> -->
-                    <div class="err-msg"></div>
-                    <button class="submit-btn" type="submit">Sign Up</button>
+                    <div
+                        style="display: flex;justify-content: center;align-items: center;flex-direction: column;gap: 20px;">
+                        <!-- ngrok -->
+                        <div style="transform: scale(0.77);">
+                            <div class="g-recaptcha" style="user-select: none;"
+                                data-sitekey="6LfxaykrAAAAABn2Dli5hZqAReZmf9Qx--5GLp-x"></div>
+                        </div>
+                        <div class="err-msg"></div>
+                        <button class="submit-btn" type="submit">Sign Up</button>
+                    </div>
                 </div>
             </form>
             <div class="have-acc">Already have an account? <button class="login-btn">Login</button></div>

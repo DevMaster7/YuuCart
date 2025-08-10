@@ -24,7 +24,7 @@ html {
     background-color: var(--Highlight);
 }
 
-.error{
+.error {
     position: fixed;
     top: 0;
     user-select: none;
@@ -58,40 +58,15 @@ html {
     gap: 30px;
 }
 
-.left form input {
-    outline: none;
-    padding: 10px;
-    width: 300px;
-    position: relative;
-    transition: .2s ease;
-    border-radius: 5px;
-    border: .5px solid var(--Heading);
-    /* box-shadow: inset 0px 0px 2px #00000056; */
-}
-
-.left form input::placeholder {
-    color: #021c29 !important;
-}
-
-.left form input:focus {
-    border-bottom: 2px solid var(--Accent);
-}
-
-.left form .password {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.left form .password i {
+.field i {
     position: absolute;
     right: 7px;
-    color: #383838;
+    top: 35%;
+    color: #545454;
     cursor: pointer;
 }
 
-.err-msg{
+.err-msg {
     position: absolute;
     margin-top: 15px;
     font-size: 13px;
@@ -272,7 +247,7 @@ html {
     padding: 8px 8px 0px;
 }
 
-.mob{
+.mob {
     display: none;
 }
 
@@ -343,7 +318,7 @@ html {
         align-items: center;
     }
 
-    .mob{
+    .mob {
         display: flex;
     }
 

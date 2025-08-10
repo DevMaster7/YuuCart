@@ -1,5 +1,5 @@
 let bubbleCon = document.querySelector(".right")
-let showPass = document.querySelectorAll(".eye")
+// let showPass = document.querySelector(".eye")
 setInterval(() => {
     const style = window.getComputedStyle(bubbleCon);
     if (style.display === "none") {
@@ -23,21 +23,19 @@ function createBubble() {
 }
 setInterval(createBubble, 1400);
 
-
-showPass.forEach((e) => {
-    e.addEventListener("click", () => {
-        let passCon = e.previousElementSibling;
-        if (passCon.type === "password") {
-            passCon.type = "text"
-            e.classList.remove("fa-eye")
-            e.classList.add("fa-eye-slash")
-        }
-        else {
-            passCon.type = "password"
-            e.classList.remove("fa-eye-slash")
-            e.classList.add("fa-eye")
-        }
-    })
+let eye = document.querySelector(".eye")
+eye.addEventListener("click", () => {
+    let passCon = document.querySelector("#password");
+    if (passCon.type === "password") {
+        passCon.type = "text"
+        eye.classList.remove("fa-eye")
+        eye.classList.add("fa-eye-slash")
+    }
+    else {
+        passCon.type = "password"
+        eye.classList.remove("fa-eye-slash")
+        eye.classList.add("fa-eye")
+    }
 })
 
 

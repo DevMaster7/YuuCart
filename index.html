@@ -1,39 +1,101 @@
-<!DOCTYPE html>
-<html lang="en">
+<style>
+:root {
+    --Primary: #023047;
+    --Secondary: #219EBC;
+    --Accent: #FB8500;
+    --Highlight: #F8F9FA;
+    --Heading: #CCD6F6;
+}
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="public/css/common/loader.css">
-  <title>Professional eCommerce Loader</title>
-</head>
+.field {
+    width: 300px;
+    position: relative;
+}
 
-<body>
+/* Common for input & select */
+.field input,
+.field select {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 16px;
+    border: 1px solid #545454;
+    border-radius: 6px;
+    outline: none;
+    background: transparent;
+    transition: border-color 0.2s ease;
+    appearance: none; /* hide default arrow */
+}
 
-  <div class="loader-wrapper">
-    <div class="shapes"></div>
-  </div>
+/* Custom dropdown arrow */
+.field select {
+    background: transparent;
+    cursor: pointer;
+}
+.field select::-ms-expand {
+    display: none;
+}
+.field::after {
+    content: "▼";
+    font-size: 12px;
+    color: #545454;
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
 
-  <script>
-  </script>
-  <div class="info">
-    <div>Sizes:</div>&nbsp;
-    <span class="boxes">
-      <% product.sizeAndPrice.forEach(s_p => { %>
-      <div class="box"><%= s_p.size %> = Rs.<%= s_p.price %></div>
-      <% }) %>
-      <div class="box add-cust">+</div>
-    </span>
-  </div>
-  <div class="info">
-    <div>Colors:</div>&nbsp;
-    <span class="boxes">
-      <% product.colorAndPrice.forEach(c_p => { %>
-      <div class="box"><%= c_p.size %> = Rs.<%= c_p.price %></div>
-      <% }) %>
-      <div class="box add-cust">+</div>
-    </span>
-  </div>
-</body>
+/* Floating label */
+.field label {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: #545454;
+    background: var(--Highlight);
+    padding: 0 4px;
+    transition: all 0.2s ease;
+    pointer-events: none;
+}
 
-</html>
+/* For input */
+.field input:focus + label,
+.field input:not(:placeholder-shown) + label,
+.field input.filled + label {
+    top: -8px;
+    font-size: 13px;
+    color: #545454;
+    transform: none;
+}
+
+/* For select */
+.field select:focus + label,
+.field select.filled + label {
+    top: -8px;
+    font-size: 13px;
+    color: #545454;
+    transform: none;
+}
+</style>
+
+<div class="field">
+    <select id="country">
+        <option value="" disabled selected hidden></option>
+        <option value="pk">Pakistan</option>
+        <option value="in">India</option>
+        <option value="bd">Bangladesh</option>
+    </select>
+    <label for="country">Country</label>
+</div>
+
+<script>
+document.querySelectorAll('select').forEach(sel => {
+    const check = () => {
+        if (sel.value) sel.classList.add('filled');
+        else sel.classList.remove('filled');
+    };
+    check();
+    sel.addEventListener('change', check);
+});
+</script>

@@ -10,8 +10,9 @@
     <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="/css/output.css">
     <link rel="stylesheet" href="/css/admin/admin-sidebar.css">
-    <link rel="stylesheet" href="/css/admin/admin-coupan.css">
+    <link rel="stylesheet" href="/css/admin/add-coupans.css">
     <link rel="stylesheet" href="/css/common/logo.css">
+    <link rel="stylesheet" href="/css/common/inputs.css">
     <link rel="stylesheet" href="/css/common/loader.css">
     <link rel="stylesheet" href="/css/common/footer.css">
     <title>Admin - Manage Coupans</title>
@@ -22,14 +23,26 @@
         <div class="main-form">
             <form class="form" action="/admin/add-coupan" method="post">
                 <div class="inputs">
-                    <input type="text" name="coupanCode" placeholder="Coupan Code" required>
-                    <input type="number" name="coupanDiscount" placeholder="Coupan Discount" required>
-                    <input type="number" name="coupanLimit" placeholder="No. of Coupans" required>
-                    <input type="text" name="coupanDescription" placeholder="Coupan Description" required>
 
-                    <div class="coupan-date">
-                        <label for="coupanEndDate">Coupan Ending Date</label>
-                        <input id="coupanEndDate" type="date" name="coupanEndingDate" required>
+                    <div class="field">
+                        <input type="text" name="coupanCode" placeholder=" " required />
+                        <label for="coupanCode">Coupan Code</label>
+                    </div>
+                    <div class="field">
+                        <input type="number" name="coupanDiscount" placeholder=" " required />
+                        <label for="coupanDiscount">Coupan Discount</label>
+                    </div>
+                    <div class="field">
+                        <input type="number" name="coupanLimit" placeholder=" " required />
+                        <label for="coupanLimit">No. of Coupans</label>
+                    </div>
+                    <div class="field">
+                        <input type="text" name="coupanDescription" placeholder=" " required />
+                        <label for="coupanDescription">Coupan Description</label>
+                    </div>
+                    <div class="field">
+                        <input type="date" name="coupanEndDate" placeholder=" " required />
+                        <label for="coupanEndDate">Coupan Description</label>
                     </div>
 
                 </div>

@@ -10,8 +10,9 @@
     <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="/css/output.css">
     <link rel="stylesheet" href="/css/admin/admin-sidebar.css">
-    <link rel="stylesheet" href="/css/admin/admin-add-products.css">
+    <link rel="stylesheet" href="/css/admin/add-products.css">
     <link rel="stylesheet" href="/css/common/logo.css">
+    <link rel="stylesheet" href="/css/common/inputs.css">
     <link rel="stylesheet" href="/css/common/loader.css">
     <link rel="stylesheet" href="/css/common/footer.css">
     <title>Admin - Add Products</title>
@@ -33,22 +34,53 @@
                             <input name="galleryURLs" type="file" id="images-upload" class="image-upload-input"
                                 multiple>
                         </div>
-                        <input id="proName" type="text" name="proName" placeholder="Product Name" required>
-                        <input id="proPrice" type="number" name="proPrice" placeholder="Product Price" required>
-                        <input id="proOrignalPrice" type="number" name="proOrignalPrice"
-                            placeholder="Product Orignal Price" value="">
-                        <input id="proDiscount" type="number" name="proDiscount" placeholder="Product Discount" value="">
-                        <input id="proBuyer" type="number" name="proBuyer" placeholder="Product Buyer" value="">
-                        <input id="proNoOfReviews" type="number" name="proNoOfReviews"
-                            placeholder="Product No of Reviews" value="">
-                        <input id="proRating" type="number" name="proRating" placeholder="Product Rating">
-                        <input id="proDescription" type="text" name="proDescription" placeholder="Product Description"
-                            required>
-                        <input id="proCategory" type="text" name="proCategory" placeholder="Product Category" required>
-                        <select id="choose" name="choose" required>
-                            <option value="false">False</option>
-                            <option value="true">True</option>
-                        </select>
+
+                        <div class="field">
+                            <input type="text" name="proName" id="proName" placeholder=" " required />
+                            <label for="proName">Product Name</label>
+                        </div>
+                        <div class="field">
+                            <input type="number" name="proPrice" id="proPrice" placeholder=" " required />
+                            <label for="proPrice">Product Price</label>
+                        </div>
+                        <div class="field">
+                            <input type="number" name="proOrignalPrice" id="proOrignalPrice" placeholder=" " />
+                            <label for="proOrignalPrice">Product Orignal Price</label>
+                        </div>
+                        <div class="field">
+                            <input type="number" name="proDiscount" id="proDiscount" placeholder=" " />
+                            <label for="proDiscount">Coupan Discount</label>
+                        </div>
+                        <div class="field">
+                            <input type="number" name="proBuyer" id="proBuyer" placeholder=" " />
+                            <label for="proBuyer">Coupan Buyers</label>
+                        </div>
+                        <div class="field">
+                            <input type="number" name="proNoOfReviews" id="proNoOfReviews" placeholder=" " />
+                            <label for="proNoOfReviews">Product Reviews</label>
+                        </div>
+                        <div class="field">
+                            <input type="number" name="proRating" id="proRating" placeholder=" " />
+                            <label for="proRating">Product Rating</label>
+                        </div>
+                        <div class="field">
+                            <input type="text" name="proDescription" id="proDescription" placeholder=" " required />
+                            <label for="proDescription">Product Description</label>
+                        </div>
+                        <div class="field">
+                            <input type="text" name="proCategory" id="proCategory" placeholder=" " required />
+                            <label for="proCategory">Product Category</label>
+                        </div>
+
+                        <div class="field">
+                            <select id="choose" name="choose">
+                                <option value="" disabled selected hidden></option>
+                                <option value="true">True</option>
+                                <option value="false">False</option>
+                            </select>
+                            <label for="choose">Customization</label>
+                        </div>
+
                         <div class="dropdown">
                             <div class="selected-items">Add Sizes</div>
                         </div>
@@ -67,6 +99,7 @@
                                 <div class="plus-symbol" id="removeColor">-</div>
                             </div>
                         </div>
+
                     </div>
                     <button class="btn-submit">Add Product</button>
                 </form>
@@ -127,9 +160,9 @@
             </div>
         </div>
     </div>
-    
+
     <script src="/js/common/loader.js"></script>
-    <script src="/js/admin/admin-add-products.js"></script>
+    <script src="/js/admin/add-products.js"></script>
     <script src="/js/admin/admin-sidebar.js"></script>
     <script src="/js/common/footer.js"></script>
 </body>

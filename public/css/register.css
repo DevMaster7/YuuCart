@@ -36,6 +36,7 @@ html {
 
 .left {
     width: 40%;
+    min-height: 100vh;
     overflow: hidden;
     display: flex;
     gap: 5px;
@@ -174,17 +175,6 @@ html {
     gap: 20px;
 }
 
-.right form input {
-    outline: none;
-    padding: 10px;
-    width: 300px;
-    position: relative;
-    transition: .2s ease;
-    border-radius: 5px;
-    border: .5px solid var(--Heading);
-    /* box-shadow: inset 0px 0px 2px #00000056; */
-}
-
 .select2-container--default .select2-selection--single {
     outline: none;
     width: 300px;
@@ -195,7 +185,6 @@ html {
     transition: .2s ease;
     border-radius: 5px;
     border: .5px solid var(--Heading);
-    /* box-shadow: inset 0px 0px 2px #00000056; */
 }
 
 .select2-results__option--selectable,
@@ -213,20 +202,10 @@ html {
     width: 20px;
 }
 
-.right form input:focus {
-    border-bottom: 2px solid var(--Accent);
-}
-
-.right form .password {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.right form .password i {
+.right form .field i {
     position: absolute;
     right: 7px;
+    top: 35%;
     color: #383838;
     cursor: pointer;
 }
@@ -250,7 +229,7 @@ html {
     text-decoration: underline;
 }
 
-.err-msg{
+.err-msg {
     position: absolute;
     margin-top: 15px;
     font-size: 13px;

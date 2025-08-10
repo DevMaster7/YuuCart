@@ -62,13 +62,15 @@ function Filter() {
             let matchCategory = (category === "all" || categoryValue === category);
 
             if (matchCategory && matchPrice && matchRating && matchDiscount) {
-                product.style.display = "block";
+                product.classList.remove("unfilter")
+                product.classList.add("filter-pro")
             } else {
-                product.style.display = "none";
+                product.classList.remove("filter-pro")
+                product.classList.add("unfilter")
             }
         });
 
-        let filterProducts = Array.from(products).filter((p) => p.style.display === "block");
+        let filterProducts = Array.from(products).filter((p) => p.classList.contains("filter-pro"));
         document.querySelector(".text").innerHTML = `<i class="fa-solid fa-filter"></i> Filtered Items: <span>(${filterProducts.length})</span>`
     }
     document.getElementById("ratingFilter").addEventListener("change", applyFilters);
@@ -90,20 +92,50 @@ document.querySelector(".discount-btn").addEventListener("click", () => {
         <div>Apply</div>
         </div>
         </div>`
-    confirmationWrapper(dicountHTML);
-    document.querySelector(".btn-con").getElementsByTagName("div")[0].addEventListener("click", async () => {
-        let discount = document.querySelector(".discount-inp").value;
-        let products = document.querySelectorAll(".product-card");
 
-        let filterProducts = Array.from(products).filter((p) => p.style.display === "block");
+    let products = document.querySelectorAll(".product-card");
+    let filterProducts = Array.from(products).filter((p) => {
+        if (p.classList.contains("filter-pro") && p.classList.contains("active-card")) {
+            return true
+        }
+    });
+    if (filterProducts.length > 0) {
+        confirmationWrapper(dicountHTML);
         filterProducts = Array.from(filterProducts).map((product) => {
             return JSON.parse(product.dataset.product)._id
         })
+    }
+    document.querySelector(".btn-con").getElementsByTagName("div")[0].addEventListener("click", async () => {
+        let discount = document.querySelector(".discount-inp").value;
         await fetch(`/admin/manage-products/apply-discount`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ discount, filterProducts }),
         })
+    })
+})
+
+document.querySelector(".select-btn").addEventListener("click", () => {
+    let products = document.querySelectorAll(".product-card");
+
+    products.forEach((product) => {
+        if (product.classList.contains("active-card")) {
+            product.classList.remove("active-card")
+        }
+        else {
+            product.classList.add("active-card")
+        }
+    })
+})
+
+document.querySelectorAll(".active-card").forEach((e) => {
+    e.addEventListener("click", () => {
+        if (e.classList.contains("active-card")) {
+            e.classList.remove("active-card")
+        }
+        else {
+            e.classList.add("active-card")
+        }
     })
 })
 

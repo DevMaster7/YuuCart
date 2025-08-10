@@ -76,11 +76,10 @@ document.getElementById("removeSize").onclick = () => {
 document.getElementById("addColor").onclick = () => {
     let box = document.createElement("div");
     box.className = "add-inputs";
-    box.innerHTML = `<div class="pre-color"></div>
-                     <input class="colorInp" name="colors[]" placeholder="Color" required>
+    box.innerHTML = `
+                     <input type="color" class="colorInp" name="colors[]" placeholder="Color" required>
                      <input type="number" name="colorPrices[]" placeholder="Price" required>`;
     document.querySelector(".optionColors").appendChild(box);
-    updateColorPreview();
 };
 
 // Remove Color Input
@@ -90,10 +89,10 @@ document.getElementById("removeColor").onclick = () => {
 };
 
 // Color preview
-function updateColorPreview() {
-    document.querySelectorAll(".colorInp").forEach(input => {
-        input.onchange = () => {
-            input.previousElementSibling.style.backgroundColor = input.value;
-        };
-    });
-}
+// function updateColorPreview() {
+//     document.querySelectorAll(".colorInp").forEach(input => {
+//         input.onchange = () => {
+//             input.previousElementSibling.style.backgroundColor = input.value;
+//         };
+//     });
+// }

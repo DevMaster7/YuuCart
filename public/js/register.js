@@ -25,7 +25,7 @@ setInterval(createBubble, 1400);
 
 showPass.forEach((e) => {
     e.addEventListener("click", () => {
-        let passCon = e.previousElementSibling;
+        let passCon = e.parentElement.querySelector("input");
         if (passCon.type === "password") {
             passCon.type = "text"
             e.classList.remove("fa-eye")
@@ -38,13 +38,6 @@ showPass.forEach((e) => {
         }
     })
 })
-
-$(document).ready(function () {
-    $('#citySelect').select2({
-        placeholder: "Search or select a city",
-    });
-});
-
 
 document.querySelector(".icon").addEventListener("click", () => {
     window.location.href = '/';
@@ -62,7 +55,7 @@ document.getElementById("registerForm").addEventListener("submit", async functio
     const address = document.getElementById('address').value;
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
-    const city = document.getElementById('citySelect').value;
+    const city = document.getElementById('city').value;
     const res = await fetch('/user/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

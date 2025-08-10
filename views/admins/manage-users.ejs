@@ -10,7 +10,7 @@
     <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="/css/output.css">
     <link rel="stylesheet" href="/css/admin/admin-sidebar.css">
-    <link rel="stylesheet" href="/css/admin/admin-user.css">
+    <link rel="stylesheet" href="/css/admin/manage-users.css">
     <link rel="stylesheet" href="/css/admin/admin-search.css">
     <link rel="stylesheet" href="/css/common/logo.css">
     <link rel="stylesheet" href="/css/common/loader.css">
@@ -83,7 +83,8 @@
                                     <i class="fa-solid fa-chevron-up">
                                         <div class="dropdown-options">
                                             <% user.userOrders.reverse().forEach(order => { %>
-                                            <a href="/admin/manage-orders#<%= order._id %>" class="info-text" style="width: 100%; justify-content: space-between;">
+                                            <a href="/admin/manage-orders#<%= order._id %>" class="info-text"
+                                                style="width: 100%; justify-content: space-between;">
                                                 <div style="display: flex; flex-shrink: 0;">
                                                     <div>Admin OID:</div>
                                                     <span><%= order._id %></span>
@@ -123,7 +124,7 @@
 
     <script src="/js/common/loader.js"></script>
     <script src="/js/admin/admin-sidebar.js"></script>
-    <script src="/js/admin/admin-user.js"></script>
+    <script src="/js/admin/manage-users.js"></script>
     <script src="/js/admin/admin-search.js"></script>
     <script src="/js/common/footer.js"></script>
 </body>

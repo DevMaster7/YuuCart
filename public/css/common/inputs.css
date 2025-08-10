@@ -1,44 +1,72 @@
-:root {
-    --Primary: #023047;
-    --Secondary: #219EBC;
-    --Accent: #FB8500;
-    --Highlight: #F8F9FA;
-    --Heading: #CCD6F6;
-}
+ :root {
+     --Primary: #023047;
+     --Secondary: #219EBC;
+     --Accent: #FB8500;
+     --Highlight: #F8F9FA;
+     --Heading: #CCD6F6;
+ }
 
-.inputGroup {
-    width: 45%;
-    position: relative;
-}
+ .field {
+     width: 300px;
+     position: relative;
+ }
 
-.inputGroup input {
-    font-size: 16px;
-    padding: 13px;
-    outline: none;
-    border: 2px solid rgb(200, 200, 200);
-    background-color: transparent;
-    border-radius: 5px;
-    width: 100%;
-}
+ .field input,
+ .field select {
+     width: 100%;
+     padding: 10px 12px;
+     font-size: 16px;
+     border: 1px solid #545454;
+     border-radius: 6px;
+     outline: none;
+     background: transparent;
+     transition: border-color 0.2s ease;
+ }
 
-.inputGroup label {
-    font-size: 16px;
-    position: absolute;
-    left: 0;
-    padding: 13px;
-    pointer-events: none;
-    transition: all 0.3s ease;
-    color: rgb(100, 100, 100);
-}
+ .field select {
+     color: #545454;
+     appearance: none;
+     -webkit-appearance: none;
+     -moz-appearance: none;
+     cursor: pointer;
+ }
 
-.inputGroup :is(input:focus, input:valid)~label {
-    transform: translateY(-50%) scale(0.9);
-    margin: 0;
-    padding: 6px;
-    background-color: #FFFFFF;
-    color: #ffb25a;
-}
+ .field select::after {
+     content: "▼";
+     font-size: 12px;
+     color: #545454;
+     position: absolute;
+     right: 12px;
+     top: 50%;
+     transform: translateY(-50%);
+     pointer-events: none;
+ }
 
-.inputGroup :is(input:focus, input:valid) {
-    border-color: #ffb25a;
-}
+ .field label {
+     position: absolute;
+     left: 12px;
+     top: 50%;
+     transform: translateY(-50%);
+     font-size: 16px;
+     color: #545454;
+     background: var(--Highlight);
+     padding: 0 4px;
+     transition: all 0.2s ease;
+     pointer-events: none;
+ }
+
+ .field input:focus+label,
+ .field input:not(:placeholder-shown)+label {
+     top: -8px;
+     font-size: 13px;
+     color: #545454;
+     transform: none;
+ }
+
+ .field select:focus+label,
+ .field select:not([value=""])+labe {
+     top: -8px;
+     font-size: 13px;
+     color: #545454;
+     transform: none;
+ }

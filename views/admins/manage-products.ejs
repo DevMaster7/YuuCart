@@ -10,7 +10,7 @@
     <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="/css/output.css">
     <link rel="stylesheet" href="/css/admin/admin-sidebar.css">
-    <link rel="stylesheet" href="/css/admin/add-product.css">
+    <link rel="stylesheet" href="/css/admin/manage-products.css">
     <link rel="stylesheet" href="/css/admin/admin-search.css">
     <link rel="stylesheet" href="/css/common/logo.css">
     <link rel="stylesheet" href="/css/common/loader.css">
@@ -30,8 +30,12 @@
                 </div>
                 <div class="main-con">
                     <div class="filter-bar-con">
-                        <div class="text"><i class="fa-solid fa-filter"></i> Filtered Items:
-                            <span>(<%= products.length %>)</span></div>
+                        <div class="flex gap-2">
+                            <div class="text"><i class="fa-solid fa-filter"></i> Filtered Items:
+                                <span>(<%= products.length %>)</span></div>
+                            <div class="select-btn">Select All</div>
+                        </div>
+
                         <div class="filters">
 
                             <select id="ratingFilter">
@@ -79,7 +83,7 @@
                     <div id="productContainer" class="product-container">
                         <% products.reverse().forEach(product => { %>
                         <form data-product='<%- JSON.stringify(product) %>' action="/admin/manage-products/edit-product"
-                            method="post" class="product-card form" id="<%= product._id %>">
+                            method="post" class="product-card form filter-pro active-card" id="<%= product._id %>">
                             <img src="<%= product.image %>" alt="Product" />
                             <div class="extra-pics">
                                 <% for( let i = 0; i < product.galleryImages.length + 1; i++ ) { %>
@@ -227,7 +231,7 @@
     </div>
 
     <script src="/js/common/loader.js"></script>
-    <script src="/js/admin/add-product.js"></script>
+    <script src="/js/admin/manage-products.js"></script>
     <script src="/js/admin/admin-sidebar.js"></script>
     <script src="/js/admin/admin-search.js"></script>
     <script src="/js/common/footer.js"></script>

@@ -23,6 +23,7 @@ function allowPage(pageName) {
   };
 }
 
+// Dashboard
 router.get("/", verifyAdmin, async (req, res) => {
   const users = await userModel.find();
   const orders = await orderModel.find();
@@ -31,10 +32,11 @@ router.get("/", verifyAdmin, async (req, res) => {
   res.render("admins/admin-dashboard", { users, orders, products, coupans });
 });
 
+// Orders
 router.get("/manage-orders", verifyAdmin, allowPage("manageOrders"), async (req, res) => {
   const users = await userModel.find();
   const orders = await orderModel.find();
-  res.render("admins/admin-order", { users, orders });
+  res.render("admins/manage-orders", { users, orders });
 })
 router.get('/manage-orders/search', async (req, res) => {
   const search = req.query.query;
@@ -50,7 +52,7 @@ router.get('/manage-orders/search', async (req, res) => {
     orConditions.push({ _id: search });
   }
   const orders = await orderModel.find({ $or: orConditions });
-  res.render("admins/admin-order", { orders });
+  res.render("admins/manage-orders", { orders });
 });
 router.post("/change-orders-status", verifyAdmin, async (req, res) => {
   const { newStatus, orderID, userID } = req.body;
@@ -64,9 +66,10 @@ router.post("/change-orders-status", verifyAdmin, async (req, res) => {
   res.status(200).json({ success: true });
 })
 
+// Users
 router.get("/manage-users", verifyAdmin, allowPage("manageUsers"), async (req, res) => {
   const users = await userModel.find();
-  res.render("admins/admin-user", { users });
+  res.render("admins/manage-users", { users });
 })
 router.get('/manage-users/search', async (req, res) => {
   const search = req.query.query;
@@ -81,7 +84,7 @@ router.get('/manage-users/search', async (req, res) => {
     orConditions.push({ _id: search });
   }
   const users = await userModel.find({ $or: orConditions });
-  res.render("admins/admin-user", { users });
+  res.render("admins/manage-users", { users });
 });
 router.post("/change-user-role", async (req, res) => {
   const { userID, roleStatus } = req.body;
@@ -109,9 +112,10 @@ router.post("/change-user-allocation", async (req, res) => {
   }
 })
 
+// Products
 router.get("/manage-products", verifyAdmin, allowPage("manageProducts"), async (req, res) => {
   const products = await productModel.find();
-  res.render("admins/admin-product", { products, slugify });
+  res.render("admins/manage-products", { products, slugify });
 });
 router.get('/manage-products/search', async (req, res) => {
   const search = req.query.query;
@@ -127,7 +131,7 @@ router.get('/manage-products/search', async (req, res) => {
     orConditions.push({ _id: search });
   }
   const products = await productModel.find({ $or: orConditions });
-  res.render("admins/admin-product", { products, slugify });
+  res.render("admins/manage-products", { products, slugify });
 });
 router.post("/manage-products/delete-product", async (req, res) => {
   const { productID } = req.body;
@@ -154,12 +158,12 @@ router.post("/manage-products/edit-product",
     const product = await productModel.findById(newData._id);
     product.proName = newData.proName
     product.galleryImages = newData.galleryImages
-    product.proPrice = newData.proPrice
-    product.proOrignalPrice = newData.proOrignalPrice
-    product.proDiscount = newData.proDiscount
-    product.proBuyer = newData.proBuyer
-    product.proRating = newData.proRating
-    product.proNoOfReviews = newData.proNoOfReviews
+    product.proPrice = Math.ceil(newData.proPrice) || 0
+    product.proOrignalPrice = Math.ceil(newData.proOrignalPrice) || 0
+    product.proDiscount = newData.proDiscount || 0
+    product.proBuyer = newData.proBuyer || 0
+    product.proRating = newData.proRating || 0
+    product.proNoOfReviews = newData.proNoOfReviews || 0
     product.proCategory = newData.proCategory
     product.stock = newData.stock
     product.customization = newData.customization
@@ -169,12 +173,25 @@ router.post("/manage-products/edit-product",
     res.status(200).json({ success: true });
   });
 router.post("/manage-products/apply-discount", async (req, res) => {
-  const { filterProducts, discount } = req.body;
-  await productModel.updateMany({ _id: { $in: filterProducts } }, { $set: { proDiscount: discount } });
+  const { filterProducts } = req.body;
+  const discount = Number(req.body.discount);
+
+  await productModel.updateMany(
+    { _id: { $in: filterProducts } },
+    [
+      {
+        $set: {
+          proOrignalPrice: { $ceil: "$proPrice" },
+          proPrice: { $ceil: { $subtract: ["$proPrice", { $divide: [{ $multiply: ["$proPrice", discount] }, 100] }] } },
+          proDiscount: discount
+        }
+      }
+    ]
+  );
   res.status(200).json({ success: true });
-})
+});
 router.get("/manage-products/add-products", verifyAdmin, (req, res) => {
-  res.render("admins/admin-add-products")
+  res.render("admins/add-products")
 })
 router.post("/manage-products/add-products", optionalVerifyToken, upload.fields([
   { name: 'thumbnail', maxCount: 1 },
@@ -203,7 +220,7 @@ router.post("/manage-products/add-products", optionalVerifyToken, upload.fields(
     galleryImages.push(url);
   }
 
-  const { proName, proPrice, proOrignalPrice, proDiscount, proBuyer, proRating, proNoOfReviews, proDescription, proCategory, choose, sizes, sizePrices, colors, colorPrices } = req.body;
+  let { proName, proPrice, proOrignalPrice, proDiscount, proBuyer, proRating, proNoOfReviews, proDescription, proCategory, choose, sizes, sizePrices, colors, colorPrices } = req.body;
   const sizeAndPrice = [];
   if (sizes && sizePrices) {
     for (let i = 0; i < sizes.length; i++) {
@@ -225,6 +242,10 @@ router.post("/manage-products/add-products", optionalVerifyToken, upload.fields(
     return val === undefined || val === "" ? undefined : Number(val);
   };
 
+  if (choose == undefined || choose == null) {
+    choose = false
+  }
+
   await productModel.create({
     AddedBy: user.username,
     image: imageUrl,
@@ -245,8 +266,9 @@ router.post("/manage-products/add-products", optionalVerifyToken, upload.fields(
   res.redirect("/admin/manage-products/add-products")
 })
 
+// Coupans
 router.get("/manage-coupans", verifyAdmin, allowPage("manageCoupans"), async (req, res) => {
-  res.render("admins/admin-coupan");
+  res.render("admins/add-coupans");
 })
 router.post("/add-coupan", optionalVerifyToken, async (req, res) => {
   const token = req.user
