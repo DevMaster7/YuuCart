@@ -136,7 +136,6 @@ router.get('/manage-products/search', async (req, res) => {
 router.post("/manage-products/delete-product", async (req, res) => {
   const { productID } = req.body;
   const product = await productModel.findByIdAndDelete(productID);
-  console.log(product);
   if (!product) return res.status(404).json({ success: false, message: "Product not found" });
   res.status(200).json({ success: true });
 });
@@ -268,8 +267,15 @@ router.post("/manage-products/add-products", optionalVerifyToken, upload.fields(
 
 // Coupans
 router.get("/manage-coupans", verifyAdmin, allowPage("manageCoupans"), async (req, res) => {
-  res.render("admins/manage-coupans", { coupans: await coupanModel.find() });
-})
+  let coupans = await coupanModel.find();
+  for (const coupan of coupans) {
+    if (new Date(coupan.coupanEndingDate) < new Date()) {
+      coupan.Status = false;
+      await coupan.save();
+    }
+  }
+  res.render("admins/manage-coupans", { coupans });
+});
 // router.get('/manage-coupans/search', async (req, res) => {
 //   const search = req.query.query;
 //   if (!search || search.trim() === "") {
@@ -292,16 +298,15 @@ router.get("/manage-coupans/add-coupans", verifyAdmin, (req, res) => {
 router.post("/manage-coupans/add-coupans", optionalVerifyToken, async (req, res) => {
   const token = req.user
   const user = await userModel.findById(token._QCUI_UI);
-  const { coupanCode, coupanDiscount, coupanLimit, coupanEndingDate, coupanDescription } = req.body;
+  const { coupanCode, coupanDiscount, coupanLimit, coupanEndDate, coupanDescription } = req.body;
   const newCoupan = await coupanModel.create({
     AddedBy: user.username,
     coupanCode,
     coupanDiscount,
     coupanLimit,
     coupanDescription,
-    coupanEndingDate,
+    coupanEndingDate: coupanEndDate,
   })
-  console.log(newCoupan);
   res.redirect("/admin/manage-coupans");
 })
 

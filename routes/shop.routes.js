@@ -210,21 +210,19 @@ router.post("/apply-coupon", async (req, res) => {
     }
 });
 
-router.post("/applied-coupon", async (req, res) => {
-    const { coupanName } = req.body;
-    const foundCoupan = await coupanModel.findOne({ coupanCode: coupanName });
-    foundCoupan.coupanLimit -= 1;
-    if (foundCoupan.coupanLimit <= 0) {
-        foundCoupan.Status = false;
-    }
-    if (new Date(foundCoupan.coupanEndingDate) < new Date()) {
-        foundCoupan.Status = false;
-    }
-    await foundCoupan.save();
-    res.status(200).json({ success: true });
-})
-
 router.post("/place-order", optionalVerifyToken, async (req, res) => {
+    const { coupanName } = req.body;
+    if (coupanName !== null) {
+        const foundCoupan = await coupanModel.findOne({ coupanCode: coupanName });
+        foundCoupan.coupanLimit -= 1;
+        if (foundCoupan.coupanLimit <= 0) {
+            foundCoupan.Status = false;
+        }
+        if (new Date(foundCoupan.coupanEndingDate) < new Date()) {
+            foundCoupan.Status = false;
+        }
+        await foundCoupan.save();
+    }
     const userID = req.user._QCUI_UI;
     const user = await userModel.findById(userID);
     const productDeliveryData = req.body.productDeliveryData;

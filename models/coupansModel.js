@@ -8,10 +8,7 @@ const coupanSchema = new mongoose.Schema({
     },
     coupanCode: String,
     coupanDiscount: Number,
-    coupanLimit: {
-        type: Number,
-        min: 1,
-    },
+    coupanLimit: Number,
     coupanDescription: String,
     coupanStartingDate: {
         type: Date,

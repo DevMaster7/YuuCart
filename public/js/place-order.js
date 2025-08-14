@@ -104,16 +104,16 @@ document.querySelector(".payment-con").getElementsByTagName("button")[0].addEven
             coupanName = document.querySelector(".c-name").getElementsByTagName("span")[0].innerHTML;
             coupanDiscount = document.querySelector(".c-discount").getElementsByTagName("span")[0].innerHTML;
             totalAfterCoupan = Number(document.querySelector(".total-price-with-coupan").innerHTML.split("Rs.")[1].trim());
-            async function applyCoupon() {
-                await fetch("/shop/applied-coupon", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ coupanName }),
-                })
-            }
-            applyCoupon();
+            // async function applyCoupon() {
+            //     await fetch("/shop/applied-coupon", {
+            //         method: "POST",
+            //         headers: {
+            //             "Content-Type": "application/json",
+            //         },
+            //         body: JSON.stringify({ coupanName }),
+            //     })
+            // }
+            // applyCoupon();
         }
         x = {
             productId,
@@ -135,12 +135,19 @@ document.querySelector(".payment-con").getElementsByTagName("button")[0].addEven
         }
         productDeliveryData.push(x)
     })
+    let coupanName;
+    if (document.querySelector(".c-name").getElementsByTagName("span")[0].innerHTML == "--") {
+        coupanName = null
+    }
+    else {
+        coupanName = document.querySelector(".c-name").getElementsByTagName("span")[0].innerHTML
+    }
     const res = await fetch("/shop/place-order", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ productDeliveryData }),
+        body: JSON.stringify({ productDeliveryData, coupanName }),
     })
     const res1 = await res.json();
     if (res1.success) {

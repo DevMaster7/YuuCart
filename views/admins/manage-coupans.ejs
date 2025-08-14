@@ -82,23 +82,44 @@
                     <div id="coupanContainer" class="coupan-container">
                         <% coupans.forEach(coupan => { %>
                         <div id="<%= coupan._id %>" class="coupan-box">
-                            <!-- <div class="left"> -->
-                            <div class="info-text">Added By: <span>
-                                    <a
-                                        href="/admin/manage-users/#<%= coupan.AddedBy %>"><%= coupan.AddedBy %></a></span>
+                            <div class="info-text">Added By:&nbsp;
+                                <span class="text">
+                                    <a href="/admin/manage-users/#<%= coupan.AddedBy %>"><%= coupan.AddedBy %></a>
+                                </span>
                             </div>
-                            <div class="info-text">Coupan ID: <span class="coupan-id"><%= coupan._id %></span></div>
-                            <div class="info-text">Version: <span><%= coupan.__v %></span></div>
-                            <div class="info-text">Coupan Code: <span><%= coupan.coupanCode %></span></div>
-                            <div class="info-text">Coupan Discount: <span><%= coupan.coupanDiscount %>%</span></div>
-                            <div class="info-text">Coupan Limit: <span><%= coupan.coupanLimit %></span></div>
-                            <div class="info-text">Coupan Description: <span><%= coupan.coupanDescription %></span>
+                            <a href="http://localhost:3000/auth/google">Continue with GOOGLE</a>
+                            <div class="info-text">Coupan ID:&nbsp;
+                                <span class="text coupan-id"><%= coupan._id %></span>
                             </div>
-                            <div class="info-text">Coupan StartingDate:
-                                <span><%= coupan.coupanStartingDate %></span></div>
-                            <div class="info-text">Coupan EndingDate: <span><%= coupan.coupanEndingDate %></span>
+                            <div class="info-text">Version:&nbsp;
+                                <span class="text"><%= coupan.__v %></span>
                             </div>
-                            <!-- </div> -->
+                            <div class="info-text">Coupan Code:&nbsp;
+                                <span class="text edited-info"><%= coupan.coupanCode %></span>
+                            </div>
+                            <div class="info-text">Coupan Discount:&nbsp;
+                                <span class="text edited-info"><%= coupan.coupanDiscount %></span>
+                                <nav>%</nav>
+                            </div>
+                            <div class="info-text">Coupan Limit:&nbsp;
+                                <span class="text edited-info"><%= coupan.coupanLimit %></span>
+                            </div>
+                            <div class="info-text">Coupan Status:&nbsp;
+                                <span class="text edited-info"><%= coupan.Status==true?"True":"False" %></span>
+                            </div>
+                            <div class="info-text">Coupan Description:&nbsp;
+                                <span class="text edited-info"><%= coupan.coupanDescription %></span>
+                            </div>
+                            <div class="info-text">Coupan StartingDate:&nbsp;
+                                <span class="text edited-info"><%= coupan.coupanStartingDate %></span>
+                            </div>
+                            <div class="info-text">Coupan EndingDate:&nbsp;
+                                <span class="text edited-info"><%= coupan.coupanEndingDate %></span>
+                            </div>
+                            <div class="btn-con">
+                                <div class="btn edit">Edit</div>
+                                <div class="btn save">Save</div>
+                            </div>
                         </div>
                         <% }) %>
                     </div>

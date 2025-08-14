@@ -112,13 +112,47 @@
     width: max-content;
     display: flex;
     align-items: center;
-    gap: 5px;
     font-weight: 700;
     font-size: 15px;
     color: #555;
     cursor: text;
 }
 
-.info-text span {
+.info-text .text,
+.info-text nav {
+    user-select: none;
     font-weight: 500;
+}
+
+.edited-input {
+    outline: none;
+    border: 1px solid var(--Secondary);
+    font-weight: 500;
+    border-radius: 3px;
+}
+
+.btn-con {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-con .btn {
+    width: 70px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 17px;
+    border-radius: 4px;
+    color: var(--Highlight);
+    cursor: pointer;
+}
+
+.btn-con .save {
+    background: var(--Secondary);
+}
+
+.btn-con .edit {
+    background: var(--Primary);
 }
