@@ -1,30 +1,28 @@
-<div class="data-con">
-                <% users.forEach(user => { %>
-                <div class="data-box">
-                    <div class="data">
-                        <p class="data-title">Full Name</p>
-                        <p class="data-value"><%= user.fullname %></p>
-                    </div>
-                    <div class="data">
-                        <p class="data-title">User Name</p>
-                        <p class="data-value"><%= user.username %></p>
-                    </div>
-                    <div class="data">
-                        <p class="data-title">Email</p>
-                        <p class="data-value"><%= user.email %></p>
-                    </div>
-                    <div class="data">
-                        <p class="data-title">Phone</p>
-                        <p class="data-value"><%= user.phone %></p>
-                    </div>
-                    <div class="data">
-                        <p class="data-title">Address</p>
-                        <p class="data-value"><%= user.address %></p>
-                    </div>
-                    <div class="data">
-                        <p class="data-title">City</p>
-                        <p class="data-value"><%= user.city %></p>
-                    </div>
-                </div>
-                <% }) %>
-            </div>
+User came from REGISTER {
+  id: '101891632141809116451',
+  displayName: 'MunnyDevMaster',
+  name: { familyName: undefined, givenName: 'MunnyDevMaster' },
+  emails: [ { value: 'munnydevmaster@gmail.com', verified: true } ],
+  photos: [
+    {
+      value: 'https://lh3.googleusercontent.com/a/ACg8ocLeCdo256ixLIeAlB6qeyMqzSaUZZJhBjO7T25Nw-q_BGzYGgo=s96-c'
+    }
+  ],
+  provider: 'google',
+  _raw: '{\n' +
+    '  "sub": "101891632141809116451",\n' +
+    '  "name": "MunnyDevMaster",\n' +
+    '  "given_name": "MunnyDevMaster",\n' +
+    '  "picture": "https://lh3.googleusercontent.com/a/ACg8ocLeCdo256ixLIeAlB6qeyMqzSaUZZJhBjO7T25Nw-q_BGzYGgo\\u003ds96-c",\n' +  
+    '  "email": "munnydevmaster@gmail.com",\n' +
+    '  "email_verified": true\n' +
+    '}',
+  _json: {
+    sub: '101891632141809116451',
+    name: 'MunnyDevMaster',
+    given_name: 'MunnyDevMaster',
+    picture: 'https://lh3.googleusercontent.com/a/ACg8ocLeCdo256ixLIeAlB6qeyMqzSaUZZJhBjO7T25Nw-q_BGzYGgo=s96-c',
+    email: 'munnydevmaster@gmail.com',
+    email_verified: true
+  }
+}

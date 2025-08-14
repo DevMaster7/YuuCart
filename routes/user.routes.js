@@ -177,6 +177,7 @@ router.post("/register",
         const hashPassword = await bcrypt.hash(password, 10);
         const newUser = await userModel.create({
             fullname,
+            provider: "local",
             username,
             email,
             phone,
@@ -191,7 +192,7 @@ router.post("/register",
             city,
             address
         }
-        return res.status(201).json({ message: "User registered successfully", user });
+        return res.status(201).json({ success: true, message: "User registered successfully", user });
     })
 
 router.get("/login", optionalVerifyToken, (req, res) => {

@@ -1,0 +1,22 @@
+.continue-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background-color: var(--Highlight);
+    color: #444;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 8px 15px;
+    font-size: 17px;
+    margin: 20px 0px;
+    transition: all 0.3s ease;
+}
+
+.continue-btn img {
+    width: 25px;
+    height: 25px;
+}
+
+.continue-btn:hover {
+    box-shadow: 4px 2px 5px #00000023;
+}

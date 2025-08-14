@@ -62,7 +62,7 @@ document.getElementById("registerForm").addEventListener("submit", async functio
         body: JSON.stringify({ fullname, username, email, password, confirmPassword, city, phone, address })
     });
     const data = await res.json();
-    if (data.message === "User registered successfully") {
+    if (data.success) {
         window.location.href = '/user/login'
     }
     else {

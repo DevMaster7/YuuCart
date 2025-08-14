@@ -155,10 +155,10 @@ html {
     /* height: 100%; */
     padding: 10px 30px 10px 10px;
     display: flex;
-    justify-content: space-around;
+    /* justify-content: space-around; */
     align-items: center;
     flex-direction: column;
-    gap: 15px;
+    /* gap: 15px; */
 }
 
 .right .heading {
@@ -262,6 +262,7 @@ html {
     color: #021c29;
     font-size: 17px;
     text-align: center;
+    margin-top: 15px;
 }
 
 .have-acc button {

@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "/assets/defaultUser.jpg"
     },
+    provider: String,
     fullname: String,
     username: {
         type: String,
@@ -24,7 +25,6 @@ const userSchema = new mongoose.Schema({
     address: String,
     password: {
         type: String,
-        required: true,
         minlength: 8,
     },
     isAdmin: {

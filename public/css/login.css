@@ -40,12 +40,13 @@ html {
     width: 60%;
     height: 100%;
     display: flex;
-    justify-content: space-around;
+    /* justify-content: space-around; */
     align-items: center;
     flex-direction: column;
 }
 
 .left .heading {
+    margin-top: 10px;
     color: var(--Accent);
     font-size: 35px;
     font-weight: 800;
@@ -106,6 +107,7 @@ html {
     color: #021c29;
     font-size: 17px;
     text-align: center;
+    margin-top: 15px;
 }
 
 .have-acc button {
