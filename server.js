@@ -8,14 +8,16 @@ const session = require("express-session");
 const optionalVerifyToken = require("./middleware/optionalVerifyToken");
 const userModel = require("./models/usersModel");
 const morgan = require("morgan");
+let bcrypt = require("bcrypt");
 const env = require("dotenv");
+const flash = require("connect-flash");
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
+const router = require("./routes/admin.routes");
 const app = express();
 
-
 require("./auth/google");
-// Middlewares
+
 env.config();
 dbConnection()
 app.use(session({
@@ -32,6 +34,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.set("view engine", "ejs");
 app.use(morgan("dev"));
+app.use(flash());
+app.use((req, res, next) => {
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  next();
+});
 
 // Routes
 app.get("/", optionalVerifyToken, async (req, res) => {
@@ -69,14 +77,16 @@ app.get("/auth/google/callback",
         function usernameFromEmail(email) {
           return email.split("@")[0].replace(/[^a-zA-Z0-9]/g, "");
         }
-        await userModel.create({
+        let userData = {
           userImg: data.photos[0].value,
           fullname: data.displayName,
           provider: data.provider,
           username: usernameFromEmail(data.emails[0].value),
-          email: data.emails[0].value,
-        })
-        res.redirect("/user/login");
+          email: data.emails[0].value
+        }
+        req.session.userData = userData;
+        req.flash("success", "enter-pass");
+        return res.redirect("/user/register");
       }
       else {
         res.redirect("/user/login");
@@ -102,7 +112,22 @@ app.get("/auth/google/callback",
     }
   }
 );
-
+app.post("/user/register/enterpass", async (req, res) => {
+  const userData = req.session.userData;
+  const { password, confirmPassword } = req.body;
+  if (password.length < 8) {
+    return res.status(400).json({ message: "Password is too short!" });
+  }
+  if (password !== confirmPassword) {
+    return res.status(400).json({ message: "Passwords do not match!" });
+  }
+  const hashPassword = await bcrypt.hash(password, 10);
+  userData.password = hashPassword;
+  await userModel.create(userData);
+  console.log(password,confirmPassword);
+  delete req.session.userData;
+  return res.status(200).json({ success: true, message: "Password set successfully!" });
+})
 app.get("/terms-and-conditions", (req, res) => {
   res.render("terms");
 })

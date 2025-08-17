@@ -153,4 +153,7 @@ document.querySelector(".payment-con").getElementsByTagName("button")[0].addEven
     if (res1.success) {
         window.location.replace("/user/my-orders");
     }
+    else{
+        window.location.replace("/user/my-account");
+    }
 })

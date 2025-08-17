@@ -211,6 +211,13 @@ router.post("/apply-coupon", async (req, res) => {
 });
 
 router.post("/place-order", optionalVerifyToken, async (req, res) => {
+    const userID = req.user._QCUI_UI;
+    const user = await userModel.findById(userID);
+    if (user.address == undefined || user.address == null || user.address == "" || user.city == undefined || user.city == null || user.city == "" || user.phone == undefined || user.phone == null || user.phone == "") {
+        return res.status(400).json({ success: false, message: "Please Fill All The Details!" });
+        // res.redirect("/user/profile");
+    }
+    // else {
     const { coupanName } = req.body;
     if (coupanName !== null) {
         const foundCoupan = await coupanModel.findOne({ coupanCode: coupanName });
@@ -223,8 +230,7 @@ router.post("/place-order", optionalVerifyToken, async (req, res) => {
         }
         await foundCoupan.save();
     }
-    const userID = req.user._QCUI_UI;
-    const user = await userModel.findById(userID);
+
     const productDeliveryData = req.body.productDeliveryData;
     await orderModel.create({
         userDetails: {
@@ -240,6 +246,7 @@ router.post("/place-order", optionalVerifyToken, async (req, res) => {
     });
 
     res.status(200).json({ success: true, message: "Order Placed Successfully!" });
+    // }
 })
 
 module.exports = router
