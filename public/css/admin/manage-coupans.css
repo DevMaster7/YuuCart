@@ -118,9 +118,13 @@
     cursor: text;
 }
 
+.status{
+    cursor: pointer;
+}
+
 .info-text .text,
 .info-text nav {
-    user-select: none;
+    /* user-select: none; */
     font-weight: 500;
 }
 
@@ -150,7 +154,13 @@
 }
 
 .btn-con .save {
+    display: none;
     background: var(--Secondary);
+}
+
+.btn-con .cancel {
+    display: none;
+    background: var(--Accent);
 }
 
 .btn-con .edit {

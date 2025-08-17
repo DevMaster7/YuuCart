@@ -18,5 +18,6 @@
 }
 
 .continue-btn:hover {
-    box-shadow: 4px 2px 5px #00000023;
+    background-color: #eeeeee;
+    /* box-shadow: 5px 3px 8px #00000014; */
 }

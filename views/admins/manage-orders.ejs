@@ -77,7 +77,7 @@
                                                 style="background: <%= orderdetail.productColor %>;"></span> = Rs.
                                             <%= orderdetail.productColorPrice %></p>
                                         <% } %>
-                                        <p class="add-info">Quantity: <%= orderdetail.productQuantity %></p>
+                                        <p class="add-info">Quantity: (<%= orderdetail.productQuantity %>)</p>
                                     </div>
                                     <% if (order.productDetails.length > 1) { %>
                                     <p class="sub-total">SubTotal: Rs. <%= orderdetail.subTotalPrice %></p>

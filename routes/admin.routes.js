@@ -292,6 +292,18 @@ router.get("/manage-coupans", verifyAdmin, allowPage("manageCoupans"), async (re
 //   const coupans = await productModel.find({ $or: orConditions });
 //   res.render("admins/manage-coupans", { coupans, slugify });
 // });
+router.post("/manage-coupans/edit-coupans", async (req, res) => {
+  const { id, Status, coupanCode, coupanDiscount, coupanLimit, coupanEndingDate, coupanDescription } = req.body;
+  await coupanModel.findByIdAndUpdate(id, {
+    Status,
+    coupanCode,
+    coupanDiscount,
+    coupanLimit,
+    coupanDescription,
+    coupanEndingDate,
+  });
+  res.status(200).json({ success: true, message: "Coupans updated successfully" });
+})
 router.get("/manage-coupans/add-coupans", verifyAdmin, (req, res) => {
   res.render("admins/add-coupans")
 })

@@ -34,18 +34,27 @@ document.querySelectorAll(".badge").forEach((badge) => {
                     let newStatus = btn.innerHTML;
                     let orderID = btn.closest(".order-card-footer").querySelector(".admin-oid").innerHTML;
                     let userID = btn.closest(".order-card-footer").parentElement.querySelector(".user-id").innerHTML;
+                    if (newStatus == "Pending") {
+                        badge.innerHTML = newStatus;
+                        badge.classList.add("pending");
+                        badge.classList.remove("delivered", "cancelled");
+                    }
+                    else if (newStatus == "Delivered") {
+                        badge.innerHTML = newStatus;
+                        badge.classList.add("delivered");
+                        badge.classList.remove("pending", "cancelled");
+                    }
+                    else {
+                        badge.innerHTML = newStatus;
+                        badge.classList.add("cancelled");
+                        badge.classList.remove("pending", "delivered");
+                    }
                     let res = await fetch("/admin/change-orders-status", {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ newStatus, orderID, userID }),
                     })
                     const res1 = await res.json();
-                    if (res1.success) {
-                        window.location.reload();
-                    }
-                    else {
-                        alert(res1.message)
-                    }
                     badge.parentElement.querySelector(".dropdown-options").remove()
                     x = 0
                 })

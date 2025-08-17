@@ -42,9 +42,9 @@ document.addEventListener("click", function (e) {
             arr.push(display)
         })
         if (arr.some(val => val == 'flex')) {
-            window.location.reload();
+            removeAll();
         }
-        removeAll();
+        // removeAll();
     }
 });
 
@@ -54,9 +54,11 @@ document.querySelectorAll(".click").forEach(b => {
         if (b.getElementsByTagName("span")[0] == undefined) {
             let roleStatus = b.innerHTML;
             if (roleStatus == "Admin") {
+                b.closest(".down-btn").querySelector(".txt").innerText = "Admin"
                 roleStatus = true;
             }
             else {
+                b.closest(".down-btn").querySelector(".txt").innerText = "User"
                 roleStatus = false;
             }
             let res = await fetch("/admin/change-user-role", {
@@ -66,25 +68,32 @@ document.querySelectorAll(".click").forEach(b => {
             })
             let res1 = await res.json();
             if (res1.success) {
-                window.location.reload();
+                removeAll();
             }
         }
         else {
             let [key, value] = b.innerText.split(":");
             let valueDiv = b.querySelector(".tf");
             let userRole = b.closest(".right").querySelector(".down-btn").innerText;
+            let allocation = b.closest(".right").querySelector(".allocation");
             if (userRole.trim() == "Admin") {
                 if (value.trim() == "True") {
                     valueDiv.innerHTML = "False";
                     valueDiv.classList.add("fs");
                     valueDiv.classList.remove("ts");
                     value = false;
+                    let fs = b.parentElement.querySelectorAll(".fs").length;
+                    let ts = b.parentElement.querySelectorAll(".ts").length;
+                    allocation.innerHTML = `(${ts}/${fs})`
                 }
                 else {
                     valueDiv.innerHTML = "True";
                     valueDiv.classList.add("ts");
                     valueDiv.classList.remove("fs");
                     value = true;
+                    let ts = b.parentElement.querySelectorAll(".ts").length;
+                    let fs = b.parentElement.querySelectorAll(".fs").length;
+                    allocation.innerHTML = `(${ts}/${fs})`
                 }
                 await fetch("/admin/change-user-allocation", {
                     method: 'POST',

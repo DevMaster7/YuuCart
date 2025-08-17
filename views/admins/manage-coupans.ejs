@@ -82,43 +82,45 @@
                     <div id="coupanContainer" class="coupan-container">
                         <% coupans.forEach(coupan => { %>
                         <div id="<%= coupan._id %>" class="coupan-box">
-                            <div class="info-text">Added By:&nbsp;
-                                <span class="text">
-                                    <a href="/admin/manage-users/#<%= coupan.AddedBy %>"><%= coupan.AddedBy %></a>
-                                </span>
-                            </div>
-                            <a href="http://localhost:3000/auth/google">Continue with GOOGLE</a>
                             <div class="info-text">Coupan ID:&nbsp;
                                 <span class="text coupan-id"><%= coupan._id %></span>
                             </div>
                             <div class="info-text">Version:&nbsp;
                                 <span class="text"><%= coupan.__v %></span>
                             </div>
-                            <div class="info-text">Coupan Code:&nbsp;
-                                <span class="text edited-info"><%= coupan.coupanCode %></span>
+                            <div class="info-text" data-info="<%= coupan.Status %>">Coupan Status:&nbsp;
+                                <span class="text status"
+                                    style="color: <%= coupan.Status==true?"#00bb00":"#ff0000" %>;"><%= coupan.Status==true?"True":"False" %></span>
                             </div>
-                            <div class="info-text">Coupan Discount:&nbsp;
-                                <span class="text edited-info"><%= coupan.coupanDiscount %></span>
+                            <div class="coupanCode info-text" data-info="<%= coupan.coupanCode %>">Coupan Code:&nbsp;
+                                <span class="text txt edited-info"><%= coupan.coupanCode %></span>
+                            </div>
+                            <div class="coupanDiscount info-text" data-info="<%= coupan.coupanDiscount %>">Coupan Discount:&nbsp;
+                                <span class="text num edited-info"><%= coupan.coupanDiscount %></span>
                                 <nav>%</nav>
                             </div>
-                            <div class="info-text">Coupan Limit:&nbsp;
-                                <span class="text edited-info"><%= coupan.coupanLimit %></span>
+                            <div class="coupanLimit info-text" data-info="<%= coupan.coupanLimit %>">Coupan Limit:&nbsp;
+                                <span class="text num edited-info"><%= coupan.coupanLimit %></span>
                             </div>
-                            <div class="info-text">Coupan Status:&nbsp;
-                                <span class="text edited-info"><%= coupan.Status==true?"True":"False" %></span>
+                            <div class="coupanDescription info-text" data-info="<%= coupan.coupanDescription %>">Coupan Description:&nbsp;
+                                <span class="text txt edited-info"><%= coupan.coupanDescription %></span>
                             </div>
-                            <div class="info-text">Coupan Description:&nbsp;
-                                <span class="text edited-info"><%= coupan.coupanDescription %></span>
+                            <div class="coupanStartingDate info-text" data-info="<%= coupan.coupanStartingDate %>">Coupan
+                                StartingDate:&nbsp;
+                                <span class="text date edited-info"><%= coupan.coupanStartingDate %></span>
                             </div>
-                            <div class="info-text">Coupan StartingDate:&nbsp;
-                                <span class="text edited-info"><%= coupan.coupanStartingDate %></span>
+                            <div class="coupanEndingDate info-text" data-info="<%= coupan.coupanEndingDate %>">Coupan EndingDate:&nbsp;
+                                <span class="text date edited-info"><%= coupan.coupanEndingDate %></span>
                             </div>
-                            <div class="info-text">Coupan EndingDate:&nbsp;
-                                <span class="text edited-info"><%= coupan.coupanEndingDate %></span>
+                            <div class="info-text">Added By:&nbsp;
+                                <span class="text">
+                                    <a href="/admin/manage-users/#<%= coupan.AddedBy %>"><%= coupan.AddedBy %></a>
+                                </span>
                             </div>
                             <div class="btn-con">
                                 <div class="btn edit">Edit</div>
                                 <div class="btn save">Save</div>
+                                <div class="btn cancel">Cancel</div>
                             </div>
                         </div>
                         <% }) %>

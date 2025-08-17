@@ -47,7 +47,8 @@
                         </div>
                         <div class="right">
                             <div class="info-text">Role:
-                                <span class="down-btn"><% if (user.isAdmin == true) { %>Admin<% } else { %>User<% } %>
+                                <span class="down-btn">
+                                    <div class="txt"><% if (user.isAdmin == true) { %>Admin<% } else { %>User<% } %></div>
                                     <i class="fa-solid fa-chevron-up">
                                         <div class="dropdown-options">
                                             <div class="btn click">Admin</div>
@@ -65,7 +66,7 @@
                                 <% fs++ %>
                                 <% } %>
                                 <% }) %>
-                                <span class="down-btn">(<%= ts %>/<%= fs %>)
+                                <span class="down-btn"><div class="allocation">(<%= ts %>/<%= fs %>)</div>
                                     <i class="fa-solid fa-chevron-up">
                                         <div class="dropdown-options">
                                             <% Object.keys(obj).forEach((key) => { %>

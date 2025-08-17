@@ -77,7 +77,6 @@ app.get("/auth/google/callback",
           email: data.emails[0].value,
         })
         res.redirect("/user/login");
-        // console.log("User came from REGISTER", data);
       }
       else {
         res.redirect("/user/login");
@@ -96,13 +95,11 @@ app.get("/auth/google/callback",
         } else {
           res.redirect("/shop");
         }
-        // console.log("User came from LOGIN", data);
       }
       else {
         res.redirect("/user/register");
       }
     }
-    // res.redirect("/shop");
   }
 );
 
