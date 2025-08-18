@@ -38,7 +38,7 @@ router.get("/manage-orders", verifyAdmin, allowPage("manageOrders"), async (req,
   const orders = await orderModel.find();
   res.render("admins/manage-orders", { users, orders });
 })
-router.get('/manage-orders/search', async (req, res) => {
+router.get('/manage-orders/search', verifyAdmin, allowPage("manageOrders"), async (req, res) => {
   const search = req.query.query;
   if (!search || search.trim() === "") {
     return res.status(400).render("PNF")
@@ -71,7 +71,7 @@ router.get("/manage-users", verifyAdmin, allowPage("manageUsers"), async (req, r
   const users = await userModel.find();
   res.render("admins/manage-users", { users });
 })
-router.get('/manage-users/search', async (req, res) => {
+router.get('/manage-users/search', verifyAdmin, allowPage("manageUsers"), async (req, res) => {
   const search = req.query.query;
   if (!search || search.trim() === "") {
     return res.status(400).render("PNF")
@@ -86,7 +86,7 @@ router.get('/manage-users/search', async (req, res) => {
   const users = await userModel.find({ $or: orConditions });
   res.render("admins/manage-users", { users });
 });
-router.post("/change-user-role", async (req, res) => {
+router.post("/change-user-role", verifyAdmin, async (req, res) => {
   const { userID, roleStatus } = req.body;
   const user = await userModel.findById(userID);
   user.isAdmin = roleStatus;
@@ -99,7 +99,7 @@ router.post("/change-user-role", async (req, res) => {
   await user.save();
   res.status(200).json({ success: true });
 })
-router.post("/change-user-allocation", async (req, res) => {
+router.post("/change-user-allocation", verifyAdmin, async (req, res) => {
   const { userID, key, value } = req.body;
   const user = await userModel.findById(userID);
   if (user.isAdmin) {
@@ -117,7 +117,7 @@ router.get("/manage-products", verifyAdmin, allowPage("manageProducts"), async (
   const products = await productModel.find();
   res.render("admins/manage-products", { products, slugify });
 });
-router.get('/manage-products/search', async (req, res) => {
+router.get('/manage-products/search', verifyAdmin, allowPage("manageProducts"), async (req, res) => {
   const search = req.query.query;
   if (!search || search.trim() === "") {
     return res.status(400).render("PNF")
@@ -133,13 +133,13 @@ router.get('/manage-products/search', async (req, res) => {
   const products = await productModel.find({ $or: orConditions });
   res.render("admins/manage-products", { products, slugify });
 });
-router.post("/manage-products/delete-product", async (req, res) => {
+router.post("/manage-products/delete-product", verifyAdmin, async (req, res) => {
   const { productID } = req.body;
   const product = await productModel.findByIdAndDelete(productID);
   if (!product) return res.status(404).json({ success: false, message: "Product not found" });
   res.status(200).json({ success: true });
 });
-router.post("/manage-products/edit-product",
+router.post("/manage-products/edit-product", verifyAdmin,
   upload.array("notIncludedImgs"),
   async (req, res) => {
     const files = req.files;
@@ -171,7 +171,7 @@ router.post("/manage-products/edit-product",
     await product.save();
     res.status(200).json({ success: true });
   });
-router.post("/manage-products/apply-discount", async (req, res) => {
+router.post("/manage-products/apply-discount", verifyAdmin, async (req, res) => {
   const { filterProducts } = req.body;
   const discount = Number(req.body.discount);
 
@@ -189,10 +189,10 @@ router.post("/manage-products/apply-discount", async (req, res) => {
   );
   res.status(200).json({ success: true });
 });
-router.get("/manage-products/add-products", verifyAdmin, (req, res) => {
+router.get("/manage-products/add-products", verifyAdmin, allowPage("manageProducts"), (req, res) => {
   res.render("admins/add-products")
 })
-router.post("/manage-products/add-products", optionalVerifyToken, upload.fields([
+router.post("/manage-products/add-products", verifyAdmin, optionalVerifyToken, upload.fields([
   { name: 'thumbnail', maxCount: 1 },
   { name: 'galleryURLs', minCount: 1, maxCount: 10 }
 ]), async (req, res) => {
@@ -276,7 +276,7 @@ router.get("/manage-coupans", verifyAdmin, allowPage("manageCoupans"), async (re
   }
   res.render("admins/manage-coupans", { coupans });
 });
-// router.get('/manage-coupans/search', async (req, res) => {
+// router.get('/manage-coupans/search', verifyAdmin, allowPage("manageCoupans"), async (req, res) => {
 //   const search = req.query.query;
 //   if (!search || search.trim() === "") {
 //     return res.status(400).render("PNF")
@@ -292,7 +292,7 @@ router.get("/manage-coupans", verifyAdmin, allowPage("manageCoupans"), async (re
 //   const coupans = await productModel.find({ $or: orConditions });
 //   res.render("admins/manage-coupans", { coupans, slugify });
 // });
-router.post("/manage-coupans/edit-coupans", async (req, res) => {
+router.post("/manage-coupans/edit-coupans", verifyAdmin, async (req, res) => {
   const { id, Status, coupanCode, coupanDiscount, coupanLimit, coupanEndingDate, coupanDescription } = req.body;
   await coupanModel.findByIdAndUpdate(id, {
     Status,
@@ -304,10 +304,10 @@ router.post("/manage-coupans/edit-coupans", async (req, res) => {
   });
   res.status(200).json({ success: true, message: "Coupans updated successfully" });
 })
-router.get("/manage-coupans/add-coupans", verifyAdmin, (req, res) => {
+router.get("/manage-coupans/add-coupans", verifyAdmin, allowPage("manageCoupans"), (req, res) => {
   res.render("admins/add-coupans")
 })
-router.post("/manage-coupans/add-coupans", optionalVerifyToken, async (req, res) => {
+router.post("/manage-coupans/add-coupans", verifyAdmin, optionalVerifyToken, async (req, res) => {
   const token = req.user
   const user = await userModel.findById(token._QCUI_UI);
   const { coupanCode, coupanDiscount, coupanLimit, coupanEndDate, coupanDescription } = req.body;
