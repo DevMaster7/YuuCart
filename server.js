@@ -12,6 +12,7 @@ let bcrypt = require("bcrypt");
 const env = require("dotenv");
 const flash = require("connect-flash");
 const passport = require("passport");
+const { uploadUrlOnCloudinary } = require("./config/cloudinary");
 const jwt = require("jsonwebtoken");
 const router = require("./routes/admin.routes");
 const app = express();
@@ -74,11 +75,13 @@ app.get("/auth/google/callback",
     const action = req.query.state;
     if (action == "register") {
       if (!user) {
+        let img = await uploadUrlOnCloudinary(data.photos[0].value, "profile_pics");
+        console.log(img);
         function usernameFromEmail(email) {
           return email.split("@")[0].replace(/[^a-zA-Z0-9]/g, "");
         }
         let userData = {
-          userImg: data.photos[0].value,
+          userImg: img,
           fullname: data.displayName,
           provider: data.provider,
           username: usernameFromEmail(data.emails[0].value),
@@ -124,7 +127,7 @@ app.post("/user/register/enterpass", async (req, res) => {
   const hashPassword = await bcrypt.hash(password, 10);
   userData.password = hashPassword;
   await userModel.create(userData);
-  console.log(password,confirmPassword);
+  console.log(password, confirmPassword);
   delete req.session.userData;
   return res.status(200).json({ success: true, message: "Password set successfully!" });
 })

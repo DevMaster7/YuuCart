@@ -8,7 +8,6 @@ const coupanModel = require("../models/coupansModel");
 const orderModel = require("../models/ordersModel");
 const router = express.Router();
 
-
 router.get("/", optionalVerifyToken, async (req, res) => {
     try {
         const tokenUser = req.user;

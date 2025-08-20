@@ -24,4 +24,19 @@ const uploadOnCloudinary = async (localFilePath, folderName) => {
     }
 }
 
-module.exports = uploadOnCloudinary;
+const uploadUrlOnCloudinary = async (imageUrl, folderName) => {
+    try {
+        if (!imageUrl) return null;
+
+        const result = await cloudinary.uploader.upload(imageUrl, {
+            folder: folderName,
+        });
+
+        return result.secure_url;
+    } catch (error) {
+        console.error("Error uploading remote URL:", error);
+        return null;
+    }
+};
+
+module.exports = { uploadOnCloudinary, uploadUrlOnCloudinary };
