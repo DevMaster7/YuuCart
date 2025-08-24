@@ -8,7 +8,7 @@ const sendEmail = require("../utils/sendOTP");
 const userModel = require("../models/usersModel");
 const productModel = require("../models/productsModel");
 const orderModel = require("../models/ordersModel");
-const {uploadOnCloudinary} = require("../config/cloudinary");
+const { uploadOnCloudinary } = require("../config/cloudinary");
 const upload = require("../middleware/multerConfig");
 const fs = require("fs");
 const path = require('node:path');
@@ -93,33 +93,7 @@ router.post("/updateUser",
         await user.save();
         return res.status(200).json({ success: true });
     })
-
-router.get("/my-orders", optionalVerifyToken, async (req, res) => {
-    const token = req.user;
-    if (!token) return res.redirect("/user/login");
-    const user = await userModel.findById(token._QCUI_UI);
-    if (!user) return res.redirect("/user/login");
-    const orders = await orderModel.find({ "userDetails.userId": token._QCUI_UI });
-    user.userOrders = orders;
-    await user.save();
-    res.render("users/my-orders", { user });
-});
-
-router.get("/my-wishlist", optionalVerifyToken, async (req, res) => {
-    const token = req.user;
-    if (!token) return res.redirect("/user/login");
-    const user = await userModel.findById(token._QCUI_UI);
-    if (!user) return res.redirect("/user/login");
-    const products = await productModel.find({ _id: user.userWishlist });
-    res.render("users/my-wishlist", { user, products, slugify });
-});
-
-router.get("/reward-and-redeem", optionalVerifyToken, userRoute("users/reward-and-redeem"));
-
-router.get("/payment", optionalVerifyToken, userRoute("users/payment"));
-
-router.get("/change-password", optionalVerifyToken, userRoute("users/change-password"));
-router.post("/change-pass", optionalVerifyToken, async (req, res) => {
+router.post("/change-password", optionalVerifyToken, async (req, res) => {
     const { oldPass, newPass, confirmPass } = req.body;
     const token = req.user;
     if (!token) return res.redirect("/user/login");
@@ -143,6 +117,28 @@ router.post("/change-pass", optionalVerifyToken, async (req, res) => {
     await user.save();
     return res.status(200).json({ success: true, message: "Password changed successfully!" });
 })
+
+router.get("/my-orders", optionalVerifyToken, async (req, res) => {
+    const token = req.user;
+    if (!token) return res.redirect("/user/login");
+    const user = await userModel.findById(token._QCUI_UI);
+    if (!user) return res.redirect("/user/login");
+    const orders = await orderModel.find({ "userDetails.userId": token._QCUI_UI });
+    user.userOrders = orders;
+    await user.save();
+    res.render("users/my-orders", { user });
+});
+
+router.get("/my-wishlist", optionalVerifyToken, async (req, res) => {
+    const token = req.user;
+    if (!token) return res.redirect("/user/login");
+    const user = await userModel.findById(token._QCUI_UI);
+    if (!user) return res.redirect("/user/login");
+    const products = await productModel.find({ _id: user.userWishlist });
+    res.render("users/my-wishlist", { user, products, slugify });
+});
+
+router.get("/reward-and-redeem", optionalVerifyToken, userRoute("users/reward-and-redeem"));
 
 router.get("/settings", optionalVerifyToken, userRoute("users/setting"));
 

@@ -8,7 +8,7 @@ function sideBarMaker() {
                         <img src="${userImg}" alt="user">
                     </div>
                     <div class="user-detail">
-                        <div class="user-greet">Hi</div>
+                        <div class="user-greet">Hello</div>
                         <div class="user-name">
                             ${userFullname}
                         </div>
@@ -22,6 +22,22 @@ function sideBarMaker() {
                             d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z" />
                     </svg>
                     <div>My Account</div>
+                </a>
+                
+                <a href="/user/my-account#change-password" class="side-btns">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="#e3e3e3">
+                        <path
+                            d="M80-200v-80h800v80H80Zm46-242-52-30 34-60H40v-60h68l-34-58 52-30 34 58 34-58 52 30-34 58h68v60h-68l34 60-52 30-34-60-34 60Zm320 0-52-30 34-60h-68v-60h68l-34-58 52-30 34 58 34-58 52 30-34 58h68v60h-68l34 60-52 30-34-60-34 60Zm320 0-52-30 34-60h-68v-60h68l-34-58 52-30 34 58 34-58 52 30-34 58h68v60h-68l34 60-52 30-34-60-34 60Z" />
+                    </svg>
+                    <div>Change Password</div>
+                </a>
+
+                <a href="/user/my-account#change-payment" class="side-btns">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="#e3e3e3">
+                        <path
+                            d="M560-440q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35ZM280-320q-33 0-56.5-23.5T200-400v-320q0-33 23.5-56.5T280-800h560q33 0 56.5 23.5T920-720v320q0 33-23.5 56.5T840-320H280Zm80-80h400q0-33 23.5-56.5T840-480v-160q-33 0-56.5-23.5T760-720H360q0 33-23.5 56.5T280-640v160q33 0 56.5 23.5T360-400Zm440 240H120q-33 0-56.5-23.5T40-240v-440h80v440h680v80ZM280-400v-320 320Z" />
+                    </svg>
+                    <div>Payment</div>
                 </a>
 
                 <a href="/user/my-orders" class="side-btns">
@@ -48,22 +64,6 @@ function sideBarMaker() {
                     <div>Reward And Redeem</div>
                 </a>
 
-                <a href="/user/payment" class="side-btns">
-                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="#e3e3e3">
-                        <path
-                            d="M560-440q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35ZM280-320q-33 0-56.5-23.5T200-400v-320q0-33 23.5-56.5T280-800h560q33 0 56.5 23.5T920-720v320q0 33-23.5 56.5T840-320H280Zm80-80h400q0-33 23.5-56.5T840-480v-160q-33 0-56.5-23.5T760-720H360q0 33-23.5 56.5T280-640v160q33 0 56.5 23.5T360-400Zm440 240H120q-33 0-56.5-23.5T40-240v-440h80v440h680v80ZM280-400v-320 320Z" />
-                    </svg>
-                    <div>Payment</div>
-                </a>
-
-                <a href="/user/change-password" class="side-btns">
-                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="#e3e3e3">
-                        <path
-                            d="M80-200v-80h800v80H80Zm46-242-52-30 34-60H40v-60h68l-34-58 52-30 34 58 34-58 52 30-34 58h68v60h-68l34 60-52 30-34-60-34 60Zm320 0-52-30 34-60h-68v-60h68l-34-58 52-30 34 58 34-58 52 30-34 58h68v60h-68l34 60-52 30-34-60-34 60Zm320 0-52-30 34-60h-68v-60h68l-34-58 52-30 34 58 34-58 52 30-34 58h68v60h-68l34 60-52 30-34-60-34 60Z" />
-                    </svg>
-                    <div>Change Password</div>
-                </a>
-
                 <a href="/user/settings" class="side-btns">
                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="#e3e3e3">
                         <path
@@ -85,12 +85,40 @@ function sideBarMaker() {
 sideBarMaker()
 
 document.querySelectorAll(".side-btns").forEach((btn) => {
+    btn.addEventListener("click", () => {
+        document.querySelectorAll(".side-btns").forEach((btn) => {
+            btn.classList.remove("activeBtn")
+            btn.querySelector(".icon").classList.remove("activeIcon")
+        })
+        btn.classList.add("activeBtn")
+        btn.querySelector(".icon").classList.add("activeIcon")
+    })
     let pageName = document.getElementsByTagName("head")[0].dataset.page
     if (btn.getElementsByTagName("div")[0].innerHTML.includes(pageName)) {
         btn.classList.add("activeBtn")
         btn.querySelector(".icon").classList.add("activeIcon")
     }
 })
+
+function func() {
+    if (window.location.href.includes("#change-password")) {
+        document.querySelectorAll(".side-btns").forEach((btn) => {
+            btn.classList.remove("activeBtn")
+            btn.querySelector(".icon").classList.remove("activeIcon")
+        })
+        document.querySelectorAll(".side-btns")[1].classList.add("activeBtn")
+        document.querySelectorAll(".side-btns")[1].querySelector(".icon").classList.add("activeIcon")
+    }
+    else if (window.location.href.includes("#change-payment")) {
+        document.querySelectorAll(".side-btns").forEach((btn) => {
+            btn.classList.remove("activeBtn")
+            btn.querySelector(".icon").classList.remove("activeIcon")
+        })
+        document.querySelectorAll(".side-btns")[2].classList.add("activeBtn")
+        document.querySelectorAll(".side-btns")[2].querySelector(".icon").classList.add("activeIcon")
+    }
+}
+func()
 
 document.querySelector(".logout").addEventListener("click", () => {
     let mainDiv = document.createElement("div")

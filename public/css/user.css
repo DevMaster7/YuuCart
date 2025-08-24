@@ -81,7 +81,15 @@ html {
     display: flex;
 }
 
+/* .side-nav-con {
+    position: sticky;
+    top: 0;
+    height: 100%;
+} */
+
 .side-nav {
+    /* position: sticky;
+    top: 65px; */
     width: 280px;
     display: flex;
     flex-direction: column;

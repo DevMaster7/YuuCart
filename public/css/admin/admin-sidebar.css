@@ -26,7 +26,8 @@
     min-height: 100vh;
     height: 100vh;
     padding: 20px;
-    position: relative;
+    position: sticky;
+    top: 0;
     border-bottom: 1px solid var(--gray);
 }
 
