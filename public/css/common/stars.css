@@ -1,0 +1,22 @@
+.stars {
+    position: relative;
+    display: inline-block;
+    font-size: 18px;
+}
+
+.stars::after {
+    content: "★★★★★";
+    color: rgb(205, 205, 205);
+    /* -webkit-text-stroke: .3px gold; */ /* border golden */
+}
+
+.stars::before {
+    content: "★★★★★";
+    color: gold;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--rating, 0);
+    overflow: hidden;
+    white-space: nowrap;
+}

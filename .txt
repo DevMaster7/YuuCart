@@ -26,3 +26,11 @@ User came from REGISTER {
     email_verified: true
   }
 }
+
+<% for(let i=1; i <=5; i++) { %>
+                                        <% if (i <=product.proRating) { %>
+                                        <i class="fa-solid fa-star"></i>
+                                        <% } else { %>
+                                        <i class="fa-regular fa-star"></i>
+                                        <% } %>
+                                        <% } %>

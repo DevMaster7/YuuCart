@@ -214,9 +214,7 @@ router.post("/place-order", optionalVerifyToken, async (req, res) => {
     const user = await userModel.findById(userID);
     if (user.address == undefined || user.address == null || user.address == "" || user.city == undefined || user.city == null || user.city == "" || user.phone == undefined || user.phone == null || user.phone == "") {
         return res.status(400).json({ success: false, message: "Please Fill All The Details!" });
-        // res.redirect("/user/profile");
     }
-    // else {
     const { coupanName } = req.body;
     if (coupanName !== null) {
         const foundCoupan = await coupanModel.findOne({ coupanCode: coupanName });
@@ -231,6 +229,12 @@ router.post("/place-order", optionalVerifyToken, async (req, res) => {
     }
 
     const productDeliveryData = req.body.productDeliveryData;
+    const data = productDeliveryData.map((item) => {
+        const newItem = { ...item };
+        delete newItem.paymentMethod;
+        return newItem;
+    });
+
     await orderModel.create({
         userDetails: {
             userId: userID,
@@ -241,11 +245,12 @@ router.post("/place-order", optionalVerifyToken, async (req, res) => {
             city: user.city,
             address: user.address
         },
-        productDetails: productDeliveryData
+        productDetails: data,
+        orderInfo: {
+            PaymentMethod: productDeliveryData[0].paymentMethod,
+        }
     });
-
     res.status(200).json({ success: true, message: "Order Placed Successfully!" });
-    // }
 })
 
 module.exports = router

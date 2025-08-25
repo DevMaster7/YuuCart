@@ -281,15 +281,16 @@ html {
 }
 
 .left .cards .pro-details .pro-info .another .pro-buyer {
+    padding-right: 5px;
     font-size: 16px;
     color: #021d2a;
+    border-right: 1px solid #0000004f;
 }
 
 .left .cards .pro-details .pro-info .another .pro-rate {
-    padding: 0px 0px 0px 5px;
+    /* padding: 0px 0px 0px 5px; */
     display: flex;
     align-items: center;
-    border-left: 1px solid #0000004f;
 }
 
 .left .cards .pro-details .pro-info .another .pro-rate i {

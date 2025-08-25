@@ -311,13 +311,13 @@ html {
 .products-list-con .cards .pro-details .pro-info .another .pro-buyer {
     font-size: 16px;
     color: #021d2a;
+    padding-right: 5px;
+    border-right: 1px solid #0000004f;
 }
 
 .products-list-con .cards .pro-details .pro-info .another .pro-rate {
-    padding: 0px 0px 0px 5px;
     display: flex;
     align-items: center;
-    border-left: 1px solid #0000004f;
 }
 
 .products-list-con .cards .pro-details .pro-info .another .pro-rate i {
@@ -439,14 +439,15 @@ html {
 .products-grid-con .cards .pro-details .pro-info .another .pro-buyer {
     font-size: 13px;
     color: #021d2a;
+
+    padding-right: 5px;
+    border-right: 1px solid #0000004f;
 }
 
 .products-grid-con .cards .pro-details .pro-info .another .pro-rate {
-    padding: 0px 0px 0px 2px;
     height: 15px;
     display: flex;
     align-items: center;
-    border-left: 1px solid #0000004f;
 }
 
 .products-grid-con .cards .pro-details .pro-info .another .pro-rate i {

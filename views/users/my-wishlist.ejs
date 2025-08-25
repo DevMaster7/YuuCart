@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="/css/common/loader.css">
     <link rel="stylesheet" href="/css/user.css">
     <link rel="stylesheet" href="/css/users/my-wishlist.css">
+    <link rel="stylesheet" href="/css/common/stars.css">
     <link rel="stylesheet" href="/css/common/logout.css">
     <link rel="stylesheet" href="/css/common/empty.css">
     <link rel="stylesheet" href="/css/common/footer.css">
@@ -88,13 +89,9 @@
                                             <%= product.proBuyer %> Sold
                                         </div>
                                         <div class="pro-rate">
-                                            <% for (let i=1; i <=5; i++) { %>
-                                            <% if (i <=product.proRating) { %>
-                                            <i class="fa-solid fa-star"></i>
-                                            <% } else { %>
-                                            <i class="fa-regular fa-star"></i>
-                                            <% } %>
-                                            <% } %>
+                                            <div class="stars"
+                                                style="font-size:23px;--rating: <%= ((product.proRating/5)*100) %>%;">
+                                            </div>
                                             <span class="pro-revs">(<%= product.proNoOfReviews %>)</span>
                                         </div>
                                     </div>

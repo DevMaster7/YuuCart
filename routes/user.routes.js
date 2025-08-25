@@ -126,7 +126,7 @@ router.get("/my-orders", optionalVerifyToken, async (req, res) => {
     const orders = await orderModel.find({ "userDetails.userId": token._QCUI_UI });
     user.userOrders = orders;
     await user.save();
-    res.render("users/my-orders", { user });
+    res.render("users/my-orders", { user, slugify });
 });
 
 router.get("/my-wishlist", optionalVerifyToken, async (req, res) => {

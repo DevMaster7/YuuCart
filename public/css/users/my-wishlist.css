@@ -176,13 +176,13 @@
 .products-list-con .cards .pro-details .pro-info .another .pro-buyer {
     font-size: 16px;
     color: #021d2a;
+    padding-right: 5px;
+    border-right: 1px solid #0000004f;
 }
 
 .products-list-con .cards .pro-details .pro-info .another .pro-rate {
-    padding: 0px 0px 0px 5px;
     display: flex;
     align-items: center;
-    border-left: 1px solid #0000004f;
 }
 
 .products-list-con .cards .pro-details .pro-info .another .pro-rate i {

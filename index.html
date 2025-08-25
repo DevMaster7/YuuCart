@@ -1,49 +1,62 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <meta charset="utf-8" />
-    <title>Auto-width input</title>
+    <meta charset="UTF-8">
+    <title>Star Rating</title>
     <style>
-        .autosize {
-            font-family: inherit;
-            font-size: 16px;
-            padding: 6px 8px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: content-box;
-            /* measure padding separately */
-            min-width: 40px;
-            /* optional minimum */
-            max-width: 600px;
-            /* optional maximum */
-            transition: width 120ms linear;
+        .stars {
+            position: relative;
+            display: inline-block;
+            font-size: 50px;
+            line-height: 1;
         }
 
-        /* hidden mirror span (not visible) */
-        .input-mirror {
+        .stars::after {
+            content: "★★★★★";
+            color: transparent;
+            /* fill empty */
+            -webkit-text-stroke: 1px gold;
+            /* border golden */
+        }
+
+        /* Golden (filled) stars */
+        .stars::before {
+            content: "★★★★★";
+            color: gold;
             position: absolute;
-            top: -9999px;
-            left: -9999px;
-            visibility: hidden;
-            white-space: pre;
-            /* preserve spaces */
+            top: 0;
+            left: 0;
+            width: var(--rating, 0);
+            /* percentage fill */
+            overflow: hidden;
+            white-space: nowrap;
         }
     </style>
 </head>
 
 <body>
 
-    <input type="text" id="myInput" placeholder="Type..." style="width:40px;">
+    <div class="stars changeable" style="--rating: 64%;"></div> <!-- 3.2 out of 5 -->
+    <br>
+    <div class="stars" style="--rating: 86%;"></div> <!-- 4.3 out of 5 -->
+    <br>
+    <div class="stars" style="--rating: 50%;"></div> <!-- 2.5 out of 5 -->
+
+    <br><br>
+    <label>Enter Rating (0 - 5): </label>
+    <input type="number" id="rating" min="0" max="5" step="0.1">
 
     <script>
-        const inp = document.getElementById("myInput");
+        const ratingInput = document.getElementById("rating");
+        const changeableStar = document.querySelector(".changeable");
 
-        inp.addEventListener("input", () => {
-            inp.style.width = (inp.value.length + 1) + "ch";
+        ratingInput.addEventListener("input", () => {
+            let value = parseFloat(ratingInput.value) || 0;
+            let percent = (value / 5) * 100 + "%"; // ✅ add "%"
+            changeableStar.style.setProperty("--rating", percent);
         });
     </script>
-
 </body>
 
 </html>

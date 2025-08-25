@@ -173,7 +173,7 @@ html {
 .product-rate {
     display: flex;
     align-items: center;
-    margin-top: 10px;
+    /* margin-top: 10px; */
 }
 
 .product-rate i {
@@ -206,7 +206,7 @@ html {
 .product-price {
     font-size: 25px;
     color: var(--Accent);
-    margin-top: 10px;
+    /* margin-top: 10px; */
 }
 
 .product-discount-con {

@@ -9,10 +9,14 @@ const orderInfoSchema = new mongoose.Schema({
     orderStatus: {
         type: String,
         default: "Pending"
-    }
+    },
+    PaymentMethod: {
+        type: String
+    },
 }, { _id: true });
 
 const devliverySchema = new mongoose.Schema({
+    PaymentMethod: String,
     userDetails: {
         userId: String,
         fullname: String,
@@ -25,10 +29,9 @@ const devliverySchema = new mongoose.Schema({
     productDetails: {},
     orderInfo: {
         type: orderInfoSchema,
-        default: () => ({})
+        default: () => ({}),
     }
 })
 
 const deliveryModel = mongoose.model("orders", devliverySchema);
-
 module.exports = deliveryModel
