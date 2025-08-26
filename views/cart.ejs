@@ -98,11 +98,11 @@
                                     </div>
                                 </div>
                                 <div class="another">
-                                    <div class="pro-buyer">
-                                        <%= product.proBuyer %> Sold
+                                    <div class="pro-buyer" title="<%= product.proBuyer %> Sold">
+                                        <%= product.proBuyer>=1000?Math.floor((product.proBuyer/1000) * 10) / 10+"K":product.proBuyer %> Sold
                                     </div>
                                     <div class="pro-rate">
-                                        <div class="stars" style="font-size: 25px;--rating: <%= ((product.proRating/5)*100)-1 %>%;">
+                                        <div class="stars" style="font-size: 25px;--rating: <%= ((product.proRating/5)*100) %>%;">
                                         </div>
                                         <span class="pro-revs">
                                             (<%= product.proNoOfReviews %>)</span>
@@ -187,12 +187,13 @@
     </div>
     <% } %>
 
-    <script src="/js/common/loader.js"></script>
+    <script src="/js/common/at-start.js"></script>
     <script src="/js/cart.js"></script>
     <script src="/js/common/nav-bar.js"></script>
     <script src="/js/common/search.js"></script>
     <script src="/js/common/wishlist.js"></script>
     <script src="/js/common/footer.js"></script>
+    <script src="/js/common/at-last.js"></script>
 </body>
 
 </html>

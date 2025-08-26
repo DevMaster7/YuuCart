@@ -70,7 +70,8 @@
                     <div class="order-box" data-status="<%= order.orderInfo.orderStatus %>">
                         <% order.productDetails.forEach((orderdetail) =>{ %>
                         <div class="inner-con">
-                            <a href="/shop/<%= slugify(orderdetail.productName, {lower: true}) %>-<%= orderdetail.productId %>" class="img-box">
+                            <a href="/shop/<%= slugify(orderdetail.productName, {lower: true}) %>-<%= orderdetail.productId %>"
+                                class="img-box">
                                 <img src="<%= orderdetail.productImg %>" alt="Product Image">
                             </a>
                             <div class="order-product-info">
@@ -97,7 +98,8 @@
                         <div class="order-card-footer">
                             <div>
                                 <div class="order-info">Order ID: <span><%= order.orderInfo._id %></span></div>
-                                <div class="order-info">Payment Method: <span><%= order.productDetails[0].paymentMethod %></span></div>
+                                <div class="order-info">Payment Method:
+                                    <span><%= order.orderInfo.PaymentMethod %></span></div>
                                 <div class="order-info">Date: <span><%= order.orderInfo.orderDate %></span></div>
                                 <div class="order-info">Status: <span
                                         class="badge <% if (order.orderInfo.orderStatus === "Pending") { %>pending<% } else if (order.orderInfo.orderStatus === "Delivered") { %>delivered<% } else { %>cancelled<% } %>"><%= order.orderInfo.orderStatus %></span>
@@ -139,7 +141,7 @@
     </div>
 
 
-    <script src="/js/common/loader.js"></script>
+    <script src="/js/common/at-start.js"></script>
     <script>
         let orders = document.querySelectorAll(".order-box");
         let orderCon = document.querySelector("#orderCon");
@@ -186,6 +188,7 @@
     <script src="/js/user.js"></script>
     <script src="/js/common/user-sidebar.js"></script>
     <script src="/js/common/footer.js"></script>
+    <script src="/js/common/at-last.js"></script>
 </body>
 
 </html>

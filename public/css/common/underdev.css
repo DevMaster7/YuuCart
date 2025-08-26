@@ -1,0 +1,167 @@
+@media (prefers-color-scheme: light) {
+:root {
+    --bg: var(--Primary, #023047);
+    --card: rgba(255, 255, 255, 0.06);
+    --text: var(--Highlight, #F8F9FA);
+    --muted: #a4b2c2;
+    --accent: var(--Accent, #FB8500);
+    --ring: rgba(251, 133, 0, 0.35);
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    --blur: saturate(160%) blur(6px);
+}
+}
+
+/* @media (prefers-color-scheme: light) { */
+    :root {
+        --bg: var(--Highlight, #F8F9FA);
+        --card: rgba(255, 255, 255, 0.9);
+        --text: var(--Primary, #023047);
+        --muted: #46566f;
+        --accent: var(--Accent, #FB8500);
+        --ring: rgba(251, 133, 0, 0.2);
+        --shadow: 0 10px 30px rgba(2, 6, 23, 0.08);
+        --blur: saturate(120%) blur(4px);
+    }
+/* } */
+
+.dev {
+    position: relative;
+    width: min(720px, 92vw);
+    padding: clamp(24px, 6vw, 48px);
+    background: var(--card);
+    backdrop-filter: var(--blur);
+    -webkit-backdrop-filter: var(--blur);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 24px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    isolation: isolate;
+}
+
+/* Subtle glow ring */
+.dev::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(600px 300px at 20% -10%, var(--ring), transparent 60%);
+    z-index: -1;
+}
+
+.dev .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: .02em;
+    border: 1px dashed rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+    color: var(--muted);
+    user-select: none;
+}
+
+.dev .badge .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 0 var(--accent);
+    animation: ping 1.6s infinite cubic-bezier(0, 0, 0.2, 1);
+}
+
+@keyframes ping {
+    0% {
+        box-shadow: 0 0 0 0 var(--accent);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(106, 169, 255, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(106, 169, 255, 0);
+    }
+}
+
+.dev h1 {
+    margin: 18px 0 8px;
+    font-size: clamp(28px, 4.2vw, 44px);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+.dev p {
+    margin: 0 0 18px;
+    color: var(--muted);
+    font-size: clamp(14px, 2.2vw, 18px);
+}
+
+.dev .actions {
+    margin-top: 22px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.dev .btn {
+    appearance: none;
+    border: 0;
+    outline: none;
+    padding: 12px 18px;
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform .08s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.dev .btn-primary {
+    background: linear-gradient(135deg, var(--accent), color-mix(in oklab, var(--accent), white 14%));
+    color: white;
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+}
+
+.dev .btn-primary:hover {
+    transform: translateY(-1px);
+}
+
+.dev .btn-primary:active {
+    transform: translateY(0);
+}
+
+.dev .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.dev .muted-note {
+    margin-top: 14px;
+    font-size: 12px;
+    color: var(--muted);
+    opacity: .9;
+}
+
+.dev footer {
+    margin-top: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--muted);
+    opacity: .9;
+}
+
+.dev .links {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.dev .links a:hover {
+    opacity: .8;
+}

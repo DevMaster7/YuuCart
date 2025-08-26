@@ -92,6 +92,10 @@
                 <%= product.proName %>
             </div>
             <div class="product-rate">
+                <div class="pro-buyer" title="<%= product.proBuyer %> Sold">
+                    <%= product.proBuyer>=1000?Math.floor((product.proBuyer/1000) * 10) / 10+"K":product.proBuyer %>
+                    Sold
+                </div>
                 <div class="stars" style="font-size:23px;--rating: <%= ((product.proRating/5)*100) %>%;"></div>
                 <span class="product-reviews">Ratings <%= product.proNoOfReviews %></span>
                 <% if (user.userWishlist) { %>
@@ -205,12 +209,13 @@
         </div>
     </div>
 
-    <script src="/js/common/loader.js"></script>
+    <script src="/js/common/at-start.js"></script>
     <script src="/js/product.js"></script>
     <script src="/js/common/nav-bar.js"></script>
     <script src="/js/common/search.js"></script>
     <script src="/js/common/wishlist.js"></script>
     <script src="/js/common/footer.js"></script>
+    <script src="/js/common/at-last.js"></script>
 </body>
 
 </html>

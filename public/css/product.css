@@ -228,6 +228,13 @@ html {
     font-weight: 600;
 }
 
+.pro-buyer {
+    font-size: 17px;
+    color: #03151f;
+    padding-right: 5px;
+    border-right: 2px solid rgba(185, 185, 185, 0.834);
+}
+
 .product-quantity-con {
     display: flex;
     gap: 30px;
