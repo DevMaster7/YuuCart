@@ -4,7 +4,6 @@ let bcrypt = require("bcrypt");
 const optionalVerifyToken = require("../middleware/optionalVerifyToken");
 const jwt = require("jsonwebtoken");
 const slugify = require("slugify");
-const sendEmail = require("../utils/sendOTP");
 const userModel = require("../models/usersModel");
 const productModel = require("../models/productsModel");
 const orderModel = require("../models/ordersModel");
@@ -196,7 +195,7 @@ router.get("/login", optionalVerifyToken, (req, res) => {
     if (token) {
         return res.redirect("/shop")
     }
-    res.render("login");
+    res.render("login", { slugify });
 })
 router.post("/login",
     body("email").trim().isLength({ min: 13 }),
@@ -232,40 +231,5 @@ router.post("/login",
             return res.status(200).json({ message: "User" });
         }
     });
-
-router.get("/sendmail", optionalVerifyToken, async (req, res) => {
-    const otp = Math.floor(100000 + Math.random() * 900000);
-    const token = req.user;
-    if (!token) return res.redirect("/user/login");
-    const user = await userModel.findById(token._QCUI_UI);
-    if (!user) return res.redirect("/user/login");
-    const html = `<div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 40px;">
-        <div style="max-width: 600px; margin: auto; background: white; padding: 20px 30px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
-          <h2 style="color: #333;">Verify Your Email Address</h2>
-          <p style="font-size: 16px; color: #555;">
-            Hi ${user.username},
-          </p>
-          <p style="font-size: 16px; color: #555;">
-            To complete your sign up with <strong>QuickCart</strong>, please use the verification code below:
-          </p>
-          <div style="text-align: center; margin: 30px 0;">
-            <span style="font-size: 32px; font-weight: bold; color: #4CAF50; letter-spacing: 5px;">${otp}</span>
-          </div>
-          <p style="font-size: 14px; color: #888;">
-            This code is valid for the next 10 minutes. Please do not share this code with anyone.
-          </p>
-          <p style="font-size: 14px; color: #888;">
-            If you did not request this, you can safely ignore this email.
-          </p>
-          <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
-          <p style="font-size: 12px; color: #aaa; text-align: center;">
-            &copy; ${new Date().getFullYear()} QuickCart. All rights reserved.
-          </p>
-        </div>
-      </div>`
-
-    await sendEmail(user.email, html);
-    return res.status(200).json({ success: true });
-})
 
 module.exports = router

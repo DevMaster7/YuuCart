@@ -38,6 +38,60 @@ eye.addEventListener("click", () => {
     }
 })
 
+document.querySelector(".forgot-btn").addEventListener("click", () => {
+    const overlay = document.createElement("div");
+    overlay.classList.add("overlay");
+    overlay.innerHTML = `
+        <div class="cap-con">
+            <div class="heading-text">Verify If You Want To Send Email</div>
+            <form id="capForm" action="/login-change-pass" method="post">
+                <div class="field">
+                    <input type="email" name="email" placeholder=" " required />
+                    <label for="email">Email</label>
+                </div>
+                <div id="captcha-container" style="transform: scale(0.8); transform-origin: center;"></div>
+                <div class="err-msg"></div>
+                <button type="submit">Send Email</button>
+            </form>
+        </div>`;
+    document.body.appendChild(overlay);
+    document.body.style.overflow = "hidden";
+
+    grecaptcha.render("captcha-container", {
+        sitekey: "6LdTOrcrAAAAAJ5lTh8huR1i2Na0bEgO3Zqi-8tF",
+        // callback: onCaptchaSuccess
+    });
+
+    overlay.addEventListener("click", (e) => {
+        if (!e.target.closest(".cap-con")) {
+            overlay.remove();
+            document.body.style.overflow = "auto";
+        }
+    });
+    const form = document.getElementById("capForm");
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = form.getElementsByTagName("input")[0].value;
+        const cap_token = grecaptcha.getResponse();
+        try {
+            const response = await fetch(form.action, {
+                method: form.method,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, cap_token })
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                window.location.href = `/sendmail/forgot-password?email=${email}`;
+            }
+            else {
+                document.querySelector(".cap-con").querySelector(".err-msg").innerHTML = result.message
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    });
+});
 
 document.querySelector(".icon").addEventListener("click", () => {
     window.location.href = '/';

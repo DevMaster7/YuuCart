@@ -12,6 +12,42 @@ fileInput.addEventListener("change", () => {
     }
 });
 
+document.querySelector(".forgot-btn").addEventListener("click", () => {
+    const overlay = document.createElement("div");
+    overlay.classList.add("overlay");
+    overlay.innerHTML = `
+            <div class="cap-con">
+                <div id="captcha-container" style="transform: scale(0.8); transform-origin: center;"></div>
+            </div>`;
+    document.body.appendChild(overlay);
+    document.body.style.overflow = "hidden";
+
+    grecaptcha.render("captcha-container", {
+        sitekey: "6LdTOrcrAAAAAJ5lTh8huR1i2Na0bEgO3Zqi-8tF",
+        callback: onCaptchaSuccess
+    });
+
+    overlay.addEventListener("click", (e) => {
+        if (!e.target.closest(".cap-con")) {
+            overlay.remove();
+            document.body.style.overflow = "auto";
+        }
+    });
+});
+
+async function onCaptchaSuccess(token) {
+    const res = await fetch("/verify-captcha", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ "g-recaptcha-response": token })
+    });
+
+    const data = await res.json();
+    if (data.success) {
+        window.location.href = "/shop";
+    }
+}
+
 function mainFun() {
     let passWrapDiv = document.createElement("div");
     passWrapDiv.classList.add("pass-wrap");

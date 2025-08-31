@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
+<head data-info="">
+    <meta charset=" UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon" />
+    <link rel="stylesheet" href="/css/common/loader.css" />
     <title>Verify Code</title>
     <style>
         body {
@@ -58,7 +61,6 @@
             box-shadow: 0 0 4px rgba(33, 158, 188, 0.4);
         }
 
-        /* ✅ Active input effect */
         .otp-inputs input.active {
             border-color: #219EBC;
             box-shadow: 0 0 4px rgba(33, 158, 188, 0.6);
@@ -101,7 +103,10 @@
 <body>
     <div class="verify-container">
         <h2>Email Verification</h2>
-        <p>Please enter the 6-digit code sent to your email.</p>
+        <p>
+            Please enter the 6-digit code sent to your email
+            <%= email %>
+        </p>
 
         <form>
             <div class="otp-inputs">
@@ -116,7 +121,7 @@
         </form>
 
         <div class="resend">
-            Didn’t get the code? <a href="#">Resend</a>
+            Didn’t get the code?  <a href="#">Resend</a>
         </div>
     </div>
     <script>
@@ -140,8 +145,7 @@
             input.addEventListener("paste", (e) => {
                 e.preventDefault();
                 const pasteData = (e.clipboardData || window.clipboardData).getData("text").trim();
-
-                if (/^\d+$/.test(pasteData)) {
+                if (/^[A-Za-z0-9]+$/.test(pasteData)) {
                     pasteData.split("").forEach((char, i) => {
                         if (i < inputs.length) {
                             inputs[i].value = char;
@@ -152,6 +156,7 @@
             });
         });
     </script>
+
 </body>
 
 </html>

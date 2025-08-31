@@ -4,17 +4,18 @@ const adminRouter = require("./routes/admin.routes");
 const shopRouter = require("./routes/shop.routes")
 const dbConnection = require("./config/db");
 const cookieParser = require("cookie-parser");
+const sendEmail = require("./utils/sendOTP");
 const session = require("express-session");
 const optionalVerifyToken = require("./middleware/optionalVerifyToken");
 const userModel = require("./models/usersModel");
 const morgan = require("morgan");
-let bcrypt = require("bcrypt");
+const bcrypt = require("bcrypt");
 const env = require("dotenv");
 const flash = require("connect-flash");
 const passport = require("passport");
 const { uploadUrlOnCloudinary } = require("./config/cloudinary");
 const jwt = require("jsonwebtoken");
-const router = require("./routes/admin.routes");
+// const router = require("./routes/admin.routes");
 const app = express();
 
 require("./auth/google");
@@ -117,6 +118,7 @@ app.get("/auth/google/callback",
 );
 app.post("/user/register/enterpass", async (req, res) => {
   const userData = req.session.userData;
+  // console.log(userData);
   const { password, confirmPassword } = req.body;
   if (password.length < 8) {
     return res.status(400).json({ message: "Password is too short!" });
@@ -127,10 +129,84 @@ app.post("/user/register/enterpass", async (req, res) => {
   const hashPassword = await bcrypt.hash(password, 10);
   userData.password = hashPassword;
   await userModel.create(userData);
-  console.log(password, confirmPassword);
+  // console.log(password, confirmPassword);
   delete req.session.userData;
   return res.status(200).json({ success: true, message: "Password set successfully!" });
 })
+app.post("/verify-captcha", (req, res) => {
+  const token = req.body["g-recaptcha-response"];
+  console.log(token);
+  if (token) {
+    return res.status(200).json({ success: true, message: "Captcha verified successfully!" });
+  }
+  else {
+    return res.status(400).json({ success: false, message: "Captcha verification failed!" });
+  }
+})
+app.post("/login-change-pass", async (req, res) => {
+  const { email, cap_token } = req.body;
+  let user = await userModel.findOne({ email: email })
+  if (!user) {
+    return res.status(400).json({ success: false, message: "User not found!" });
+  }
+  if (!cap_token) {
+    return res.status(400).json({ success: false, message: "Please verify captcha!" });
+  }
+  req.session.captchaVerification = cap_token;
+  res.status(200).json({ success: true, message: "All good" });
+})
+app.get("/sendmail/forgot-password", optionalVerifyToken, async (req, res) => {
+  function generateVerificationCode() {
+    const digits = "0123456789";
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let codeArr = [];
+    for (let i = 0; i < 3; i++) {
+      codeArr.push(digits.charAt(Math.floor(Math.random() * digits.length)));
+    }
+    for (let i = 0; i < 3; i++) {
+      codeArr.push(letters.charAt(Math.floor(Math.random() * letters.length)));
+    }
+    for (let i = codeArr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [codeArr[i], codeArr[j]] = [codeArr[j], codeArr[i]];
+    }
+    return codeArr.join("");
+  }
+  const verificationCode = generateVerificationCode();
+  if (req.session.captchaVerification == undefined) return res.redirect("/user/login");
+  const email = req.query.email;
+  if (!email) return res.redirect("/user/login");
+  const user = await userModel.findOne({ email: email });
+  if (!user) return res.redirect("/user/login");
+  req.session.verificationCode = verificationCode;
+  const html = `<div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 40px;">
+    <div style="max-width: 600px; margin: auto; background: white; padding: 20px 30px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+      <h2 style="color: #333;">Reset Your Password</h2>
+      <p style="font-size: 16px; color: #555;">
+        Hi ${user.fullname},
+      </p>
+      <p style="font-size: 16px; color: #555;">
+        We received a request to reset your password for your <strong>QuickCart</strong> account.  
+        Please use the one-time code below to proceed:
+      </p>
+      <div style="text-align: center; margin: 30px 0;">
+        <span style="font-size: 32px; font-weight: bold; color: #4CAF50; letter-spacing: 5px;">${verificationCode}</span>
+      </div>
+      <p style="font-size: 14px; color: #888;">
+        This code is valid for the next 5 minutes. If you did not request a password reset, you can safely ignore this email.
+      </p>
+      <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+      <p style="font-size: 12px; color: #aaa; text-align: center;">
+        &copy; ${new Date().getFullYear()} QuickCart. All rights reserved.
+      </p>
+    </div>
+  </div>`
+  await sendEmail(email, html);
+  delete req.session.captchaVerification;
+  res.render("verify", { email });
+})
+
+// Policies and etc...
 app.get("/terms-and-conditions", (req, res) => {
   res.render("terms");
 })

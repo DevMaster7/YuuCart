@@ -6,6 +6,23 @@
     --Heading: #CCD6F6;
 }
 
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: #02304714;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(2px);
+    z-index: 99;
+}
+
+.cap-con {
+    background: #fff;
+    padding: 20px;
+    border-radius: 2px;
+}
+
 .pass-wrap {
     width: 100vw;
     height: 100vh;
@@ -246,6 +263,7 @@
 .btns-err .change-pass:hover {
     background-color: #e17a06;
 }
+
 
 @media (max-width: 770px) {
     .data-con {

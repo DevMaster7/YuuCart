@@ -3,23 +3,25 @@ let showPass = document.querySelectorAll(".eye")
 
 let head = document.getElementsByTagName("head")[0];
 if (head.dataset.info == "enter-pass") {
-    document.querySelector(".main-container").innerHTML = `
-    <div class="pass-con">
-      <form id="enterPassForm">
+    // setTimeout(() => {
+    let forgotPassHTML = `<div class="pass-con">
+        <form id="enterPassForm">
         <div class="heading">Enter Your Password</div>
         <div class="password">
-          <input type="password" name="password" placeholder="Password" required>
-          <i class="fa-solid fa-eye eye"></i>
+        <input type="password" name="password" placeholder="Password" required>
+        <i class="fa-solid fa-eye eye"></i>
         </div>
         <div class="password">
-          <input type="password" name="confirmPassword" placeholder="Confirm Password" required>
-          <i class="fa-solid fa-eye eye"></i>
-        </div>
-        <div class="err-msg"></div>
-        <button type="submit">Continue</button>
-      </form>
-    </div>
-  `;
+        <input type="password" name="confirmPassword" placeholder="Confirm Password" required>
+        <i class="fa-solid fa-eye eye"></i>
+            </div>
+            <div class="err-msg"></div>
+            <button type="submit">Continue</button>
+          </form>
+        </div>`;
+    document.querySelector("body").style.overflow = "hidden";
+    document.querySelector(".main-container").querySelector(".con").innerHTML = forgotPassHTML;
+    // }, 13300)
 
     document.getElementById("enterPassForm").addEventListener("submit", async (e) => {
         e.preventDefault();
