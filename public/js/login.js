@@ -59,7 +59,6 @@ document.querySelector(".forgot-btn").addEventListener("click", () => {
 
     grecaptcha.render("captcha-container", {
         sitekey: "6LdTOrcrAAAAAJ5lTh8huR1i2Na0bEgO3Zqi-8tF",
-        // callback: onCaptchaSuccess
     });
 
     overlay.addEventListener("click", (e) => {

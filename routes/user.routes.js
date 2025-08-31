@@ -151,7 +151,7 @@ router.post("/register",
     body("phone").trim().isLength({ min: 10 }),
     body("password").trim().isLength({ min: 8 }),
     async (req, res) => {
-
+        const captchaToken = req.body["g-recaptcha-response"];
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array(), message: "Invalid data!" });
@@ -169,6 +169,7 @@ router.post("/register",
                 message: "Passwords do not match!"
             });
         }
+        if (!captchaToken) return res.status(400).json({ message: "Please verify captcha!" });
         const hashPassword = await bcrypt.hash(password, 10);
         const newUser = await userModel.create({
             fullname,

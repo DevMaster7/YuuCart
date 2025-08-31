@@ -108,10 +108,11 @@ if (document.getElementById("registerForm")) {
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
         const city = document.getElementById('city').value;
+        const token = grecaptcha.getResponse();
         const res = await fetch('/user/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ fullname, username, email, password, confirmPassword, city, phone, address })
+            body: JSON.stringify({ fullname, username, email, password, confirmPassword, city, phone, address, "g-recaptcha-response": token })
         });
         const data = await res.json();
         if (data.success) {
