@@ -133,15 +133,11 @@ app.post("/user/register/enterpass", async (req, res) => {
   delete req.session.userData;
   return res.status(200).json({ success: true, message: "Password set successfully!" });
 })
-app.post("/verify-captcha", (req, res) => {
+app.post("/verify-captcha", optionalVerifyToken, async (req, res) => {
   const token = req.body["g-recaptcha-response"];
-  console.log(token);
-  if (token) {
-    return res.status(200).json({ success: true, message: "Captcha verified successfully!" });
-  }
-  else {
-    return res.status(400).json({ success: false, message: "Captcha verification failed!" });
-  }
+  if (!token) return res.status(400).json({ success: false, message: "Please verify captcha!" });
+  req.session.captchaVerification = token;
+  res.status(200).json({ success: true, message: "Captcha verified" });
 })
 app.post("/login-change-pass", async (req, res) => {
   const { email, cap_token } = req.body;

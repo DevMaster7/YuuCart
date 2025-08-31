@@ -36,6 +36,7 @@ document.querySelector(".forgot-btn").addEventListener("click", () => {
 });
 
 async function onCaptchaSuccess(token) {
+    let email = document.getElementsByTagName("head")[0].dataset.email
     const res = await fetch("/verify-captcha", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -44,7 +45,7 @@ async function onCaptchaSuccess(token) {
 
     const data = await res.json();
     if (data.success) {
-        window.location.href = "/shop";
+        window.location.href = `/sendmail/forgot-password?email=${email}`;
     }
 }
 
