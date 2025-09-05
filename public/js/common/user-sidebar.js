@@ -15,7 +15,7 @@ function sideBarMaker() {
                     </div>
                 </div>
 
-                <a href="/user/my-account" class="side-btns">
+                <a href="/user/account" class="side-btns">
                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"
                         fill="#e3e3e3">
                         <path
@@ -24,7 +24,7 @@ function sideBarMaker() {
                     <div>My Account</div>
                 </a>
                 
-                <a href="/user/my-account#change-password" class="side-btns">
+                <a href="/user/account#change-password" class="side-btns">
                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="#e3e3e3">
                         <path
                             d="M80-200v-80h800v80H80Zm46-242-52-30 34-60H40v-60h68l-34-58 52-30 34 58 34-58 52 30-34 58h68v60h-68l34 60-52 30-34-60-34 60Zm320 0-52-30 34-60h-68v-60h68l-34-58 52-30 34 58 34-58 52 30-34 58h68v60h-68l34 60-52 30-34-60-34 60Zm320 0-52-30 34-60h-68v-60h68l-34-58 52-30 34 58 34-58 52 30-34 58h68v60h-68l34 60-52 30-34-60-34 60Z" />
@@ -32,7 +32,7 @@ function sideBarMaker() {
                     <div>Change Password</div>
                 </a>
 
-                <a href="/user/my-account#change-payment" class="side-btns">
+                <a href="/user/account#change-payment" class="side-btns">
                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="#e3e3e3">
                         <path
                             d="M560-440q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35ZM280-320q-33 0-56.5-23.5T200-400v-320q0-33 23.5-56.5T280-800h560q33 0 56.5 23.5T920-720v320q0 33-23.5 56.5T840-320H280Zm80-80h400q0-33 23.5-56.5T840-480v-160q-33 0-56.5-23.5T760-720H360q0 33-23.5 56.5T280-640v160q33 0 56.5 23.5T360-400Zm440 240H120q-33 0-56.5-23.5T40-240v-440h80v440h680v80ZM280-400v-320 320Z" />
@@ -40,7 +40,7 @@ function sideBarMaker() {
                     <div>Payment</div>
                 </a>
 
-                <a href="/user/my-orders" class="side-btns">
+                <a href="/user/orders" class="side-btns">
                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="#e3e3e3">
                         <path
                             d="M240-80q-33 0-56.5-23.5T160-160v-480q0-33 23.5-56.5T240-720h80q0-66 47-113t113-47q66 0 113 47t47 113h80q33 0 56.5 23.5T800-640v480q0 33-23.5 56.5T720-80H240Zm0-80h480v-480h-80v80q0 17-11.5 28.5T600-520q-17 0-28.5-11.5T560-560v-80H400v80q0 17-11.5 28.5T360-520q-17 0-28.5-11.5T320-560v-80h-80v480Zm160-560h160q0-33-23.5-56.5T480-800q-33 0-56.5 23.5T400-720ZM240-160v-480 480Z" />
@@ -48,7 +48,7 @@ function sideBarMaker() {
                     <div>My Orders</div>
                 </a>
 
-                <a href="/user/my-wishlist" class="side-btns">
+                <a href="/user/wishlist" class="side-btns">
                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="#e3e3e3">
                         <path
                             d="m480-120-58-52q-101-91-167-157T150-447.5Q111-500 95.5-544T80-634q0-94 63-157t157-63q52 0 99 22t81 62q34-40 81-62t99-22q94 0 157 63t63 157q0 46-15.5 90T810-447.5Q771-395 705-329T538-172l-58 52Zm0-108q96-86 158-147.5t98-107q36-45.5 50-81t14-70.5q0-60-40-100t-100-40q-47 0-87 26.5T518-680h-76q-15-41-55-67.5T300-774q-60 0-100 40t-40 100q0 35 14 70.5t50 81q36 45.5 98 107T480-228Zm0-273Z" />

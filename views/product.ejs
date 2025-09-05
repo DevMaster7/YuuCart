@@ -96,7 +96,9 @@
                     <%= product.proBuyer>=1000?Math.floor((product.proBuyer/1000) * 10) / 10+"K":product.proBuyer %>
                     Sold
                 </div>
-                <div class="stars" style="font-size:23px;--rating: <%= ((product.proRating/5)*100) %>%;"></div>
+                <div class="stars-con">
+                    <div class="stars" style="font-size:1.3em;--rating: <%= ((product.proRating/5)*100) %>%;"></div>
+                </div>
                 <span class="product-reviews">Ratings <%= product.proNoOfReviews %></span>
                 <% if (user.userWishlist) { %>
                 <i class=" <% if(user.userWishlist.includes(product._id)) { %> fa-solid <% } else { %> fa-regular <% } %> fa-heart heart"

@@ -70,3 +70,11 @@
      color: #545454;
      transform: none;
  }
+
+ .field i {
+     position: absolute;
+     right: 7px;
+     top: 35%;
+     color: #545454;
+     cursor: pointer;
+ }

@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="/css/common/stars.css" />
     <link rel="stylesheet" href="/css/common/user-con.css" />
     <link rel="stylesheet" href="/css/common/logout.css" />
+    <link rel="stylesheet" href="/css/common/ad-slider.css" />
     <link rel="stylesheet" href="/css/common/search.css" />
     <link rel="stylesheet" href="/css/shop.css" />
     <link rel="stylesheet" href="/css/common/footer.css" />
@@ -75,20 +76,39 @@
     </div>
 
     <div class="ads-vouchers-con">
-        <div class="ads-con">
-            <div class="icon-cir" style="
-            left: 0;
-            border-top-right-radius: 15px;
-            border-bottom-right-radius: 15px;
-          ">
-                <i class="fa-solid fa-chevron-left"></i>
-            </div>
-            <div class="icon-cir" style="
-            right: 0;
-            border-top-left-radius: 15px;
-            border-bottom-left-radius: 15px;
-          ">
-                <i class="fa-solid fa-chevron-right"></i>
+        <div class="slider" aria-roledescription="carousel" aria-label="Promoted Ads">
+            <div class="viewport" id="viewport">
+                <div class="track" id="track" role="list">
+                    <div class="slide" role="listitem" data-ad-id="1">
+                        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1600"
+                            alt="Smartwatch summer sale" />
+                    </div>
+                    <div class="slide" role="listitem" data-ad-id="2">
+                        <img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=1600"
+                            alt="Sneakers new arrivals" />
+                    </div>
+                    <div class="slide" role="listitem" data-ad-id="3">
+                        <img src="https://images.unsplash.com/photo-1526178614028-9c324a4f4d14?q=80&w=1600"
+                            alt="Headphones mega deal" />
+                    </div>
+                    <div class="slide" role="listitem" data-ad-id="4">
+                        <img src="https://images.unsplash.com/photo-1518544801976-3e188ea7f76e?q=80&w=1600"
+                            alt="Home decor collection" />
+                    </div>
+                </div>
+                <div class="ctrl" aria-hidden="false">
+                    <button class="btn prev" aria-label="Previous slide">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="15 18 9 12 15 6" /></svg>
+                    </button>
+                    <button class="btn next" aria-label="Next slide">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 18 15 12 9 6" /></svg>
+                    </button>
+                </div>
+                <div class="dots" aria-label="Slide indicators" id="dots"></div>
             </div>
         </div>
         <div class="vouchers-con"></div>
@@ -121,10 +141,13 @@
                             <div class="pro-info">
                                 <div style="display: flex; align-items: center; gap: 4px">
                                     <div class="pro-buyer" title="<%= product.proBuyer %> Sold">
-                                        <%= product.proBuyer>=1000?Math.floor((product.proBuyer/1000) * 10) / 10+"K":product.proBuyer %> Sold
+                                        <%= product.proBuyer>=1000?Math.floor((product.proBuyer/1000) * 10) / 10+"K":product.proBuyer %>
+                                        Sold
                                     </div>
                                     <div class="pro-rate">
-                                        <div class="stars" style="--rating: <%= ((product.proRating/5)*100)-1 %>%;">
+                                        <div class="stars-con">
+                                            <div class="stars" style="--rating: <%= ((product.proRating/5)*100)-1 %>%;">
+                                            </div>
                                         </div>
                                         <span class="pro-revs">(<%= product.proNoOfReviews%>)</span>
                                     </div>
@@ -170,10 +193,13 @@
                             <div class="pro-info">
                                 <div style="display: flex; align-items: center; gap: 4px">
                                     <div class="pro-buyer" title="<%= product.proBuyer %> Sold">
-                                        <%= product.proBuyer>=1000?Math.floor((product.proBuyer/1000) * 10) / 10+"K":product.proBuyer %> Sold
+                                        <%= product.proBuyer>=1000?Math.floor((product.proBuyer/1000) * 10) / 10+"K":product.proBuyer %>
+                                        Sold
                                     </div>
                                     <div class="pro-rate">
-                                        <div class="stars" style="--rating: <%= ((product.proRating/5)*100)-1 %>%;">
+                                        <div class="stars-con">
+                                            <div class="stars" style="--rating: <%= ((product.proRating/5)*100)-1 %>%;">
+                                            </div>
                                         </div>
                                         <span class="pro-revs">(<%= product.proNoOfReviews %>)</span>
                                     </div>
@@ -217,10 +243,13 @@
                             <div class="pro-info">
                                 <div style="display: flex; align-items: center; gap: 4px">
                                     <div class="pro-buyer" title="<%= product.proBuyer %> Sold">
-                                        <%= product.proBuyer>=1000?Math.floor((product.proBuyer/1000) * 10) / 10+"K":product.proBuyer %> Sold
+                                        <%= product.proBuyer>=1000?Math.floor((product.proBuyer/1000) * 10) / 10+"K":product.proBuyer %>
+                                        Sold
                                     </div>
                                     <div class="pro-rate">
-                                        <div class="stars" style="--rating: <%= ((product.proRating/5)*100) %>%;">
+                                        <div class="stars-con">
+                                            <div class="stars" style="--rating: <%= ((product.proRating/5)*100) %>%;">
+                                            </div>
                                         </div>
                                         <span class="pro-revs">(<%= product.proNoOfReviews %>)</span>
                                     </div>
@@ -238,10 +267,10 @@
         </div>
     </div>
 
-
     <script src="/js/common/at-start.js"></script>
     <script src="/js/shop.js"></script>
     <script src="/js/common/nav-bar.js"></script>
+    <script src="/js/common/ad-slider.js"></script>
     <script src="/js/common/search.js"></script>
     <script src="/js/common/footer.js"></script>
     <script src="/js/common/at-last.js"></script>

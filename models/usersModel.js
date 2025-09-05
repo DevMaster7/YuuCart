@@ -55,7 +55,13 @@ const userSchema = new mongoose.Schema({
     userWishlist: [
         { type: String },
     ],
-    userOrders: []
+    userOrders: [],
+    verificationOTP: {
+        email: String,
+        otp: String,
+        expiresAt: Date,
+        location: String
+    }
 })
 
 const userModel = mongoose.model("users", userSchema);

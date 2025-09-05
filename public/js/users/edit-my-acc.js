@@ -16,7 +16,7 @@ fileInput.addEventListener("change", async () => {
 })
 
 document.querySelector(".cancel-btn").addEventListener("click", () => {
-    window.location.href = '/user/my-account';
+    window.location.href = '/user/account';
 })
 
 document.querySelector(".update-btn").addEventListener("click", async () => {
@@ -35,7 +35,7 @@ document.querySelector(".update-btn").addEventListener("click", async () => {
     })
     const res1 = await res.json();
     if (res1.success) {
-        window.location.href = '/user/my-account';
+        window.location.href = '/user/account';
     }
     else {
         let msg = res1.errors[0].path.slice(7);

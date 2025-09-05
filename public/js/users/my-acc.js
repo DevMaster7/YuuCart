@@ -12,13 +12,63 @@ fileInput.addEventListener("change", () => {
     }
 });
 
+let head = document.getElementsByTagName("head")[0];
+if (head.dataset.info == "enter-pass") {
+    let forgotPassHTML = `<div class="pass-con">
+        <form id="enterPassForm" action="/set-new-forgot" method="post">
+        <div class="heading">Enter Your New Password</div>
+        <div class="field">
+                        <input type="password" id="new-pass" name="password" placeholder=" " required />
+                        <label for="password">Password</label>
+                        <i class="fa-solid fa-eye eye"></i>
+                    </div>
+                    <div class="field">
+                        <input type="password" id="new-confirm-pass" name="confirm-password" placeholder=" " required />
+                        <label for="confirm-password">Confirm Password</label>
+                        <i class="fa-solid fa-eye eye"></i>
+                    </div>
+            <div class="err-msg"></div>
+            <button type="submit">Continue</button>
+          </form>
+        </div`;
+    document.querySelector("body").style.overflow = "hidden";
+    document.querySelector(".main-container").querySelector(".con").innerHTML = forgotPassHTML;
+
+    document.getElementById("enterPassForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        let password = document.getElementById("new-pass").value;
+        let confirmPassword = document.getElementById("new-confirm-pass").value;
+        let res = await fetch("/set-new-forgot", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                password,
+                confirmPassword
+            })
+        });
+        let data = await res.json();
+        if (data.success) {
+            window.location.href = "/user/account";
+        } else {
+            let ele = document.querySelector(".pass-con").querySelector(".err-msg")
+            ele.innerHTML = data.message;
+            setTimeout(() => {
+                ele.innerHTML = "";
+            }, 2000);
+        }
+    });
+}
+
 document.querySelector(".forgot-btn").addEventListener("click", () => {
     const overlay = document.createElement("div");
     overlay.classList.add("overlay");
     overlay.innerHTML = `
-            <div class="cap-con">
-                <div id="captcha-container" style="transform: scale(0.8); transform-origin: center;"></div>
-            </div>`;
+            <form class="cap-con" id="capForm" action="/verify-captcha" method="post">
+            <div id="captcha-container" style="transform: scale(0.8); transform-origin: center;"></div>
+            <div class="err-msg"></div>
+            </form>`;
     document.body.appendChild(overlay);
     document.body.style.overflow = "hidden";
 
@@ -33,42 +83,56 @@ document.querySelector(".forgot-btn").addEventListener("click", () => {
             document.body.style.overflow = "auto";
         }
     });
+
 });
 
 async function onCaptchaSuccess(token) {
-    let email = document.getElementsByTagName("head")[0].dataset.email
-    const res = await fetch("/verify-captcha", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ "g-recaptcha-response": token })
-    });
+    const form = document.getElementById("capForm");
+    const email = document.getElementsByTagName("head")[0].dataset.email;
+    const cap_token = token;
+    try {
+        const response = await fetch(form.action, {
+            method: form.method,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, cap_token })
+        });
 
-    const data = await res.json();
-    if (data.success) {
-        window.location.href = `/sendmail/forgot-password?email=${email}`;
+        const result = await response.json();
+        if (result.success) {
+            window.location.href = `/sendmail/forgot-password?email=${email}&location=user`;
+        }
+        else {
+            document.querySelector(".cap-con").querySelector(".err-msg").innerHTML = result.message
+        }
+    } catch (error) {
+        console.error("Error:", error);
     }
 }
 
 function mainFun() {
     let passWrapDiv = document.createElement("div");
-    passWrapDiv.classList.add("pass-wrap");
-    passWrapDiv.innerHTML = `<div class="pass-con">
+    passWrapDiv.classList.add("verify-pass-wrap");
+    passWrapDiv.innerHTML = `<div class="verify-pass-con">
             <div class="text">Confirm That You Are Our User!</div>
-            <div class="pass-input">
-                <input type="password" name="pass" id="pass" placeholder="Enter Your Password">
-                <button id="pass-btn">Confirm Password</button>
+            <div class="verify-pass-input">
+                <div class="field">
+                        <input type="password" name="password" id="pass" placeholder=" " required />
+                        <label for="password">Password</label>
+                        <i class="fa-solid fa-eye eye"></i>
+                    </div>
+                <button id="verify-pass-btn">Confirm Password</button>
             </div>
         </div>`
     document.getElementsByTagName("body")[0].prepend(passWrapDiv);
 
-    document.querySelector(".pass-wrap").addEventListener("click", (e) => {
-        if (e.target == document.querySelector(".pass-con") || e.target == document.querySelector(".pass-input") || e.target == document.querySelector(".text") || e.target == document.querySelector("#pass-btn") || e.target == document.querySelector("#pass")) {
+    document.querySelector(".verify-pass-wrap").addEventListener("click", (e) => {
+        if (e.target == document.querySelector(".verify-pass-con") || e.target == document.querySelector(".verify-pass-err") || e.target == document.querySelector(".verify-pass-input") || e.target == document.querySelector(".text") || e.target == document.querySelector("#verify-pass-btn") || e.target == document.querySelector("#pass") || e.target == document.querySelector(".eye")) {
             return
         }
-        document.querySelector(".pass-wrap").remove();
+        document.querySelector(".verify-pass-wrap").remove();
     })
 
-    document.querySelector("#pass-btn").addEventListener("click", async () => {
+    document.querySelector("#verify-pass-btn").addEventListener("click", async () => {
         let pass = document.querySelector("#pass").value;
         if (pass !== "") {
             let res = await fetch("/user/verifyUser", {
@@ -81,13 +145,12 @@ function mainFun() {
                 window.location.href = `/user/edit-my-account`;
             }
             else {
-                document.querySelector(".pass-wrap").remove();
                 let div = document.createElement("div");
-                div.classList.add("pass-err")
+                div.classList.add("verify-pass-err")
                 div.innerHTML = res1.message;
-                document.querySelector(".edit-btn").append(div);
+                document.querySelector(".verify-pass-input").insertBefore(div, document.querySelector("#verify-pass-btn"));
                 setTimeout(() => {
-                    document.querySelector(".pass-err").remove();
+                    document.querySelector(".verify-pass-err").remove();
                 }, 2000);
             }
         }
@@ -145,4 +208,20 @@ document.querySelector(".change-pass").addEventListener("click", async (e) => {
             document.getElementById("message").innerHTML = '';
         }, 2500);
     }
+})
+let passEye = document.querySelectorAll(".eye")
+passEye.forEach((e) => {
+    e.addEventListener("click", () => {
+        let passCon = e.parentElement.querySelector("input");
+        if (passCon.type === "password") {
+            passCon.type = "text"
+            e.classList.remove("fa-eye")
+            e.classList.add("fa-eye-slash")
+        }
+        else {
+            passCon.type = "password"
+            e.classList.remove("fa-eye-slash")
+            e.classList.add("fa-eye")
+        }
+    })
 })

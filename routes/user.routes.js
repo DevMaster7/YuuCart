@@ -1,6 +1,6 @@
 const express = require("express");
 const { body, validationResult } = require("express-validator")
-let bcrypt = require("bcrypt");
+const bcrypt = require("bcrypt");
 const optionalVerifyToken = require("../middleware/optionalVerifyToken");
 const jwt = require("jsonwebtoken");
 const slugify = require("slugify");
@@ -22,7 +22,7 @@ function userRoute(viewName) {
         res.render(viewName, { user });
     };
 }
-router.get("/my-account", optionalVerifyToken, userRoute("users/my-account"));
+router.get("/account", optionalVerifyToken, userRoute("users/my-account"));
 router.post("/updateProfilePic", optionalVerifyToken, upload.single("file"), async (req, res) => {
     const filePath = req.file.path
     let folderName = "profile_pics";
@@ -64,7 +64,7 @@ router.get("/edit-my-account", optionalVerifyToken, async (req, res) => {
     const user = await userModel.findById(token._QCUI_UI);
     if (!user) return res.redirect("/user/login");
     const EditToken = req.cookies.UEANT;
-    if (!EditToken) return res.redirect("/user/my-account");
+    if (!EditToken) return res.redirect("/user/account");
     res.clearCookie('UEANT');
     res.render("users/edit-my-acc", { user });
 });
@@ -117,7 +117,7 @@ router.post("/change-password", optionalVerifyToken, async (req, res) => {
     return res.status(200).json({ success: true, message: "Password changed successfully!" });
 })
 
-router.get("/my-orders", optionalVerifyToken, async (req, res) => {
+router.get("/orders", optionalVerifyToken, async (req, res) => {
     const token = req.user;
     if (!token) return res.redirect("/user/login");
     const user = await userModel.findById(token._QCUI_UI);
@@ -128,7 +128,7 @@ router.get("/my-orders", optionalVerifyToken, async (req, res) => {
     res.render("users/my-orders", { user, slugify });
 });
 
-router.get("/my-wishlist", optionalVerifyToken, async (req, res) => {
+router.get("/wishlist", optionalVerifyToken, async (req, res) => {
     const token = req.user;
     if (!token) return res.redirect("/user/login");
     const user = await userModel.findById(token._QCUI_UI);

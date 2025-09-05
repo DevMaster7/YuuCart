@@ -15,7 +15,6 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const { uploadUrlOnCloudinary } = require("./config/cloudinary");
 const jwt = require("jsonwebtoken");
-// const router = require("./routes/admin.routes");
 const app = express();
 
 require("./auth/google");
@@ -42,6 +41,9 @@ app.use((req, res, next) => {
   res.locals.error = req.flash("error");
   next();
 });
+app.use((req, res, next) => {
+  next();
+})
 
 // Routes
 app.get("/", optionalVerifyToken, async (req, res) => {
@@ -77,7 +79,6 @@ app.get("/auth/google/callback",
     if (action == "register") {
       if (!user) {
         let img = await uploadUrlOnCloudinary(data.photos[0].value, "profile_pics");
-        console.log(img);
         function usernameFromEmail(email) {
           return email.split("@")[0].replace(/[^a-zA-Z0-9]/g, "");
         }
@@ -118,7 +119,6 @@ app.get("/auth/google/callback",
 );
 app.post("/user/register/enterpass", async (req, res) => {
   const userData = req.session.userData;
-  // console.log(userData);
   const { password, confirmPassword } = req.body;
   if (password.length < 8) {
     return res.status(400).json({ message: "Password is too short!" });
@@ -133,13 +133,7 @@ app.post("/user/register/enterpass", async (req, res) => {
   delete req.session.userData;
   return res.status(200).json({ success: true, message: "Password set successfully!" });
 })
-app.post("/verify-captcha", optionalVerifyToken, async (req, res) => {
-  const token = req.body["g-recaptcha-response"];
-  if (!token) return res.status(400).json({ success: false, message: "Please verify captcha!" });
-  req.session.captchaVerification = token;
-  res.status(200).json({ success: true, message: "Captcha verified" });
-})
-app.post("/login-change-pass", async (req, res) => {
+app.post("/verify-captcha", async (req, res) => {
   const { email, cap_token } = req.body;
   let user = await userModel.findOne({ email: email })
   if (!user) {
@@ -171,10 +165,21 @@ app.get("/sendmail/forgot-password", optionalVerifyToken, async (req, res) => {
   const verificationCode = generateVerificationCode();
   if (req.session.captchaVerification == undefined) return res.redirect("/user/login");
   const email = req.query.email;
+  const location = req.query.location;
   if (!email) return res.redirect("/user/login");
   const user = await userModel.findOne({ email: email });
   if (!user) return res.redirect("/user/login");
-  req.session.verificationCode = verificationCode;
+  let expiresAt = new Date(Date.now() + 1 * 60 * 1000);
+  await userModel.updateOne({ email: email }, {
+    $set: {
+      verificationOTP: {
+        email: email,
+        otp: verificationCode,
+        expiresAt,
+        location
+      }
+    }
+  })
   const html = `<div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 40px;">
     <div style="max-width: 600px; margin: auto; background: white; padding: 20px 30px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
       <h2 style="color: #333;">Reset Your Password</h2>
@@ -199,7 +204,56 @@ app.get("/sendmail/forgot-password", optionalVerifyToken, async (req, res) => {
   </div>`
   await sendEmail(email, html);
   delete req.session.captchaVerification;
-  res.render("verify", { email });
+  res.render("verify", { email, expiresAt });
+})
+app.post("/verify-otp", optionalVerifyToken, async (req, res) => {
+  const inputOTP = req.body.otp;
+  const email = req.body.email;
+
+  if (!email) return res.status(400).json({ success: false, message: "User not found!" });
+  delete req.session.email;
+  req.session.email = email;
+  const user = await userModel.findOne({ email: email });
+  if (!user) return res.status(400).json({ success: false, message: "User not found!" });
+
+  if (user.verificationOTP.otp !== inputOTP) return res.status(400).json({ success: false, message: "Invalid OTP!" });
+  if (user.verificationOTP.expiresAt < Date.now()) {
+    await userModel.updateOne(
+      { email: email },
+      { $unset: { verificationOTP: "" } }
+    );
+    return res.status(400).json({ success: false, message: "OTP has expired!" });
+  }
+  if (user.verificationOTP.otp === inputOTP) {
+    req.flash("success", "enter-pass");
+    if (user.verificationOTP.location == "user") {
+      res.status(200).json({ success: true, redirectTo: "/user/account", message: "OTP verified!" });
+    }
+    else {
+      res.status(200).json({ success: true, redirectTo: "/user/login", message: "OTP verified!" });
+    }
+    await userModel.updateOne(
+      { email: email },
+      { $unset: { verificationOTP: "" } }
+    );
+  }
+})
+app.post("/set-new-forgot", optionalVerifyToken, async (req, res) => {
+  const { password, confirmPassword } = req.body;
+  console.log(password, confirmPassword);
+  if (password !== confirmPassword) {
+    return res.status(400).json({ success: false, message: "Passwords do not match!" });
+  }
+  const email = req.session.email;
+  console.log(email);
+  if (!email) return res.status(400).json({ success: false, message: "User not found!" });
+  const user = await userModel.findOne({ email: email });
+  if (!user) return res.status(400).json({ success: false, message: "User not found!" });
+  const hashPassword = await bcrypt.hash(password, 10);
+  user.password = hashPassword;
+  await user.save();
+  delete req.session.email;
+  res.status(200).json({ success: true, message: "Password set successfully!" })
 })
 
 // Policies and etc...

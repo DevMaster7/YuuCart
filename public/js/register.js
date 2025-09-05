@@ -1,27 +1,26 @@
-let bubbleCon = document.querySelector(".left")
-let showPass = document.querySelectorAll(".eye")
+let bubbleCon = document.querySelector(".left");
 
 let head = document.getElementsByTagName("head")[0];
 if (head.dataset.info == "enter-pass") {
-    // setTimeout(() => {
     let forgotPassHTML = `<div class="pass-con">
         <form id="enterPassForm">
         <div class="heading">Enter Your Password</div>
-        <div class="password">
-        <input type="password" name="password" placeholder="Password" required>
-        <i class="fa-solid fa-eye eye"></i>
-        </div>
-        <div class="password">
-        <input type="password" name="confirmPassword" placeholder="Confirm Password" required>
-        <i class="fa-solid fa-eye eye"></i>
-            </div>
+        <div class="field">
+                        <input type="password" name="password" placeholder=" " required />
+                        <label for="password">Password</label>
+                        <i class="fa-solid fa-eye eye"></i>
+                    </div>
+                    <div class="field">
+                        <input type="password" name="confirm-password" placeholder=" " required />
+                        <label for="confirm-password">Confirm Password</label>
+                        <i class="fa-solid fa-eye eye"></i>
+                    </div>
             <div class="err-msg"></div>
             <button type="submit">Continue</button>
           </form>
         </div>`;
     document.querySelector("body").style.overflow = "hidden";
     document.querySelector(".main-container").querySelector(".con").innerHTML = forgotPassHTML;
-    // }, 13300)
 
     document.getElementById("enterPassForm").addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -69,8 +68,8 @@ function createBubble() {
 }
 setInterval(createBubble, 1400);
 
-
-showPass.forEach((e) => {
+let passEye = document.querySelectorAll(".eye")
+passEye.forEach((e) => {
     e.addEventListener("click", () => {
         let passCon = e.parentElement.querySelector("input");
         if (passCon.type === "password") {
@@ -85,6 +84,7 @@ showPass.forEach((e) => {
         }
     })
 })
+
 if (document.querySelector(".icon")) {
     document.querySelector(".icon").addEventListener("click", () => {
         window.location.href = '/';

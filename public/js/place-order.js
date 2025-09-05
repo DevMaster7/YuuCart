@@ -104,16 +104,6 @@ document.querySelector(".payment-con").getElementsByTagName("button")[0].addEven
             coupanName = document.querySelector(".c-name").getElementsByTagName("span")[0].innerHTML;
             coupanDiscount = document.querySelector(".c-discount").getElementsByTagName("span")[0].innerHTML;
             totalAfterCoupan = Number(document.querySelector(".total-price-with-coupan").innerHTML.split("Rs.")[1].trim());
-            // async function applyCoupon() {
-            //     await fetch("/shop/applied-coupon", {
-            //         method: "POST",
-            //         headers: {
-            //             "Content-Type": "application/json",
-            //         },
-            //         body: JSON.stringify({ coupanName }),
-            //     })
-            // }
-            // applyCoupon();
         }
         x = {
             productId,
@@ -151,9 +141,9 @@ document.querySelector(".payment-con").getElementsByTagName("button")[0].addEven
     })
     const res1 = await res.json();
     if (res1.success) {
-        window.location.replace("/user/my-orders");
+        window.location.replace("/user/orders");
     }
     else{
-        window.location.replace("/user/my-account");
+        window.location.replace("/user/account");
     }
 })
