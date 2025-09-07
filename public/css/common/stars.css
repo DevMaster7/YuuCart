@@ -1,17 +1,20 @@
 .stars-con {
     font-size: 18px;
+    line-height: 1;
+    display: inline-block;
+    font-family: Arial, sans-serif;
 }
 
 .stars {
     position: relative;
     display: inline-block;
+    line-height: 1;
+    vertical-align: middle;
 }
 
 .stars::after {
     content: "★★★★★";
     color: rgb(205, 205, 205);
-    /* -webkit-text-stroke: .3px gold; */
-    /* border golden */
 }
 
 .stars::before {
@@ -23,6 +26,7 @@
     width: var(--rating, 0);
     overflow: hidden;
     white-space: nowrap;
+    line-height: 1;
 }
 
 @media (max-width: 580px) {

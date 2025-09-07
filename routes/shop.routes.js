@@ -36,6 +36,7 @@ router.get("/:slug-:id", optionalVerifyToken, async (req, res) => {
         }
 
         const product = await productModel.findById(id);
+        const products = await productModel.find();
         if (!product) {
             return res.status(404).render("PNF")
         }
@@ -46,11 +47,11 @@ router.get("/:slug-:id", optionalVerifyToken, async (req, res) => {
             return res.status(404).render("PNF")
         }
         if (!tokenUser) {
-            res.render("product", { product, slugify, userCart: [], user: [] });
+            res.render("product", { product, products, slugify, userCart: [], user: [] });
         } else {
             const user = await userModel.findById(tokenUser._QCUI_UI);
             const userCart = user?.userCart || [];
-            res.render("product", { product, slugify, userCart, user });
+            res.render("product", { product, products, slugify, userCart, user });
         }
     } catch (error) {
         console.error("ERROR:", error);

@@ -222,14 +222,27 @@ router.post("/login",
         const token = jwt.sign(
             { _QCUI_UI: user._id },
             process.env.SECRET_KEY,
-            { expiresIn: "1m" }
+            { expiresIn: "24h" } 
         );
 
         res.cookie("ULGG", token, {
             // httpOnly: true,
             // secure: true,
-            maxAge: 60 * 1000
+            maxAge: 24 * 60 * 60 * 1000 
         });
+
+        // ----For Testing----
+        // const token = jwt.sign(
+        //     { _QCUI_UI: user._id },
+        //     process.env.SECRET_KEY,
+        //     { expiresIn: "1m" }
+        // );
+
+        // res.cookie("ULGG", token, {
+        //     // httpOnly: true,
+        //     // secure: true,
+        //     maxAge: 60 * 1000
+        // });
 
         if (user.isAdmin) {
             return res.status(200).json({ message: "Admin" });

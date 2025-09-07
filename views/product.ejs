@@ -27,7 +27,6 @@
 </head>
 
 <body>
-    <!-- NavBar -->
     <div class="nav-con">
         <a href="/shop" class="left">
             <div class="logo-text">QuickCart</div>
@@ -69,7 +68,6 @@
         </div>
     </div>
 
-    <!-- Main Product -->
     <div class="product-con">
         <div class="extra-pics-videos">
             <div class="activeBox"><img src="<%= product.image %>" alt=""></div>
@@ -86,7 +84,6 @@
             <div><img src="<%= image %>" alt=""></div>
             <% }) %>
         </div>
-
         <div class="product-details">
             <div class="product-name">
                 <%= product.proName %>
@@ -208,6 +205,166 @@
                 No Customizeable
             </div>
             <% } %>
+        </div>
+    </div>
+
+    <div class="sepration-con">
+        <div class="sepration"></div>
+    </div>
+
+    <div class="additional">
+        <div class="left">
+            <div class="section">
+                <div class="heading">Description</div>
+                <p class="desc">This is a sample product description. It highlights features, material, and other
+                    details about the product.</p>
+            </div>
+            <div class="section">
+                <div class="heading">Ratings</div>
+                <div style="display: flex;">
+                    <div class="rating-row">
+                        <div class="avg"><%= product.proRating %><span>/5</span></div>
+                        <div class="stars-con">
+                            <div class="stars" style="font-size:1.8em;--rating: <%= ((product.proRating/5)*100) %>%;">
+                            </div>
+                        </div>
+                        <div class="rating-count">120 ratings</div>
+                    </div>
+                    <div class="dist-list">
+                        <div class="dist">
+                            <div class="stars-con">
+                                <div class="stars" style="font-size:1.3em;--rating: 100%;"></div>
+                            </div>
+                            <div class="bar-wrap">
+                                <div class="bar" style="width:80%"></div>
+                            </div>
+                            <span>80%</span>
+                        </div>
+                        <div class="dist">
+                            <div class="stars-con">
+                                <div class="stars" style="font-size:1.3em;--rating: 80%;"></div>
+                            </div>
+                            <div class="bar-wrap">
+                                <div class="bar" style="width:10%"></div>
+                            </div>
+                            <span>10%</span>
+                        </div>
+                        <div class="dist">
+                            <div class="stars-con">
+                                <div class="stars" style="font-size:1.3em;--rating: 60%;"></div>
+                            </div>
+                            <div class="bar-wrap">
+                                <div class="bar" style="width:5%"></div>
+                            </div>
+                            <span>5%</span>
+                        </div>
+                        <div class="dist">
+                            <div class="stars-con">
+                                <div class="stars" style="font-size:1.3em;--rating: 40%;"></div>
+                            </div>
+                            <div class="bar-wrap">
+                                <div class="bar" style="width:3%"></div>
+                            </div>
+                            <span>3%</span>
+                        </div>
+                        <div class="dist">
+                            <div class="stars-con">
+                                <div class="stars" style="font-size:1.3em;--rating: 20%;"></div>
+                            </div>
+                            <div class="bar-wrap">
+                                <div class="bar" style="width:2%"></div>
+                            </div>
+                            <span>2%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="section">
+                <div class="heading">Reviews</div>
+                <div class="reviews">
+                    <div class="review">
+                        <div class="meta">
+                            <strong>Ali</strong>
+                            <p>Great product, highly recommend!</p>
+                            <div class="img-con">
+                                <img src="/assets/customizabale/MugWhite.png" alt="img">
+                            </div>
+                        </div>
+                        <div class="meta">
+                            <div style="display: flex; gap: 5px;align-items: center;">
+                                <div class="stars-con">
+                                    <div class="stars" style="font-size:1.1em;--rating: 100%;"></div>
+                                </div>
+                                <div class="small-txt">(5)</div>
+                            </div>
+                            <div class="small-txt">1 week ago</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="section">
+                <div class="heading">Questions & Answers</div>
+                <div class="qa-list">
+                    <div class="qa">
+                        <div class="meta">
+                            <div class="q">Q: Does this come in different colors?</div>
+                            <div class="a">A: Yes, it's available in red, blue, and black.</div>
+                        </div>
+                        <div class="meta">
+                            <div class="small-txt">muneeb</div>
+                            <div class="small-txt">Ans within: 1 week</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="right">
+            <div class="section">
+                <div class="heading">Similar Products</div>
+                <% products.forEach(product=> { %>
+                <a class="main-card" href="/shop/<%= slugify(product.proName, { lower: true }) %>-<%= product._id %>">
+                    <div class="cards">
+                        <div class="product-img">
+                            <img src="<%= product.image %>" alt="" />
+                        </div>
+                        <div class="pro-details">
+                            <div class="pro-name">
+                                <%= product.proName %>
+                            </div>
+                            <div class="pro-price-con">
+                                <div class="pro-price">Rs.<%= product.proPrice %>
+                                </div>
+                                <% if (product.proDiscount !== 0 || product.proOrignalPrice !== 0) { %>
+                                <div class="before-dis">
+                                    Rs.<%= product.proOrignalPrice %>
+                                </div>
+                                <div class="discount">-<%= product.proDiscount %>%</div>
+                                <% } %>
+                            </div>
+                            <div class="pro-info">
+                                <div style="display: flex; align-items: center; gap: 4px">
+                                    <div class="pro-buyer" title="<%= product.proBuyer %> Sold">
+                                        <%= product.proBuyer>=1000?Math.floor((product.proBuyer/1000) * 10) / 10+"K":product.proBuyer %>
+                                        Sold
+                                    </div>
+                                    <div class="pro-rate">
+                                        <div class="stars-con">
+                                            <div class="stars" style="--rating: <%= ((product.proRating/5)*100) %>%;">
+                                            </div>
+                                        </div>
+                                        <span class="pro-revs">(<%= product.proNoOfReviews %>)</span>
+                                    </div>
+                                </div>
+                                <div class="customizeable">
+                                    <% if (product.customization) { %> Customizeable <% } else { %> Non
+                                    Customizeable <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <% }) %>
+            </div>
         </div>
     </div>
 

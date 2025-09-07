@@ -1,3 +1,5 @@
+
+
 let landDivs = Array.from(document.querySelector(".extra-pics-videos").getElementsByTagName("div"))
 let mobileDivs = Array.from(document.querySelector(".extra-pics-videos-land").getElementsByTagName("div"))
 function activeBox(e) {

@@ -101,14 +101,27 @@ app.get("/auth/google/callback",
         const token = jwt.sign(
           { _QCUI_UI: user._id },
           process.env.SECRET_KEY,
-          { expiresIn: "2m" }
+          { expiresIn: "24h" }
         );
 
         res.cookie("ULGG", token, {
           // httpOnly: true,
           // secure: true,
-          maxAge: 120 * 1000
+          maxAge: 24 * 60 * 60 * 1000
         });
+
+        // ----For Testing----
+        // const token = jwt.sign(
+        //   { _QCUI_UI: user._id },
+        //   process.env.SECRET_KEY,
+        //   { expiresIn: "2m" }
+        // );
+
+        // res.cookie("ULGG", token, {
+        //   // httpOnly: true,
+        //   // secure: true,
+        //   maxAge: 120 * 1000
+        // });
         if (user.isAdmin) {
           res.redirect("/admin");
         } else {

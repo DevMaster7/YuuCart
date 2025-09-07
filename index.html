@@ -1,377 +1,380 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Seamless Infinite Ad Slider</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Product Card — Description, Ratings & Q/A</title>
     <style>
         :root {
-            --w: min(100%, 980px);
-            --h: clamp(160px, 34vw, 360px);
-            --gap: 12px;
-            --radius: 16px;
-            --shadow: 0 10px 30px rgba(0, 0, 0, .12);
-            --dot-size: 10px;
-            --accent: #ff6a00;
-            --bg: #0f1115;
+            --Primary: #023047;
+            --Secondary: #219EBC;
+            --Accent: #FB8500;
+            --Highlight: #F8F9FA;
+            --Heading: #CCD6F6;
+            
+            --card-bg: #ffffff;
+            --muted: #6b7280;
+            --accent: var(--Secondary);
+            --accent-600: #1b87a3;
+            --radius: 12px;
+            --shadow: 0 6px 18px rgba(13, 17, 24, 0.08);
+            --max-width: 980px;
+            --star-size: 20px;
         }
 
         * {
             box-sizing: border-box;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
         }
 
         body {
-            margin: 0;
-            padding: 32px;
-            display: grid;
-            place-items: center;
-            min-height: 100svh;
-            font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Noto Sans, "Apple Color Emoji", "Segoe UI Emoji";
-            background: radial-gradient(1200px 800px at 10% 10%, #151823, #0b0d12 70%), #0b0d12;
-            color: #e7ebf3;
+            background: linear-gradient(180deg, var(--Highlight) 0%, #ffffff 100%);
+            padding: 28px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            min-height: 100vh;
+            color: var(--Primary)
         }
 
-        .slider {
-            width: var(--w);
-            position: relative;
-            user-select: none;
+        .container {
+            width: 100%;
+            max-width: var(--max-width)
         }
 
-        .slider .viewport {
-            overflow: hidden;
+        .card {
+            background: var(--card-bg);
             border-radius: var(--radius);
             box-shadow: var(--shadow);
-            height: var(--h);
-            background: #0a0c10;
+            overflow: hidden
         }
 
-        .slider .track {
-            display: flex;
-            height: 100%;
-            will-change: transform;
-            transition: transform .6s cubic-bezier(.22, .61, .36, 1);
-        }
-
-        .slider .slide {
-            position: relative;
-            flex: 0 0 100%;
-            height: 100%;
+        .product-grid {
             display: grid;
-            place-items: center;
-            overflow: hidden;
-            background: #0b0e15;
+            grid-template-columns: 360px 1fr;
+            gap: 24px;
+            padding: 22px
         }
 
-        .slider .slide img {
+        .gallery {
+            background: var(--Highlight);
+            padding: 16px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center
+        }
+
+        .main-img {
             width: 100%;
-            height: 100%;
+            height: 300px;
+            border-radius: 8px;
             object-fit: cover;
-            display: block;
-            user-select: none;
-            -webkit-user-drag: none;
+            background: linear-gradient(90deg, #e6eef0, #f7fbfc)
         }
 
-        /* Gradient edges for a nice app-like feel */
-        .slider .viewport::before,
-        .slider .viewport::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            mask: linear-gradient(90deg, black, black calc(100% - 40px), transparent);
+        .thumbs {
+            display: flex;
+            gap: 8px
         }
 
-        .slider .viewport::after {
-            mask: linear-gradient(270deg, black, black calc(100% - 40px), transparent);
+        .thumbs img {
+            width: 64px;
+            height: 54px;
+            border-radius: 8px;
+            object-fit: cover;
+            opacity: 0.85;
+            border: 2px solid transparent
         }
 
-        /* Controls */
-        .slider .ctrl {
-            position: absolute;
-            inset: 0;
+        .thumbs img.active {
+            border-color: var(--Accent);
+            opacity: 1
+        }
+
+        .info {
+            padding: 8px 6px
+        }
+
+        h1 {
+            font-size: 20px;
+            margin: 0 0 6px;
+            color: var(--Heading)
+        }
+
+        .price {
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--Primary)
+        }
+
+        .meta {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin: 10px 0;
+            color: var(--muted);
+            font-size: 14px
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px
+        }
+
+        .btn {
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 0;
+            font-weight: 600
+        }
+
+        .btn-buy {
+            background: var(--Accent);
+            color: white
+        }
+
+        .btn-cart {
+            background: #f1f5f9;
+            color: var(--Primary)
+        }
+
+        /* Additional Info area */
+        .additional {
+            padding: 18px;
+            border-top: 1px solid #eef2f7;
+            background: linear-gradient(180deg, #ffffff, #fbfdff)
+        }
+
+        .section {
+            margin-bottom: 18px
+        }
+
+        .section h3 {
+            margin: 0 0 8px;
+            font-size: 16px;
+            color: var(--Primary)
+        }
+
+        p.desc {
+            color: var(--muted);
+            line-height: 1.6
+        }
+
+        /* Rating display */
+        .rating-row {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 0 8px;
-            pointer-events: none;
+            gap: 12px
         }
 
-        .slider .btn {
-            pointer-events: auto;
-            border: 0;
-            width: 44px;
-            height: 44px;
-            border-radius: 999px;
-            display: grid;
-            place-items: center;
-            cursor: pointer;
-            background: rgba(255, 255, 255, .08);
-            backdrop-filter: blur(6px);
-            color: #fff;
-            transition: transform .15s ease, background .2s ease;
-            outline: none;
+        .avg {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--Primary)
         }
 
-        .slider .btn:hover {
-            transform: scale(1.05);
-            background: rgba(255, 255, 255, .14);
-        }
-
-        .slider .btn:active {
-            transform: scale(.97);
-        }
-
-        .slider .btn svg {
-            width: 22px;
-            height: 22px;
-        }
-
-        /* Dots */
-        .slider .dots {
-            position: absolute;
-            left: 50%;
-            bottom: 10px;
-            transform: translateX(-50%);
+        .stars {
             display: flex;
-            gap: 8px;
-            padding: 6px 10px;
-            border-radius: 999px;
-            background: rgba(8, 10, 14, .55);
-            backdrop-filter: blur(6px);
+            gap: 4px
         }
 
-        .slider .dot {
-            width: var(--dot-size);
-            height: var(--dot-size);
-            border-radius: 999px;
-            border: 2px solid rgba(255, 255, 255, .5);
-            background: transparent;
+        .star {
+            width: var(--star-size);
+            height: var(--star-size);
             display: inline-block;
-            cursor: pointer;
-            padding: 0;
-            margin: 0;
-            outline: none;
+            color: var(--Accent)
         }
 
-        .slider .dot[aria-current="true"] {
-            background: var(--accent);
-            border-color: var(--accent);
+        .rating-count {
+            color: var(--muted);
+            font-size: 14px
         }
 
-        /* Caption example overlay (optional) */
-        .slider .caption {
-            position: absolute;
-            bottom: 16px;
-            left: 16px;
-            padding: 8px 12px;
+        .dist-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 10px
+        }
+
+        .dist {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px
+        }
+
+        .bar-wrap {
+            flex: 1;
+            background: #eef2f6;
+            border-radius: 999px;
+            height: 10px;
+            overflow: hidden
+        }
+
+        .bar {
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--Accent), var(--accent-600))
+        }
+
+        /* Reviews */
+        .reviews {
+            display: flex;
+            flex-direction: column;
+            gap: 10px
+        }
+
+        .review {
             border-radius: 10px;
-            background: rgba(0, 0, 0, .45);
-            color: #fff;
-            font-weight: 600;
-            letter-spacing: .2px;
-            backdrop-filter: blur(4px);
+            padding: 12px;
+            background: #fbfdff;
+            border: 1px solid #eef3f7
         }
 
-        @media (max-width: 640px) {
-            .slider .btn {
-                width: 40px;
-                height: 40px;
+        .review .meta {
+            justify-content: space-between;
+            display: flex
+        }
+
+        .review p {
+            margin: 8px 0 0;
+            color: var(--Primary)
+        }
+
+        /* Q/A */
+        .qa-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px
+        }
+
+        .qa {
+            padding: 10px;
+            border-radius: 8px;
+            background: #fff;
+            border: 1px solid #eff3f6
+        }
+
+        .qa .q {
+            font-weight: 600;
+            color: var(--Primary)
+        }
+
+        .qa .a {
+            margin-top: 8px;
+            color: var(--muted)
+        }
+
+        /* responsive */
+        @media (max-width:880px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .main-img {
+                height: 240px
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="slider" aria-roledescription="carousel" aria-label="Promoted Ads">
-        <div class="viewport" id="viewport">
-            <div class="track" id="track" role="list">
-                <!-- Slides (you can dynamically generate these) -->
-                <div class="slide" role="listitem" data-ad-id="1">
-                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1600"
-                        alt="Smartwatch summer sale" />
-                    <div class="caption">Smartwatch Summer Sale</div>
+    <div class="container">
+        <div class="card">
+            <div class="product-grid">
+                <div class="gallery">
+                    <img src="https://via.placeholder.com/350x300" class="main-img" alt="Product" />
+                    <div class="thumbs">
+                        <img src="https://via.placeholder.com/100" class="active" alt="thumb1" />
+                        <img src="https://via.placeholder.com/100" alt="thumb2" />
+                        <img src="https://via.placeholder.com/100" alt="thumb3" />
+                    </div>
                 </div>
-                <div class="slide" role="listitem" data-ad-id="2">
-                    <img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=1600"
-                        alt="Sneakers new arrivals" />
-                    <div class="caption">Sneakers – New Arrivals</div>
-                </div>
-                <div class="slide" role="listitem" data-ad-id="3">
-                    <img src="https://images.unsplash.com/photo-1526178614028-9c324a4f4d14?q=80&w=1600"
-                        alt="Headphones mega deal" />
-                    <div class="caption">Headphones Mega Deal</div>
-                </div>
-                <div class="slide" role="listitem" data-ad-id="4">
-                    <img src="https://images.unsplash.com/photo-1518544801976-3e188ea7f76e?q=80&w=1600"
-                        alt="Home decor collection" />
-                    <div class="caption">Home Decor Collection</div>
+                <div class="info">
+                    <h1>Product Name</h1>
+                    <div class="price">$49.99</div>
+                    <div class="meta">In Stock • Free Shipping</div>
+                    <div class="actions">
+                        <button class="btn btn-buy">Buy Now</button>
+                        <button class="btn btn-cart">Add to Cart</button>
+                    </div>
                 </div>
             </div>
-            <div class="ctrl" aria-hidden="false">
-                <button class="btn prev" aria-label="Previous slide">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <polyline points="15 18 9 12 15 6" /></svg>
-                </button>
-                <button class="btn next" aria-label="Next slide">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <polyline points="9 18 15 12 9 6" /></svg>
-                </button>
+            <div class="additional">
+                <div class="section">
+                    <h3>Description</h3>
+                    <p class="desc">This is a sample product description. It highlights features, material, and other
+                        details about the product.</p>
+                </div>
+                <div class="section">
+                    <h3>Ratings</h3>
+                    <div class="rating-row">
+                        <div class="avg">4.5</div>
+                        <div class="stars">★★★★★</div>
+                        <div class="rating-count">120 ratings</div>
+                    </div>
+                    <div class="dist-list">
+                        <div class="dist"><span>5★</span>
+                            <div class="bar-wrap">
+                                <div class="bar" style="width:80%"></div>
+                            </div><span>80%</span>
+                        </div>
+                        <div class="dist"><span>4★</span>
+                            <div class="bar-wrap">
+                                <div class="bar" style="width:10%"></div>
+                            </div><span>10%</span>
+                        </div>
+                        <div class="dist"><span>3★</span>
+                            <div class="bar-wrap">
+                                <div class="bar" style="width:5%"></div>
+                            </div><span>5%</span>
+                        </div>
+                        <div class="dist"><span>2★</span>
+                            <div class="bar-wrap">
+                                <div class="bar" style="width:3%"></div>
+                            </div><span>3%</span>
+                        </div>
+                        <div class="dist"><span>1★</span>
+                            <div class="bar-wrap">
+                                <div class="bar" style="width:2%"></div>
+                            </div><span>2%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="section">
+                    <h3>Customer Reviews</h3>
+                    <div class="reviews">
+                        <div class="review">
+                            <div class="meta"><strong>Ali</strong><span>★★★★★</span></div>
+                            <p>Great product, highly recommend!</p>
+                        </div>
+                        <div class="review">
+                            <div class="meta"><strong>Sara</strong><span>★★★★☆</span></div>
+                            <p>Good quality but shipping was slow.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="section">
+                    <h3>Questions & Answers</h3>
+                    <div class="qa-list">
+                        <div class="qa">
+                            <div class="q">Q: Does this come in different colors?</div>
+                            <div class="a">A: Yes, it's available in red, blue, and black.</div>
+                        </div>
+                        <div class="qa">
+                            <div class="q">Q: Is there a warranty?</div>
+                            <div class="a">A: 1 year manufacturer warranty included.</div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="dots" aria-label="Slide indicators" id="dots"></div>
         </div>
     </div>
-
-    <script>
-        // --- Config ---
-        const AUTOPLAY_MS = 3500; // time between slides
-        const TRANSITION_MS = 600; // MUST match CSS .track transition duration
-        const PAUSE_ON_HOVER = true;
-        const PAUSE_ON_FOCUS = true;
-
-        // --- Elements ---
-        const viewport = document.getElementById('viewport');
-        const track = document.getElementById('track');
-        const slides = Array.from(track.children);
-        const prevBtn = document.querySelector('.prev');
-        const nextBtn = document.querySelector('.next');
-        const dotsWrap = document.getElementById('dots');
-
-        // --- State ---
-        let slideIndex = 1; // start at first real slide AFTER we add clones
-        let width = () => viewport.clientWidth;
-        let autoplayTimer = null;
-        let isAnimating = false;
-
-        // --- Clone edges for seamless loop ---
-        const firstClone = slides[0].cloneNode(true);
-        const lastClone = slides[slides.length - 1].cloneNode(true);
-        firstClone.setAttribute('data-clone', 'first');
-        lastClone.setAttribute('data-clone', 'last');
-        track.appendChild(firstClone);
-        track.insertBefore(lastClone, slides[0]);
-
-        // Update slides NodeList after cloning
-        const allSlides = Array.from(track.children);
-
-        // Set initial offset to the first real slide
-        function setOffset(index, withTransition = true) {
-            if (!withTransition) track.style.transition = 'none';
-            const x = -index * width();
-            track.style.transform = `translate3d(${x}px,0,0)`;
-            if (!withTransition) {
-                // Force reflow then restore transition for next moves
-                track.getBoundingClientRect();
-                track.style.transition = '';
-            }
-        }
-
-        // Build dots for real slides only
-        const realCount = allSlides.length - 2;
-        const dots = Array.from({
-            length: realCount
-        }, (_, i) => {
-            const b = document.createElement('button');
-            b.className = 'dot';
-            b.setAttribute('aria-label', `Go to slide ${i + 1}`);
-            b.addEventListener('click', () => goTo(i + 1));
-            dotsWrap.appendChild(b);
-            return b;
-        });
-
-        function updateDots() {
-            const realIndex = normalize(slideIndex) - 1; // 0..realCount-1
-            dots.forEach((d, i) => d.setAttribute('aria-current', i === realIndex ? 'true' : 'false'));
-        }
-
-        function normalize(i) {
-            // Converts any slideIndex to a real slide number 1..realCount
-            if (i <= 0) return realCount; // if at lastClone position, normalize to last real
-            if (i > realCount) return 1; // if at firstClone position, normalize to first real
-            return i;
-        }
-
-        function next() {
-            moveTo(slideIndex + 1);
-        }
-
-        function prev() {
-            moveTo(slideIndex - 1);
-        }
-
-        function moveTo(targetIndex) {
-            if (isAnimating) return;
-            isAnimating = true;
-            slideIndex = targetIndex;
-            setOffset(slideIndex, true);
-            // After transition, if we are on a clone, jump to the mirrored real slide without animation
-            if (slideIndex === 0) { // we are on lastClone visually
-                slideIndex = realCount; // jump to last real
-                setOffset(slideIndex, false);
-            } else if (slideIndex === realCount + 1) { // we are on firstClone visually
-                slideIndex = 1; // jump to first real
-                setOffset(slideIndex, false);
-            }
-            updateDots();
-            isAnimating = false;
-        }
-
-        function goTo(realIndex1Based) {
-            if (isAnimating) return;
-            slideIndex = realIndex1Based;
-            moveTo(slideIndex);
-        }
-
-        function startAutoplay() {
-            stopAutoplay();
-            autoplayTimer = window.setInterval(() => {
-                next();
-            }, AUTOPLAY_MS);
-        }
-
-        function stopAutoplay() {
-            if (autoplayTimer) window.clearInterval(autoplayTimer);
-            autoplayTimer = null;
-        }
-
-        // Pause on hover/focus/visibility change
-        if (PAUSE_ON_HOVER) {
-            viewport.addEventListener('mouseenter', stopAutoplay);
-            viewport.addEventListener('mouseleave', startAutoplay);
-        }
-        if (PAUSE_ON_FOCUS) {
-            viewport.addEventListener('focusin', stopAutoplay);
-            viewport.addEventListener('focusout', startAutoplay);
-        }
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) stopAutoplay();
-            else startAutoplay();
-        });
-
-        // Resize handling to keep slides aligned
-        window.addEventListener('resize', () => setOffset(slideIndex, false));
-
-        // Keyboard support
-        viewport.tabIndex = 0; // make focusable
-        viewport.addEventListener('keydown', e => {
-            if (e.key === 'ArrowRight') next();
-            if (e.key === 'ArrowLeft') prev();
-        });
-
-        // Buttons
-        prevBtn.addEventListener('click', prev);
-        nextBtn.addEventListener('click', next);
-
-        // INIT
-        setOffset(slideIndex, false);
-        updateDots();
-        startAutoplay();
-
-        // Example: dynamically replace slides with API data
-        // You can fetch ad images/links and rebuild the track, then re-run init logic.
-    </script>
 </body>
 
 </html>

@@ -1,15 +1,12 @@
 document.querySelectorAll(".heart").forEach(btn => {
     btn.addEventListener("click", async () => {
-        let check = document.querySelectorAll(".cards")
+        let pageName = document.getElementsByTagName("head")[0].dataset.page
         let proID;
-        if (check.length >= 2) {
-            proID = btn.closest(".cards").querySelector(".product-img").dataset.productid;
-        }
-        else if (check.length == 1) {
-            proID = btn.closest(".cards").querySelector(".product-img").dataset.productid;
+        if (pageName == "product") {
+            proID = document.querySelector(".product-pic-con").dataset.id
         }
         else {
-            proID = document.querySelector(".product-pic-con").dataset.id
+            proID = btn.closest(".cards").querySelector(".product-img").dataset.productid;
         }
 
         if (btn.classList.contains("fa-regular")) {
