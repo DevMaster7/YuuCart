@@ -219,13 +219,18 @@ router.post("/login",
             return res.status(400).json({ message: "Email or Password is incorrect!" });
         }
 
-        const token = jwt.sign({
-            _QCUI_UI: user._id,
-        }, process.env.SECRET_KEY, {
-            expiresIn: "12h"
+        const token = jwt.sign(
+            { _QCUI_UI: user._id },
+            process.env.SECRET_KEY,
+            { expiresIn: "1m" }
+        );
+
+        res.cookie("ULGG", token, {
+            // httpOnly: true,
+            // secure: true,
+            maxAge: 60 * 1000
         });
 
-        res.cookie("ULGG", token);
         if (user.isAdmin) {
             return res.status(200).json({ message: "Admin" });
         } else {

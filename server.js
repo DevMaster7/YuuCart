@@ -98,13 +98,17 @@ app.get("/auth/google/callback",
       }
     } else if (action == "login") {
       if (user) {
-        const token = jwt.sign({
-          _QCUI_UI: user._id,
-        }, process.env.SECRET_KEY, {
-          expiresIn: "12h"
-        });
+        const token = jwt.sign(
+          { _QCUI_UI: user._id },
+          process.env.SECRET_KEY,
+          { expiresIn: "2m" }
+        );
 
-        res.cookie("ULGG", token);
+        res.cookie("ULGG", token, {
+          // httpOnly: true,
+          // secure: true,
+          maxAge: 120 * 1000
+        });
         if (user.isAdmin) {
           res.redirect("/admin");
         } else {

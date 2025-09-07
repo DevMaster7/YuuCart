@@ -20,7 +20,10 @@ document.querySelectorAll(".heart").forEach(btn => {
             });
             const res1 = await res.json();
             if (res1.success) {
-                window.location.reload();
+                if (btn.classList.contains("fa-regular")) {
+                    btn.classList.remove("fa-regular")
+                    btn.classList.add("fa-solid")
+                }
             }
             else {
                 window.location.href = `/user/login`;
@@ -34,7 +37,10 @@ document.querySelectorAll(".heart").forEach(btn => {
             });
             const res1 = await res.json();
             if (res1.success) {
-                window.location.reload();
+                if (btn.classList.contains("fa-solid")) {
+                    btn.classList.remove("fa-solid")
+                    btn.classList.add("fa-regular")
+                }
             }
             else {
                 window.location.href = `/user/login`;
