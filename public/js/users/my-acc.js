@@ -103,6 +103,12 @@ async function onCaptchaSuccess(token) {
         }
         else {
             document.querySelector(".cap-con").querySelector(".err-msg").innerHTML = result.message
+            setTimeout(() => {
+                document.querySelector(".cap-con").querySelector(".err-msg").innerHTML = "";
+                setTimeout(() => {
+                    document.querySelector(".overlay").remove();
+                }, 500)
+            }, 2000);
         }
     } catch (error) {
         console.error("Error:", error);
@@ -131,6 +137,7 @@ function mainFun() {
         }
         document.querySelector(".verify-pass-wrap").remove();
     })
+    showPass()
 
     document.querySelector("#verify-pass-btn").addEventListener("click", async () => {
         let pass = document.querySelector("#pass").value;
@@ -209,19 +216,23 @@ document.querySelector(".change-pass").addEventListener("click", async (e) => {
         }, 2500);
     }
 })
-let passEye = document.querySelectorAll(".eye")
-passEye.forEach((e) => {
-    e.addEventListener("click", () => {
-        let passCon = e.parentElement.querySelector("input");
-        if (passCon.type === "password") {
-            passCon.type = "text"
-            e.classList.remove("fa-eye")
-            e.classList.add("fa-eye-slash")
-        }
-        else {
-            passCon.type = "password"
-            e.classList.remove("fa-eye-slash")
-            e.classList.add("fa-eye")
-        }
+
+function showPass() {
+    let passEye = document.querySelectorAll(".eye")
+    passEye.forEach((e) => {
+        e.addEventListener("click", () => {
+            let passCon = e.parentElement.getElementsByTagName("input")[0];
+            if (passCon.type === "password") {
+                passCon.type = "text"
+                e.classList.remove("fa-eye")
+                e.classList.add("fa-eye-slash")
+            }
+            else {
+                passCon.type = "password"
+                e.classList.remove("fa-eye-slash")
+                e.classList.add("fa-eye")
+            }
+        })
     })
-})
+}
+showPass()

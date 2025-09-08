@@ -23,6 +23,12 @@
     border-radius: 2px;
 }
 
+.cap-con .err-msg {
+    color: red;
+    font-size: 14px;
+    text-align: center;
+}
+
 .verify-pass-wrap {
     width: 100vw;
     height: 100vh;
@@ -218,6 +224,18 @@
 
 .personal-detail .value:focus {
     outline: 1px solid var(--Primary);
+}
+
+.personal-detail .pass-con {
+    position: relative;
+    z-index: 0;
+}
+
+.personal-detail .pass-con i {
+    position: absolute;
+    right: 15px;
+    color: #012334;
+    cursor: pointer;
 }
 
 .txt {

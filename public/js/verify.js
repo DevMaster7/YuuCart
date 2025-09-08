@@ -1,13 +1,66 @@
 let head = document.getElementsByTagName("head")[0];
 const expiresAt = new Date(head.dataset.expiretime);
 const timerEl = document.querySelector(".resend").getElementsByTagName("span")[0];
-
-console.log(expiresAt, timerEl);
+// console.log(expiresAt, timerEl);
 function updateTimer() {
     const now = new Date();
     const diff = expiresAt - now;
     if (diff <= 0) {
-        timerEl.innerText = "OTP expired";
+        document.querySelector(".resend").innerHTML = `Didn’t get the code? <button>Resend</button> OTP`
+        let btn = document.querySelector(".resend").getElementsByTagName("button")[0]
+        btn.addEventListener("click", async () => {
+            const overlay = document.createElement("div");
+            overlay.classList.add("overlay");
+            overlay.innerHTML = `
+            <form class="cap-con" id="capForm" action="/verify-captcha" method="post">
+            <div id="captcha-container" style="transform: scale(0.8); transform-origin: center;"></div>
+            <div class="err-msg"></div>
+            </form>`;
+            document.body.appendChild(overlay);
+            document.body.style.overflow = "hidden";
+
+            grecaptcha.render("captcha-container", {
+                sitekey: "6LdTOrcrAAAAAJ5lTh8huR1i2Na0bEgO3Zqi-8tF",
+                callback: onCaptchaSuccess
+            });
+
+            overlay.addEventListener("click", (e) => {
+                if (!e.target.closest(".cap-con")) {
+                    overlay.remove();
+                    document.body.style.overflow = "auto";
+                }
+            });
+
+        });
+
+        async function onCaptchaSuccess(token) {
+            const form = document.getElementById("capForm");
+            const email = document.querySelector(".email").innerHTML;
+            const cap_token = token;
+            try {
+                const response = await fetch(form.action, {
+                    method: form.method,
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, cap_token })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    window.location.href = `/sendmail/forgot-password?email=${email}&location=user`;
+                }
+                else {
+                    document.querySelector(".cap-con").querySelector(".err-msg").innerHTML = result.message
+                    setTimeout(() => {
+                        document.querySelector(".cap-con").querySelector(".err-msg").innerHTML = "";
+                        setTimeout(() => {
+                            document.querySelector(".overlay").remove();
+                        }, 500)
+                    }, 2000);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        }
         clearInterval(interval);
         return;
     }

@@ -153,16 +153,30 @@ app.post("/user/register/enterpass", async (req, res) => {
 app.post("/verify-captcha", async (req, res) => {
   const { email, cap_token } = req.body;
   let user = await userModel.findOne({ email: email })
-  if (!user) {
-    return res.status(400).json({ success: false, message: "User not found!" });
-  }
+
   if (!cap_token) {
     return res.status(400).json({ success: false, message: "Please verify captcha!" });
+  }
+  let now = Date.now();
+  const expireAt = new Date(user.verificationOTP.expiresAt)
+  const diff = expireAt - now;
+  const minutes = Math.floor(diff / 1000 / 60);
+  const seconds = Math.floor((diff / 1000) % 60);
+  const remain = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  if (user.verificationOTP.expiresAt > Date.now()) {
+    return res.status(400).json({ success: false, message: `OTP already requested. Wait for ${remain} to request again.` })
+  }
+  if (!user) {
+    return res.status(400).json({ success: false, message: "User not found!" });
   }
   req.session.captchaVerification = cap_token;
   res.status(200).json({ success: true, message: "All good" });
 })
 app.get("/sendmail/forgot-password", optionalVerifyToken, async (req, res) => {
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, private");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
+
   function generateVerificationCode() {
     const digits = "0123456789";
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -179,50 +193,40 @@ app.get("/sendmail/forgot-password", optionalVerifyToken, async (req, res) => {
     }
     return codeArr.join("");
   }
-  const verificationCode = generateVerificationCode();
-  if (req.session.captchaVerification == undefined) return res.redirect("/user/login");
+
+  if (!req.session.captchaVerification) {
+    return res.redirect("/user/login");
+  }
+
   const email = req.query.email;
   const location = req.query.location;
   if (!email) return res.redirect("/user/login");
-  const user = await userModel.findOne({ email: email });
+
+  const user = await userModel.findOne({ email });
   if (!user) return res.redirect("/user/login");
-  let expiresAt = new Date(Date.now() + 1 * 60 * 1000);
-  await userModel.updateOne({ email: email }, {
+
+  const verificationCode = generateVerificationCode();
+  const now = Date.now();
+  let expiresAt = new Date(now + 5 * 60 * 1000);
+
+  await userModel.updateOne({ email }, {
     $set: {
       verificationOTP: {
-        email: email,
+        email,
         otp: verificationCode,
         expiresAt,
         location
       }
     }
-  })
+  });
+
   const html = `<div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 40px;">
-    <div style="max-width: 600px; margin: auto; background: white; padding: 20px 30px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
-      <h2 style="color: #333;">Reset Your Password</h2>
-      <p style="font-size: 16px; color: #555;">
-        Hi ${user.fullname},
-      </p>
-      <p style="font-size: 16px; color: #555;">
-        We received a request to reset your password for your <strong>QuickCart</strong> account.  
-        Please use the one-time code below to proceed:
-      </p>
-      <div style="text-align: center; margin: 30px 0;">
-        <span style="font-size: 32px; font-weight: bold; color: #4CAF50; letter-spacing: 5px;">${verificationCode}</span>
-      </div>
-      <p style="font-size: 14px; color: #888;">
-        This code is valid for the next 5 minutes. If you did not request a password reset, you can safely ignore this email.
-      </p>
-      <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
-      <p style="font-size: 12px; color: #aaa; text-align: center;">
-        &copy; ${new Date().getFullYear()} QuickCart. All rights reserved.
-      </p>
-    </div>
-  </div>`
+   <div style="max-width: 600px; margin: auto; background: white; padding: 20px 30px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);"> <h2 style="color: #333;">Verify Your Email Address</h2> <p style="font-size: 16px; color: #555;"> Hi ${user.fullname}, </p> <p style="font-size: 16px; color: #555;"> To complete your sign up with <strong>QuickCart</strong>, please use the verification code below: </p> <div style="text-align: center; margin: 30px 0;"> <span style="font-size: 32px; font-weight: bold; color: #4CAF50; letter-spacing: 5px;">${verificationCode}</span> </div> <p style="font-size: 14px; color: #888;"> This code is valid for the next 10 minutes. Please do not share this code with anyone. </p> <p style="font-size: 14px; color: #888;"> If you did not request this, you can safely ignore this email. </p> <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;"> <p style="font-size: 12px; color: #aaa; text-align: center;"> &copy; ${new Date().getFullYear()} QuickCart. All rights reserved. </p> </div> </div>`;
+
   await sendEmail(email, html);
   delete req.session.captchaVerification;
   res.render("verify", { email, expiresAt });
-})
+});
 app.post("/verify-otp", optionalVerifyToken, async (req, res) => {
   const inputOTP = req.body.otp;
   const email = req.body.email;

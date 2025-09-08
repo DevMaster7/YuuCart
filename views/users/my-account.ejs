@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head data-info="<%= success %>" data-page="My Account" data-img="<%= user.userImg %>" data-email="<%= user.email %>" data-fullname="<%= user.fullname %>">
+<head data-info="<%= success %>" data-page="My Account" data-img="<%= user.userImg %>" data-email="<%= user.email %>"
+    data-fullname="<%= user.fullname %>">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
@@ -119,17 +120,28 @@
                 <div>
                     <div class="personal-detail pass">
                         <div class="name">Old Password:</div>
-                        <input type="password" id="oldPass" class="value" style="cursor: text;">
+                        <div class="pass-con">
+
+                            <input type="password" id="oldPass" class="value" style="cursor: text;">
+                            <i class="fa-solid fa-eye eye"></i>
+                        </div>
                     </div>
                     <div class="forgot-btn txt">Forget Password?</div>
                 </div>
                 <div class="personal-detail pass">
                     <div class="name">New Password:</div>
-                    <input type="password" id="newPass" class="value" style="cursor: text;">
+                    <div class="pass-con">
+                        <input type="password" id="newPass" class="value" style="cursor: text;">
+                        <i class="fa-solid fa-eye eye"></i>
+                    </div>
                 </div>
                 <div class="personal-detail pass">
                     <div class="name">Confirm Password:</div>
-                    <input type="password" id="confirmPass" class="value" style="cursor: text;">
+                    <div class="pass-con">
+
+                        <input type="password" id="confirmPass" class="value" style="cursor: text;">
+                        <i class="fa-solid fa-eye eye"></i>
+                    </div>
                 </div>
                 <div style="width: 100%; display: flex; justify-content: flex-end;">
                     <div class="btns-err">

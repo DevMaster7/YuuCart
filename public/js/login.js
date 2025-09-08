@@ -134,6 +134,12 @@ document.querySelector(".forgot-btn").addEventListener("click", () => {
             }
             else {
                 document.querySelector(".cap-con").querySelector(".err-msg").innerHTML = result.message
+                setTimeout(() => {
+                    document.querySelector(".cap-con").querySelector(".err-msg").innerHTML = "";
+                    setTimeout(() => {
+                        document.querySelector(".overlay").remove();
+                    }, 500)
+                }, 2000);
             }
         } catch (error) {
             console.error("Error:", error);

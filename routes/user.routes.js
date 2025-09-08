@@ -59,6 +59,10 @@ router.post("/verifyUser", optionalVerifyToken,
         return res.status(200).json({ success: true });
     })
 router.get("/edit-my-account", optionalVerifyToken, async (req, res) => {
+    res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, private");
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", "0");
+    
     const token = req.user;
     if (!token) return res.redirect("/user/login");
     const user = await userModel.findById(token._QCUI_UI);
@@ -222,13 +226,13 @@ router.post("/login",
         const token = jwt.sign(
             { _QCUI_UI: user._id },
             process.env.SECRET_KEY,
-            { expiresIn: "24h" } 
+            { expiresIn: "24h" }
         );
 
         res.cookie("ULGG", token, {
             // httpOnly: true,
             // secure: true,
-            maxAge: 24 * 60 * 60 * 1000 
+            maxAge: 24 * 60 * 60 * 1000
         });
 
         // ----For Testing----

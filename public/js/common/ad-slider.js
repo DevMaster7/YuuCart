@@ -109,20 +109,6 @@ function stopAutoplay() {
     autoplayTimer = null;
 }
 
-// Pause on hover/focus/visibility change
-if (PAUSE_ON_HOVER) {
-    viewport.addEventListener('mouseenter', stopAutoplay);
-    viewport.addEventListener('mouseleave', startAutoplay);
-}
-if (PAUSE_ON_FOCUS) {
-    viewport.addEventListener('focusin', stopAutoplay);
-    viewport.addEventListener('focusout', startAutoplay);
-}
-document.addEventListener('visibilitychange', () => {
-    if (document.hidden) stopAutoplay();
-    else startAutoplay();
-});
-
 // Resize handling to keep slides aligned
 window.addEventListener('resize', () => setOffset(slideIndex, false));
 
