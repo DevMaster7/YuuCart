@@ -221,7 +221,7 @@
             </div>
             <div class="section">
                 <div class="heading">Ratings</div>
-                <div style="display: flex;">
+                <div class="inner">
                     <div class="rating-row">
                         <div class="avg"><%= product.proRating %><span>/5</span></div>
                         <div class="stars-con">
@@ -320,7 +320,7 @@
         </div>
         <div class="right">
             <div class="section">
-                <div class="heading">Similar Products</div>
+                <div class="heading">You May Like</div>
                 <% products.forEach(product=> { %>
                 <a class="main-card" href="/shop/<%= slugify(product.proName, { lower: true }) %>-<%= product._id %>">
                     <div class="cards">
