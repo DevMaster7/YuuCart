@@ -18,6 +18,17 @@
 }
 
 .continue-btn:hover {
-    background-color: #eeeeee;
-    /* box-shadow: 5px 3px 8px #00000014; */
+    background-color: #f3f3f3;
+}
+
+
+@media (max-width: 630px) {
+    .continue-btn {
+        background: transparent;
+        color: #eeeeee;
+    }
+
+    .continue-btn:hover {
+        background: #a3a3a323;
+    }
 }

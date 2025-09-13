@@ -216,8 +216,7 @@
         <div class="left">
             <div class="section">
                 <div class="heading">Description</div>
-                <p class="desc">This is a sample product description. It highlights features, material, and other
-                    details about the product.</p>
+                <p class="desc"><%= product.proDescription %></p>
             </div>
             <div class="section">
                 <div class="heading">Ratings</div>
@@ -228,7 +227,7 @@
                             <div class="stars" style="font-size:1.8em;--rating: <%= ((product.proRating/5)*100) %>%;">
                             </div>
                         </div>
-                        <div class="rating-count">120 ratings</div>
+                        <div class="rating-count"><%= product.proNoOfReviews %> ratings</div>
                     </div>
                     <div class="dist-list">
                         <div class="dist">
