@@ -117,13 +117,13 @@
                         <input type="number" name="" id="logo-Y" min="0" max="100" placeholder="Y-axis">
                     </div>
                     <div class="img-selection">
-                        <div class="img-box"><img src="assets/customizabale/MenTshirtwhite.png" alt=""></div>
+                        <div class="img-box active"><img src="assets/customizabale/MenTshirtwhite.png" alt=""></div>
                         <div class="img-box"><img src="assets/customizabale/FemTshirtwhite.png" alt=""></div>
-                        <div class="img-box dis"><img src="assets/customizabale/MugWhite.png" alt=""></div>
-                        <div class="img-box dis"><img src="assets/customizabale/Perfume.png" alt=""></div>
+                        <div class="img-box"><img src="assets/customizabale/MugWhite.png" alt=""></div>
+                        <div class="img-box"><img src="assets/customizabale/Perfume.png" alt=""></div>
                     </div>
                     <div class="color-selection">
-                        <div class="color-box white" style="background-color: #ffffff;"></div>
+                        <div class="color-box active white" style="background-color: #ffffff;"></div>
                         <div class="color-box black" style="background-color: #3e3c3c;"></div>
                         <div class="color-box red" style="background-color: #e33b40;"></div>
                         <div class="color-box blue" style="background-color: #729bda;"></div>
@@ -151,72 +151,94 @@
 
         <div class="review" id="reviews">
             <div class="review-heading">Typical Reviews Of Our QuickCart</div>
-            <div class="carousel-wrapper">
-                <div class="arrow left-arrow" onclick="slide(-1)"><i class="fa-solid fa-chevron-left"></i></div>
-                <div class="carousel-container">
-                    <div class="carousel" id="carousel">
-                        <div class="card" style="background: transparent; box-shadow: unset;cursor: default;"></div>
-                        <div class="card">
-                            <div class="cir"></div>
-                            <p>“I designed my first T-shirt in minutes! Super easy and fun to use.”</p>
-                            <h4>- Areeba S.</h4>
-                        </div>
-                        <div class="card">
-                            <div class="cir"></div>
-                            <p>“Loved the color options and how I could drag my logo anywhere. Game changer!”</p>
-                            <h4>- Zain M.</h4>
-                        </div>
-                        <div class="card">
-                            <div class="cir"></div>
-                            <p>“Product came out just like the preview. Highly recommended!”</p>
-                            <h4>- Fatima A.</h4>
-                        </div>
-                        <div class="card">
-                            <div class="cir"></div>
-                            <p>“Never thought customizing could be this easy. I had fun designing my hoodie!”</p>
-                            <h4>- Usman T.</h4>
-                        </div>
-                        <div class="card">
-                            <div class="cir"></div>
-                            <p>“The drag-and-drop feature made placing my logo so effortless. Loved it!”</p>
-                            <h4>- Mehwish R.</h4>
-                        </div>
-                        <div class="card center">
-                            <div class="cir"></div>
-                            <p>“Such a smooth and clean experience. Got exactly what I imagined!”</p>
-                            <h4>- Danish I.</h4>
-                        </div>
-                        <div class="card">
-                            <div class="cir"></div>
-                            <p>“Honestly impressed! The final print matched my design perfectly. Will order again.”</p>
-                            <h4>- Hania K.</h4>
-                        </div>
-                        <div class="card">
-                            <div class="cir"></div>
-                            <p>“I didn't expect it to be this fun. The interface is clean and beginner-friendly.”</p>
-                            <h4>- Bilal S.</h4>
-                        </div>
-                        <div class="card">
-                            <div class="cir"></div>
-                            <p>“Quality exceeded my expectations. Colors were vibrant and print was sharp!”</p>
-                            <h4>- Sana J.</h4>
-                        </div>
-                        <div class="card">
-                            <div class="cir"></div>
-                            <p>“My friends were shocked I made this myself! Super cool customization options.”</p>
-                            <h4>- Hamza L.</h4>
-                        </div>
-                        <div class="card">
-                            <div class="cir"></div>
-                            <p>“Didn't expect it to turn out this amazing. The quality and details are on point!”</p>
-                            <h4>- Ayesha M.</h4>
-                        </div>
-                        <div class="card" style="background: transparent; box-shadow: unset;cursor: default;"></div>
+            <div class="carousel" aria-roledescription="carousel" aria-label="Customer reviews">
+                <div class="viewport" id="viewport">
+                    <div class="track" id="track" role="list">
+                        <article class="slide">
+                            <div class="meta">
+                                <div class="avatar">A</div>
+                                <div class="who">
+                                    <div class="rating">
+                                        <span class="star">★</span><span class="star">★</span><span
+                                            class="star">★</span><span class="star">★</span><span class="star">★</span>
+                                    </div>
+                                    <div class="name">Ayesha Khan</div>
+                                    <div class="role">Product Designer</div>
+                                </div>
+                            </div>
+                            <div class="text">This product changed how I work — clean, fast and ridiculously reliable.
+                                Highly recommended!
+                            </div>
+                        </article>
+                        <article class="slide">
+                            <div class="meta">
+                                <div class="avatar">B</div>
+                                <div class="who">
+                                    <div class="rating">
+                                        <span class="star">★</span><span class="star">★</span><span
+                                            class="star">★</span><span class="star">★</span><span class="star">★</span>
+                                    </div>
+                                    <div class="name">Bilal Raza</div>
+                                    <div class="role">Frontend Dev</div>
+                                </div>
+                            </div>
+                            <div class="text">I love the simplicity. Setup took minutes and the results look very
+                                professional.</div>
+                        </article>
+                        <article class="slide">
+                            <div class="meta">
+                                <div class="avatar">S</div>
+                                <div class="who">
+                                    <div class="rating">
+                                        <span class="star">★</span><span class="star">★</span><span
+                                            class="star">★</span><span class="star">★</span><span class="star">★</span>
+                                    </div>
+                                    <div class="name">Sara Ahmed</div>
+                                    <div class="role">Content Creator</div>
+                                </div>
+                            </div>
+                            <div class="text">Amazing UX and the animations are buttery smooth. My users love the new
+                                review section.
+                            </div>
+                        </article>
+                        <article class="slide">
+                            <div class="meta">
+                                <div class="avatar">H</div>
+                                <div class="who">
+                                    <div class="rating">
+                                        <span class="star">★</span><span class="star">★</span><span
+                                            class="star">★</span><span class="star">★</span><span class="star">★</span>
+                                    </div>
+                                    <div class="name">Hamza Ali</div>
+                                    <div class="role">Entrepreneur</div>
+                                </div>
+                            </div>
+                            <div class="text">Great performance and looks great on mobile. The auto-scroll feels
+                                natural.</div>
+                        </article>
+                        <article class="slide">
+                            <div class="meta">
+                                <div class="avatar">Z</div>
+                                <div class="who">
+                                    <div class="rating">
+                                        <span class="star">★</span><span class="star">★</span><span
+                                            class="star">★</span><span class="star">★</span><span class="star">★</span>
+                                    </div>
+                                    <div class="name">Zara Iqbal</div>
+                                    <div class="role">Marketer</div>
+                                </div>
+                            </div>
+                            <div class="text">Clean, editable and modern — exactly what I needed for our landing page.
+                            </div>
+                        </article>
                     </div>
+                    <div class="controls" aria-hidden="false">
+                        <button class="btn prev" aria-label="Previous review">◀</button>
+                        <button class="btn next" aria-label="Next review">▶</button>
+                    </div>
+                    <div class="dots" id="dots" aria-hidden="false"></div>
                 </div>
-                <div class="arrow right-arrow" onclick="slide(1)"><i class="fa-solid fa-chevron-right"></i></div>
             </div>
-            <div class="dots" id="dots"></div>
         </div>
 
         <div id="Faqs" class="faqs-con">

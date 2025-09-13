@@ -51,7 +51,7 @@ main {
     display: flex;
 }
 
-.btns{
+.btns {
     position: relative;
     text-decoration: none;
     font-size: 18px;
@@ -62,7 +62,7 @@ main {
     display: flex;
 }
 
-.btns::after{
+.btns::after {
     content: "";
     position: absolute;
     left: 13%;
@@ -75,7 +75,7 @@ main {
     transition: transform 0.3s ease-in-out;
 }
 
-.btns:hover::after{
+.btns:hover::after {
     transform: scaleX(1);
     transform-origin: left;
 }
@@ -588,8 +588,8 @@ main {
 }
 
 .preview-pic img {
-    width: 100%;
-    height: 100%;
+    /* width: 100%;
+    height: 100%; */
     border-radius: 5px;
     user-select: none;
     -webkit-user-drag: none;
@@ -627,10 +627,6 @@ main {
     gap: 10px;
 }
 
-.img-selection .img-box:first-child {
-    box-shadow: #000000d9 3px 3px 5px;
-}
-
 .img-selection .img-box {
     width: 40px;
     height: 37px;
@@ -639,14 +635,22 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0px 0px 2px #000000cf;
-    position: relative;
+    border: 1px solid var(--Heading);
+    overflow: hidden;
     user-select: none;
+}
+
+.img-selection .img-box.active {
+    border: none;
+    box-shadow: 2px 2px 4px #00000038;
+    transform: scale(1.1);
+    transition: .2s ease;
 }
 
 .img-box img {
     width: 100%;
     height: 100%;
+    object-fit: contain;
     border-radius: 5px;
     user-select: none;
     -webkit-user-drag: none;
@@ -660,10 +664,6 @@ main {
     opacity: 1 !important;
 }
 
-.color-selection .color-box:first-child {
-    box-shadow: 2px 2px 2px #000000d9;
-}
-
 .color-selection .color-box {
     width: 25px;
     height: 25px;
@@ -672,8 +672,15 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid rgb(66, 66, 66);
+    border: 1px solid var(--Heading);
     opacity: 1 !important;
+}
+
+.color-selection .color-box.active {
+    border: none;
+    box-shadow: 2px 2px 4px #00000038;
+    transform: scale(1.1);
+    transition: .2s ease;
 }
 
 .custom-file-upload {
@@ -755,114 +762,161 @@ main {
     margin-top: 30px;
 }
 
-.carousel-wrapper {
-    position: relative;
-    width: 90%;
-    max-width: 1000px;
-}
+:root {
+    --Primary: #023047;
+    --Secondary: #219EBC;
+    --Accent: #FB8500;
+    --Highlight: #F8F9FA;
+    --Heading: #CCD6F6;
 
-.carousel-container {
-    overflow: hidden;
-    width: 100%;
+    --w: min(100%, 980px);
+    --gap: 30px;
+    --bg: #0b0d12;
+    --card-scale-center: 1;
+    --card-scale-side: 0.88;
+    --card-scale-other: 0.78;
+    --transition: 450ms cubic-bezier(.22, .9, .25, 1);
+    --autoplay-ms: 3500;
 }
 
 .carousel {
-    display: flex;
-    transition: transform 0.5s ease;
-    padding: 40px 0;
+    width: var(--w);
+    height: 290px;
+    background: transparent;
+    max-width: 980px;
+    position: relative;
 }
 
-.card {
-    flex: 0 0 33.3333%;
-    margin: 0;
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    padding: 20px 15px 40px;
-    font-size: 1.2rem;
-    transition: transform 0.5s ease, box-shadow 0.5s ease;
-    opacity: 0.6;
-    transform: scale(0.9);
-    cursor: pointer;
-    color: #04161f;
+.viewport {
+    height: 100%;
+    overflow: hidden;
+    border-radius: 14px;
+    background: transparent;
+    padding: 28px;
 }
 
-.card.center {
-    transform: scale(1.1);
-    opacity: 1;
-    z-index: 1;
+.track {
     display: flex;
-    align-items: center;
+    align-items: stretch;
+    gap: var(--gap);
+    transition: transform var(--transition);
+    will-change: transform;
+    padding: 6px 0
+}
+
+.slide {
+    --card-w: calc((100% - (var(--gap) * 2)) / 3);
+    flex: 0 0 var(--card-w);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+    border-radius: 12px;
+    padding: 18px;
+    display: flex;
     flex-direction: column;
-    box-shadow: 0 12px 13px rgba(0, 0, 0, 0.2);
+    gap: 12px;
+    align-items: flex-start;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .25);
+    transition: transform var(--transition), opacity var(--transition), box-shadow var(--transition);
+    transform-origin: center center;
+    opacity: 0.95
 }
 
-.cir {
-    width: 0;
-    height: 0;
-}
-
-.card.center h4 {
-    transition: all .2s linear;
-    color: var(--Accent);
-    width: 100%;
-    text-align: left;
-    text-decoration: underline solid var(--Accent);
-}
-
-.arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: #cfcfcfd8;
-    width: 35px;
-    height: 35px;
-    font-size: 20px;
+.meta {
     display: flex;
-    justify-content: center;
+    gap: 12px;
     align-items: center;
-    cursor: pointer;
-    border-radius: 50%;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    z-index: 2;
-    user-select: none;
+    width: 100%
 }
 
-.arrow:active {
-    transform: translateY(-50%) scale(0.95);
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 999px;
+    flex-shrink: 0;
+    overflow: hidden;
+    background: linear-gradient(135deg, #12374a, var(--Primary));
+    display: grid;
+    place-items: center;
+    color: #fff;
+    font-weight: 700;
 }
 
-.left-arrow {
-    left: -40px;
-}
-
-.right-arrow {
-    right: -40px;
-}
-
-.dots {
+.who {
     display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 30px;
+    flex-direction: column
 }
 
-.dot {
-    width: 10px;
-    height: 10px;
-    background-color: #bbb;
-    border-radius: 50%;
+.who .rating {
+    display: flex;
+    align-items: center
+}
+
+.rating .star {
+    color: #ffdd26;
+    font-size: 20px;
+}
+
+.who .name {
+    font-weight: 700;
+    color: #494949;
+}
+
+.who .role {
+    font-size: 13px;
+    color: #6d6d6d;
+}
+
+.text {
+    font-size: 15px;
+    line-height: 1.45;
+    color: #6b6b6b;
+    margin-top: 6px;
+
+}
+
+.slide--center {
+    transform: scale(var(--card-scale-center));
+    z-index: 3;
+    box-shadow: 0 18px 34px rgba(0, 0, 0, 0.29)
+}
+
+.slide--side {
+    transform: scale(var(--card-scale-side));
+    z-index: 2;
+    opacity: 0.98
+}
+
+.slide--other {
+    transform: scale(var(--card-scale-other));
+    z-index: 1;
+    opacity: 0.7
+}
+
+.controls {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px
+}
+
+.btn {
+    pointer-events: auto;
+    border: 0;
+    background: rgb(117 117 117 / 25%);
+    color: #858585;
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    backdrop-filter: blur(59px);
 }
 
-.dot.active {
-    background-color: #333;
-    transform: scale(1.5);
-}
-
-.dot.small {
-    transform: scale(0.7);
+.btn:active {
+    transform: scale(.97)
 }
 
 .faqs-con {
@@ -1032,12 +1086,9 @@ main {
         width: 100%;
     }
 
-    .review {
-        width: 97%;
-    }
-
-    .card {
-        flex: 0 0 33.5%;
+    .track{
+        gap: unset;
+        /* overflow: hidden; */
     }
 }
 
@@ -1100,19 +1151,14 @@ main {
         margin-top: 25px;
     }
 
-    .card {
-        flex: 0 0 52.5%;
-        transform: scale(0.8);
-    }
-
-    .card.center {
-        transform: scale(1);
-        position: relative;
-        left: 32px;
-    }
-
     .faqs-con {
         padding: 10px 20px;
+    }
+}
+
+@media (max-width:740px) {
+    .slide{
+        flex: 0 0 50%;
     }
 }
 
@@ -1155,19 +1201,26 @@ main {
     }
 
     .review {
-        width: 90%;
+        width: 100% !important;
     }
 
-    .review-heading {
-        font-size: 30px;
+    .carousel {
+        width: 100%;
+        height: 250px;
     }
 
-    .card {
-        flex: 0 0 51.4%;
+    .viewport {
+        width: 100%;
+        padding: 18px
     }
 
-    .card.center {
-        left: 20px;
+    .slide {
+        flex: 0 0 85%
+    }
+
+    .avatar {
+        width: 48px;
+        height: 48px
     }
 }
 
@@ -1268,24 +1321,6 @@ main {
         font-size: 21px;
     }
 
-    .review {
-        width: 81%;
-    }
-
-    .review-heading {
-        font-weight: 700;
-        font-size: 28px;
-    }
-
-    .card {
-        flex: 0 0 98.4%;
-    }
-
-    .card.center {
-        left: 3px;
-        box-shadow: inset 0px 0px 5px #000000a3;
-    }
-
     .faqs-con {
         padding: 10px 15px;
     }
@@ -1317,9 +1352,5 @@ main {
 
     .color-selection {
         gap: 10px !important;
-    }
-
-    .review {
-        width: 75%;
     }
 }

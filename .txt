@@ -1,1 +1,468 @@
-<%= (user.email).slice(0, 4)+ "*".repeat((user.email).split("@")[0].length-4) + "@" + (user.email).split("@")[1] %>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>3-Card Review Carousel (Editable)</title>
+  <style>
+    :root{
+      --w: min(100%,980px);
+      --gap: 18px;            /* gap between cards */
+      --accent: #ff6a00;
+      --bg: #0b0d12;
+      --card-scale-center: 1;
+      --card-scale-side: 0.88;
+      --card-scale-other: 0.78;
+      --transition: 450ms cubic-bezier(.22,.9,.25,1);
+      --autoplay-ms: 3500;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;padding:36px;min-height:100svh;display:grid;place-items:center;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: radial-gradient(1200px 800px at 10% 10%, #151823, #0b0d12 70%), #0b0d12;
+      color:#e7ebf3;
+    }
+
+    .carousel{
+      width:var(--w);max-width:980px;position:relative;
+    }
+
+    .viewport{
+      overflow:hidden;border-radius:14px;background:#0a0c10;padding:28px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.18);
+    }
+
+    .track{
+      display:flex;align-items:stretch;gap:var(--gap);transition:transform var(--transition);
+      will-change: transform;
+      padding:6px 0; /* small breathing space */
+    }
+
+    /* each slide takes 1/3rd of viewport minus gaps so 3 visible on wide screens */
+    .slide{
+      --card-w: calc((100% - (var(--gap) * 2)) / 3);
+      flex: 0 0 var(--card-w);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:12px;align-items:flex-start;
+      box-shadow: 0 6px 18px rgba(0,0,0,.25);transition: transform var(--transition), opacity var(--transition), box-shadow var(--transition);
+      transform-origin:center center;opacity:0.95;
+    }
+
+    /* card content */
+    .meta{display:flex;gap:12px;align-items:center;width:100%}
+    .avatar{width:56px;height:56px;border-radius:999px;flex-shrink:0;overflow:hidden;background:linear-gradient(135deg,#222,#111);display:grid;place-items:center;color:#fff;font-weight:700}
+    .who{display:flex;flex-direction:column}
+    .who .name{font-weight:700}
+    .who .role{font-size:13px;opacity:.65}
+
+    .text{font-size:15px;line-height:1.45;color:rgba(231,235,243,.95);margin-top:6px}
+
+    /* visual states */
+    .slide--center{transform: scale(var(--card-scale-center));z-index:3;box-shadow:0 18px 34px rgba(0,0,0,.5)}
+    .slide--side{transform: scale(var(--card-scale-side));z-index:2;opacity:0.98}
+    .slide--other{transform: scale(var(--card-scale-other));z-index:1;opacity:0.7}
+
+    /* controls + dots */
+    .controls{position:absolute;inset:0;pointer-events:none;display:flex;align-items:center;justify-content:space-between;padding:0 8px}
+    .btn{pointer-events:auto;border:0;background:rgba(255,255,255,.06);backdrop-filter: blur(6px);color:#fff;width:44px;height:44px;border-radius:999px;display:grid;place-items:center;cursor:pointer}
+    .btn:active{transform:scale(.97)}
+
+    .dots{position:absolute;left:50%;transform:translateX(-50%);bottom:12px;display:flex;gap:8px;padding:6px 10px;border-radius:999px;background:rgba(8,10,14,.55);backdrop-filter:blur(6px)}
+    .dot{width:10px;height:10px;border-radius:999px;border:2px solid rgba(255,255,255,.45);background:transparent}
+    .dot[aria-current="true"]{background:var(--accent);border-color:var(--accent)}
+
+    /* responsive: single card on small screens */
+    @media (max-width:640px){
+      .slide{flex:0 0 100%;}
+      .viewport{padding:18px}
+      .avatar{width:48px;height:48px}
+    }
+
+    /* small polish */
+    .rating{margin-left:auto;display:flex;gap:6px;align-items:center}
+    .stars{display:inline-grid;grid-auto-flow:column;gap:4px}
+    .star{width:14px;height:14px;display:inline-block}
+  </style>
+</head>
+<body>
+  <div class="carousel" aria-roledescription="carousel" aria-label="Customer reviews">
+    <div class="viewport" id="viewport">
+      <div class="track" id="track" role="list"></div>
+
+      <div class="controls" aria-hidden="false">
+        <button class="btn prev" aria-label="Previous review">◀</button>
+        <button class="btn next" aria-label="Next review">▶</button>
+      </div>
+
+      <div class="dots" id="dots" aria-hidden="false"></div>
+    </div>
+  </div>
+
+  <script>
+    /***********************************************
+     * Editable area: change reviews array or timing
+     ***********************************************/
+    const AUTOPLAY_MS = 3000; // change speed
+    const TRANSITION_MS = 450; // should match CSS --transition duration
+    const VISIBLE = 3;         // number of cards visible on wide screens
+
+    // Add/Remove/Modify reviews here. Each object becomes a card.
+    const reviews = [
+      { name: 'Ayesha Khan', role: 'Product Designer', text: 'This product changed how I work — clean, fast and ridiculously reliable. Highly recommended!', avatar: 'A' },
+      { name: 'Bilal Raza', role: 'Frontend Dev', text: 'I love the simplicity. Setup took minutes and the results look very professional.', avatar: 'B' },
+      { name: 'Sara Ahmed', role: 'Content Creator', text: 'Amazing UX and the animations are buttery smooth. My users love the new review section.', avatar: 'S' },
+      { name: 'Hamza Ali', role: 'Entrepreneur', text: 'Great performance and looks great on mobile. The auto-scroll feels natural.', avatar: 'H' },
+      { name: 'Zara Iqbal', role: 'Marketer', text: 'Clean, editable and modern — exactly what I needed for our landing page.', avatar: 'Z' }
+    ];
+
+    /***********************************************
+     * Implementation (you can edit below too if needed)
+     ***********************************************/
+
+    const viewport = document.getElementById('viewport');
+    const track = document.getElementById('track');
+    const dotsWrap = document.getElementById('dots');
+    const prevBtn = document.querySelector('.prev');
+    const nextBtn = document.querySelector('.next');
+
+    // create slides (including clones for smooth looping)
+    const cloneCount = VISIBLE; // clone this many from start/end
+
+    function buildSlides(){
+      track.innerHTML = '';
+      // clones from end (prepend)
+      for(let i = reviews.length - cloneCount; i < reviews.length; i++){
+        const r = reviews[(i+reviews.length)%reviews.length];
+        track.appendChild(makeSlide(r, true));
+      }
+      // real slides
+      for(let i=0;i<reviews.length;i++) track.appendChild(makeSlide(reviews[i], false));
+      // clones from start (append)
+      for(let i=0;i<cloneCount;i++) track.appendChild(makeSlide(reviews[i%reviews.length], true));
+    }
+
+    function makeSlide(data, isClone){
+      const el = document.createElement('article');
+      el.className = 'slide';
+      if(isClone) el.setAttribute('data-clone','true');
+      el.innerHTML = `
+        <div class="meta">
+          <div class="avatar">${escapeText(data.avatar || data.name.charAt(0))}</div>
+          <div class="who">
+            <div class="name">${escapeText(data.name)}</div>
+            <div class="role">${escapeText(data.role)}</div>
+          </div>
+          <div class="rating" aria-hidden="true">
+            <div class="stars">
+              <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+            </div>
+          </div>
+        </div>
+        <div class="text">${escapeText(data.text)}</div>
+      `;
+      return el;
+    }
+
+    function escapeText(s){return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')}
+
+    buildSlides();
+
+    let slides = Array.from(track.children);
+    const total = slides.length; // includes clones
+    const realCount = total - cloneCount*2;
+    let index = cloneCount; // start centered on first real item (index in 'slides')
+
+    // utility to read gap in px
+    function gapPx(){
+      const g = getComputedStyle(track).gap || getComputedStyle(track).getPropertyValue('gap');
+      return parseFloat(g) || 0;
+    }
+
+    function updateLayout(withTransition = true){
+      // recompute sizes
+      slides = Array.from(track.children);
+      const viewportW = viewport.clientWidth;
+      const slideW = slides[0].offsetWidth;
+      const step = slideW + gapPx();
+
+      // center formula: translateX = (viewportWidth/2) - (slideWidth/2) - index*step
+      const translateX = (viewportW/2) - (slideW/2) - index * step;
+      if(!withTransition) track.style.transition = 'none';
+      track.style.transform = `translateX(${translateX}px)`;
+      if(!withTransition){
+        // force reflow
+        track.getBoundingClientRect();
+        track.style.transition = '';
+      }
+
+      // assign visual states (center, side, other)
+      slides.forEach((s,i)=>{
+        s.classList.remove('slide--center','slide--side','slide--other');
+        const raw = i - index;
+        // normalize raw to shortest circular distance
+        let diff = raw;
+        const half = Math.floor(total/2);
+        if(diff > half) diff -= total;
+        if(diff < -half) diff += total;
+        if(diff === 0) s.classList.add('slide--center');
+        else if(diff === -1 || diff === 1) s.classList.add('slide--side');
+        else s.classList.add('slide--other');
+      });
+
+      updateDots();
+    }
+
+    function next(){ moveTo(index + 1); }
+    function prev(){ moveTo(index - 1); }
+
+    let isAnimating = false;
+
+    function moveTo(target){
+      if(isAnimating) return;
+      isAnimating = true;
+      index = target;
+      updateLayout(true);
+      // after transition, check clones
+      window.setTimeout(()=>{
+        if(index < cloneCount){
+          index = index + realCount; // jumped to left clones -> move to matching real
+          updateLayout(false);
+        } else if(index >= realCount + cloneCount){
+          index = index - realCount; // jumped to right clones
+          updateLayout(false);
+        }
+        isAnimating = false;
+      }, TRANSITION_MS);
+    }
+
+    // Dots
+    function buildDots(){
+      dotsWrap.innerHTML = '';
+      for(let i=0;i<realCount;i++){
+        const b = document.createElement('button');
+        b.className = 'dot';
+        b.setAttribute('aria-label', `Go to review ${i+1}`);
+        b.addEventListener('click', ()=> goTo(i));
+        dotsWrap.appendChild(b);
+      }
+    }
+
+    function updateDots(){
+      const logical = normalizeIndex(index);
+      Array.from(dotsWrap.children).forEach((d,i)=> d.setAttribute('aria-current', i===logical ? 'true' : 'false'));
+    }
+
+    function normalizeIndex(i){
+      let r = i - cloneCount; // 0..realCount-1 maybe out of range
+      r = ((r % realCount) + realCount) % realCount; // wrap
+      return r;
+    }
+
+    function goTo(real0){
+      if(isAnimating) return;
+      index = real0 + cloneCount;
+      moveTo(index);
+    }
+
+    // autoplay
+    let timer = null;
+    function startAutoplay(){ stopAutoplay(); timer = setInterval(()=> next(), AUTOPLAY_MS); }
+    function stopAutoplay(){ if(timer) clearInterval(timer); timer = null; }
+
+    // pause on hover/focus
+    viewport.addEventListener('mouseenter', stopAutoplay);
+    viewport.addEventListener('mouseleave', startAutoplay);
+    viewport.addEventListener('focusin', stopAutoplay);
+    viewport.addEventListener('focusout', startAutoplay);
+
+    // keyboard
+    viewport.tabIndex = 0;
+    viewport.addEventListener('keydown', (e)=>{ if(e.key==='ArrowRight') next(); if(e.key==='ArrowLeft') prev(); });
+
+    // pointer/drag (simple)
+    let drag = {active:false,startX:0,x:0};
+    function onDown(px){ drag.active=true; drag.startX=px; drag.x=px; stopAutoplay(); track.style.transition='none'; }
+    function onMove(px){ if(!drag.active) return; drag.x = px; const delta = drag.x - drag.startX; track.style.transform = `translateX(${(viewport.clientWidth/2) - (slides[0].offsetWidth/2) - index*(slides[0].offsetWidth + gapPx()) + delta}px)`; }
+    function onUp(){ if(!drag.active) return; track.style.transition=''; const delta = drag.x - drag.startX; const threshold = slides[0].offsetWidth * 0.15; if(delta > threshold) prev(); else if(delta < -threshold) next(); else updateLayout(true); drag.active=false; startAutoplay(); }
+
+    viewport.addEventListener('pointerdown', e=> onDown(e.clientX));
+    window.addEventListener('pointermove', e=> onMove(e.clientX));
+    window.addEventListener('pointerup', onUp);
+    viewport.addEventListener('touchstart', e=> onDown(e.touches[0].clientX), {passive:true});
+
+    // buttons
+    prevBtn.addEventListener('click', prev);
+    nextBtn.addEventListener('click', next);
+
+    // init
+    buildDots();
+    updateLayout(false);
+    startAutoplay();
+
+    // responsive: recalc on resize
+    let resizeTimer = null;
+    window.addEventListener('resize', ()=>{
+      if(resizeTimer) clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(()=> updateLayout(false), 120);
+    });
+
+  </script>
+</body>
+</html>
+
+
+
+< !doctype html >
+    <html lang="en">
+        <head>
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width,initial-scale=1" />
+            <title>3-Card Review Carousel (HTML Data)</title>
+            <style>
+                :root{
+                    --w: min(100%,980px);
+                --gap: 18px;
+                --accent: #ff6a00;
+                --bg: #0b0d12;
+                --card-scale-center: 1;
+                --card-scale-side: 0.88;
+                --card-scale-other: 0.78;
+                --transition: 450ms cubic-bezier(.22,.9,.25,1);
+                --autoplay-ms: 3500;
+    }
+                *{box - sizing:border-box}
+                body{
+                    margin:0;padding:36px;min-height:100svh;display:grid;place-items:center;
+                font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+                background: radial-gradient(1200px 800px at 10% 10%, #151823, #0b0d12 70%), #0b0d12;
+                color:#e7ebf3;
+    }
+                .carousel{width:var(--w);max-width:980px;position:relative;}
+                .viewport{overflow:hidden;border-radius:14px;background:#0a0c10;padding:28px;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+                .track{display:flex;align-items:stretch;gap:var(--gap);transition:transform var(--transition);will-change: transform;padding:6px 0}
+                .slide{--card - w: calc((100% - (var(--gap) * 2)) / 3);flex:0 0 var(--card-w);background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:12px;align-items:flex-start;box-shadow:0 6px 18px rgba(0,0,0,.25);transition:transform var(--transition),opacity var(--transition),box-shadow var(--transition);transform-origin:center center;opacity:0.95}
+                .meta{display:flex;gap:12px;align-items:center;width:100%}
+                .avatar{width:56px;height:56px;border-radius:999px;flex-shrink:0;overflow:hidden;background:linear-gradient(135deg,#222,#111);display:grid;place-items:center;color:#fff;font-weight:700}
+                .who{display:flex;flex-direction:column}
+                .who .name{font - weight:700}
+                .who .role{font - size:13px;opacity:.65}
+                .text{font - size:15px;line-height:1.45;color:rgba(231,235,243,.95);margin-top:6px}
+                .slide--center{transform: scale(var(--card-scale-center));z-index:3;box-shadow:0 18px 34px rgba(0,0,0,.5)}
+                .slide--side{transform: scale(var(--card-scale-side));z-index:2;opacity:0.98}
+                .slide--other{transform: scale(var(--card-scale-other));z-index:1;opacity:0.7}
+                .controls{position:absolute;inset:0;pointer-events:none;display:flex;align-items:center;justify-content:space-between;padding:0 8px}
+                .btn{pointer - events:auto;border:0;background:rgba(255,255,255,.06);backdrop-filter: blur(6px);color:#fff;width:44px;height:44px;border-radius:999px;display:grid;place-items:center;cursor:pointer}
+                .btn:active{transform:scale(.97)}
+                .dots{position:absolute;left:50%;transform:translateX(-50%);bottom:12px;display:flex;gap:8px;padding:6px 10px;border-radius:999px;background:rgba(8,10,14,.55);backdrop-filter:blur(6px)}
+                .dot{width:10px;height:10px;border-radius:999px;border:2px solid rgba(255,255,255,.45);background:transparent}
+                .dot[aria-current="true"]{background:var(--accent);border-color:var(--accent)}
+                @media (max-width:640px){.slide{flex:0 0 100%}.viewport{padding:18px}.avatar{width:48px;height:48px}}
+                .rating{margin - left:auto;display:flex;gap:6px;align-items:center}
+                .stars{display:inline-grid;grid-auto-flow:column;gap:4px}
+                .star{width:14px;height:14px;display:inline-block}
+            </style>
+        </head>
+        <body>
+            <div class="carousel" aria-roledescription="carousel" aria-label="Customer reviews">
+                <div class="viewport" id="viewport">
+                    <div class="track" id="track" role="list">
+                        <article class="slide">
+                            <div class="meta">
+                                <div class="avatar">A</div>
+                                <div class="who"><div class="name">Ayesha Khan</div><div class="role">Product Designer</div></div>
+                                <div class="rating"><div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div></div>
+                            </div>
+                            <div class="text">This product changed how I work — clean, fast and ridiculously reliable. Highly recommended!</div>
+                        </article>
+                        <article class="slide">
+                            <div class="meta">
+                                <div class="avatar">B</div>
+                                <div class="who"><div class="name">Bilal Raza</div><div class="role">Frontend Dev</div></div>
+                                <div class="rating"><div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div></div>
+                            </div>
+                            <div class="text">I love the simplicity. Setup took minutes and the results look very professional.</div>
+                        </article>
+                        <article class="slide">
+                            <div class="meta">
+                                <div class="avatar">S</div>
+                                <div class="who"><div class="name">Sara Ahmed</div><div class="role">Content Creator</div></div>
+                                <div class="rating"><div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div></div>
+                            </div>
+                            <div class="text">Amazing UX and the animations are buttery smooth. My users love the new review section.</div>
+                        </article>
+                        <article class="slide">
+                            <div class="meta">
+                                <div class="avatar">H</div>
+                                <div class="who"><div class="name">Hamza Ali</div><div class="role">Entrepreneur</div></div>
+                                <div class="rating"><div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div></div>
+                            </div>
+                            <div class="text">Great performance and looks great on mobile. The auto-scroll feels natural.</div>
+                        </article>
+                        <article class="slide">
+                            <div class="meta">
+                                <div class="avatar">Z</div>
+                                <div class="who"><div class="name">Zara Iqbal</div><div class="role">Marketer</div></div>
+                                <div class="rating"><div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div></div>
+                            </div>
+                            <div class="text">Clean, editable and modern — exactly what I needed for our landing page.</div>
+                        </article>
+                    </div>
+                    <div class="controls" aria-hidden="false">
+                        <button class="btn prev" aria-label="Previous review">◀</button>
+                        <button class="btn next" aria-label="Next review">▶</button>
+                    </div>
+                    <div class="dots" id="dots" aria-hidden="false"></div>
+                </div>
+            </div>
+            <script>
+                const AUTOPLAY_MS = 3000;
+                const TRANSITION_MS = 450;
+                const VISIBLE = 3;
+                const viewport = document.getElementById('viewport');
+                const track = document.getElementById('track');
+                const dotsWrap = document.getElementById('dots');
+                const prevBtn = document.querySelector('.prev');
+                const nextBtn = document.querySelector('.next');
+
+                let slides = Array.from(track.children);
+                const realCount = slides.length;
+                const cloneCount = VISIBLE;
+
+                // clone first/last slides for looping
+                for(let i=slides.length-cloneCount;i<slides.length;i++) track.insertBefore(slides[i].cloneNode(true), track.firstChild);
+                for(let i=0;i<cloneCount;i++) track.appendChild(slides[i].cloneNode(true));
+                slides = Array.from(track.children);
+
+                let index = cloneCount;
+                let isAnimating = false;
+
+                function gapPx(){return parseFloat(getComputedStyle(track).gap)||0;}
+                function updateLayout(withTransition=true){
+      const slideW=slides[0].offsetWidth;const step=slideW+gapPx();
+                const translateX=(viewport.clientWidth/2)-(slideW/2)-index*step;
+                if(!withTransition)track.style.transition='none';
+                track.style.transform=`translateX(${translateX}px)`;
+                if(!withTransition){track.getBoundingClientRect();track.style.transition='';}
+      slides.forEach((s,i)=>{
+                    s.classList.remove('slide--center', 'slide--side', 'slide--other');
+                const diff=i-index;const half=Math.floor(slides.length/2);
+        let d=diff;if(d>half)d-=slides.length;if(d<-half)d+=slides.length;
+                if(d===0)s.classList.add('slide--center');else if(d===-1||d===1)s.classList.add('slide--side');else s.classList.add('slide--other');
+      });
+                updateDots();
+    }
+                function next(){moveTo(index + 1)};function prev(){moveTo(index - 1)};
+                function moveTo(t){if(isAnimating)return;isAnimating=true;index=t;updateLayout(true);setTimeout(()=>{if(index<cloneCount){index += realCount;updateLayout(false);}else if(index>=realCount+cloneCount){index -= realCount;updateLayout(false);}isAnimating=false;},TRANSITION_MS);}
+                function buildDots(){dotsWrap.innerHTML = '';for(let i=0;i<realCount;i++){const b=document.createElement('button');b.className='dot';b.addEventListener('click',()=>goTo(i));dotsWrap.appendChild(b);}};
+                function updateDots(){const logical=(index-cloneCount+realCount)%realCount;Array.from(dotsWrap.children).forEach((d,i)=>d.setAttribute('aria-current',i===logical?'true':'false'));}
+                function goTo(r){if(isAnimating)return;index=r+cloneCount;moveTo(index);}
+                let timer=null;function startAutoplay(){stopAutoplay();timer=setInterval(()=>next(),AUTOPLAY_MS);}function stopAutoplay(){if(timer)clearInterval(timer);timer=null;}
+                viewport.addEventListener('mouseenter',stopAutoplay);viewport.addEventListener('mouseleave',startAutoplay);
+                prevBtn.addEventListener('click',prev);nextBtn.addEventListener('click',next);
+                buildDots();updateLayout(false);startAutoplay();
+    window.addEventListener('resize',()=>setTimeout(()=>updateLayout(false),120));
+            </script>
+        </body>
+    </html>

@@ -79,16 +79,21 @@ function moveTo(targetIndex) {
     isAnimating = true;
     slideIndex = targetIndex;
     setOffset(slideIndex, true);
+
     // After transition, if we are on a clone, jump to the mirrored real slide without animation
-    if (slideIndex === 0) { // we are on lastClone visually
-        slideIndex = realCount; // jump to last real
-        setOffset(slideIndex, false);
-    } else if (slideIndex === realCount + 1) { // we are on firstClone visually
-        slideIndex = 1; // jump to first real
-        setOffset(slideIndex, false);
-    }
+    window.setTimeout(() => {
+        if (slideIndex === 0) {
+            // we are on lastClone visually
+            slideIndex = realCount; // jump to last real
+            setOffset(slideIndex, false);
+        } else if (slideIndex === realCount + 1) {
+            // we are on firstClone visually
+            slideIndex = 1; // jump to first real
+            setOffset(slideIndex, false);
+        }
+        isAnimating = false;
+    }, TRANSITION_MS);
     updateDots();
-    isAnimating = false;
 }
 
 function goTo(realIndex1Based) {
@@ -112,13 +117,6 @@ function stopAutoplay() {
 // Resize handling to keep slides aligned
 window.addEventListener('resize', () => setOffset(slideIndex, false));
 
-// Keyboard support
-viewport.tabIndex = 0; // make focusable
-viewport.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight') next();
-    if (e.key === 'ArrowLeft') prev();
-});
-
 // Buttons
 prevBtn.addEventListener('click', prev);
 nextBtn.addEventListener('click', next);
@@ -127,6 +125,3 @@ nextBtn.addEventListener('click', next);
 setOffset(slideIndex, false);
 updateDots();
 startAutoplay();
-
-// Example: dynamically replace slides with API data
-// You can fetch ad images/links and rebuild the track, then re-run init logic.

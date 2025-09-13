@@ -23,66 +23,43 @@ icon.addEventListener("animationend", function () {
 function toggleTheme() {
     const btn = document.querySelector(".theme__icon");
     btn.classList.toggle("clicked");
-}  
+}
 
-// Change Products
 picBoxes.forEach((e) => {
     e.addEventListener("click", () => {
-        imgLogo.style.display = "none"
-        customizeRight.style.padding = " 0px 50px"
-        customizeBox.style.height = "400px"
-        positionSize.style.display = "none"
-        imgSelection.style.width = "unset"
-        imgSelection.style.justifyContent = "center"
-        colorSelection.style.gap = "10px"
-
         picBoxes.forEach((x) => {
-            x.style.boxShadow = "0px 0px 2px #000000cf";
-        });
-        e.style.boxShadow = "#000000d9 3px 3px 5px";
-
-        let imgSRC1 = e.innerHTML;
-        let SRC1 = imgSRC1.split('src="')[1].split('"')[0];
-        customizePic.src = SRC1;
-
-        let SRC2 = SRC1.split("customizabale/")[1];
-        if (SRC2.includes("MenTshirt") || SRC2.includes("Perfume")) {
-            customizePic.style.height = "100%";
+            x.classList.remove("active");
+        })
+        colorBoxes.forEach((x) => {
+            x.classList.remove("active");
+        })
+        document.querySelector(".color-box.white").classList.add("active");
+        let mainSRC = e.children[0].src
+        if (mainSRC.includes("MugWhite") || mainSRC.includes("Perfume")) {
+            colorSelection.style.display = "none";
         }
-        else if (SRC2.includes("FemTshirt")) {
-            customizePic.style.height = "75%";
+        else {
+            colorSelection.style.display = "flex";
         }
-        else if (SRC2.includes("Mug")) {
-            customizePic.style.height = "85%";
-        }
+        customizePic.src = mainSRC
+        e.classList.add("active");
+    })
+})
 
-        let whiteBox = document.querySelector(".color-box.white");
-        colorBoxes.forEach((y) => {
-            y.style.boxShadow = "unset";
-        });
-        if (whiteBox) {
-            whiteBox.style.boxShadow = "2px 2px 2px #000000d9";
-        }
-    });
-});
-
-// Change Colors of Products
-colorBoxes.forEach((element) => {
-    element.addEventListener("click", () => {
-        let classText = element.className.slice(10)
+colorBoxes.forEach((e) => {
+    e.addEventListener("click", () => {
+        colorBoxes.forEach((x) => {
+            x.classList.remove("active");
+        })
         let imgSRC2 = customizePic.src;
-
+        let classText = e.className.slice(10)
         let startIndex = imgSRC2.indexOf("assets");
         let result = imgSRC2.substring(startIndex).substring(0, 30);
         let mainSRC = `${result}${classText}.png`
         customizePic.src = mainSRC;
-
-        colorBoxes.forEach((y) => {
-            y.style.boxShadow = "unset";
-        });
-        element.style.boxShadow = "2px 2px 2px #000000d9";
-    });
-});
+        e.classList.add("active");
+    })
+})
 
 // Logo on TShirts
 document.getElementById("fileInput").addEventListener("change", function () {
@@ -171,85 +148,103 @@ faq_btn.forEach(e => {
     });
 });
 
-// Review Cards
-let cardsPerView = getCardsPerView();
-let currentIndex = 0;
-let autoScrollInterval;
-function getCardsPerView() {
-    const width = window.innerWidth;
-    if (width <= 690) return 1;
-    if (width <= 1024) return 2;
-    return 3;
+const AUTOPLAY_MS = 3000;
+const TRANSITION_MS = 450;
+const VISIBLE = 3;
+const viewport = document.getElementById('viewport');
+const track = document.getElementById('track');
+const dotsWrap = document.getElementById('dots');
+const prevBtn = document.querySelector('.prev');
+const nextBtn = document.querySelector('.next');
+
+let slides = Array.from(track.children);
+const realCount = slides.length;
+const cloneCount = VISIBLE;
+
+for (let i = slides.length - cloneCount; i < slides.length; i++) track.insertBefore(slides[i].cloneNode(true), track
+    .firstChild);
+for (let i = 0; i < cloneCount; i++) track.appendChild(slides[i].cloneNode(true));
+slides = Array.from(track.children);
+
+let index = cloneCount;
+let isAnimating = false;
+
+function gapPx() {
+    return parseFloat(getComputedStyle(track).gap) || 0;
 }
-function slide(direction) {
-    const totalCards = carousel.children.length;
-    const maxIndex = totalCards - cardsPerView;
-    currentIndex += direction;
-    if (currentIndex < 0) currentIndex = 0;
-    if (currentIndex > maxIndex) currentIndex = 0;
-    updateSlider();
-}
-function slideTo(index) {
-    currentIndex = index;
-    updateSlider();
-}
-function updateSlider() {
-    const translateX = carousel.children[0].offsetWidth * currentIndex;
-    carousel.style.transform = `translateX(-${translateX}px)`;
-    updateCenterCard();
-    updateDots();
-}
-function updateCenterCard() {
-    const cards = carousel.querySelectorAll(".card");
-    cards.forEach(card => card.classList.remove("center"));
-    const centerIdx = currentIndex + Math.floor(cardsPerView / 2);
-    if (cards[centerIdx]) {
-        cards[centerIdx].classList.add("center");
+
+function updateLayout(withTransition = true) {
+    const slideW = slides[0].offsetWidth;
+    const step = slideW + gapPx();
+    // In which -27 is changeable
+    let translateX = ((viewport.clientWidth / 2) - (slideW / 2) - index * step) - 27;
+    // window.addEventListener('resize', () => {
+    //     if (window.innerWidth <= 640) {
+    //         console.log(`Bye!`);
+    //         translateX = (((viewport.clientWidth / 2) - (slideW / 2) - index * step) - 27) - 1000;
+    //     }
+    // })
+    if (!withTransition) track.style.transition = 'none';
+    track.style.transform = `translateX(${translateX}px)`;
+    if (!withTransition) {
+        track.getBoundingClientRect();
+        track.style.transition = '';
     }
-}
-function updateDots() {
-    dotsContainer.innerHTML = "";
-    const totalCards = carousel.children.length;
-    const dotCount = totalCards - cardsPerView;
-    for (let i = 0; i <= dotCount; i++) {
-        const dot = document.createElement("div");
-        dot.classList.add("dot");
-        if (i === currentIndex) {
-            dot.classList.add("active");
-        } else {
-            dot.classList.add("small");
-        }
-        dot.addEventListener("click", () => {
-            slideTo(i);
-            resetAutoScroll();
-        });
-        dotsContainer.appendChild(dot);
-    }
-}
-function addClickListeners() {
-    const cards = carousel.querySelectorAll('.card');
-    cards.forEach((card, index) => {
-        card.addEventListener('click', () => {
-            slideTo(index - 1);
-            resetAutoScroll();
-        });
+    slides.forEach((s, i) => {
+        s.classList.remove('slide--center', 'slide--side', 'slide--other');
+        const diff = i - index;
+        const half = Math.floor(slides.length / 2);
+        let d = diff;
+        if (d > half) d -= slides.length;
+        if (d < -half) d += slides.length;
+        if (d === 0) s.classList.add('slide--center');
+        else if (d === -1 || d === 1) s.classList.add('slide--side');
+        else s.classList.add('slide--other');
     });
 }
-function startAutoScroll() {
-    autoScrollInterval = setInterval(() => {
-        slide(1);
-    }, 6000);
+
+function next() {
+    moveTo(index + 1)
+};
+
+function prev() {
+    moveTo(index - 1)
+};
+
+function moveTo(t) {
+    if (isAnimating) return;
+    isAnimating = true;
+    index = t;
+    updateLayout(true);
+    setTimeout(() => {
+        if (index < cloneCount) {
+            index += realCount;
+            updateLayout(false);
+        } else if (index >= realCount + cloneCount) {
+            index -= realCount;
+            updateLayout(false);
+        }
+        isAnimating = false;
+    }, TRANSITION_MS);
 }
-function resetAutoScroll() {
-    clearInterval(autoScrollInterval);
-    startAutoScroll();
+function goTo(r) {
+    if (isAnimating) return;
+    index = r + cloneCount;
+    moveTo(index);
 }
-window.addEventListener("resize", () => {
-    cardsPerView = getCardsPerView();
-    currentIndex = 0;
-    updateSlider();
-});
-cardsPerView = getCardsPerView();
-updateSlider();
-addClickListeners();
-startAutoScroll();
+let timer = null;
+
+function startAutoplay() {
+    stopAutoplay();
+    timer = setInterval(() => next(), AUTOPLAY_MS);
+}
+
+function stopAutoplay() {
+    if (timer) clearInterval(timer);
+    timer = null;
+}
+prevBtn.addEventListener('click', prev);
+nextBtn.addEventListener('click', next);
+updateLayout(false);
+startAutoplay();
+window.addEventListener('resize', () => setTimeout(() => updateLayout(false), 120));

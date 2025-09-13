@@ -2,379 +2,425 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Product Card — Description, Ratings & Q/A</title>
-    <style>
-        :root {
-            --Primary: #023047;
-            --Secondary: #219EBC;
-            --Accent: #FB8500;
-            --Highlight: #F8F9FA;
-            --Heading: #CCD6F6;
-            
-            --card-bg: #ffffff;
-            --muted: #6b7280;
-            --accent: var(--Secondary);
-            --accent-600: #1b87a3;
-            --radius: 12px;
-            --shadow: 0 6px 18px rgba(13, 17, 24, 0.08);
-            --max-width: 980px;
-            --star-size: 20px;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>3-Card Review Carousel (HTML Data)</title>
+  <style>
+    :root {
+      --Primary: #023047;
+      --Secondary: #219EBC;
+      --Accent: #FB8500;
+      --Highlight: #F8F9FA;
+      --Heading: #CCD6F6;
 
-        * {
-            box-sizing: border-box;
-            font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-        }
+      --w: min(100%, 980px);
+      --gap: 35px;
+      --bg: #0b0d12;
+      --card-scale-center: 1;
+      --card-scale-side: 0.88;
+      --card-scale-other: 0.78;
+      --transition: 450ms cubic-bezier(.22, .9, .25, 1);
+      --autoplay-ms: 3500;
+    }
 
-        body {
-            background: linear-gradient(180deg, var(--Highlight) 0%, #ffffff 100%);
-            padding: 28px;
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            min-height: 100vh;
-            color: var(--Primary)
-        }
+    * {
+      box-sizing: border-box
+    }
 
-        .container {
-            width: 100%;
-            max-width: var(--max-width)
-        }
+    body {
+      margin: 0;
+      padding: 36px;
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: var(--Highlight);
+      color: #e7ebf3;
+    }
 
-        .card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            overflow: hidden
-        }
+    .carousel {
+      width: var(--w);
+      max-width: 980px;
+      position: relative;
+    }
 
-        .product-grid {
-            display: grid;
-            grid-template-columns: 360px 1fr;
-            gap: 24px;
-            padding: 22px
-        }
+    .viewport {
+      overflow: hidden;
+      border-radius: 14px;
+      /* background: ; */
+      padding: 28px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .18)
+    }
 
-        .gallery {
-            background: var(--Highlight);
-            padding: 16px;
-            border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            align-items: center
-        }
+    .track {
+      display: flex;
+      align-items: stretch;
+      gap: var(--gap);
+      transition: transform var(--transition);
+      will-change: transform;
+      padding: 6px 0
+    }
 
-        .main-img {
-            width: 100%;
-            height: 300px;
-            border-radius: 8px;
-            object-fit: cover;
-            background: linear-gradient(90deg, #e6eef0, #f7fbfc)
-        }
+    .slide {
+      --card-w: calc((100% - (var(--gap) * 2)) / 3);
+      flex: 0 0 var(--card-w);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+      border-radius: 12px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: flex-start;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, .25);
+      transition: transform var(--transition), opacity var(--transition), box-shadow var(--transition);
+      transform-origin: center center;
+      opacity: 0.95
+    }
 
-        .thumbs {
-            display: flex;
-            gap: 8px
-        }
+    .meta {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      width: 100%
+    }
 
-        .thumbs img {
-            width: 64px;
-            height: 54px;
-            border-radius: 8px;
-            object-fit: cover;
-            opacity: 0.85;
-            border: 2px solid transparent
-        }
+    .avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 999px;
+      flex-shrink: 0;
+      overflow: hidden;
+      background: linear-gradient(135deg, #12374a, var(--Primary));
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-weight: 700;
+    }
 
-        .thumbs img.active {
-            border-color: var(--Accent);
-            opacity: 1
-        }
+    .who {
+      display: flex;
+      flex-direction: column
+    }
 
-        .info {
-            padding: 8px 6px
-        }
+    .who .rating {
+      display: flex;
+      align-items: center
+    }
 
-        h1 {
-            font-size: 20px;
-            margin: 0 0 6px;
-            color: var(--Heading)
-        }
+    .rating .star {
+      color: #ffdd26;
+      font-size: 20px;
+    }
 
-        .price {
-            font-weight: 700;
-            font-size: 20px;
-            color: var(--Primary)
-        }
+    .who .name {
+      font-weight: 700;
+      color: #494949;
+    }
 
-        .meta {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            margin: 10px 0;
-            color: var(--muted);
-            font-size: 14px
-        }
+    .who .role {
+      font-size: 13px;
+      color: #6d6d6d;
+    }
 
-        .actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 12px
-        }
+    .text {
+      font-size: 15px;
+      line-height: 1.45;
+      color: #6b6b6b;
+      margin-top: 6px;
 
-        .btn {
-            padding: 10px 14px;
-            border-radius: 10px;
-            border: 0;
-            font-weight: 600
-        }
+    }
 
-        .btn-buy {
-            background: var(--Accent);
-            color: white
-        }
+    .slide--center {
+      transform: scale(var(--card-scale-center));
+      z-index: 3;
+      box-shadow: 0 18px 34px rgba(0, 0, 0, 0.29)
+    }
 
-        .btn-cart {
-            background: #f1f5f9;
-            color: var(--Primary)
-        }
+    .slide--side {
+      transform: scale(var(--card-scale-side));
+      z-index: 2;
+      opacity: 0.98
+    }
 
-        /* Additional Info area */
-        .additional {
-            padding: 18px;
-            border-top: 1px solid #eef2f7;
-            background: linear-gradient(180deg, #ffffff, #fbfdff)
-        }
+    .slide--other {
+      transform: scale(var(--card-scale-other));
+      z-index: 1;
+      opacity: 0.7
+    }
 
-        .section {
-            margin-bottom: 18px
-        }
+    .controls {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 8px
+    }
 
-        .section h3 {
-            margin: 0 0 8px;
-            font-size: 16px;
-            color: var(--Primary)
-        }
+    .btn {
+      pointer-events: auto;
+      border: 0;
+      background: rgba(255, 255, 255, .06);
+      backdrop-filter: blur(6px);
+      color: #fff;
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      cursor: pointer
+    }
 
-        p.desc {
-            color: var(--muted);
-            line-height: 1.6
-        }
+    .btn:active {
+      transform: scale(.97)
+    }
 
-        /* Rating display */
-        .rating-row {
-            display: flex;
-            align-items: center;
-            gap: 12px
-        }
+    .dots {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 12px;
+      display: flex;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgb(8 10 14 / 18%);
+      backdrop-filter: blur(6px);
+    }
 
-        .avg {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--Primary)
-        }
+    .dot {
+      width: 10px;
+      height: 10px;
+      cursor: pointer;
+      border-radius: 999px;
+      border: 2px solid rgba(255, 255, 255, .45);
+      background: transparent
+    }
 
-        .stars {
-            display: flex;
-            gap: 4px
-        }
+    .dot[aria-current="true"] {
+      background: var(--Accent);
+      border-color: var(--Accent)
+    }
 
-        .star {
-            width: var(--star-size);
-            height: var(--star-size);
-            display: inline-block;
-            color: var(--Accent)
-        }
+    @media (max-width:640px) {
+      .slide {
+        flex: 0 0 100%
+      }
 
-        .rating-count {
-            color: var(--muted);
-            font-size: 14px
-        }
+      .viewport {
+        padding: 18px
+      }
 
-        .dist-list {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-top: 10px
-        }
-
-        .dist {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px
-        }
-
-        .bar-wrap {
-            flex: 1;
-            background: #eef2f6;
-            border-radius: 999px;
-            height: 10px;
-            overflow: hidden
-        }
-
-        .bar {
-            height: 100%;
-            border-radius: 999px;
-            background: linear-gradient(90deg, var(--Accent), var(--accent-600))
-        }
-
-        /* Reviews */
-        .reviews {
-            display: flex;
-            flex-direction: column;
-            gap: 10px
-        }
-
-        .review {
-            border-radius: 10px;
-            padding: 12px;
-            background: #fbfdff;
-            border: 1px solid #eef3f7
-        }
-
-        .review .meta {
-            justify-content: space-between;
-            display: flex
-        }
-
-        .review p {
-            margin: 8px 0 0;
-            color: var(--Primary)
-        }
-
-        /* Q/A */
-        .qa-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px
-        }
-
-        .qa {
-            padding: 10px;
-            border-radius: 8px;
-            background: #fff;
-            border: 1px solid #eff3f6
-        }
-
-        .qa .q {
-            font-weight: 600;
-            color: var(--Primary)
-        }
-
-        .qa .a {
-            margin-top: 8px;
-            color: var(--muted)
-        }
-
-        /* responsive */
-        @media (max-width:880px) {
-            .product-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .main-img {
-                height: 240px
-            }
-        }
-    </style>
+      .avatar {
+        width: 48px;
+        height: 48px
+      }
+    }
+  </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="card">
-            <div class="product-grid">
-                <div class="gallery">
-                    <img src="https://via.placeholder.com/350x300" class="main-img" alt="Product" />
-                    <div class="thumbs">
-                        <img src="https://via.placeholder.com/100" class="active" alt="thumb1" />
-                        <img src="https://via.placeholder.com/100" alt="thumb2" />
-                        <img src="https://via.placeholder.com/100" alt="thumb3" />
-                    </div>
-                </div>
-                <div class="info">
-                    <h1>Product Name</h1>
-                    <div class="price">$49.99</div>
-                    <div class="meta">In Stock • Free Shipping</div>
-                    <div class="actions">
-                        <button class="btn btn-buy">Buy Now</button>
-                        <button class="btn btn-cart">Add to Cart</button>
-                    </div>
-                </div>
+  <div class="carousel" aria-roledescription="carousel" aria-label="Customer reviews">
+    <div class="viewport" id="viewport">
+      <div class="track" id="track" role="list">
+        <article class="slide">
+          <div class="meta">
+            <div class="avatar">A</div>
+            <div class="who">
+              <div class="rating">
+                <span class="star">★</span><span class="star">★</span><span class="star">★</span><span
+                  class="star">★</span><span class="star">★</span>
+              </div>
+              <div class="name">Ayesha Khan</div>
+              <div class="role">Product Designer</div>
             </div>
-            <div class="additional">
-                <div class="section">
-                    <h3>Description</h3>
-                    <p class="desc">This is a sample product description. It highlights features, material, and other
-                        details about the product.</p>
-                </div>
-                <div class="section">
-                    <h3>Ratings</h3>
-                    <div class="rating-row">
-                        <div class="avg">4.5</div>
-                        <div class="stars">★★★★★</div>
-                        <div class="rating-count">120 ratings</div>
-                    </div>
-                    <div class="dist-list">
-                        <div class="dist"><span>5★</span>
-                            <div class="bar-wrap">
-                                <div class="bar" style="width:80%"></div>
-                            </div><span>80%</span>
-                        </div>
-                        <div class="dist"><span>4★</span>
-                            <div class="bar-wrap">
-                                <div class="bar" style="width:10%"></div>
-                            </div><span>10%</span>
-                        </div>
-                        <div class="dist"><span>3★</span>
-                            <div class="bar-wrap">
-                                <div class="bar" style="width:5%"></div>
-                            </div><span>5%</span>
-                        </div>
-                        <div class="dist"><span>2★</span>
-                            <div class="bar-wrap">
-                                <div class="bar" style="width:3%"></div>
-                            </div><span>3%</span>
-                        </div>
-                        <div class="dist"><span>1★</span>
-                            <div class="bar-wrap">
-                                <div class="bar" style="width:2%"></div>
-                            </div><span>2%</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="section">
-                    <h3>Customer Reviews</h3>
-                    <div class="reviews">
-                        <div class="review">
-                            <div class="meta"><strong>Ali</strong><span>★★★★★</span></div>
-                            <p>Great product, highly recommend!</p>
-                        </div>
-                        <div class="review">
-                            <div class="meta"><strong>Sara</strong><span>★★★★☆</span></div>
-                            <p>Good quality but shipping was slow.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="section">
-                    <h3>Questions & Answers</h3>
-                    <div class="qa-list">
-                        <div class="qa">
-                            <div class="q">Q: Does this come in different colors?</div>
-                            <div class="a">A: Yes, it's available in red, blue, and black.</div>
-                        </div>
-                        <div class="qa">
-                            <div class="q">Q: Is there a warranty?</div>
-                            <div class="a">A: 1 year manufacturer warranty included.</div>
-                        </div>
-                    </div>
-                </div>
+          </div>
+          <div class="text">This product changed how I work — clean, fast and ridiculously reliable. Highly recommended!
+          </div>
+        </article>
+        <article class="slide">
+          <div class="meta">
+            <div class="avatar">B</div>
+            <div class="who">
+              <div class="rating">
+                <span class="star">★</span><span class="star">★</span><span class="star">★</span><span
+                  class="star">★</span><span class="star">★</span>
+              </div>
+              <div class="name">Bilal Raza</div>
+              <div class="role">Frontend Dev</div>
             </div>
-        </div>
+          </div>
+          <div class="text">I love the simplicity. Setup took minutes and the results look very professional.</div>
+        </article>
+        <article class="slide">
+          <div class="meta">
+            <div class="avatar">S</div>
+            <div class="who">
+              <div class="rating">
+                <span class="star">★</span><span class="star">★</span><span class="star">★</span><span
+                  class="star">★</span><span class="star">★</span>
+              </div>
+              <div class="name">Sara Ahmed</div>
+              <div class="role">Content Creator</div>
+            </div>
+          </div>
+          <div class="text">Amazing UX and the animations are buttery smooth. My users love the new review section.
+          </div>
+        </article>
+        <article class="slide">
+          <div class="meta">
+            <div class="avatar">H</div>
+            <div class="who">
+              <div class="rating">
+                <span class="star">★</span><span class="star">★</span><span class="star">★</span><span
+                  class="star">★</span><span class="star">★</span>
+              </div>
+              <div class="name">Hamza Ali</div>
+              <div class="role">Entrepreneur</div>
+            </div>
+          </div>
+          <div class="text">Great performance and looks great on mobile. The auto-scroll feels natural.</div>
+        </article>
+        <article class="slide">
+          <div class="meta">
+            <div class="avatar">Z</div>
+            <div class="who">
+              <div class="rating">
+                <span class="star">★</span><span class="star">★</span><span class="star">★</span><span
+                  class="star">★</span><span class="star">★</span>
+              </div>
+              <div class="name">Zara Iqbal</div>
+              <div class="role">Marketer</div>
+            </div>
+          </div>
+          <div class="text">Clean, editable and modern — exactly what I needed for our landing page.</div>
+        </article>
+      </div>
+      <div class="controls" aria-hidden="false">
+        <button class="btn prev" aria-label="Previous review">◀</button>
+        <button class="btn next" aria-label="Next review">▶</button>
+      </div>
+      <div class="dots" id="dots" aria-hidden="false"></div>
     </div>
+  </div>
+  <script>
+    const AUTOPLAY_MS = 3000;
+    const TRANSITION_MS = 450;
+    const VISIBLE = 3;
+    const viewport = document.getElementById('viewport');
+    const track = document.getElementById('track');
+    const dotsWrap = document.getElementById('dots');
+    const prevBtn = document.querySelector('.prev');
+    const nextBtn = document.querySelector('.next');
+
+    let slides = Array.from(track.children);
+    const realCount = slides.length;
+    const cloneCount = VISIBLE;
+
+    // clone first/last slides for looping
+    for (let i = slides.length - cloneCount; i < slides.length; i++) track.insertBefore(slides[i].cloneNode(true), track
+      .firstChild);
+    for (let i = 0; i < cloneCount; i++) track.appendChild(slides[i].cloneNode(true));
+    slides = Array.from(track.children);
+
+    let index = cloneCount;
+    let isAnimating = false;
+
+    function gapPx() {
+      return parseFloat(getComputedStyle(track).gap) || 0;
+    }
+
+    function updateLayout(withTransition = true) {
+      const slideW = slides[0].offsetWidth;
+      const step = slideW + gapPx();
+      // In which 27 is changeable
+      const translateX = ((viewport.clientWidth / 2) - (slideW / 2) - index * step) - 27;
+      if (!withTransition) track.style.transition = 'none';
+      track.style.transform = `translateX(${translateX}px)`;
+      if (!withTransition) {
+        track.getBoundingClientRect();
+        track.style.transition = '';
+      }
+      slides.forEach((s, i) => {
+        s.classList.remove('slide--center', 'slide--side', 'slide--other');
+        const diff = i - index;
+        const half = Math.floor(slides.length / 2);
+        let d = diff;
+        if (d > half) d -= slides.length;
+        if (d < -half) d += slides.length;
+        if (d === 0) s.classList.add('slide--center');
+        else if (d === -1 || d === 1) s.classList.add('slide--side');
+        else s.classList.add('slide--other');
+      });
+      updateDots();
+    }
+
+    function next() {
+      moveTo(index + 1)
+    };
+
+    function prev() {
+      moveTo(index - 1)
+    };
+
+    function moveTo(t) {
+      if (isAnimating) return;
+      isAnimating = true;
+      index = t;
+      updateLayout(true);
+      setTimeout(() => {
+        if (index < cloneCount) {
+          index += realCount;
+          updateLayout(false);
+        } else if (index >= realCount + cloneCount) {
+          index -= realCount;
+          updateLayout(false);
+        }
+        isAnimating = false;
+      }, TRANSITION_MS);
+    }
+
+    function buildDots() {
+      dotsWrap.innerHTML = '';
+      for (let i = 0; i < realCount; i++) {
+        const b = document.createElement('div');
+        b.className = 'dot';
+        b.addEventListener('click', () => goTo(i));
+        dotsWrap.appendChild(b);
+      }
+    };
+
+    function updateDots() {
+      const logical = (index - cloneCount + realCount) % realCount;
+      Array.from(dotsWrap.children).forEach((d, i) => d.setAttribute('aria-current', i === logical ? 'true' : 'false'));
+    }
+
+    function goTo(r) {
+      if (isAnimating) return;
+      index = r + cloneCount;
+      moveTo(index);
+    }
+    let timer = null;
+
+    function startAutoplay() {
+      stopAutoplay();
+      timer = setInterval(() => next(), AUTOPLAY_MS);
+    }
+
+    function stopAutoplay() {
+      if (timer) clearInterval(timer);
+      timer = null;
+    }
+    viewport.addEventListener('mouseenter', stopAutoplay);
+    viewport.addEventListener('mouseleave', startAutoplay);
+    prevBtn.addEventListener('click', prev);
+    nextBtn.addEventListener('click', next);
+    buildDots();
+    updateLayout(false);
+    startAutoplay();
+    window.addEventListener('resize', () => setTimeout(() => updateLayout(false), 120));
+  </script>
 </body>
 
 </html>
