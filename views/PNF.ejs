@@ -2,8 +2,8 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
         integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -11,12 +11,13 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://www.google.com/recaptcha/api.js"></script>
-    <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon">
-    <link rel="stylesheet" href="/css/output.css">
-    <link rel="stylesheet" href="/css/common/loader.css">
+    <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon" />
+    <link rel="stylesheet" href="/css/output.css" />
+    <link rel="stylesheet" href="/css/common/loader.css" />
     <link rel="stylesheet" href="/css/common/logo.css" />
     <link rel="stylesheet" href="/css/common/footer.css" />
     <title>Page Not Found</title>
+
     <style>
         :root {
             --Primary: #023047;
@@ -26,21 +27,24 @@
             --Heading: #CCD6F6;
         }
 
+        * {
+            box-sizing: border-box;
+        }
+
         body,
         html {
-            /* font-family: Arial, sans-serif; */
             margin: 0;
             padding: 0;
             background-color: #F8F9FA;
             scroll-behavior: smooth;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         .main {
-            background-size: max(1200px, 100vw);
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
-            align-items: center;
             flex-direction: column;
+            align-items: center;
         }
 
         .nav-con {
@@ -48,7 +52,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-wrap: wrap;
             padding: 10px 20px;
             background-color: var(--Primary);
             color: var(--Highlight);
@@ -61,55 +64,83 @@
             display: flex;
             align-items: center;
             cursor: pointer;
+            gap: 5px;
         }
 
         .content {
+            flex: 1;
             width: 100%;
-            height: 100%;
             display: flex;
             justify-content: center;
-            flex-direction: column;
             align-items: center;
+            flex-direction: column;
+            padding: 20px;
+            text-align: center;
         }
 
         h2 {
-            font-size: 30px;
+            font-size: 36px;
             font-weight: 700;
-            text-transform: uppercase;
-            text-align: center;
-            letter-spacing: 2px;
             color: var(--Accent);
-            user-select: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
         }
 
         img {
-            width: 350px;
+            width: 100%;
+            max-width: 400px;
+            height: auto;
             user-select: none;
             -webkit-user-drag: none;
+            margin-bottom: 20px;
         }
 
         p {
-            opacity: .7;
-            text-align: center;
-            user-select: none;
+            font-size: 18px;
+            color: #333;
+            opacity: 0.8;
+            margin-bottom: 20px;
         }
 
         button {
-            margin-top: 15px;
-            padding: 10px 20px;
-            border-radius: 5px;
-            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
             background-color: var(--Secondary);
             color: var(--Highlight);
-            font-weight: 500;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
-            user-select: none;
-            box-shadow: 0px 0px 9px var(--Secondary);
+            box-shadow: 0px 0px 8px rgba(33, 158, 188, 0.5);
+            transition: background-color 0.3s ease;
         }
 
-        @media (max-width: 600px) {
-            .logo-text {
-                font-size: 26px;
+        button:hover {
+            background-color: #197f9f;
+        }
+
+        @media (max-width: 768px) {
+            h2 {
+                font-size: 28px;
+            }
+
+            p {
+                font-size: 16px;
+            }
+
+            button {
+                width: 100%;
+                max-width: 250px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h2 {
+                font-size: 24px;
+            }
+
+            p {
+                font-size: 15px;
             }
         }
     </style>
@@ -133,19 +164,19 @@
                 </svg>
             </div>
         </div>
+
         <div class="content">
             <h2>Oops! Page not found</h2>
-            <img src="/assets/404.png" alt="">
+            <img src="/assets/404.png" alt="404 Not Found" />
             <p>Sorry, we couldn’t find that page.<br />Let’s get you back to shopping.</p>
             <button onclick="clickBack()">Go Back To Shop</button>
         </div>
     </div>
 
-
     <script src="/js/common/at-start.js"></script>
     <script>
         function clickBack() {
-            window.location.href = "/shop"
+            window.location.href = "/shop";
         }
     </script>
     <script src="/js/common/at-last.js"></script>

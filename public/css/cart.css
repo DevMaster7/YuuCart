@@ -439,7 +439,7 @@ html {
     background: #158daa;
 }
 
-@media (max-width:850px) {
+@media (max-width:1050px) {
     .content-container {
         flex-direction: column;
         gap: 20px;
@@ -488,7 +488,7 @@ html {
 
 @media (max-width:700px) {
     .bar .text {
-        font-size: 18px;
+        font-size: 17px;
     }
 
     .trash-btn {
@@ -583,7 +583,7 @@ html {
 
 @media (max-width:500px) {
     .bar .text {
-        font-size: 17px;
+        font-size: 15px;
     }
 
     .trash-btn {
@@ -674,6 +674,22 @@ html {
 
     .left .cards .pro-details div .cust-size {
         font-size: 12.5px;
+    }
+
+    .content-container .right .heading{
+        font-size: 19px;
+    }
+
+    .content-container .right .total-item{
+        font-size: 16px;
+    }
+
+    .content-container .right .total{
+        font-size: 21px;
+    }
+
+    .content-container .right button{
+        font-size: 16px;
     }
 }
 

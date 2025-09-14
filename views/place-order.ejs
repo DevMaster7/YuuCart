@@ -25,7 +25,7 @@
             <div class="left">
                 <div class="box-con">
                     <div class="box-bar-con">
-                        <div class="box-heading">Your And Your Delivery Address Details</div>
+                        <div class="box-heading">Your Personal Details</div>
                         <a href="/user/account" class="box-change acc-btn">Change</a>
                     </div>
                     <div class="user-details-con">
@@ -47,11 +47,11 @@
                                 <%= user.city %>
                             </div>
                         </div>
-                    </div>
-                    <div class="address-text">
-                        <span>Address:</span>
                         <div>
-                            <%= user.address %>
+                            <span>Address:</span>
+                            <div class="address">
+                                <%= user.address %>
+                            </div>
                         </div>
                     </div>
                 </div>

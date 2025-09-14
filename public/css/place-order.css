@@ -79,7 +79,7 @@ html {
 
 .user-details-con {
     color: #03283b;
-    padding: 3px 10px;
+    padding: 3px 200px 3px 10px;
     display: flex;
     justify-content: start;
     align-items: center;
@@ -91,18 +91,11 @@ html {
     display: flex;
 }
 
-.address-text span,
 .user-details-con span {
     font-weight: 600;
     font-size: 16px;
     color: var(--Secondary);
     margin-right: 10px;
-}
-
-.address-text {
-    color: #03283b;
-    padding: 6px 10px;
-    display: flex;
 }
 
 .product-detail-con {
@@ -190,6 +183,7 @@ html {
     background: #e5e5e5;
     color: #02141c;
     font-size: 14px;
+    font-weight: 500;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -378,7 +372,7 @@ html {
     background-position: center;
 }
 
-@media (max-width: 950px) {
+@media (max-width: 1050px) {
     .boxs-container {
         flex-direction: column;
     }
@@ -392,24 +386,73 @@ html {
     }
 }
 
-@media (max-width: 580px) {
-    .user-details-con {
-        flex-direction: column;
-        align-items: unset;
-        gap: 10px;
+@media (max-width: 660px) {
+    .main-heading {
+        font-size: 30px;
+    }
+
+    .box-heading {
+        font-size: 18px;
+    }
+
+    .box-change {
+        font-size: 15px;
+    }
+
+    .user-details-con span {
+        font-size: 15px;
     }
 
     .user-details-con div {
-        display: flex;
-        justify-content: space-between;
+        font-size: 15px;
     }
 
-    .user-details-con div div {
-        width: 68%;
+    .product-name {
+        font-size: 18px;
+    }
+
+    .orignal-price-con {
+        gap: 5px;
+    }
+
+    .orignal-price-con .pro-price {
+        font-size: 23px;
+    }
+
+    .mini-price-con .pro-quantity {
+        font-size: 17px;
+    }
+
+    .mini-price-con .pro-price {
+        font-size: 22px;
+    }
+
+    .product-size-color {
+        gap: 3px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 580px) {
+    .main-container {
+        padding: 0px 10px 30px;
+    }
+
+    .user-details-con {
+        display: grid;
+        grid-template-columns: 1fr max-content;
+        gap: 6px 8px;
+        align-items: center;
+        padding: 3px 10px;
+    }
+
+    .user-details-con div {
+        display: contents;
     }
 
     .main-heading {
-        font-size: 27px;
+        font-size: 25px;
+        padding: 20px 0px;
     }
 
     .box-heading {
@@ -429,7 +472,7 @@ html {
     }
 
     .orignal-price-con .pro-price {
-        font-size: 23px;
+        font-size: 21px;
     }
 
     .orignal-price-con .before-dis {
@@ -450,7 +493,7 @@ html {
     }
 
     .mini-price-con .pro-price {
-        font-size: 23px;
+        font-size: 21px;
     }
 
     .total-price {
