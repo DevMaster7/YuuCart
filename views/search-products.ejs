@@ -73,13 +73,13 @@
         <div class="no-products">
             <div class="heading">You Search is Out From Our Imagination</div>
             <img src="/assets/noResult.png" alt="">
-            <div class="products-count">0 Items Found Related To Your Search: "<span class="no-search"></span>"
+            <div class="products-count">0 Item found for "<span class="no-search"></span>"
             </div>
         </div>
         <% } else { %>
         <div class="additional-con">
             <div class="products-count">
-                <%= products.length %> Items Found Related To Your Search: "<span></span>"
+                <%= products.length %> Items found for "<span></span>"
             </div>
             <div class="view-icons">
                 <i class="iactive fa-solid fa-list list-btn"></i>
@@ -126,7 +126,7 @@
                                 <div class="pro-rate">
                                     <div class="stars-con">
                                         <div class="stars"
-                                            style="font-size: 1.25em; --rating: <%= ((product.proRating/5)*100)-1 %>%;">
+                                            style="font-size: 1em; --rating: <%= ((product.proRating/5)*100)-1 %>%;">
                                         </div>
                                     </div>
                                     <span class="pro-revs">

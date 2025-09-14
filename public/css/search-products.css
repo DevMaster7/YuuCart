@@ -151,7 +151,7 @@ html {
     border-bottom: none;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
-    padding: 10px 15px;
+    padding: 10px;
 }
 
 .products-count {
@@ -718,7 +718,7 @@ html {
     }
 
     .main-card {
-        width: 175px;
+        width: 190px;
     }
 
     .main-card .cards .product-img {
@@ -752,15 +752,28 @@ html {
     .products-grid-con .cards .pro-details .pro-info .customizeable {
         font-size: 7px;
     }
+
+    .add-cart-btn {
+        padding: 7px;
+        font-size: 12px;
+    }
 }
 
 @media (max-width:420px) {
     .main-card {
-        width: 150px;
+        width: 160px;
     }
 
     .main-card .cards .product-img {
         height: 160px;
+    }
+
+    .products-grid-con .cards .pro-details .pro-info .another .pro-buyer{
+        font-size: 10px;
+    }
+
+    .stars-con{
+    font-size: 13px;
     }
 }
 
