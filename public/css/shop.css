@@ -120,43 +120,14 @@ html {
     justify-content: center;
     align-items: center;
     gap: 10px;
+    padding: 0px 10px;
     margin-top: 10px;
-}
-
-.ads-con {
-    width: 70%;
-    height: 300px;
-    display: flex;
-    align-items: center;
-    position: relative;
-    cursor: pointer;
-    background: yellow;
-}
-
-.icon-cir {
-    height: 25px;
-    width: 25px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    position: absolute;
-    background: #a2a2a259;
-    opacity: 0;
-    transition: .2s ease;
-}
-
-.icon-cir i {
-    color: white;
-}
-
-.ads-con:hover .icon-cir {
-    opacity: 1;
 }
 
 .vouchers-con {
     width: 20%;
-    height: 300px;
+    height: var(--h);
+    flex-shrink: 0;
     background: #f12828;
 }
 
@@ -321,6 +292,10 @@ html {
         scroll-margin-top: 140px;
     }
 
+    .products-categories-con{
+        padding: 40px 0px;
+    }
+
     .vouchers-con {
         width: 30%;
     }
@@ -358,6 +333,10 @@ html {
     .search-con {
         margin-top: 8px;
     }
+
+    .product-headings {
+        font-size: 29px;
+    }
 }
 
 @media (max-width:580px) {
@@ -365,8 +344,8 @@ html {
         display: none;
     }
 
-    .ads-con {
-        width: 95%;
+    .products-categories-con{
+        padding: 30px 0px;
     }
 
     .main-card {
@@ -408,6 +387,10 @@ html {
     .customizeable {
         font-size: 7.5px;
     }
+
+    .product-headings {
+        font-size: 28px;
+    }
 }
 
 @media (max-width:490px) {
@@ -422,6 +405,10 @@ html {
     .product-img {
         height: 180px;
     }
+
+    .product-headings {
+        font-size: 26px;
+    }
 }
 
 @media (max-width:420px) {
@@ -432,11 +419,23 @@ html {
     .product-img {
         height: 150px;
     }
+
+    .product-headings {
+        font-size: 24px;
+    }
+
+    .products-categories-con{
+        padding: 25px 0px;
+    }
 }
 
 @media (max-width:360px) {
     .main-card {
         width: 130px;
+    }
+
+    .products-categories-con{
+        padding: 20px 0px;
     }
 
     .product-img {
@@ -477,5 +476,14 @@ html {
 
     .right {
         width: unset;
+    }
+
+    .right .btns{
+        font-size: 16px;
+        padding: 0px 7px;
+    }
+
+    .product-headings {
+        font-size: 23px;
     }
 }

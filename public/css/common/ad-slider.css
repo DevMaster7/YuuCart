@@ -128,3 +128,14 @@
         height: 40px;
     }
 }
+
+@media (max-width: 400px) {
+    :root {
+        --dot-size: 8px;
+    }
+
+    .slider .btn {
+        width: 30px;
+        height: 30px;
+    }
+}
