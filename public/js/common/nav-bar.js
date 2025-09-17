@@ -18,54 +18,72 @@ if (document.cookie.includes("ULGG")) {
         userContent();
         document.querySelector(".cart-con").style.display = "flex";
     }
-    let x = 0
+    let x = 0;
+
     document.querySelector(".user-con").addEventListener("click", () => {
         if (x == 0) {
             userLinks(pageName);
-            x = 1
-            document.querySelector(".user-content-con").addEventListener("mouseleave", () => {
+            x = 1;
+
+            let userContentCon = document.querySelector(".user-content-con");
+
+            userContentCon.addEventListener("mouseleave", () => {
+                if (document.querySelector(".user-content-con")) {
+                    document.querySelector(".user-content-con").remove();
+                    x = 0;
+                }
+            });
+
+            document.addEventListener("click", function handler(e) {
+                if (!userContentCon.contains(e.target) && !document.querySelector(".user-con").contains(e.target)) {
+                    if (document.querySelector(".user-content-con")) {
+                        document.querySelector(".user-content-con").remove();
+                        x = 0;
+                    }
+                    document.removeEventListener("click", handler); // ek dafa ka listener
+                }
+            });
+
+            document.querySelector(".logout").addEventListener("click", () => {
+                let mainDiv = document.createElement("div");
+                mainDiv.classList.add("log-main");
+                mainDiv.innerHTML = `
+                <div class="logout-con">
+                    <div class="text">Are You Sure To Logout!</div>
+                    <div class="btn-con">
+                        <button class="btn yes">Logout</button>
+                        <button class="btn no">Cancel</button>
+                    </div>
+                </div>
+            `;
+                document.body.prepend(mainDiv);
+
+                document.querySelector(".no").addEventListener("click", () => {
+                    document.querySelector(".log-main").remove();
+                });
+
+                document.querySelector(".log-main").addEventListener("click", (e) => {
+                    if (e.target == document.querySelector(".logout-con")) return;
+                    document.querySelector(".log-main").remove();
+                });
+
+                document.querySelector(".yes").addEventListener("click", () => {
+                    document.cookie = "ULGG=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+                    if (pageName !== "home") {
+                        window.location.href = '/shop';
+                    } else {
+                        window.location.href = '/';
+                    }
+                });
+            });
+
+        } else {
+            if (document.querySelector(".user-content-con")) {
                 document.querySelector(".user-content-con").remove();
-                x = 0
-            })
+                x = 0;
+            }
         }
-        else {
-            document.querySelector(".user-content-con").remove();
-            x = 0
-        }
-        document.querySelector(".logout").addEventListener("click", () => {
-            let mainDiv = document.createElement("div")
-            mainDiv.classList.add("log-main")
-            mainDiv.innerHTML = `<div class="logout-con">
-            <div class="text">Are You Sure To Logout!</div>
-            <div class="btn-con">
-                <button class="btn yes">Logout</button>
-                <button class="btn no">Cancel</button>
-            </div>
-            </div>`
-            document.getElementsByTagName("body")[0].prepend(mainDiv)
-
-            document.querySelector(".no").addEventListener("click", () => {
-                document.querySelector(".log-main").remove()
-            })
-
-            document.querySelector(".log-main").addEventListener("click", (e) => {
-                if (e.target == document.querySelector(".logout-con")) {
-                    return
-                }
-                document.querySelector(".log-main").remove();
-            })
-
-            document.querySelector(".yes").addEventListener("click", () => {
-                document.cookie = "ULGG=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
-                if (pageName !== "home") {
-                    window.location.href = '/shop';
-                }
-                else {
-                    window.location.href = '/';
-                }
-            })
-        })
-    })
+    });
 }
 else {
     if (pageName == "home") {
