@@ -34,7 +34,7 @@ router.post("/updateProfilePic", optionalVerifyToken, upload.single("file"), asy
     const user = await userModel.findById(token._QCUI_UI);
     user.userImg = imageUrl;
     await user.save();
-    res.redirect("/user/my-account");
+    res.redirect("/user/account");
 })
 router.post("/verifyUser", optionalVerifyToken,
     body("pass").trim().isLength({ min: 8 }),

@@ -307,6 +307,7 @@
     .data-container {
         width: 100%;
         padding: 20px;
+        scroll-margin-top: 70px;
     }
 }
 

@@ -7,7 +7,9 @@ document.body.style.overflow = "hidden";
 
 window.addEventListener("load", () => {
     setTimeout(() => {
-        document.querySelector(".loader-wrapper").remove();
-        document.body.style.overflow = "auto";
+        if (document.querySelector(".loader-wrapper")) {
+            document.querySelector(".loader-wrapper").remove();
+            document.body.style.overflow = "auto";
+        }
     }, 400);
 });

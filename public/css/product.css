@@ -161,7 +161,6 @@ html {
     min-width: 300px;
     max-width: 300px;
     display: flex;
-    align-items: center;
     border-radius: 6px;
     overflow: hidden;
     cursor: crosshair;
@@ -170,6 +169,7 @@ html {
 
 .zoom-image {
     width: 100%;
+    object-fit: contain;
     transition: transform 0.1s ease;
     transform-origin: center center;
 }
@@ -635,8 +635,8 @@ p.desc {
     background: #efefef8f;
     box-shadow: 1px 2px 10px #0000001f;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 10px;
 }
 
@@ -885,6 +885,11 @@ p.desc {
 }
 
 @media (max-width:770px) {
+    .product-pic-con {
+        max-width: unset;
+        max-height: 230px; 
+    }
+
     .product-con {
         align-items: center;
         flex-direction: column;

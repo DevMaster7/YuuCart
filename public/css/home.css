@@ -190,6 +190,11 @@ main {
     display: none;
 }
 
+.user-con img {
+    width: 100%;
+    object-fit: cover;
+}
+
 .user-content-con {
     width: 180px;
     border-radius: 3px;
@@ -1086,7 +1091,7 @@ main {
         width: 100%;
     }
 
-    .track{
+    .track {
         gap: unset;
         /* overflow: hidden; */
     }
@@ -1157,7 +1162,7 @@ main {
 }
 
 @media (max-width:740px) {
-    .slide{
+    .slide {
         flex: 0 0 50%;
     }
 }

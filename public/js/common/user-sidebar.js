@@ -86,6 +86,15 @@ sideBarMaker()
 
 document.querySelectorAll(".side-btns").forEach((btn) => {
     btn.addEventListener("click", () => {
+        let icon = document.querySelector(".nav-con").querySelector(".left").getElementsByTagName("i")[0];
+        if (window.innerWidth <= 770) {
+            icon.classList.remove("fa-xmark")
+            icon.classList.add("fa-bars")
+            document.querySelector(".side-nav").style.transform = "translateX(-100%)";
+            setTimeout(() => {
+                document.querySelector(".side-nav-con").style.display = "none";
+            }, 300);
+        }
         document.querySelectorAll(".side-btns").forEach((btn) => {
             btn.classList.remove("activeBtn")
             btn.querySelector(".icon").classList.remove("activeIcon")
@@ -117,6 +126,13 @@ function func() {
         document.querySelectorAll(".side-btns")[2].classList.add("activeBtn")
         document.querySelectorAll(".side-btns")[2].querySelector(".icon").classList.add("activeIcon")
     }
+    // let icon = document.querySelector(".nav-con").querySelector(".left").getElementsByTagName("i")[0]
+    // icon.classList.remove("fa-xmark")
+    // icon.classList.add("fa-bars")
+    // document.querySelector(".side-nav").style.transform = "translateX(-100%)";
+    // setTimeout(() => {
+    //     document.querySelector(".side-nav-con").style.display = "none";
+    // }, 300);
 }
 func()
 
