@@ -278,4 +278,9 @@
         border-left: none;
         border-right: none;
     }
+
+    .tab-bar .tab {
+        height: 45px;
+        font-size: 14px;
+    }
 }

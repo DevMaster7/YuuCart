@@ -150,48 +150,7 @@
 
 
     <script src="/js/common/at-start.js"></script>
-    <script>
-        function handleButtonClick(event) {
-            event.stopPropagation();
-            event.preventDefault();
-        }
-        document.querySelectorAll(".add-cart-btn").forEach(btn => {
-            btn.addEventListener("click", async () => {
-                const proID = btn.closest(".cards").querySelector(".product-img").dataset.productid;
-                const res = await fetch('/shop/add-to-cart', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        proID
-                    }),
-                });
-                const res1 = await res.json();
-                if (res1.success) {
-                    window.location.href = `/shop/cart`;
-                }
-            })
-        })
-        document.querySelectorAll(".trash-btn").forEach(btn => {
-            btn.addEventListener("click", async () => {
-                const proID = btn.closest(".cards").querySelector(".product-img").dataset.productid;
-                const res = await fetch('/shop/remove-from-wishlist', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        proID
-                    }),
-                });
-                const res1 = await res.json();
-                if (res1.success) {
-                    window.location.reload();
-                }
-            })
-        })
-    </script>
+    <script src="/js/users/my-wishlist.js"></script>
     <script src="/js/user.js"></script>
     <script src="/js/common/user-sidebar.js"></script>
     <script src="/js/common/footer.js"></script>
