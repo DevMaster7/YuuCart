@@ -409,6 +409,10 @@
         font-size: 7.5px;
         padding-left: 3px;
     }
+
+    .stars-con {
+        font-size: 13px;
+    }
 }
 
 @media (max-width:480px) {

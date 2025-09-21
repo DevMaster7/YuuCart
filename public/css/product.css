@@ -971,6 +971,10 @@ p.desc {
     .product-con .pro-buyer {
         font-size: 14px;
     }
+
+    .stars-con {
+        font-size: 13px;
+    }
 }
 
 @media (max-width:420px) {

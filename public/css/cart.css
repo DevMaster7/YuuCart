@@ -657,7 +657,7 @@ html {
     }
 
     .left .cards .pro-details .pro-info .another .pro-buyer {
-        font-size: 11px;
+        font-size: 13px;
     }
 
     .left .cards .pro-details .pro-info .another .pro-rate {
@@ -691,6 +691,10 @@ html {
 
     .content-container .right button {
         font-size: 16px;
+    }
+
+    .stars-con{
+        font-size: 13px;
     }
 }
 
