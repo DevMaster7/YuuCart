@@ -226,6 +226,11 @@ html {
     font-size: 24px;
 }
 
+.left .cards .pro-details .pro-price-con .pro-price.deactive {
+    opacity: 0.5;
+    font-size: 16px;
+}
+
 .left .cards .pro-details .pro-price-con .pro-cust-price {
     font-size: 24px;
     color: var(--Accent);
@@ -659,10 +664,6 @@ html {
         padding: 0px 0px 0px 1px;
     }
 
-    .left .cards .pro-details .pro-info .another .pro-rate i {
-        font-size: 11px;
-    }
-
     .left .cards .pro-details .pro-info .another .pro-rate .pro-revs {
         font-size: 9px;
     }
@@ -676,19 +677,19 @@ html {
         font-size: 12.5px;
     }
 
-    .content-container .right .heading{
+    .content-container .right .heading {
         font-size: 19px;
     }
 
-    .content-container .right .total-item{
+    .content-container .right .total-item {
         font-size: 16px;
     }
 
-    .content-container .right .total{
+    .content-container .right .total {
         font-size: 21px;
     }
 
-    .content-container .right button{
+    .content-container .right button {
         font-size: 16px;
     }
 }

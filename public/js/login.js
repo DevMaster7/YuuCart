@@ -106,8 +106,9 @@ document.querySelector(".forgot-btn").addEventListener("click", () => {
     document.body.appendChild(overlay);
     document.body.style.overflow = "hidden";
 
+    let gcp = document.getElementsByTagName("head")[0].dataset.gcp;
     grecaptcha.render("captcha-container", {
-        sitekey: "6LdTOrcrAAAAAJ5lTh8huR1i2Na0bEgO3Zqi-8tF",
+        sitekey: gcp,
     });
 
     overlay.addEventListener("click", (e) => {

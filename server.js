@@ -27,6 +27,7 @@ app.use(session({
   saveUninitialized: false,
   cookie: { secure: false }
 }));
+app.locals.RECAPTCHA_SITE_KEY = process.env.RECAPTCHA_SITE_KEY;
 app.use(cookieParser())
 app.use(passport.initialize());
 app.use(passport.session());
@@ -293,3 +294,4 @@ app.use((req, res) => {
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
 })
+// npx localtunnel --port 3000 --subdomain quickcart

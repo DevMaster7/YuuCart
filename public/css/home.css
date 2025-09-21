@@ -206,7 +206,6 @@ main {
     display: flex;
     justify-content: space-around;
     flex-direction: column;
-    gap: 5px;
     padding: 5px;
     border: 1px solid var(--Heading);
 }
@@ -338,7 +337,7 @@ main {
     margin-top: 10px;
 }
 
-.btn-con {
+.landing-center .btn-con {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -372,12 +371,26 @@ main {
     background-repeat: repeat-x;
     background-position: 0 -100%;
     transition: .7s ease;
+    animation: pulse 1.3s ease infinite;
 }
 
 .shop-btn:hover {
     color: white;
     background-position: center;
 }
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(33, 157, 188, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 15px 5px rgba(0, 119, 255, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 119, 255, 0);
+    }
+}
+
 
 .login-btn:hover {
     background: #bb6407;
@@ -906,7 +919,7 @@ main {
     padding: 0 8px
 }
 
-.btn {
+.controls .btn {
     pointer-events: auto;
     border: 0;
     background: rgb(117 117 117 / 25%);
@@ -920,7 +933,7 @@ main {
     backdrop-filter: blur(59px);
 }
 
-.btn:active {
+.controls .btn:active {
     transform: scale(.97)
 }
 

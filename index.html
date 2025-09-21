@@ -1,426 +1,212 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>3-Card Review Carousel (HTML Data)</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuickCart - Shop Smarter</title>
   <style>
-    :root {
-      --Primary: #023047;
-      --Secondary: #219EBC;
-      --Accent: #FB8500;
-      --Highlight: #F8F9FA;
-      --Heading: #CCD6F6;
-
-      --w: min(100%, 980px);
-      --gap: 35px;
-      --bg: #0b0d12;
-      --card-scale-center: 1;
-      --card-scale-side: 0.88;
-      --card-scale-other: 0.78;
-      --transition: 450ms cubic-bezier(.22, .9, .25, 1);
-      --autoplay-ms: 3500;
-    }
-
+    /* Reset & Base */
     * {
-      box-sizing: border-box
-    }
-
-    body {
       margin: 0;
-      padding: 36px;
-      min-height: 100svh;
-      display: grid;
-      place-items: center;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background: var(--Highlight);
-      color: #e7ebf3;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f9f9f9;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
     }
 
-    .carousel {
-      width: var(--w);
-      max-width: 980px;
-      position: relative;
-    }
-
-    .viewport {
-      overflow: hidden;
-      border-radius: 14px;
-      /* background: ; */
-      padding: 28px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, .18)
-    }
-
-    .track {
-      display: flex;
-      align-items: stretch;
-      gap: var(--gap);
-      transition: transform var(--transition);
-      will-change: transform;
-      padding: 6px 0
-    }
-
-    .slide {
-      --card-w: calc((100% - (var(--gap) * 2)) / 3);
-      flex: 0 0 var(--card-w);
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
-      border-radius: 12px;
-      padding: 18px;
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+        url('https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1350&q=80') 
+        no-repeat center center/cover;
+      color: white;
+      height: 100vh;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      align-items: flex-start;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, .25);
-      transition: transform var(--transition), opacity var(--transition), box-shadow var(--transition);
-      transform-origin: center center;
-      opacity: 0.95
-    }
-
-    .meta {
-      display: flex;
-      gap: 12px;
+      justify-content: center;
       align-items: center;
-      width: 100%
+      text-align: center;
+      padding: 0 20px;
+    }
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 15px;
+    }
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 25px;
+      max-width: 600px;
+    }
+    .hero .btn {
+      background: #ff6600;
+      color: white;
+      padding: 12px 28px;
+      font-size: 1rem;
+      border-radius: 25px;
+      transition: background 0.3s ease;
+    }
+    .hero .btn:hover {
+      background: #e05500;
     }
 
-    .avatar {
-      width: 56px;
-      height: 56px;
-      border-radius: 999px;
-      flex-shrink: 0;
-      overflow: hidden;
-      background: linear-gradient(135deg, #12374a, var(--Primary));
-      display: grid;
-      place-items: center;
+    /* Info Sections */
+    .section {
+      padding: 60px 20px;
+      background: white;
+      text-align: center;
+    }
+    .section h2 {
+      font-size: 2rem;
+      margin-bottom: 15px;
+      color: #222;
+    }
+    .section p {
+      font-size: 1rem;
+      color: #555;
+      max-width: 600px;
+      margin: 0 auto 30px;
+    }
+    .icons {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    .icon-box {
+      max-width: 220px;
+      text-align: center;
+    }
+    .icon-box img {
+      width: 60px;
+      margin-bottom: 15px;
+    }
+    .icon-box h3 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: #333;
+    }
+    .icon-box p {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    /* Footer */
+    footer {
+      background: #222;
+      color: #aaa;
+      text-align: center;
+      padding: 40px 20px;
+    }
+    footer h3 {
       color: #fff;
-      font-weight: 700;
+      margin-bottom: 20px;
     }
-
-    .who {
-      display: flex;
-      flex-direction: column
+    footer .links {
+      margin-bottom: 20px;
     }
-
-    .who .rating {
-      display: flex;
-      align-items: center
+    footer .links a {
+      margin: 0 10px;
+      color: #aaa;
+      transition: color 0.3s;
     }
-
-    .rating .star {
-      color: #ffdd26;
-      font-size: 20px;
-    }
-
-    .who .name {
-      font-weight: 700;
-      color: #494949;
-    }
-
-    .who .role {
-      font-size: 13px;
-      color: #6d6d6d;
-    }
-
-    .text {
-      font-size: 15px;
-      line-height: 1.45;
-      color: #6b6b6b;
-      margin-top: 6px;
-
-    }
-
-    .slide--center {
-      transform: scale(var(--card-scale-center));
-      z-index: 3;
-      box-shadow: 0 18px 34px rgba(0, 0, 0, 0.29)
-    }
-
-    .slide--side {
-      transform: scale(var(--card-scale-side));
-      z-index: 2;
-      opacity: 0.98
-    }
-
-    .slide--other {
-      transform: scale(var(--card-scale-other));
-      z-index: 1;
-      opacity: 0.7
-    }
-
-    .controls {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 8px
-    }
-
-    .btn {
-      pointer-events: auto;
-      border: 0;
-      background: rgba(255, 255, 255, .06);
-      backdrop-filter: blur(6px);
+    footer .links a:hover {
       color: #fff;
-      width: 44px;
-      height: 44px;
-      border-radius: 999px;
-      display: grid;
-      place-items: center;
-      cursor: pointer
+    }
+    footer .social a {
+      margin: 0 8px;
+      color: #aaa;
+      font-size: 1.2rem;
+      transition: color 0.3s;
+    }
+    footer .social a:hover {
+      color: #ff6600;
+    }
+    footer p {
+      margin-top: 20px;
+      font-size: 0.85rem;
+      color: #777;
     }
 
-    .btn:active {
-      transform: scale(.97)
-    }
-
-    .dots {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 12px;
-      display: flex;
-      gap: 8px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgb(8 10 14 / 18%);
-      backdrop-filter: blur(6px);
-    }
-
-    .dot {
-      width: 10px;
-      height: 10px;
-      cursor: pointer;
-      border-radius: 999px;
-      border: 2px solid rgba(255, 255, 255, .45);
-      background: transparent
-    }
-
-    .dot[aria-current="true"] {
-      background: var(--Accent);
-      border-color: var(--Accent)
-    }
-
-    @media (max-width:640px) {
-      .slide {
-        flex: 0 0 100%
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.3rem;
       }
-
-      .viewport {
-        padding: 18px
-      }
-
-      .avatar {
-        width: 48px;
-        height: 48px
+      .icons {
+        flex-direction: column;
+        gap: 30px;
       }
     }
   </style>
 </head>
-
 <body>
-  <div class="carousel" aria-roledescription="carousel" aria-label="Customer reviews">
-    <div class="viewport" id="viewport">
-      <div class="track" id="track" role="list">
-        <article class="slide">
-          <div class="meta">
-            <div class="avatar">A</div>
-            <div class="who">
-              <div class="rating">
-                <span class="star">★</span><span class="star">★</span><span class="star">★</span><span
-                  class="star">★</span><span class="star">★</span>
-              </div>
-              <div class="name">Ayesha Khan</div>
-              <div class="role">Product Designer</div>
-            </div>
-          </div>
-          <div class="text">This product changed how I work — clean, fast and ridiculously reliable. Highly recommended!
-          </div>
-        </article>
-        <article class="slide">
-          <div class="meta">
-            <div class="avatar">B</div>
-            <div class="who">
-              <div class="rating">
-                <span class="star">★</span><span class="star">★</span><span class="star">★</span><span
-                  class="star">★</span><span class="star">★</span>
-              </div>
-              <div class="name">Bilal Raza</div>
-              <div class="role">Frontend Dev</div>
-            </div>
-          </div>
-          <div class="text">I love the simplicity. Setup took minutes and the results look very professional.</div>
-        </article>
-        <article class="slide">
-          <div class="meta">
-            <div class="avatar">S</div>
-            <div class="who">
-              <div class="rating">
-                <span class="star">★</span><span class="star">★</span><span class="star">★</span><span
-                  class="star">★</span><span class="star">★</span>
-              </div>
-              <div class="name">Sara Ahmed</div>
-              <div class="role">Content Creator</div>
-            </div>
-          </div>
-          <div class="text">Amazing UX and the animations are buttery smooth. My users love the new review section.
-          </div>
-        </article>
-        <article class="slide">
-          <div class="meta">
-            <div class="avatar">H</div>
-            <div class="who">
-              <div class="rating">
-                <span class="star">★</span><span class="star">★</span><span class="star">★</span><span
-                  class="star">★</span><span class="star">★</span>
-              </div>
-              <div class="name">Hamza Ali</div>
-              <div class="role">Entrepreneur</div>
-            </div>
-          </div>
-          <div class="text">Great performance and looks great on mobile. The auto-scroll feels natural.</div>
-        </article>
-        <article class="slide">
-          <div class="meta">
-            <div class="avatar">Z</div>
-            <div class="who">
-              <div class="rating">
-                <span class="star">★</span><span class="star">★</span><span class="star">★</span><span
-                  class="star">★</span><span class="star">★</span>
-              </div>
-              <div class="name">Zara Iqbal</div>
-              <div class="role">Marketer</div>
-            </div>
-          </div>
-          <div class="text">Clean, editable and modern — exactly what I needed for our landing page.</div>
-        </article>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>Welcome to QuickCart</h1>
+    <p>Your one-stop shop for fast delivery, quality products, and endless customization. Shop smarter today.</p>
+    <a href="#shop" class="btn">Shop Now</a>
+  </section>
+
+  <!-- Fast Delivery Section -->
+  <section class="section" id="delivery">
+    <h2>Fast Delivery</h2>
+    <p>Get your products delivered to your doorstep quickly and safely. We value your time as much as you do.</p>
+    <div class="icons">
+      <div class="icon-box">
+        <img src="https://img.icons8.com/ios-filled/100/ff6600/delivery.png" alt="Delivery Icon">
+        <h3>Lightning Speed</h3>
+        <p>We ensure your order reaches you faster than ever.</p>
       </div>
-      <div class="controls" aria-hidden="false">
-        <button class="btn prev" aria-label="Previous review">◀</button>
-        <button class="btn next" aria-label="Next review">▶</button>
+      <div class="icon-box">
+        <img src="https://img.icons8.com/ios-filled/100/ff6600/track-order.png" alt="Tracking Icon">
+        <h3>Order Tracking</h3>
+        <p>Stay updated with real-time order tracking at every step.</p>
       </div>
-      <div class="dots" id="dots" aria-hidden="false"></div>
     </div>
-  </div>
-  <script>
-    const AUTOPLAY_MS = 3000;
-    const TRANSITION_MS = 450;
-    const VISIBLE = 3;
-    const viewport = document.getElementById('viewport');
-    const track = document.getElementById('track');
-    const dotsWrap = document.getElementById('dots');
-    const prevBtn = document.querySelector('.prev');
-    const nextBtn = document.querySelector('.next');
+  </section>
 
-    let slides = Array.from(track.children);
-    const realCount = slides.length;
-    const cloneCount = VISIBLE;
+  <!-- Customizable Products Section -->
+  <section class="section" id="customize">
+    <h2>Customizable Products</h2>
+    <p>We let you customize your items to match your style and personality. Your product, your way.</p>
+    <div class="icons">
+      <div class="icon-box">
+        <img src="https://img.icons8.com/ios-filled/100/ff6600/t-shirt.png" alt="Custom T-shirt">
+        <h3>Personalized Apparel</h3>
+        <p>Create your unique clothing with designs you love.</p>
+      </div>
+      <div class="icon-box">
+        <img src="https://img.icons8.com/ios-filled/100/ff6600/mug.png" alt="Custom Mug">
+        <h3>Custom Gifts</h3>
+        <p>Design mugs, accessories, and more for any occasion.</p>
+      </div>
+    </div>
+  </section>
 
-    // clone first/last slides for looping
-    for (let i = slides.length - cloneCount; i < slides.length; i++) track.insertBefore(slides[i].cloneNode(true), track
-      .firstChild);
-    for (let i = 0; i < cloneCount; i++) track.appendChild(slides[i].cloneNode(true));
-    slides = Array.from(track.children);
+  <!-- Footer -->
+  <footer>
+    <h3>QuickCart</h3>
+    <div class="links">
+      <a href="#about">About</a> | 
+      <a href="#shop">Shop</a> | 
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="social">
+      <a href="#"><i>🌐</i></a>
+      <a href="#"><i>📘</i></a>
+      <a href="#"><i>🐦</i></a>
+    </div>
+    <p>&copy; 2025 QuickCart. All rights reserved.</p>
+  </footer>
 
-    let index = cloneCount;
-    let isAnimating = false;
-
-    function gapPx() {
-      return parseFloat(getComputedStyle(track).gap) || 0;
-    }
-
-    function updateLayout(withTransition = true) {
-      const slideW = slides[0].offsetWidth;
-      const step = slideW + gapPx();
-      // In which 27 is changeable
-      const translateX = ((viewport.clientWidth / 2) - (slideW / 2) - index * step) - 27;
-      if (!withTransition) track.style.transition = 'none';
-      track.style.transform = `translateX(${translateX}px)`;
-      if (!withTransition) {
-        track.getBoundingClientRect();
-        track.style.transition = '';
-      }
-      slides.forEach((s, i) => {
-        s.classList.remove('slide--center', 'slide--side', 'slide--other');
-        const diff = i - index;
-        const half = Math.floor(slides.length / 2);
-        let d = diff;
-        if (d > half) d -= slides.length;
-        if (d < -half) d += slides.length;
-        if (d === 0) s.classList.add('slide--center');
-        else if (d === -1 || d === 1) s.classList.add('slide--side');
-        else s.classList.add('slide--other');
-      });
-      updateDots();
-    }
-
-    function next() {
-      moveTo(index + 1)
-    };
-
-    function prev() {
-      moveTo(index - 1)
-    };
-
-    function moveTo(t) {
-      if (isAnimating) return;
-      isAnimating = true;
-      index = t;
-      updateLayout(true);
-      setTimeout(() => {
-        if (index < cloneCount) {
-          index += realCount;
-          updateLayout(false);
-        } else if (index >= realCount + cloneCount) {
-          index -= realCount;
-          updateLayout(false);
-        }
-        isAnimating = false;
-      }, TRANSITION_MS);
-    }
-
-    function buildDots() {
-      dotsWrap.innerHTML = '';
-      for (let i = 0; i < realCount; i++) {
-        const b = document.createElement('div');
-        b.className = 'dot';
-        b.addEventListener('click', () => goTo(i));
-        dotsWrap.appendChild(b);
-      }
-    };
-
-    function updateDots() {
-      const logical = (index - cloneCount + realCount) % realCount;
-      Array.from(dotsWrap.children).forEach((d, i) => d.setAttribute('aria-current', i === logical ? 'true' : 'false'));
-    }
-
-    function goTo(r) {
-      if (isAnimating) return;
-      index = r + cloneCount;
-      moveTo(index);
-    }
-    let timer = null;
-
-    function startAutoplay() {
-      stopAutoplay();
-      timer = setInterval(() => next(), AUTOPLAY_MS);
-    }
-
-    function stopAutoplay() {
-      if (timer) clearInterval(timer);
-      timer = null;
-    }
-    viewport.addEventListener('mouseenter', stopAutoplay);
-    viewport.addEventListener('mouseleave', startAutoplay);
-    prevBtn.addEventListener('click', prev);
-    nextBtn.addEventListener('click', next);
-    buildDots();
-    updateLayout(false);
-    startAutoplay();
-    window.addEventListener('resize', () => setTimeout(() => updateLayout(false), 120));
-  </script>
 </body>
-
 </html>

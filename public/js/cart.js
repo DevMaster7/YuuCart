@@ -72,17 +72,14 @@ function updatePrice(cardCon, basePrices, quantity, additionalPrice) {
         e.style.display = "block";
         e.innerHTML = `Rs. ${(basePrices[i] + additionalPrice) * quantity}`;
         if (basePrices[0] == Number((basePrices[i] + additionalPrice) * quantity)) {
-            console.log(`None`);
             e.style.display = "none";
             cardCon.querySelectorAll(".pro-price").forEach((e) => {
-                e.style.opacity = "1";
-                e.style.fontSize = "24px";
+                e.classList.remove("deactive")
             });
         }
         else {
             cardCon.querySelectorAll(".pro-price").forEach((e) => {
-                e.style.opacity = "0.5";
-                e.style.fontSize = "16px";
+                e.classList.add("deactive")
             });
         }
     });

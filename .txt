@@ -1,169 +1,895 @@
-<!DOCTYPE html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Dashboard — Rewards & Store Overview</title>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root{
+      --primary: #023047;
+      --secondary: #219EBC;
+      --accent: #FB8500;
+      --highlight: #F8F9FA;
+      --heading: #CCD6F6;
+      --muted: #6b7280;
+      --card-bg: #ffffff;
+      --glass: rgba(255,255,255,0.6);
+      --success: #16a34a;
+      --danger: #dc2626;
+      --shadow: 0 10px 30px rgba(2,48,71,0.08);
+      --radius: 12px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    /* Page base */
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background: linear-gradient(180deg, var(--highlight) 0%, #e9f8fb 100%);
+      color:var(--primary);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+    .wrap{max-width:1200px;margin:28px auto;padding:20px}
+
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,var(--heading),var(--secondary));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px}
+    h1{margin:0;font-size:20px}
+    .subtitle{color:var(--muted);font-size:13px}
+
+    /* Grid */
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+
+    /* KPI cards */
+    .kpi{grid-column: span 3;background:var(--card-bg);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px}
+    .kpi .label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em}
+    .kpi .value{font-size:22px;font-weight:700}
+    .kpi .trend{font-size:12px;color:var(--muted)}
+
+    /* Main containers */
+    .card{background:var(--card-bg);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+    .full{grid-column: span 12}
+    .left{grid-column: span 8}
+    .right{grid-column: span 4}
+
+    /* charts area */
+    .charts{display:grid;grid-template-columns: 1fr 320px;gap:12px}
+    .chartbox{padding:12px;border-radius:10px;background:linear-gradient(180deg,#fff,#fbfdff);border:1px solid rgba(2,48,71,0.04)}
+
+    /* small utils */
+    .muted{color:var(--muted)}
+    .row{display:flex;gap:12px;align-items:center}
+    .space{flex:1}
+    .btn{padding:8px 12px;border-radius:8px;border:0;cursor:pointer;font-weight:600}
+    .btn.primary{background:linear-gradient(90deg,var(--primary),var(--secondary));color:white}
+    .btn.ghost{background:transparent;border:1px solid rgba(2,48,71,0.06)}
+
+    /* table */
+    table{width:100%;border-collapse:collapse;font-size:14px}
+    thead th{text-align:left;padding:12px 8px;color:var(--muted);font-size:12px;font-weight:700;text-transform:uppercase}
+    tbody td{padding:12px 8px;border-top:1px solid #f1f6f9}
+    .badge{padding:6px 10px;border-radius:999px;font-size:12px;color:white;font-weight:700}
+    .b-pending{background:#f59e0b}
+    .b-processing{background:#06b6d4}
+    .b-shipped{background:#2563eb}
+    .b-delivered{background:var(--success)}
+    .b-return{background:var(--danger)}
+
+    /* top products */
+    .top-item{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #f1f6f9}
+    .thumb{width:48px;height:48px;border-radius:8px;background:#eef7fa;display:flex;align-items:center;justify-content:center;color:var(--primary);font-weight:700}
+
+    /* responsive */
+    @media (max-width:1000px){
+      .kpi{grid-column: span 6}
+      .left{grid-column: span 12}
+      .right{grid-column: span 12}
+      .charts{grid-template-columns: 1fr}
+    }
+
+    @media (max-width:560px){
+      .kpi{grid-column: span 12}
+      header{flex-direction:column;align-items:flex-start;gap:8px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">Σ</div>
+        <div>
+          <h1>Admin Dashboard</h1>
+          <div class="subtitle">Overview: products, revenue, coupons, users & orders</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="muted" style="font-size:13px;margin-right:12px">Today: <strong id="todayDate"></strong></div>
+        <button class="btn ghost" onclick="refreshAll()">Refresh</button>
+        <button class="btn primary" style="margin-left:8px" onclick="openReports()">Export</button>
+      </div>
+    </header>
+
+    <div class="grid" id="mainGrid">
+      <!-- KPI Cards -->
+      <div class="kpi"><div class="label">Products</div><div class="value" id="kpiProducts">—</div><div class="trend muted" id="kpiProductsTrend">Total SKUs</div></div>
+      <div class="kpi"><div class="label">Users</div><div class="value" id="kpiUsers">—</div><div class="trend muted" id="kpiUsersTrend">Active / Registered</div></div>
+      <div class="kpi"><div class="label">Revenue</div><div class="value" id="kpiRevenue">—</div><div class="trend muted" id="kpiRevenueTrend">Last 30 days</div></div>
+      <div class="kpi"><div class="label">Orders</div><div class="value" id="kpiOrders">—</div><div class="trend muted" id="kpiOrdersTrend">Pending & Delivered</div></div>
+
+      <!-- Main Left -->
+      <div class="left">
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <div>
+              <div class="muted" style="font-size:12px">Revenue (Last 12 periods)</div>
+              <div style="font-weight:700;font-size:18px">Revenue Trend</div>
+            </div>
+            <div class="muted">Total: <strong id="totalRevenueDisplay">—</strong></div>
+          </div>
+          <div style="height:300px">
+            <canvas id="revenueChart"></canvas>
+          </div>
+        </div>
+
+        <div style="height:16px"></div>
+
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <div>
+              <div class="muted" style="font-size:12px">Orders by Status</div>
+              <div style="font-weight:700;font-size:16px">Orders Overview</div>
+            </div>
+            <div class="muted">Total orders: <strong id="totalOrdersCount">—</strong></div>
+          </div>
+          <div style="height:220px"><canvas id="ordersChart"></canvas></div>
+        </div>
+
+        <div style="height:16px"></div>
+
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <div>
+              <div class="muted" style="font-size:12px">Recent Orders</div>
+              <div style="font-weight:700;font-size:16px">Latest transactions</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <select id="filterStatus" onchange="renderOrdersTable()">
+                <option value="all">All statuses</option>
+                <option value="pending">Pending</option>
+                <option value="processing">Processing</option>
+                <option value="shipped">Shipped</option>
+                <option value="delivered">Delivered</option>
+                <option value="returned">Returned</option>
+              </select>
+              <button class="btn ghost" onclick="renderOrdersTable()">Filter</button>
+            </div>
+          </div>
+
+          <div style="overflow:auto;max-height:320px">
+            <table aria-label="Recent orders">
+              <thead>
+                <tr><th>Order</th><th>Customer</th><th>Amount</th><th>Date</th><th>Status</th></tr>
+              </thead>
+              <tbody id="ordersTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div class="right">
+        <div class="card chartbox" style="margin-bottom:12px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <div><div class="muted" style="font-size:12px">Product categories</div><div style="font-weight:700">Catalog Breakdown</div></div>
+            <div class="muted">SKUs by category</div>
+          </div>
+          <div style="height:220px"><canvas id="pieChart"></canvas></div>
+        </div>
+
+        <div class="card" style="margin-bottom:12px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <div><div class="muted" style="font-size:12px">Top products</div><div style="font-weight:700">Best sellers</div></div>
+            <div class="muted">By sales</div>
+          </div>
+
+          <div id="topProducts">
+            <!-- top products injected here -->
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+            <div><div class="muted" style="font-size:12px">Coupons</div><div style="font-weight:700">Active coupons</div></div>
+            <div class="muted" id="couponCount">—</div>
+          </div>
+
+          <div id="couponList" style="display:flex;flex-direction:column;gap:8px"></div>
+        </div>
+      </div>
+
+      <!-- footer full-width: quick metrics -->
+      <div class="full">
+        <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;margin-top:16px">
+          <div class="muted">Tip: Replace the mock data in the script with real API calls. See comments in the JS.</div>
+          <div class="muted">Last refresh: <span id="lastRef">—</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // -------------------------
+    // MOCK DATA (demo). Replace these with real API calls.
+    // Example: fetch('/api/admin/overview').then(res=>res.json()).then(data=>applyData(data))
+    // -------------------------
+    const MOCK = {
+      kpis: {
+        products: 128,
+        users: 5120,
+        revenue: 254320, // in Rs.
+        orders: 1342,
+        coupons: 12
+      },
+      revenueSeries: [
+        { label: '2025-01', value: 12000 },
+        { label: '2025-02', value: 15000 },
+        { label: '2025-03', value: 18000 },
+        { label: '2025-04', value: 21000 },
+        { label: '2025-05', value: 17500 },
+        { label: '2025-06', value: 23000 },
+        { label: '2025-07', value: 26000 },
+        { label: '2025-08', value: 24500 },
+        { label: '2025-09', value: 27000 },
+        { label: '2025-10', value: 28500 },
+        { label: '2025-11', value: 30000 },
+        { label: '2025-12', value: 31500 }
+      ],
+      ordersByStatus: [
+        { status: 'Pending', count: 42 },
+        { status: 'Processing', count: 128 },
+        { status: 'Shipped', count: 320 },
+        { status: 'Delivered', count: 800 },
+        { status: 'Returned', count: 52 }
+      ],
+      productCategories: [
+        { name: 'Apparel', value: 48 },
+        { name: 'Accessories', value: 28 },
+        { name: 'Home', value: 18 },
+        { name: 'Electronics', value: 12 },
+      ],
+      recentOrders: [
+        { id: 'ORD-1001', customer: 'Ali Khan', amount: 3200, date: '2025-09-18', status: 'Processing' },
+        { id: 'ORD-1002', customer: 'Sara I.', amount: 1250, date: '2025-09-18', status: 'Pending' },
+        { id: 'ORD-1003', customer: 'Usman R.', amount: 499, date: '2025-09-17', status: 'Shipped' },
+        { id: 'ORD-1004', customer: 'Ayesha', amount: 2199, date: '2025-09-16', status: 'Delivered' },
+        { id: 'ORD-1005', customer: 'Bilal', amount: 799, date: '2025-09-15', status: 'Returned' }
+      ],
+      topProducts: [
+        { id: 'P-01', title: 'Classic Tee', sold: 420 },
+        { id: 'P-02', title: 'Limited Mug', sold: 320 },
+        { id: 'P-03', title: 'Sticker Pack', sold: 290 }
+      ],
+      coupons: [
+        { code: 'WELCOME50', discount: 'Rs.50', active: true },
+        { code: 'FREESHIP', discount: 'Free Shipping', active: true }
+      ]
+    };
+
+    // -------------------------
+    // Utility and rendering
+    // -------------------------
+    function fmt(n){
+      // simple rupee formatting
+      return 'Rs.' + n.toLocaleString('en-PK');
+    }
+
+    function applyData(data){
+      // KPIs
+      document.getElementById('kpiProducts').textContent = data.kpis.products;
+      document.getElementById('kpiUsers').textContent = data.kpis.users.toLocaleString();
+      document.getElementById('kpiRevenue').textContent = fmt(data.kpis.revenue);
+      document.getElementById('kpiOrders').textContent = data.kpis.orders;
+      document.getElementById('couponCount').textContent = data.kpis.coupons;
+
+      document.getElementById('totalRevenueDisplay').textContent = fmt(data.kpis.revenue);
+      document.getElementById('todayDate').textContent = new Date().toISOString().slice(0,10);
+      document.getElementById('lastRef').textContent = new Date().toLocaleString();
+
+      // Charts
+      renderRevenueChart(data.revenueSeries);
+      renderOrdersChart(data.ordersByStatus);
+      renderPieChart(data.productCategories);
+
+      // Table & lists
+      renderOrdersTable(data.recentOrders);
+      renderTopProducts(data.topProducts);
+      renderCoupons(data.coupons);
+    }
+
+    // -------------------------
+    // Charts with Chart.js
+    // -------------------------
+    let revenueChart=null, ordersChart=null, pieChart=null;
+
+    function renderRevenueChart(series){
+      const ctx = document.getElementById('revenueChart').getContext('2d');
+      const labels = series.map(s => s.label);
+      const values = series.map(s => s.value);
+      if (revenueChart) revenueChart.destroy();
+      revenueChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Revenue',
+            data: values,
+            borderColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary').trim(),
+            backgroundColor: hexToRgba(getComputedStyle(document.documentElement).getPropertyValue('--secondary').trim(), 0.12),
+            tension: 0.25,
+            fill: true,
+            pointRadius: 3
+          }]
+        },
+        options: {
+          responsive:true,
+          maintainAspectRatio:false,
+          scales:{
+            x:{grid:{display:false}, ticks:{color:'#64748b'}},
+            y:{grid:{color:'#f1f5f9'}, ticks:{color:'#64748b'}}
+          },
+          plugins:{legend:{display:false},tooltip:{mode:'index'}}
+        }
+      });
+    }
+
+    function renderOrdersChart(statusSeries){
+      const ctx = document.getElementById('ordersChart').getContext('2d');
+      const labels = statusSeries.map(s=>s.status);
+      const values = statusSeries.map(s=>s.count);
+      if (ordersChart) ordersChart.destroy();
+      ordersChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Orders',
+            data: values,
+            backgroundColor: labels.map(lbl => statusColor(lbl)),
+            borderRadius:6
+          }]
+        },
+        options:{
+          responsive:true, maintainAspectRatio:false,
+          scales:{x:{grid:{display:false}, ticks:{color:'#64748b'}}, y:{grid:{color:'#f1f5f9'}, ticks:{color:'#64748b'}}},
+          plugins:{legend:{display:false}}
+        }
+      });
+    }
+
+    function renderPieChart(categories){
+      const ctx = document.getElementById('pieChart').getContext('2d');
+      const labels = categories.map(c=>c.name);
+      const values = categories.map(c=>c.value);
+      const colors = ['#0ea5a4','#60a5fa','#f97316','#c084fc'];
+      if (pieChart) pieChart.destroy();
+      pieChart = new Chart(ctx, {
+        type: 'pie',
+        data:{
+          labels,
+          datasets:[{data:values,backgroundColor: colors}]
+        },
+        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}}
+      });
+    }
+
+    function statusColor(status){
+      switch(status.toLowerCase()){
+        case 'pending': return '#f59e0b';
+        case 'processing': return '#06b6d4';
+        case 'shipped': return '#2563eb';
+        case 'delivered': return '#10b981';
+        case 'returned': return '#ef4444';
+        default: return '#94a3b8';
+      }
+    }
+
+    function hexToRgba(hex, alpha){
+      // basic hex -> rgba helper
+      hex = hex.replace('#','').trim();
+      if(hex.length===3) hex = hex.split('').map(c=>c+c).join('');
+      const r = parseInt(hex.substring(0,2),16);
+      const g = parseInt(hex.substring(2,4),16);
+      const b = parseInt(hex.substring(4,6),16);
+      return `rgba(${r},${g},${b},${alpha})`;
+    }
+
+    // -------------------------
+    // Render lists & tables
+    // -------------------------
+    function renderOrdersTable(orders){
+      // If no orders provided, use data from MOCK
+      orders = orders || MOCK.recentOrders;
+      const filter = document.getElementById('filterStatus').value;
+      const tbody = document.getElementById('ordersTableBody');
+      tbody.innerHTML = '';
+      const filtered = (filter==='all')?orders:orders.filter(o => o.status.toLowerCase()===filter.toLowerCase());
+      filtered.forEach(o=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${o.id}</strong></td>
+          <td>${o.customer}</td>
+          <td>${fmt(o.amount)}</td>
+          <td class="muted">${o.date}</td>
+          <td><span class="badge ${badgeClass(o.status)}">${o.status}</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+      // update total orders count display
+      document.getElementById('totalOrdersCount').textContent = orders.length;
+    }
+
+    function badgeClass(status){
+      const s = status.toLowerCase();
+      if(s==='pending') return 'b-pending';
+      if(s==='processing') return 'b-processing';
+      if(s==='shipped') return 'b-shipped';
+      if(s==='delivered') return 'b-delivered';
+      if(s==='returned') return 'b-return';
+      return '';
+    }
+
+    function renderTopProducts(list){
+      const cont = document.getElementById('topProducts');
+      cont.innerHTML = '';
+      list.forEach(p=>{
+        const el = document.createElement('div');
+        el.className = 'top-item';
+        el.innerHTML = `<div class="thumb">${p.title.charAt(0)}</div>
+                        <div style="flex:1"><div style="font-weight:700">${p.title}</div><div class="muted" style="font-size:13px">${p.sold} sold</div></div>
+                        <div style="font-weight:700">${p.sold}</div>`;
+        cont.appendChild(el);
+      });
+    }
+
+    function renderCoupons(list){
+      const cont = document.getElementById('couponList');
+      cont.innerHTML = '';
+      list.forEach(c=>{
+        const div = document.createElement('div');
+        div.style.display='flex'; div.style.justifyContent='space-between'; div.style.alignItems='center';
+        div.style.padding='8px'; div.style.borderRadius='8px'; div.style.background='#fbfdff';
+        div.innerHTML = `<div><div style="font-weight:700">${c.code}</div><div class="muted" style="font-size:13px">${c.discount}</div></div>
+                         <div><button class="btn small ghost" onclick='toggleCoupon("${c.code}")'>${c.active? 'Pause':'Activate'}</button></div>`;
+        cont.appendChild(div);
+      });
+    }
+
+    function toggleCoupon(code){
+      // In production: call API to toggle coupon active state
+      alert('Toggle coupon (demo): ' + code);
+    }
+
+    // -------------------------
+    // Actions: Refresh & Export
+    // -------------------------
+    function refreshAll(){
+      // In production: call your APIs and then call applyData with response
+      // Example:
+      // fetch('/api/admin/overview').then(r=>r.json()).then(applyData)
+      // For demo, we use MOCK
+      applyData(MOCK);
+    }
+
+    function openReports(){
+      // Minimal export demo: in real app, generate CSV or redirect to reports page
+      alert('Exporting report (demo) — replace with backend export endpoint.');
+    }
+
+    // -------------------------
+    // Initialize demo
+    // -------------------------
+    refreshAll();
+
+    // Save some mock data into page-level KPIs for display
+    document.getElementById('kpiProductsTrend').textContent = 'Total SKUs';
+    document.getElementById('kpiUsersTrend').textContent = 'Active users';
+    document.getElementById('kpiRevenueTrend').textContent = 'Last 12 months';
+    document.getElementById('kpiOrdersTrend').textContent = 'Orders this year';
+
+    // fallback: fill orders table on load
+    renderOrdersTable(MOCK.recentOrders);
+
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+<!doctype html>
 <html lang="en">
 
-<head data-info="" data-expireTime="<%= expiresAt %>">
-    <meta charset=" UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon" />
-    <link rel="stylesheet" href="/css/output.css">
-    <link rel="stylesheet" href="/css/common/loader.css" />
-    <link rel="stylesheet" href="/css/common/inputs.css" />
-    <title>Verify Code</title>
-    <style>
-        body {
-            font-family: "Segoe UI", Tahoma, sans-serif;
-            background: #f9f9f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rewards & Redeem — Static</title>
+  <style>
+    :root {
+      --primary: #023047;
+      --secondary: #219EBC;
+      --accent: #FB8500;
+      --highlight: #F8F9FA;
+      --heading: #CCD6F6;
+      --muted: #556677;
+      --card-bg: #ffffff;
+      --shadow: 0 8px 30px rgba(2, 48, 71, 0.08);
+      --danger: #dc2626;
+    }
 
-        .overlay {
-            position: fixed;
-            inset: 0;
-            background: #02304714;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(2px);
-            z-index: 99;
-        }
+    * {
+      box-sizing: border-box
+    }
 
-        .cap-con {
-            background: #fff;
-            padding: 20px;
-            border-radius: 2px;
-        }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background: linear-gradient(180deg, var(--highlight), #eaf6fb);
+      color: var(--primary)
+    }
 
-        .cap-con .err-msg {
-            color: red;
-            font-size: 14px;
-            text-align: center;
-        }
+    .container {
+      max-width: 1100px;
+      margin: 36px auto;
+      padding: 20px
+    }
 
-        .verify-container {
-            background: #ffffff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            text-align: center;
-            width: min-content;
-        }
+    .grid {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 20px
+    }
 
-        h2 {
-            margin-bottom: 10px;
-            font-size: 27px;
-            font-weight: 600;
-            color: #023047;
-        }
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: var(--shadow)
+    }
 
-        p {
-            color: #666;
-            margin-bottom: 25px;
-            font-size: 14px;
-        }
+    .profile {
+      display: flex;
+      gap: 14px;
+      align-items: center
+    }
 
-        .otp-inputs {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 25px;
-        }
+    .avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 12px;
+      background: linear-gradient(180deg, var(--heading), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 22px
+    }
 
-        .otp-inputs input {
-            width: 45px;
-            height: 55px;
-            font-size: 22px;
-            text-align: center;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            outline: none;
-            transition: border 0.2s ease, box-shadow 0.2s ease;
-        }
+    h1,
+    h2 {
+      margin: 0
+    }
 
-        .otp-inputs input:focus {
-            border-color: #219EBC;
-            box-shadow: 0 0 4px rgba(33, 158, 188, 0.4);
-        }
+    .muted {
+      color: var(--muted);
+      font-size: 13px
+    }
 
-        .otp-inputs input.active {
-            border-color: #219EBC;
-            box-shadow: 0 0 4px rgba(33, 158, 188, 0.6);
-        }
+    .points-big {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-top: 8px
+    }
 
-        .err-msg {
-            font-size: 13px;
-            color: red;
-        }
+    .progress {
+      height: 12px;
+      border-radius: 16px;
+      background: #e6eef3;
+      overflow: hidden;
+      margin-top: 12px
+    }
 
-        form button {
-            width: 100%;
-            padding: 14px;
-            background: #219EBC;
-            border: none;
-            border-radius: 8px;
-            color: #fff;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background 0.2s ease;
-        }
+    .progress>i {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--secondary), var(--accent));
+      width: 32%;
+    }
 
-        form button:hover {
-            background: #1a7f97;
-        }
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px
+    }
 
-        .resend {
-            margin-top: 18px;
-            font-size: 14px;
-            color: #555;
-        }
+    .btn {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 0;
+      cursor: pointer;
+      font-weight: 600
+    }
 
-        .resend span {
-            color: #FB8500;
-            text-decoration: underline;
-        }
+    .btn.primary {
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: white
+    }
 
-        .resend button {
-            color: #FB8500;
-            font-weight: 500;
-            cursor: pointer;
-            text-decoration: underline;
-        }
-    </style>
+    .btn.ghost {
+      background: transparent;
+      border: 1px solid rgba(2, 48, 71, 0.06)
+    }
+
+    .btn.accent {
+      background: var(--accent);
+      color: white
+    }
+
+    .small {
+      font-size: 13px;
+      padding: 8px 10px
+    }
+
+    .catalog {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-top: 12px
+    }
+
+    .reward {
+      padding: 12px;
+      border-radius: 10px;
+      background: linear-gradient(180deg, #fff, #fbfbfd);
+      border: 1px solid rgba(2, 48, 71, 0.03)
+    }
+
+    .reward .title {
+      font-weight: 700;
+      color: var(--primary)
+    }
+
+    .reward .meta {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 6px
+    }
+
+    .txn {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px dashed #eef4f8
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 48, 71, 0.38);
+      display: flex;
+      align-items: center;
+      justify-content: center
+    }
+
+    .modal {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 480px;
+      width: 92%;
+      box-shadow: var(--shadow)
+    }
+
+    .spin {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 120px;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #fff, #fffefc);
+      border: 1px solid rgba(2, 48, 71, 0.04);
+      font-size: 28px
+    }
+
+    @media (max-width:880px) {
+      .grid {
+        grid-template-columns: 1fr
+      }
+
+      .avatar {
+        width: 56px;
+        height: 56px
+      }
+    }
+  </style>
 </head>
 
 <body>
-    <div class="verify-container">
-        <h2>Email Verification</h2>
-        <p>
-            Please enter the 6-digit code sent to your email
-            <span class="email"><%= email %></span>
-        </p>
-
-        <form class="otp-form">
-            <div class="otp-inputs">
-                <input type="text" maxlength="1" required>
-                <input type="text" maxlength="1" required>
-                <input type="text" maxlength="1" required>
-                <input type="text" maxlength="1" required>
-                <input type="text" maxlength="1" required>
-                <input type="text" maxlength="1" required>
-            </div>
-            <div class="err-msg"></div>
-            <button type="submit">Verify</button>
-        </form>
-
-        <div class="resend">
-            Didn’t get the code?<br>Wait for <span></span> to Resend OTP
-        </div>
+  <div class="container">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+      <div>
+        <h1 style="margin:0;color:var(--primary)">Rewards & Redeem</h1>
+        <div class="muted">Earn points, unlock perks, and redeem for discounts or exclusive items.</div>
+      </div>
+      <div style="text-align:right">
+        <div class="muted">Your brand</div>
+        <div style="font-weight:700;color:var(--secondary)">Sigma Store</div>
+      </div>
     </div>
 
-    <script src="/js/common/at-start.js"></script>
-    <script src="/js/verify.js"></script>
-    <script src="/js/common/at-last.js"></script>
+    <div class="grid">
+      <!-- LEFT -->
+      <div>
+        <div class="card">
+          <div class="profile">
+            <div class="avatar">M</div>
+            <div>
+              <h2>Muneeb</h2>
+              <div class="muted">Member since 2025 • Tier: Bronze</div>
+            </div>
+          </div>
+
+          <div style="margin-top:14px">
+            <div class="points-big">320 pts</div>
+            <div class="muted">Estimated value: <strong>Rs.160</strong></div>
+
+            <div style="margin-top:12px">
+              <div class="muted" style="font-size:12px;text-transform:uppercase">Progress to next tier</div>
+              <div class="progress"><i></i></div>
+              <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:13px;color:var(--muted)">
+                <span>0 pts</span><span>1000 pts</span>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="btn primary" id="checkInBtn">Daily Check-in</button>
+              <button class="btn ghost" id="spinBtn">Spin to Win</button>
+            </div>
+
+            <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+              <input id="refInput" value="https://sigma.store/r/SIGMA123"
+                style="flex:1;padding:8px;border-radius:8px;border:1px solid #e7eef3" readonly>
+              <button class="btn small accent" id="copyRef">Copy</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:14px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <div style="font-size:12px;color:var(--muted);text-transform:uppercase">Quick Actions</div>
+              <div style="font-weight:700">Redeem & Special Offers</div>
+            </div>
+            <div class="muted">Balance: <strong>320</strong> pts</div>
+          </div>
+
+          <div class="catalog">
+            <div class="reward">
+              <div class="title">Rs.50 Off</div>
+              <div class="meta">Min order Rs.500</div>
+              <div style="margin-top:12px;font-size:12px;color:var(--muted)">Cost: 100 pts</div>
+            </div>
+            <div class="reward">
+              <div class="title">Free Shipping</div>
+              <div class="meta">Next order</div>
+              <div style="margin-top:12px;font-size:12px;color:var(--muted)">Cost: 200 pts</div>
+            </div>
+            <div class="reward">
+              <div class="title">Mystery Box</div>
+              <div class="meta">Surprise items</div>
+              <div style="margin-top:12px;font-size:12px;color:var(--muted)">Cost: 500 pts</div>
+            </div>
+            <div class="reward">
+              <div class="title">Exclusive Mug</div>
+              <div class="meta">Limited edition</div>
+              <div style="margin-top:12px;font-size:12px;color:var(--muted)">Cost: 800 pts</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT -->
+      <div>
+        <div class="card" style="margin-bottom:12px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <div style="font-size:12px;color:var(--muted);text-transform:uppercase">Activity</div>
+              <div style="font-weight:700">Recent transactions</div>
+            </div>
+            <div class="muted">Total: <strong>320</strong> pts</div>
+          </div>
+
+          <div style="margin-top:12px">
+            <div class="txn"><div style="width:8px;height:8px;border-radius:50%;background:var(--secondary)"></div><div style="flex:1"><div style="font-weight:600">Welcome Bonus</div><div class="muted">2025-09-17</div></div><div style="font-weight:700">+100 pts</div></div>
+            <div class="txn"><div style="width:8px;height:8px;border-radius:50%;background:var(--secondary)"></div><div style="flex:1"><div style="font-weight:600">Order #1234</div><div class="muted">2025-09-15</div></div><div style="font-weight:700">+50 pts</div></div>
+            <div class="txn"><div style="width:8px;height:8px;border-radius:50%;background:var(--danger)"></div><div style="flex:1"><div style="font-weight:600">Redeemed: Rs.50 Off</div><div class="muted">2025-09-14</div></div><div style="font-weight:700">-100 pts</div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="display:flex;gap:12px;align-items:center;justify-content:space-between">
+            <div>
+              <div style="font-size:12px;color:var(--muted);text-transform:uppercase">Daily Fun</div>
+              <div style="font-weight:700">Spin the wheel — once per 24h</div>
+            </div>
+            <div style="width:220px">
+              <div class="spin" id="spinBox">🎯</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;color:var(--muted);font-size:13px">Spin rewards: points (10–500), free shipping
+            voucher, small coupon.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modalRoot" style="display:none"></div>
+
+  <script>
+    // Copy referral
+    document.getElementById('copyRef').addEventListener('click', () => {
+      const ip = document.getElementById('refInput');
+      ip.select();
+      document.execCommand('copy');
+      showModal('Copied', 'Referral link copied to clipboard');
+    });
+
+    // Spin demo
+    document.getElementById('spinBtn').addEventListener('click', () => {
+      const spinBox = document.getElementById('spinBox');
+      spinBox.textContent = 'Spinning...';
+      setTimeout(() => {
+        spinBox.textContent = '🎉 +50 pts';
+        showModal('You won!', 'You earned 50 pts');
+      }, 1200);
+    });
+
+    // Check-in demo
+    document.getElementById('checkInBtn').addEventListener('click', () => {
+      showModal('Check-in', 'You checked in and earned 10 pts');
+    });
+
+    function showModal(title, content) {
+      const root = document.getElementById('modalRoot');
+      root.style.display = 'block';
+      root.innerHTML =
+        `<div class='modal-backdrop' onclick='closeModal()'><div class='modal' onclick='event.stopPropagation()'><h3 style='margin-top:0'>${title}</h3><div style='color:var(--muted);margin-top:8px'>${content}</div><div style='text-align:right;margin-top:16px'><button class='btn ghost' onclick='closeModal()'>Close</button></div></div></div>`;
+    }
+
+    function closeModal() {
+      const root = document.getElementById('modalRoot');
+      root.style.display = 'none';
+      root.innerHTML = '';
+    }
+  </script>
 </body>
 
 </html>

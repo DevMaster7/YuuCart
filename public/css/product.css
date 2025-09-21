@@ -678,11 +678,6 @@ p.desc {
 .pro-name {
     font-size: 15px;
     color: #021d2a;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    transition: .3s ease;
 }
 
 .pro-price-con {
@@ -887,7 +882,7 @@ p.desc {
 @media (max-width:770px) {
     .product-pic-con {
         max-width: unset;
-        max-height: 230px; 
+        max-height: 230px;
     }
 
     .product-con {
@@ -971,6 +966,10 @@ p.desc {
 
     .product-img {
         height: 180px;
+    }
+
+    .product-con .pro-buyer {
+        font-size: 14px;
     }
 }
 

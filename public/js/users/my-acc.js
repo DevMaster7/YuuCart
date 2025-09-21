@@ -72,8 +72,9 @@ document.querySelector(".forgot-btn").addEventListener("click", () => {
     document.body.appendChild(overlay);
     document.body.style.overflow = "hidden";
 
+    let gcp = document.getElementsByTagName("head")[0].dataset.gcp;
     grecaptcha.render("captcha-container", {
-        sitekey: "6LdTOrcrAAAAAJ5lTh8huR1i2Na0bEgO3Zqi-8tF",
+        sitekey: gcp,
         callback: onCaptchaSuccess
     });
 
@@ -88,7 +89,7 @@ document.querySelector(".forgot-btn").addEventListener("click", () => {
 
 async function onCaptchaSuccess(token) {
     const form = document.getElementById("capForm");
-    const email = document.getElementsByTagName("head")[0].dataset.email;
+    const email = document.getElementById("email").innerHTML.trim();
     const cap_token = token;
     try {
         const response = await fetch(form.action, {
