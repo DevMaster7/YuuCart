@@ -1,5 +1,41 @@
-function sideBarMaker() {
-    let sideBarDiv = document.querySelector(".side-nav-con");
+function navMaker() {
+    let div = document.createElement("div");
+    div.classList.add("nav-con");
+    div.innerHTML = `<div class="left">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+        <div class="center">
+            <div class="logo-text">QuickCart</div>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 3H6L9 15H19L22 6H7" stroke="#64B6AC" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                <circle cx="10" cy="18" r="2" stroke="#CCD6F6" stroke-width="2" fill="none" />
+                <circle cx="18" cy="18" r="2" stroke="#CCD6F6" stroke-width="2" fill="none" />
+                <g class="tag">
+                    <path d="M15 5L18 8L16 10L13 7L15 5Z" stroke-linecap="round" stroke-linejoin="round" fill="#FF6F00"
+                        stroke="#FF6F00" stroke-width="1.5" />
+                    <circle cx="15" cy="7" r="0.8" fill="#0A192F" />
+                </g>
+            </svg>
+        </div>`
+    document.getElementsByTagName("body")[0].prepend(div)
+}
+navMaker()
+
+document.querySelector(".center").addEventListener("click", () => {
+    window.location.href = '/shop';
+})
+window.addEventListener("scroll", () => {
+    let scrollPosition = window.scrollY;
+    if (scrollPosition > 10) {
+        document.querySelector(".nav-con").classList.add("sticky");
+    } else {
+        document.querySelector(".nav-con").classList.remove("sticky");
+    }
+});
+
+let sideBarDiv = document.querySelector(".side-nav-con");
+function userSideBarMaker() {
     let userFullname = document.getElementsByTagName("head")[0].dataset.fullname
     let userImg = document.getElementsByTagName("head")[0].dataset.img
     sideBarDiv.innerHTML = `<div class="side-nav">
@@ -81,79 +117,126 @@ function sideBarMaker() {
                 </button>
 
                             </div>`
-}
-sideBarMaker()
 
-document.querySelectorAll(".side-btns").forEach((btn) => {
-    btn.addEventListener("click", () => {
-        let icon = document.querySelector(".nav-con").querySelector(".left").getElementsByTagName("i")[0];
-        if (window.innerWidth <= 770) {
-            icon.classList.remove("fa-xmark")
-            icon.classList.add("fa-bars")
-            document.querySelector(".side-nav").style.transform = "translateX(-100%)";
-            setTimeout(() => {
-                document.querySelector(".side-nav-con").style.display = "none";
-            }, 300);
+    document.querySelectorAll(".side-btns").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            let icon = document.querySelector(".nav-con").querySelector(".left").getElementsByTagName("i")[0];
+            if (window.innerWidth <= 770) {
+                icon.classList.remove("fa-xmark")
+                icon.classList.add("fa-bars")
+                document.querySelector(".side-nav").style.transform = "translateX(-100%)";
+                setTimeout(() => {
+                    document.querySelector(".side-nav-con").style.display = "none";
+                }, 300);
+            }
+            document.querySelectorAll(".side-btns").forEach((btn) => {
+                btn.classList.remove("activeBtn")
+                btn.querySelector(".icon").classList.remove("activeIcon")
+            })
+            btn.classList.add("activeBtn")
+            btn.querySelector(".icon").classList.add("activeIcon")
+        })
+        let pageName = document.getElementsByTagName("head")[0].dataset.page
+        if (btn.getElementsByTagName("div")[0].innerHTML.includes(pageName)) {
+            btn.classList.add("activeBtn")
+            btn.querySelector(".icon").classList.add("activeIcon")
         }
-        document.querySelectorAll(".side-btns").forEach((btn) => {
-            btn.classList.remove("activeBtn")
-            btn.querySelector(".icon").classList.remove("activeIcon")
-        })
-        btn.classList.add("activeBtn")
-        btn.querySelector(".icon").classList.add("activeIcon")
     })
-    let pageName = document.getElementsByTagName("head")[0].dataset.page
-    if (btn.getElementsByTagName("div")[0].innerHTML.includes(pageName)) {
-        btn.classList.add("activeBtn")
-        btn.querySelector(".icon").classList.add("activeIcon")
-    }
-})
 
-function func() {
-    if (window.location.href.includes("#change-password")) {
-        document.querySelectorAll(".side-btns").forEach((btn) => {
-            btn.classList.remove("activeBtn")
-            btn.querySelector(".icon").classList.remove("activeIcon")
-        })
-        document.querySelectorAll(".side-btns")[1].classList.add("activeBtn")
-        document.querySelectorAll(".side-btns")[1].querySelector(".icon").classList.add("activeIcon")
+    function func() {
+        if (window.location.href.includes("#change-password")) {
+            document.querySelectorAll(".side-btns").forEach((btn) => {
+                btn.classList.remove("activeBtn")
+                btn.querySelector(".icon").classList.remove("activeIcon")
+            })
+            document.querySelectorAll(".side-btns")[1].classList.add("activeBtn")
+            document.querySelectorAll(".side-btns")[1].querySelector(".icon").classList.add("activeIcon")
+        }
+        else if (window.location.href.includes("#change-payment")) {
+            document.querySelectorAll(".side-btns").forEach((btn) => {
+                btn.classList.remove("activeBtn")
+                btn.querySelector(".icon").classList.remove("activeIcon")
+            })
+            document.querySelectorAll(".side-btns")[2].classList.add("activeBtn")
+            document.querySelectorAll(".side-btns")[2].querySelector(".icon").classList.add("activeIcon")
+        }
     }
-    else if (window.location.href.includes("#change-payment")) {
-        document.querySelectorAll(".side-btns").forEach((btn) => {
-            btn.classList.remove("activeBtn")
-            btn.querySelector(".icon").classList.remove("activeIcon")
-        })
-        document.querySelectorAll(".side-btns")[2].classList.add("activeBtn")
-        document.querySelectorAll(".side-btns")[2].querySelector(".icon").classList.add("activeIcon")
-    }
-}
-func()
+    func()
 
-document.querySelector(".logout").addEventListener("click", () => {
-    let mainDiv = document.createElement("div")
-    mainDiv.classList.add("log-main")
-    mainDiv.innerHTML = `<div class="logout-con">
+    document.querySelector(".logout").addEventListener("click", () => {
+        let mainDiv = document.createElement("div")
+        mainDiv.classList.add("log-main")
+        mainDiv.innerHTML = `<div class="logout-con">
             <div class="text">Are You Sure To Logout!</div>
             <div class="btn-con">
                 <button class="btn yes">Logout</button>
                 <button class="btn no">Cancel</button>
             </div>
             </div>`
-    document.getElementsByTagName("body")[0].prepend(mainDiv)
+        document.getElementsByTagName("body")[0].prepend(mainDiv)
 
-    document.querySelector(".no").addEventListener("click", () => {
-        document.querySelector(".log-main").remove()
+        document.querySelector(".no").addEventListener("click", () => {
+            document.querySelector(".log-main").remove()
+        })
+
+        document.querySelector(".log-main").addEventListener("click", (e) => {
+            if (e.target == document.querySelector(".logout-con")) {
+                return
+            }
+            document.querySelector(".log-main").remove();
+        })
+
+        document.querySelector(".yes").addEventListener("click", () => {
+            document.cookie = "ULGG=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+            window.location.href = '/shop';
+        })
     })
 
-    document.querySelector(".log-main").addEventListener("click", (e) => {
-        if (e.target == document.querySelector(".logout-con")) {
-            return
-        }
-        document.querySelector(".log-main").remove();
-    })
+}
+function adminSideBarMaker() {
+    sideBarDiv.innerHTML = `<div class="side-nav">
+                <div class="links">
+                    <a href="/admin">Dashboard</a>
+                    <a href="/admin/manage-orders">Orders</a>
+                    <a href="/admin/manage-users">Users</a>
+                    <a href="/admin/manage-products">Products</a>
+                    <a href="/admin/manage-coupans">Coupans</a>
+                </div>
+            </div>`
+}
+if (window.location.href.includes("admin")) {
+    adminSideBarMaker()
+}
+else {
+    userSideBarMaker()
+}
 
-    document.querySelector(".yes").addEventListener("click", () => {
-        document.cookie = "ULGG=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
-        window.location.href = '/shop';
-    })
+let icon = document.querySelector(".nav-con").querySelector(".left").getElementsByTagName("i")[0]
+document.querySelector(".left").addEventListener("click", () => {
+    if (icon.classList.contains("fa-bars")) {
+        icon.classList.remove("fa-bars")
+        icon.classList.add("fa-xmark")
+        document.querySelector(".side-nav-con").style.display = "flex";
+        setTimeout(() => {
+            document.querySelector(".side-nav").style.transform = "translateX(0%)";
+        }, 120);
+    }
+    else {
+        icon.classList.remove("fa-xmark")
+        icon.classList.add("fa-bars")
+        document.querySelector(".side-nav").style.transform = "translateX(-100%)";
+        setTimeout(() => {
+            document.querySelector(".side-nav-con").style.display = "none";
+        }, 300);
+    }
+})
+document.addEventListener("click", (e) => {
+    if (e.target == document.querySelector(".side-nav-con")) {
+        icon.classList.remove("fa-xmark")
+        icon.classList.add("fa-bars")
+        document.querySelector(".side-nav").style.transform = "translateX(-100%)";
+        setTimeout(() => {
+            document.querySelector(".side-nav-con").style.display = "none";
+        }, 300);
+    }
 })

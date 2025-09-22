@@ -11,7 +11,7 @@ if (head.dataset.info == "enter-pass") {
                         <i class="fa-solid fa-eye eye"></i>
                     </div>
                     <div class="field">
-                        <input type="password" name="confirm-password" placeholder=" " required />
+                        <input type="password" name="confirmPassword" placeholder=" " required />
                         <label for="confirm-password">Confirm Password</label>
                         <i class="fa-solid fa-eye eye"></i>
                     </div>

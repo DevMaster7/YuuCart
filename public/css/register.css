@@ -406,28 +406,28 @@ html {
         overflow: hidden !important;
     }
 
-    .field input,
-    .field select {
+    .right .field input,
+    .right .field select {
         border: 1px solid var(--Highlight);
         color: var(--Highlight);
     }
 
-    .field label {
+    .right .field label {
         background: var(--Primary);
         color: var(--Highlight);
     }
 
-    .field input:focus+label,
-    .field input:not(:placeholder-shown)+label {
+    .right .field input:focus+label,
+    .right .field input:not(:placeholder-shown)+label {
         color: var(--Highlight);
     }
 
-    .field select:focus+label,
-    .field select:not([value=""])+label {
+    .right .field select:focus+label,
+    .right .field select:not([value=""])+label {
         color: var(--Highlight);
     }
 
-    .field i {
+    .right .field i {
         color: var(--Highlight) !important;
     }
 
@@ -443,7 +443,7 @@ html {
         color: var(--Highlight);
     }
 
-    .heading {
+    .left .heading {
         display: none;
     }
 

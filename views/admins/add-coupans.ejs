@@ -9,17 +9,19 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="/css/output.css">
-    <link rel="stylesheet" href="/css/admin/admin-sidebar.css">
-    <link rel="stylesheet" href="/css/admin/add-coupans.css">
-    <link rel="stylesheet" href="/css/common/logo.css">
-    <link rel="stylesheet" href="/css/common/inputs.css">
     <link rel="stylesheet" href="/css/common/loader.css">
+    <link rel="stylesheet" href="/css/admin/add-coupans.css">
+    <link rel="stylesheet" href="/css/admin/admin-sidebar.css">
+    <link rel="stylesheet" href="/css/common/user-admin-nav.css">
+    <link rel="stylesheet" href="/css/common/inputs.css">
     <link rel="stylesheet" href="/css/common/footer.css">
     <title>Admin - Manage Coupans</title>
 </head>
 
 <body>
     <div class="wrapper">
+        <div class="side-nav-con">
+        </div>
         <div class="main-form">
             <a href="/admin/manage-coupans" class="back-btn">Back To Coupans List</a>
             <form class="form" action="/admin/manage-coupans/add-coupans" method="post">
@@ -53,7 +55,8 @@
     </div>
 
     <script src="/js/common/at-start.js"></script>
-    <script src="/js/admin/admin-sidebar.js"></script>
+    <script src="/js/common/user-admin-nav.js"></script>
+    <script src="/js/admin/add-coupans.js"></script>
     <script src="/js/common/footer.js"></script>
     <script src="/js/common/at-last.js"></script>
 </body>

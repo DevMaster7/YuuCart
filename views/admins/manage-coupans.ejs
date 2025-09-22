@@ -9,17 +9,19 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="/css/output.css">
-    <link rel="stylesheet" href="/css/admin/admin-sidebar.css">
-    <link rel="stylesheet" href="/css/admin/manage-coupans.css">
-    <link rel="stylesheet" href="/css/admin/admin-search.css">
-    <link rel="stylesheet" href="/css/common/logo.css">
     <link rel="stylesheet" href="/css/common/loader.css">
+    <link rel="stylesheet" href="/css/admin/manage-coupans.css">
+    <link rel="stylesheet" href="/css/admin/admin-sidebar.css">
+    <link rel="stylesheet" href="/css/common/user-admin-nav.css">
+    <link rel="stylesheet" href="/css/admin/admin-search.css">
     <link rel="stylesheet" href="/css/common/footer.css">
     <title>Admin - Manage Coupans</title>
 </head>
 
 <body>
     <div class="wrapper">
+        <div class="side-nav-con">
+        </div>
         <div class="content-con">
             <div class="show-coupans">
                 <div class="search-con">
@@ -95,21 +97,25 @@
                             <div class="coupanCode info-text" data-info="<%= coupan.coupanCode %>">Coupan Code:&nbsp;
                                 <span class="text txt edited-info"><%= coupan.coupanCode %></span>
                             </div>
-                            <div class="coupanDiscount info-text" data-info="<%= coupan.coupanDiscount %>">Coupan Discount:&nbsp;
+                            <div class="coupanDiscount info-text" data-info="<%= coupan.coupanDiscount %>">Coupan
+                                Discount:&nbsp;
                                 <span class="text num edited-info"><%= coupan.coupanDiscount %></span>
                                 <nav>%</nav>
                             </div>
                             <div class="coupanLimit info-text" data-info="<%= coupan.coupanLimit %>">Coupan Limit:&nbsp;
                                 <span class="text num edited-info"><%= coupan.coupanLimit %></span>
                             </div>
-                            <div class="coupanDescription info-text" data-info="<%= coupan.coupanDescription %>">Coupan Description:&nbsp;
+                            <div class="coupanDescription info-text" data-info="<%= coupan.coupanDescription %>">Coupan
+                                Description:&nbsp;
                                 <span class="text txt edited-info"><%= coupan.coupanDescription %></span>
                             </div>
-                            <div class="coupanStartingDate info-text" data-info="<%= coupan.coupanStartingDate %>">Coupan
+                            <div class="coupanStartingDate info-text" data-info="<%= coupan.coupanStartingDate %>">
+                                Coupan
                                 StartingDate:&nbsp;
                                 <span class="text date edited-info"><%= coupan.coupanStartingDate %></span>
                             </div>
-                            <div class="coupanEndingDate info-text" data-info="<%= coupan.coupanEndingDate %>">Coupan EndingDate:&nbsp;
+                            <div class="coupanEndingDate info-text" data-info="<%= coupan.coupanEndingDate %>">Coupan
+                                EndingDate:&nbsp;
                                 <span class="text date edited-info"><%= coupan.coupanEndingDate %></span>
                             </div>
                             <div class="info-text">Added By:&nbsp;
@@ -132,7 +138,7 @@
 
     <script src="/js/common/at-start.js"></script>
     <script src="/js/admin/manage-coupans.js"></script>
-    <script src="/js/admin/admin-sidebar.js"></script>
+    <script src="/js/common/user-admin-nav.js"></script>
     <script src="/js/admin/admin-search.js"></script>
     <script src="/js/common/footer.js"></script>
     <script src="/js/common/at-last.js"></script>
