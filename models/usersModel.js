@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
+    joiningDate: {
+        type: Date,
+        default: Date.now
+    },
     userImg: {
         type: String,
         default: "/assets/defaultUser.jpg"
@@ -9,8 +13,6 @@ const userSchema = new mongoose.Schema({
     fullname: String,
     username: {
         type: String,
-        trim: true,
-        lowercase: true,
         minlength: 5,
         unique: true,
         required: true

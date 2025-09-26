@@ -160,7 +160,8 @@ router.post("/register",
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array(), message: "Invalid data!" });
         }
-        const { fullname, username, email, phone, address, password, city, confirmPassword } = req.body
+        let { fullname, username, email, phone, address, password, city, confirmPassword } = req.body
+        username = username.replace(/\s+/g, '').toLowerCase();
         const emailExists = await userModel.findOne({ email });
         const usernameExists = await userModel.findOne({ username });
         if (emailExists || usernameExists) {

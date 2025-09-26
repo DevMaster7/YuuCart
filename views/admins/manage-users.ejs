@@ -37,7 +37,7 @@
                 </div>
                 <div class="user-con">
                     <% users.reverse().forEach(user => { %>
-                    <div id="<%= user._id %> <%= user.username %>" class="user-box">
+                    <div id="<%= user._id %>" class="user-box">
                         <div class="left">
                             <div class="info-text">User ID: <span class="user-id"><%= user._id %></span></div>
                             <div class="info-text">UserName: <span><%= user.username %></span></div>

@@ -7,7 +7,7 @@ const orderModel = require("../models/ordersModel");
 const slugify = require("slugify");
 const verifyAdmin = require("../middleware/verifyAdmin");
 const optionalVerifyToken = require("../middleware/optionalVerifyToken");
-const {uploadOnCloudinary} = require("../config/cloudinary");
+const { uploadOnCloudinary } = require("../config/cloudinary");
 const upload = require("../middleware/multerConfig");
 const fs = require("fs");
 const path = require('node:path');
@@ -24,6 +24,39 @@ function allowPage(pageName) {
 }
 
 // Dashboard
+router.get("/admin-data", async (req, res) => {
+  // Data related to users
+  let allUsers = await userModel.find();
+  const firstUser = await userModel.findOne().sort({ joiningDate: 1 });
+  const agg = await userModel.aggregate([
+    {
+      $group: {
+        _id: {
+          year: { $year: "$joiningDate" },
+          month: { $month: "$joiningDate" },
+          day: { $dayOfMonth: "$joiningDate" }
+        },
+        count: { $sum: 1 }
+      }
+    }
+  ]);
+
+  let allOrders = await orderModel.find();
+  let allProducts = await productModel.find();
+  let allCoupans = await coupanModel.find();
+
+  let data = {
+    allUsers,
+    userChartDetails: {
+      firstUser,
+      agg
+    },
+    allOrders,
+    allProducts,
+    allCoupans
+  }
+  res.status(200).json({ data })
+})
 router.get("/", verifyAdmin, async (req, res) => {
   const users = await userModel.find();
   const orders = await orderModel.find();

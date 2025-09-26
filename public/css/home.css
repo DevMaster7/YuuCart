@@ -383,9 +383,11 @@ main {
     0% {
         box-shadow: 0 0 0 0 rgba(33, 157, 188, 0.7);
     }
+
     70% {
         box-shadow: 0 0 15px 5px rgba(0, 119, 255, 0);
     }
+
     100% {
         box-shadow: 0 0 0 0 rgba(0, 119, 255, 0);
     }
@@ -470,16 +472,16 @@ main {
     border: 1px solid rgba(119, 119, 119, 0.842);
 }
 
-.twi:hover i {
-    color: #020202;
+.insta:hover i {
+    color: #e4405f;
 }
 
 .face:hover i {
     color: #0965fd;
 }
 
-.insta:hover i {
-    color: #e4405f;
+.tik:hover i {
+    color: #020202;
 }
 
 .you:hover i {

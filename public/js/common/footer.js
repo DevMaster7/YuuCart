@@ -56,9 +56,9 @@ function footer() {
                 <p>Email: support@quickcart.com</p>
                 <p>Phone: +92 300 1234567</p>
                 <div class="social-icons">
-                    <a href="#" class="social-link"><i class="fa-brands twi fa-x-twitter"></i></a>
-                    <a href="#" class="social-link"><i class="fa-brands insta fa-instagram"></i></a>
-                    <a href="#" class="social-link"><i class="fa-brands face fa-facebook-f"></i></a>
+                <a href="https://www.instagram.com/trolleypakistan" class="social-link"><i class="fa-brands insta fa-instagram"></i></a>
+                <a href="#" class="social-link"><i class="fa-brands face fa-facebook-f"></i></a>
+                <a href="#" class="social-link"><i class="fa-brands fa-tiktok"></i></a>
                     <a href="#" class="social-link"><i class="fa-brands you fa-youtube"></i></a>
                 </div>
             </div>

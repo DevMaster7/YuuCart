@@ -48,6 +48,69 @@ const productSchema = new mongoose.Schema({
             price: Number,
         },
     ],
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    Reviews: [
+        {
+            userId: {
+                type: String,
+                required: true
+            },
+            name: {
+                type: String,
+                required: true
+            },
+            username: {
+                type: String,
+                required: true
+            },
+            rating: {
+                type: Number,
+                required: true
+            },
+            meta: [
+                { metaImg: String }
+            ],
+            review: {
+                type: String,
+                required: true
+            },
+            time: {
+                type: Date,
+                default: Date.now
+            }
+        }
+    ],
+    AnswerQuestions: [
+        {
+            userId: {
+                type: String,
+                required: true
+            },
+            name: {
+                type: String,
+                required: true
+            },
+            username: {
+                type: String,
+                required: true
+            },
+            question: {
+                type: String,
+                required: true
+            },
+            answer: {
+                type: String,
+                required: true
+            },
+            time: {
+                type: Date,
+                default: Date.now
+            }
+        }
+    ]
 })
 
 const productModel = mongoose.model("prducts", productSchema);
