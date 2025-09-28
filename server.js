@@ -153,80 +153,106 @@ app.post("/user/register/enterpass", async (req, res) => {
 })
 app.post("/verify-captcha", async (req, res) => {
   const { email, cap_token } = req.body;
-  let user = await userModel.findOne({ email: email })
 
-  if (!cap_token) {
-    return res.status(400).json({ success: false, message: "Please verify captcha!" });
-  }
-  let now = Date.now();
-  const expireAt = new Date(user.verificationOTP.expiresAt)
-  const diff = expireAt - now;
-  const minutes = Math.floor(diff / 1000 / 60);
-  const seconds = Math.floor((diff / 1000) % 60);
-  const remain = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-  if (user.verificationOTP.expiresAt > Date.now()) {
-    return res.status(400).json({ success: false, message: `OTP already requested. Wait for ${remain} to request again.` })
-  }
-  if (!user) {
-    return res.status(400).json({ success: false, message: "User not found!" });
-  }
+  if (!cap_token) return res.status(400).json({ success: false, message: "Please verify captcha!" });
+  let user = await userModel.findOne({ email: email })
+  if (!user) return res.status(400).json({ success: false, message: "User not found!" });
+
   req.session.captchaVerification = cap_token;
   res.status(200).json({ success: true, message: "All good" });
 })
-app.get("/sendmail/forgot-password", optionalVerifyToken, async (req, res) => {
+app.get("/send/verification-email", optionalVerifyToken, async (req, res) => {
   res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, private");
   res.setHeader("Pragma", "no-cache");
   res.setHeader("Expires", "0");
 
-  function generateVerificationCode() {
-    const digits = "0123456789";
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    let codeArr = [];
-    for (let i = 0; i < 3; i++) {
-      codeArr.push(digits.charAt(Math.floor(Math.random() * digits.length)));
-    }
-    for (let i = 0; i < 3; i++) {
-      codeArr.push(letters.charAt(Math.floor(Math.random() * letters.length)));
-    }
-    for (let i = codeArr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [codeArr[i], codeArr[j]] = [codeArr[j], codeArr[i]];
-    }
-    return codeArr.join("");
-  }
+  if (!req.session.captchaVerification) return res.redirect("/user/login");
 
-  if (!req.session.captchaVerification) {
-    return res.redirect("/user/login");
-  }
+  let email = req.query.email;
+  let location = req.query.location;
+  let purpose = req.query.purpose;
 
-  const email = req.query.email;
-  const location = req.query.location;
   if (!email) return res.redirect("/user/login");
-
   const user = await userModel.findOne({ email });
   if (!user) return res.redirect("/user/login");
 
-  const verificationCode = generateVerificationCode();
-  const now = Date.now();
-  let expiresAt = new Date(now + 5 * 60 * 1000);
-
-  await userModel.updateOne({ email }, {
-    $set: {
-      verificationOTP: {
-        email,
-        otp: verificationCode,
-        expiresAt,
-        location
+  if (!(user.verificationOTP.expiresAt > Date.now()) || !user.verificationOTP || user.verificationOTP.purpose != purpose) {
+    function generateVerificationCode() {
+      const digits = "0123456789";
+      const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      let codeArr = [];
+      for (let i = 0; i < 3; i++) {
+        codeArr.push(digits.charAt(Math.floor(Math.random() * digits.length)));
       }
+      for (let i = 0; i < 3; i++) {
+        codeArr.push(letters.charAt(Math.floor(Math.random() * letters.length)));
+      }
+      for (let i = codeArr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [codeArr[i], codeArr[j]] = [codeArr[j], codeArr[i]];
+      }
+      return codeArr.join("");
     }
-  });
+    let verificationCode = generateVerificationCode();
+    let now = Date.now();
+    let expiresAt = new Date(now + 5 * 60 * 1000);
 
-  const html = `<div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 40px;">
-   <div style="max-width: 600px; margin: auto; background: white; padding: 20px 30px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);"> <h2 style="color: #333;">Verify Your Email Address</h2> <p style="font-size: 16px; color: #555;"> Hi ${user.fullname}, </p> <p style="font-size: 16px; color: #555;"> To complete your sign up with <strong>QuickCart</strong>, please use the verification code below: </p> <div style="text-align: center; margin: 30px 0;"> <span style="font-size: 32px; font-weight: bold; color: #4CAF50; letter-spacing: 5px;">${verificationCode}</span> </div> <p style="font-size: 14px; color: #888;"> This code is valid for the next 10 minutes. Please do not share this code with anyone. </p> <p style="font-size: 14px; color: #888;"> If you did not request this, you can safely ignore this email. </p> <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;"> <p style="font-size: 12px; color: #aaa; text-align: center;"> &copy; ${new Date().getFullYear()} QuickCart. All rights reserved. </p> </div> </div>`;
+    await userModel.updateOne({ email }, {
+      $set: {
+        verificationOTP: {
+          email,
+          otp: verificationCode,
+          expiresAt,
+          location,
+          purpose
+        }
+      }
+    });
 
-  await sendEmail(email, html);
+    function getEmailTemplate(type, user, code) {
+      const year = new Date().getFullYear();
+
+      let heading = "";
+      let message = "";
+      let note = "";
+
+      if (type === "email-verification") {
+        heading = "Verify Your Email Address";
+        message = `To complete your sign up with <strong>QuickCart</strong>, please use the verification code below:`;
+        note = "This code is valid for the next 10 minutes. Please do not share this code with anyone.";
+      }
+      else if (type === "forgot") {
+        heading = "Reset Your Password";
+        message = `We received a request to reset your password for <strong>QuickCart</strong>. Use the code below to proceed:`;
+        note = "This code is valid for the next 10 minutes. If you did not request a password reset, you can ignore this email.";
+      }
+
+      const html = `
+  <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 40px;">
+    <div style="max-width: 600px; margin: auto; background: white; padding: 20px 30px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+      <h2 style="color: #333;">${heading}</h2>
+      <p style="font-size: 16px; color: #555;">Hi ${user.fullname},</p>
+      <p style="font-size: 16px; color: #555;">${message}</p>
+      <div style="text-align: center; margin: 30px 0;">
+        <span style="font-size: 32px; font-weight: bold; color: #4CAF50; letter-spacing: 5px;">${code}</span>
+      </div>
+      <p style="font-size: 14px; color: #888;">${note}</p>
+      <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+      <p style="font-size: 12px; color: #aaa; text-align: center;">&copy; ${year} QuickCart. All rights reserved.</p>
+    </div>
+  </div>
+  `;
+      return html;
+    }
+
+    await sendEmail(email, getEmailTemplate(purpose, user, verificationCode));
+    res.render("verify", { email, expiresAt });
+  }
+  else {
+    const expiresAt = new Date(user.verificationOTP.expiresAt);
+    res.render("verify", { email, expiresAt });
+  }
   delete req.session.captchaVerification;
-  res.render("verify", { email, expiresAt });
 });
 app.post("/verify-otp", optionalVerifyToken, async (req, res) => {
   const inputOTP = req.body.otp;
@@ -246,13 +272,23 @@ app.post("/verify-otp", optionalVerifyToken, async (req, res) => {
     );
     return res.status(400).json({ success: false, message: "OTP has expired!" });
   }
+
   if (user.verificationOTP.otp === inputOTP) {
-    req.flash("success", "enter-pass");
-    if (user.verificationOTP.location == "user") {
-      res.status(200).json({ success: true, redirectTo: "/user/account", message: "OTP verified!" });
+    if (user.verificationOTP.purpose == "forgot") {
+      req.flash("success", "enter-pass");
+      if (user.verificationOTP.location == "user") {
+        res.status(200).json({ success: true, redirectTo: "/user/account", message: "OTP verified!" });
+      }
+      else {
+        res.status(200).json({ success: true, redirectTo: "/user/login", message: "OTP verified!" });
+      }
     }
     else {
-      res.status(200).json({ success: true, redirectTo: "/user/login", message: "OTP verified!" });
+      await userModel.updateOne(
+        { email: email },
+        { $set: { emailVerified: true } }
+      );
+      res.status(200).json({ success: true, redirectTo: "/user/account", message: "OTP verified!" })
     }
     await userModel.updateOne(
       { email: email },

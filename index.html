@@ -2,211 +2,57 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QuickCart - Shop Smarter</title>
+  <title>Badges</title>
   <style>
-    /* Reset & Base */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      line-height: 1.6;
-      color: #333;
-      background: #f9f9f9;
-    }
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    /* Hero Section */
-    .hero {
-      background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
-        url('https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1350&q=80') 
-        no-repeat center center/cover;
-      color: white;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+    .badge {
+      display: inline-flex;
       align-items: center;
-      text-align: center;
-      padding: 0 20px;
-    }
-    .hero h1 {
-      font-size: 3rem;
-      margin-bottom: 15px;
-    }
-    .hero p {
-      font-size: 1.2rem;
-      margin-bottom: 25px;
-      max-width: 600px;
-    }
-    .hero .btn {
-      background: #ff6600;
-      color: white;
-      padding: 12px 28px;
-      font-size: 1rem;
-      border-radius: 25px;
-      transition: background 0.3s ease;
-    }
-    .hero .btn:hover {
-      background: #e05500;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-family: Arial, sans-serif;
+      font-weight: 500;
+      gap: 5px;
     }
 
-    /* Info Sections */
-    .section {
-      padding: 60px 20px;
-      background: white;
-      text-align: center;
-    }
-    .section h2 {
-      font-size: 2rem;
-      margin-bottom: 15px;
-      color: #222;
-    }
-    .section p {
-      font-size: 1rem;
-      color: #555;
-      max-width: 600px;
-      margin: 0 auto 30px;
-    }
-    .icons {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      flex-wrap: wrap;
-    }
-    .icon-box {
-      max-width: 220px;
-      text-align: center;
-    }
-    .icon-box img {
-      width: 60px;
-      margin-bottom: 15px;
-    }
-    .icon-box h3 {
-      font-size: 1.2rem;
-      margin-bottom: 10px;
-      color: #333;
-    }
-    .icon-box p {
-      font-size: 0.9rem;
-      color: #666;
+    .verified {
+      background: #e0f9e7;
+      color: #0f5132;
+      border: 1px solid #0f5132;
     }
 
-    /* Footer */
-    footer {
-      background: #222;
-      color: #aaa;
-      text-align: center;
-      padding: 40px 20px;
-    }
-    footer h3 {
-      color: #fff;
-      margin-bottom: 20px;
-    }
-    footer .links {
-      margin-bottom: 20px;
-    }
-    footer .links a {
-      margin: 0 10px;
-      color: #aaa;
-      transition: color 0.3s;
-    }
-    footer .links a:hover {
-      color: #fff;
-    }
-    footer .social a {
-      margin: 0 8px;
-      color: #aaa;
-      font-size: 1.2rem;
-      transition: color 0.3s;
-    }
-    footer .social a:hover {
-      color: #ff6600;
-    }
-    footer p {
-      margin-top: 20px;
-      font-size: 0.85rem;
-      color: #777;
+    .unverified {
+      background: #fde2e2;
+      color: #842029;
+      border: 1px solid #842029;
     }
 
-    /* Responsive */
-    @media (max-width: 768px) {
-      .hero h1 {
-        font-size: 2.3rem;
-      }
-      .icons {
-        flex-direction: column;
-        gap: 30px;
-      }
+    .badge svg {
+      width: 14px;
+      height: 14px;
     }
   </style>
 </head>
 <body>
 
-  <!-- Hero -->
-  <section class="hero">
-    <h1>Welcome to QuickCart</h1>
-    <p>Your one-stop shop for fast delivery, quality products, and endless customization. Shop smarter today.</p>
-    <a href="#shop" class="btn">Shop Now</a>
-  </section>
+  <!-- Verified Badge -->
+  <span class="badge verified">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M5 13l4 4L19 7" />
+    </svg>
+    Verified
+  </span>
 
-  <!-- Fast Delivery Section -->
-  <section class="section" id="delivery">
-    <h2>Fast Delivery</h2>
-    <p>Get your products delivered to your doorstep quickly and safely. We value your time as much as you do.</p>
-    <div class="icons">
-      <div class="icon-box">
-        <img src="https://img.icons8.com/ios-filled/100/ff6600/delivery.png" alt="Delivery Icon">
-        <h3>Lightning Speed</h3>
-        <p>We ensure your order reaches you faster than ever.</p>
-      </div>
-      <div class="icon-box">
-        <img src="https://img.icons8.com/ios-filled/100/ff6600/track-order.png" alt="Tracking Icon">
-        <h3>Order Tracking</h3>
-        <p>Stay updated with real-time order tracking at every step.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Customizable Products Section -->
-  <section class="section" id="customize">
-    <h2>Customizable Products</h2>
-    <p>We let you customize your items to match your style and personality. Your product, your way.</p>
-    <div class="icons">
-      <div class="icon-box">
-        <img src="https://img.icons8.com/ios-filled/100/ff6600/t-shirt.png" alt="Custom T-shirt">
-        <h3>Personalized Apparel</h3>
-        <p>Create your unique clothing with designs you love.</p>
-      </div>
-      <div class="icon-box">
-        <img src="https://img.icons8.com/ios-filled/100/ff6600/mug.png" alt="Custom Mug">
-        <h3>Custom Gifts</h3>
-        <p>Design mugs, accessories, and more for any occasion.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer>
-    <h3>QuickCart</h3>
-    <div class="links">
-      <a href="#about">About</a> | 
-      <a href="#shop">Shop</a> | 
-      <a href="#contact">Contact</a>
-    </div>
-    <div class="social">
-      <a href="#"><i>🌐</i></a>
-      <a href="#"><i>📘</i></a>
-      <a href="#"><i>🐦</i></a>
-    </div>
-    <p>&copy; 2025 QuickCart. All rights reserved.</p>
-  </footer>
+  <!-- Unverified Badge -->
+  <span class="badge unverified">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="9" stroke-width="2"/>
+      <line x1="12" y1="8" x2="12" y2="12" stroke-width="2" />
+      <line x1="12" y1="16" x2="12" y2="16" stroke-width="2" />
+    </svg>
+    Unverified
+  </span>
 
 </body>
 </html>

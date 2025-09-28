@@ -213,7 +213,7 @@ router.post("/apply-coupon", async (req, res) => {
 router.post("/place-order", optionalVerifyToken, async (req, res) => {
     const userID = req.user._QCUI_UI;
     const user = await userModel.findById(userID);
-    if (user.address == undefined || user.address == null || user.address == "" || user.city == undefined || user.city == null || user.city == "" || user.phone == undefined || user.phone == null || user.phone == "") {
+    if (user.address == undefined || user.address == "" || user.city == undefined || user.city == "" || user.phone == undefined || user.phone == "" || !user.emailVerified) {
         return res.status(400).json({ success: false, message: "Please Fill All The Details!" });
     }
     const { coupanName } = req.body;

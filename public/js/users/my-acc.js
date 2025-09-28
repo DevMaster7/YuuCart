@@ -61,7 +61,7 @@ if (head.dataset.info == "enter-pass") {
     });
 }
 
-document.querySelector(".forgot-btn").addEventListener("click", () => {
+function makeCaptcha(purpose) {
     const overlay = document.createElement("div");
     overlay.classList.add("overlay");
     overlay.innerHTML = `
@@ -75,7 +75,7 @@ document.querySelector(".forgot-btn").addEventListener("click", () => {
     let gcp = document.getElementsByTagName("head")[0].dataset.gcp;
     grecaptcha.render("captcha-container", {
         sitekey: gcp,
-        callback: onCaptchaSuccess
+        callback: (token) => onCaptchaSuccess(token, purpose)
     });
 
     overlay.addEventListener("click", (e) => {
@@ -84,10 +84,17 @@ document.querySelector(".forgot-btn").addEventListener("click", () => {
             document.body.style.overflow = "auto";
         }
     });
-
+}
+document.querySelector(".forgot-btn").addEventListener("click", () => {
+    makeCaptcha("forgot");
 });
+if (document.querySelector(".unVerified")) {
+    document.querySelector(".unVerified").addEventListener("click", () => {
+        makeCaptcha("email-verification");
+    })
+}
 
-async function onCaptchaSuccess(token) {
+async function onCaptchaSuccess(token, purpose) {
     const form = document.getElementById("capForm");
     const email = document.getElementById("email").innerHTML.trim();
     const cap_token = token;
@@ -100,7 +107,7 @@ async function onCaptchaSuccess(token) {
 
         const result = await response.json();
         if (result.success) {
-            window.location.href = `/sendmail/forgot-password?email=${email}&location=user`;
+            window.location.href = `/send/verification-email?email=${email}&location=user&purpose=${purpose}`;
         }
         else {
             document.querySelector(".cap-con").querySelector(".err-msg").innerHTML = result.message
@@ -168,7 +175,8 @@ document.querySelector(".edit-btn").addEventListener("click", () => {
     mainFun()
 })
 
-document.querySelectorAll(".personal-detail").forEach((e) => {
+const valueEle = Array.from(document.querySelectorAll(".value")).filter(e => !e.id)
+valueEle.forEach((e) => {
     e.addEventListener("dblclick", () => {
         if (e.classList.contains("pass")) return
         mainFun()

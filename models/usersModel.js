@@ -22,6 +22,10 @@ const userSchema = new mongoose.Schema({
         unique: true,
         required: true,
     },
+    emailVerified: {
+        type: Boolean,
+        default: false
+    },
     phone: String,
     city: String,
     address: String,
@@ -62,7 +66,8 @@ const userSchema = new mongoose.Schema({
         email: String,
         otp: String,
         expiresAt: Date,
-        location: String
+        location: String,
+        purpose: String
     }
 })
 

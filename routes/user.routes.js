@@ -62,7 +62,7 @@ router.get("/edit-my-account", optionalVerifyToken, async (req, res) => {
     res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, private");
     res.setHeader("Pragma", "no-cache");
     res.setHeader("Expires", "0");
-    
+
     const token = req.user;
     if (!token) return res.redirect("/user/login");
     const user = await userModel.findById(token._QCUI_UI);

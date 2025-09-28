@@ -222,6 +222,35 @@
     border-radius: 3px;
 }
 
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 15px;
+    font-size: 13px;
+    font-family: Arial, sans-serif;
+    font-weight: 500;
+    gap: 5px;
+}
+
+.verified {
+    background: #e0f9e7;
+    color: #0f5132;
+    border: 1px solid #0f5132;
+}
+
+.unverified {
+    cursor: pointer;
+    background: #fde2e2;
+    color: #842029;
+    border: 1px solid #842029;
+}
+
+.badge svg {
+    width: 14px;
+    height: 14px;
+}
+
 .personal-detail .value:focus {
     outline: 1px solid var(--Primary);
 }

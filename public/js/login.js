@@ -109,6 +109,7 @@ document.querySelector(".forgot-btn").addEventListener("click", () => {
     let gcp = document.getElementsByTagName("head")[0].dataset.gcp;
     grecaptcha.render("captcha-container", {
         sitekey: gcp,
+        callback: (token) => onCaptchaSuccess(token, "forgot")
     });
 
     overlay.addEventListener("click", (e) => {
@@ -117,36 +118,32 @@ document.querySelector(".forgot-btn").addEventListener("click", () => {
             document.body.style.overflow = "auto";
         }
     });
-    const form = document.getElementById("capForm");
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const email = form.getElementsByTagName("input")[0].value;
-        const cap_token = grecaptcha.getResponse();
-        try {
-            const response = await fetch(form.action, {
-                method: form.method,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, cap_token })
-            });
-
-            const result = await response.json();
-            if (result.success) {
-                window.location.href = `/sendmail/forgot-password?email=${email}&location=login`;
-            }
-            else {
-                document.querySelector(".cap-con").querySelector(".err-msg").innerHTML = result.message
-                setTimeout(() => {
-                    document.querySelector(".cap-con").querySelector(".err-msg").innerHTML = "";
-                    setTimeout(() => {
-                        document.querySelector(".overlay").remove();
-                    }, 500)
-                }, 2000);
-            }
-        } catch (error) {
-            console.error("Error:", error);
-        }
-    });
 });
+
+async function onCaptchaSuccess(token, purpose) {
+    const form = document.getElementById("capForm");
+    const email = form.getElementsByTagName("input")[0].value;
+    const cap_token = token;
+    const response = await fetch(form.action, {
+        method: form.method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, cap_token, purpose })
+    });
+
+    const result = await response.json();
+    if (result.success) {
+        window.location.href = `/send/verification-email?email=${email}&location=login&purpose=${purpose}`;
+    }
+    else {
+        document.querySelector(".cap-con").querySelector(".err-msg").innerHTML = result.message
+        setTimeout(() => {
+            document.querySelector(".cap-con").querySelector(".err-msg").innerHTML = "";
+            setTimeout(() => {
+                document.querySelector(".overlay").remove();
+            }, 500)
+        }, 2000);
+    }
+}
 
 document.querySelector(".icon").addEventListener("click", () => {
     window.location.href = '/';
