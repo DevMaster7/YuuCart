@@ -25,6 +25,7 @@ function allowPage(pageName) {
 
 // Dashboard
 router.get("/admin-data", async (req, res) => {
+
   // Data related to users
   let allUsers = await userModel.find();
   const firstUser = await userModel.findOne().sort({ joiningDate: 1 });
@@ -41,7 +42,24 @@ router.get("/admin-data", async (req, res) => {
     }
   ]);
 
+  // Data related to orders
   let allOrders = await orderModel.find();
+  const ordersData = await orderModel.aggregate([
+    {
+      $group: {
+        _id: "$orderInfo.orderStatus",
+        count: { $sum: 1 }
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        status: "$_id",
+        count: 1
+      }
+    }
+  ]);
+
   let allProducts = await productModel.find();
   let allCoupans = await coupanModel.find();
 
@@ -51,6 +69,7 @@ router.get("/admin-data", async (req, res) => {
       firstUser,
       agg
     },
+    orderChartDetails: ordersData,
     allOrders,
     allProducts,
     allCoupans

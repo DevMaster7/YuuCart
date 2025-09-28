@@ -143,6 +143,12 @@ h1 {
     color: var(--muted)
 }
 
+.link-btn {
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: underline;
+}
+
 .row {
     display: flex;
     gap: 12px;
@@ -162,7 +168,7 @@ h1 {
 }
 
 .btn.primary {
-    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    background: var(--accent);
     color: white
 }
 

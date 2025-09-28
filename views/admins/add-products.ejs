@@ -23,12 +23,12 @@
         <div class="side-nav-con">
         </div>
         <div class="content-con">
+            <a href="/admin/manage-products" class="back-btn">Back To Products List</a>
             <div class="add-products">
-                <a href="/admin/manage-products" class="back-btn">Back To Products List</a>
                 <form id="productForm" class="form" action="/admin/manage-products/add-products" method="post"
                     enctype="multipart/form-data">
                     <div class="inputs">
-                        <div style="display: flex; gap: 20px;">
+                        <div class="img-con">
                             <label for="image-upload" class="upload-label">Choose Main image</label>
                             <input name="thumbnail" type="file" id="image-upload" class="image-upload-input"
                                 accept="image/*" required>
@@ -47,7 +47,7 @@
                         </div>
                         <div class="field">
                             <input type="number" name="proOrignalPrice" id="proOrignalPrice" placeholder=" " />
-                            <label for="proOrignalPrice">Product Orignal Price</label>
+                            <label for="proOrignalPrice">POPrice</label>
                         </div>
                         <div class="field">
                             <input type="number" name="proDiscount" id="proDiscount" placeholder=" " />
@@ -67,7 +67,7 @@
                         </div>
                         <div class="field">
                             <input type="text" name="proDescription" id="proDescription" placeholder=" " required />
-                            <label for="proDescription">Product Description</label>
+                            <label for="proDescription">Product Desc</label>
                         </div>
                         <div class="field">
                             <input type="text" name="proCategory" id="proCategory" placeholder=" " required />

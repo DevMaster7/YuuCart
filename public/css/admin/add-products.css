@@ -12,6 +12,7 @@ body {
 
 .content-con {
     width: 100%;
+    padding: 10px;
 }
 
 .add-products {
@@ -23,9 +24,6 @@ body {
 }
 
 .back-btn {
-    position: absolute;
-    top: 10px;
-    left: 15px;
     font-size: 17px;
     color: var(--Accent);
     cursor: pointer;
@@ -46,6 +44,11 @@ body {
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
+    gap: 20px;
+}
+
+.img-con {
+    display: flex;
     gap: 20px;
 }
 
@@ -264,4 +267,24 @@ body {
     font-size: 10px;
     margin-top: 1px;
     color: #8f93a0;
+}
+
+@media (max-width:770px) {
+    .form {
+        width: 100%;
+    }
+
+    .inputs {
+        gap: 10px;
+    }
+
+    .field {
+        width: 170px !important;
+    }
+}
+
+@media (max-width:400px) {
+    .field{
+        width: 155px !important;
+    }
 }

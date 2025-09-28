@@ -1,15 +1,21 @@
 async function getData() {
     const response = await fetch("/admin/admin-data");
     const returnData = await response.json();
-    // console.log(returnData);
+    console.log(returnData.data.allCoupans);
 
     // User Data
     let userData = returnData.data.userChartDetails.agg
     let startingUser = returnData.data.userChartDetails.firstUser.joiningDate
+    function toMidnight(date) {
+        const d = new Date(date);
+        d.setHours(0, 0, 0, 0);
+        return d;
+    }
     function fillDays(data, startDate) {
         const result = [];
-        let startingDate = new Date(startDate);
-        let currentDate = new Date();
+        let startingDate = toMidnight(startDate);
+        let currentDate = toMidnight(new Date());
+
         while (startingDate <= currentDate) {
             const dd = String(startingDate.getDate()).padStart(2, "0");
             const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -31,9 +37,21 @@ async function getData() {
 
             startingDate.setDate(startingDate.getDate() + 1);
         }
+
         return result;
     }
     const userSeries = fillDays(userData, startingUser);
+
+    // Coupon Data
+    let coupons = returnData.data.allCoupans;
+    coupons = coupons.map((coupon) => {
+        return {
+            code: coupon.coupanCode,
+            discount: coupon.coupanDiscount,
+            limit: coupon.coupanLimit,
+            active: coupon.Status
+        }
+    })
 
     // Complete Data Structure
     let MOCK = {
@@ -45,27 +63,8 @@ async function getData() {
             coupons: returnData.data.allCoupans
         },
         userSeries,
-        ordersByStatus: [{
-            status: 'Pending',
-            count: 42
-        },
-        {
-            status: 'Processing',
-            count: 128
-        },
-        {
-            status: 'Shipped',
-            count: 320
-        },
-        {
-            status: 'Delivered',
-            count: 800
-        },
-        {
-            status: 'Returned',
-            count: 52
-        }
-        ],
+        orderSeries: returnData.data.orderChartDetails,
+        coupons,
         productCategories: [{
             name: 'Apparel',
             value: 48
@@ -135,17 +134,7 @@ async function getData() {
             sold: 290
         }
         ],
-        coupons: [{
-            code: 'WELCOME50',
-            discount: 'Rs.50',
-            active: true
-        },
-        {
-            code: 'FREESHIP',
-            discount: 'Free Shipping',
-            active: true
-        }
-        ]
+
     };
     applyData(MOCK);
 }
@@ -157,37 +146,37 @@ function fmt(n) {
 }
 
 function applyData(data) {
-    console.log(data);
     // KPIs
     document.getElementById('kpiUsers').textContent = data.kpis.users.length;
     document.getElementById('kpiProducts').textContent = data.kpis.products.length;
     document.getElementById('kpiOrders').textContent = data.kpis.orders.length;
     document.getElementById('kpiRevenue').textContent = fmt(data.kpis.revenue);
-    document.getElementById('totalUserDisplay').textContent = `(${data.kpis.users.length})`;
-    document.getElementById('couponCount').textContent = data.kpis.coupons.length;
+
+    document.getElementById('totalUserCount').textContent = `(${data.kpis.users.length})`;
+    document.getElementById('totalOrderCount').textContent = `(${data.kpis.orders.length})`;
+    document.getElementById('totalCouponCount').textContent = `(${data.kpis.coupons.length})`;
+    document.getElementById('totalProductCount').textContent = `(${data.kpis.products.length})`;
 
     // Charts
     renderUserChart(data.userSeries);
-    renderOrdersChart(data.ordersByStatus);
-    renderPieChart(data.productCategories);
+    renderOrderChart(data.orderSeries);
+    // renderPieChart(data.productCategories);
 
-    // Table & lists
-    renderOrdersTable(data.recentOrders);
-    renderTopProducts(data.topProducts);
+    // // Table & lists
     renderCoupons(data.coupons);
+    // renderOrdersTable(data.recentOrders);
+    // renderTopProducts(data.topProducts);
 }
 
 let userChart = null,
-    ordersChart = null,
-    pieChart = null;
+    orderChart = null
 function renderUserChart(series) {
     const days = series.map(item => item.date);
     const values = series.map(item => item.count);
 
     const ctx = document.getElementById("userChart").getContext("2d");
-    if (userChart) {
-        userChart.destroy();
-    }
+    if (userChart) userChart.destroy();
+
     userChart = new Chart(ctx, {
         type: "bar",
         data: {
@@ -211,12 +200,12 @@ function renderUserChart(series) {
                         wheel: { enabled: true },
                         pinch: { enabled: true },
                         mode: "x",
-                        onZoom: ({ chart }) => updateUserTren(chart)
+                        onZoom: ({ chart }) => updateUserTrend(chart)
                     },
                     pan: {
                         enabled: true,
                         mode: "x",
-                        onPan: ({ chart }) => updateUserTren(chart)
+                        onPan: ({ chart }) => updateUserTrend(chart)
                     }
                 }
             },
@@ -230,73 +219,46 @@ function renderUserChart(series) {
             }
         }
     });
-    updateUserTren(userChart);
+    updateUserTrend(userChart);
 }
-function updateUserTren(chart) {
+function updateUserTrend(chart) {
     const xScale = chart.scales.x;
     const visibleBars = xScale.max - xScale.min + 1;
     document.getElementById("userTrend").textContent = `last ${visibleBars} days`;
 }
 
-function renderOrdersChart(statusSeries) {
-    const ctx = document.getElementById('ordersChart').getContext('2d');
-    const labels = statusSeries.map(s => s.status);
-    const values = statusSeries.map(s => s.count);
-    if (ordersChart) ordersChart.destroy();
-    ordersChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels,
-            datasets: [{
-                label: 'Orders',
-                data: values,
-                backgroundColor: labels.map(lbl => statusColor(lbl)),
-                borderRadius: 6
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: {
-                    grid: {
-                        display: false
-                    },
-                    ticks: {
-                        color: '#64748b'
-                    }
-                },
-                y: {
-                    grid: {
-                        color: '#f1f5f9'
-                    },
-                    ticks: {
-                        color: '#64748b'
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: false
-                }
-            }
-        }
-    });
-}
+function renderOrderChart(series) {
+    const colorMap = {
+        Pending: '#F6AD55',
+        Delivered: '#38A169',
+        Cancelled: '#E53E3E'
+    };
 
-function renderPieChart(categories) {
-    const ctx = document.getElementById('pieChart').getContext('2d');
-    const labels = categories.map(c => c.name);
-    const values = categories.map(c => c.value);
-    const colors = ['#0ea5a4', '#60a5fa', '#f97316', '#c084fc'];
-    if (pieChart) pieChart.destroy();
-    pieChart = new Chart(ctx, {
+    const fixedOrder = ["Pending", "Delivered", "Cancelled"];
+    const arranged = fixedOrder.map(status => {
+        const found = series.find(s => s.status === status);
+        return {
+            status,
+            count: found ? found.count : 0,
+            color: colorMap[status]
+        };
+    });
+
+    const labels = arranged.map(c => c.status);
+    const values = arranged.map(c => c.count);
+    const colors = arranged.map(c => c.color);
+
+    const ctx = document.getElementById('orderChart').getContext('2d');
+    if (orderChart) orderChart.destroy();
+
+    orderChart = new Chart(ctx, {
         type: 'pie',
         data: {
             labels,
             datasets: [{
                 data: values,
-                backgroundColor: colors
+                backgroundColor: colors,
+                hoverBackgroundColor: colors
             }]
         },
         options: {
@@ -311,81 +273,102 @@ function renderPieChart(categories) {
     });
 }
 
-function statusColor(status) {
-    switch (status.toLowerCase()) {
-        case 'pending':
-            return '#f59e0b';
-        case 'processing':
-            return '#06b6d4';
-        case 'shipped':
-            return '#2563eb';
-        case 'delivered':
-            return '#10b981';
-        case 'returned':
-            return '#ef4444';
-        default:
-            return '#94a3b8';
-    }
-}
+// function renderOrdersChart(statusSeries) {
+//     const ctx = document.getElementById('ordersChart').getContext('2d');
+//     const labels = statusSeries.map(s => s.status);
+//     const values = statusSeries.map(s => s.count);
+//     if (ordersChart) ordersChart.destroy();
+//     ordersChart = new Chart(ctx, {
+//         type: 'bar',
+//         data: {
+//             labels,
+//             datasets: [{
+//                 label: 'Orders',
+//                 data: values,
+//                 backgroundColor: labels.map(lbl => statusColor(lbl)),
+//                 borderRadius: 6
+//             }]
+//         },
+//         options: {
+//             responsive: true,
+//             maintainAspectRatio: false,
+//             scales: {
+//                 x: {
+//                     grid: {
+//                         display: false
+//                     },
+//                     ticks: {
+//                         color: '#64748b'
+//                     }
+//                 },
+//                 y: {
+//                     grid: {
+//                         color: '#f1f5f9'
+//                     },
+//                     ticks: {
+//                         color: '#64748b'
+//                     }
+//                 }
+//             },
+//             plugins: {
+//                 legend: {
+//                     display: false
+//                 }
+//             }
+//         }
+//     });
+// }
 
-function hexToRgba(hex, alpha) {
-    // basic hex -> rgba helper
-    hex = hex.replace('#', '').trim();
-    if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
-    const r = parseInt(hex.substring(0, 2), 16);
-    const g = parseInt(hex.substring(2, 4), 16);
-    const b = parseInt(hex.substring(4, 6), 16);
-    return `rgba(${r},${g},${b},${alpha})`;
-}
+
 
 // -------------------------
 // Render lists & tables
 // -------------------------
-function renderOrdersTable(orders) {
-    // If no orders provided, use data from MOCK
-    orders = orders || MOCK.recentOrders;
-    const filter = document.getElementById('filterStatus').value;
-    const tbody = document.getElementById('ordersTableBody');
-    tbody.innerHTML = '';
-    const filtered = (filter === 'all') ? orders : orders.filter(o => o.status.toLowerCase() === filter
-        .toLowerCase());
-    filtered.forEach(o => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><strong>${o.id}</strong></td>
-          <td>${o.customer}</td>
-          <td>${fmt(o.amount)}</td>
-          <td class="muted">${o.date}</td>
-          <td><span class="badge ${badgeClass(o.status)}">${o.status}</span></td>
-        `;
-        tbody.appendChild(tr);
-    });
-    // update total orders count display
-    document.getElementById('totalOrdersCount').textContent = orders.length;
-}
+// function renderOrdersTable(orders) {
+//     // If no orders provided, use data from MOCK
+//     orders = orders || MOCK.recentOrders;
+//     const filter = document.getElementById('filterStatus').value;
+//     const tbody = document.getElementById('ordersTableBody');
+//     tbody.innerHTML = '';
+//     const filtered = (filter === 'all') ? orders : orders.filter(o => o.status.toLowerCase() === filter
+//         .toLowerCase());
+//     filtered.forEach(o => {
+//         const tr = document.createElement('tr');
+//         tr.innerHTML = `
+//           <td><strong>${o.id}</strong></td>
+//           <td>${o.customer}</td>
+//           <td>${fmt(o.amount)}</td>
+//           <td class="muted">${o.date}</td>
+//           <td><span class="badge ${badgeClass(o.status)}">${o.status}</span></td>
+//         `;
+//         tbody.appendChild(tr);
+//     });
+//     // update total orders count display
+//     document.getElementById('totalOrdersCount').textContent = orders.length;
+// }
 
-function badgeClass(status) {
-    const s = status.toLowerCase();
-    if (s === 'pending') return 'b-pending';
-    if (s === 'processing') return 'b-processing';
-    if (s === 'shipped') return 'b-shipped';
-    if (s === 'delivered') return 'b-delivered';
-    if (s === 'returned') return 'b-return';
-    return '';
-}
+// function badgeClass(status) {
+//     const s = status.toLowerCase();
+//     if (s === 'pending') return 'b-pending';
+//     if (s === 'processing') return 'b-processing';
+//     if (s === 'shipped') return 'b-shipped';
+//     if (s === 'delivered') return 'b-delivered';
+//     if (s === 'returned') return 'b-return';
+//     return '';
+// }
 
-function renderTopProducts(list) {
-    const cont = document.getElementById('topProducts');
-    cont.innerHTML = '';
-    list.forEach(p => {
-        const el = document.createElement('div');
-        el.className = 'top-item';
-        el.innerHTML = `<div class="thumb">${p.title.charAt(0)}</div>
-                        <div style="flex:1"><div style="font-weight:700">${p.title}</div><div class="muted" style="font-size:13px">${p.sold} sold</div></div>
-                        <div style="font-weight:700">${p.sold}</div>`;
-        cont.appendChild(el);
-    });
-}
+// function renderTopProducts(list) {
+//     const cont = document.getElementById('topProducts');
+//     cont.innerHTML = '';
+//     list.forEach(p => {
+//         const el = document.createElement('div');
+//         el.className = 'top-item';
+//         el.innerHTML = `<div class="thumb">${p.title.charAt(0)}</div>
+//                         <div style="flex:1"><div style="font-weight:700">${p.title}</div><div class="muted" style="font-size:13px">${p.sold} sold</div></div>
+//                         <div style="font-weight:700">${p.sold}</div>`;
+//         cont.appendChild(el);
+//     });
+// }
 
 function renderCoupons(list) {
     const cont = document.getElementById('couponList');
@@ -399,8 +382,11 @@ function renderCoupons(list) {
         div.style.borderRadius = '8px';
         div.style.background = '#fbfdff';
         div.innerHTML =
-            `<div><div style="font-weight:700">${c.code}</div><div class="muted" style="font-size:13px">${c.discount}</div></div>
-                         <div><button class="btn small ghost" onclick='toggleCoupon("${c.code}")'>${c.active ? 'Pause' : 'Activate'}</button></div>`;
+            `<div>
+            <div style="font-weight:700">${c.code}</div>
+            <div class="muted" style="font-size:13px">Discount: <strong>${c.discount}%</strong></div>
+            </div>
+            <div><button class="btn small ghost" onclick='toggleCoupon("${c.code}")'>${c.active ? 'Pause' : 'Activate'}</button></div>`;
         cont.appendChild(div);
     });
 }
