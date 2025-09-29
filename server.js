@@ -331,3 +331,8 @@ app.listen(3000, () => {
   console.log("Server is running on port 3000");
 })
 // npx localtunnel --port 3000 --subdomain quickcart
+
+// kharidlo
+// shooq
+// tijarat
+// shoplley

@@ -68,7 +68,8 @@ const userSchema = new mongoose.Schema({
         expiresAt: Date,
         location: String,
         purpose: String
-    }
+    },
+    
 })
 
 const userModel = mongoose.model("users", userSchema);
