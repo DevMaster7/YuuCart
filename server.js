@@ -47,14 +47,17 @@ app.use((req, res, next) => {
 })
 
 // Routes
-app.get("/", optionalVerifyToken, async (req, res) => {
-  const tokenUser = req.user;
-  if (!tokenUser) {
-    return res.render("home", { user: [] });
-  }
-  const user = await userModel.findById(tokenUser._QCUI_UI);
-  res.render("home", { user });
-})
+app.get("/", (req, res) => {
+    res.send("QuickCart is running! ✅");
+});
+// app.get("/", optionalVerifyToken, async (req, res) => {
+//   const tokenUser = req.user;
+//   if (!tokenUser) {
+//     return res.render("home", { user: [] });
+//   }
+//   const user = await userModel.findById(tokenUser._QCUI_UI);
+//   res.render("home", { user });
+// })
 app.get("/auth/google/register",
   passport.authenticate("google", {
     scope: ["profile", "email"],
