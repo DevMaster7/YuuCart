@@ -1,11 +1,17 @@
 const mongoose = require("mongoose");
-const env = require("dotenv");
+require("dotenv").config();
 
-env.config()
-function connectDB() {
-    mongoose.connect(process.env.MONGO_URI).then(() => {
-        console.log(`Connected to QuickCart Database`);
-    });
+async function connectDB() {
+    try {
+        await mongoose.connect(process.env.MONGO_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
+        console.log("Connected to QuickCart Database ✅");
+    } catch (error) {
+        console.error("MongoDB connection failed ❌", error);
+        process.exit(1); // Exit process if DB fails
+    }
 }
 
-module.exports = connectDB
+module.exports = connectDB;
