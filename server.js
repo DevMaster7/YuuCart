@@ -27,12 +27,6 @@ app.use(session({
   saveUninitialized: false,
   cookie: { secure: false } // production me Railway HTTPS hai → secure: true
 }));
-// app.use(session({
-//   secret: "yourSecretKey",
-//   resave: false,
-//   saveUninitialized: false,
-//   cookie: { secure: false }
-// }));
 app.locals.RECAPTCHA_SITE_KEY = process.env.RECAPTCHA_SITE_KEY;
 app.use(cookieParser())
 app.use(passport.initialize());
@@ -333,5 +327,5 @@ app.use((req, res) => {
   res.status(404).render("PNF");
 });
 
-const PORT = process.env.PORT; // Railway automatically provide karega PORT
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
