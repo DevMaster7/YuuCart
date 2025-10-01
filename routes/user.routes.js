@@ -160,6 +160,7 @@ router.post("/register",
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array(), message: "Invalid data!" });
         }
+        if (!captchaToken) return res.status(400).json({ message: "Please verify captcha!" });
         let { fullname, username, email, phone, address, password, city, confirmPassword } = req.body
         username = username.replace(/\s+/g, '').toLowerCase();
         const emailExists = await userModel.findOne({ email });
@@ -174,7 +175,6 @@ router.post("/register",
                 message: "Passwords do not match!"
             });
         }
-        if (!captchaToken) return res.status(400).json({ message: "Please verify captcha!" });
         const hashPassword = await bcrypt.hash(password, 10);
         const newUser = await userModel.create({
             fullname,

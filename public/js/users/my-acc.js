@@ -88,8 +88,8 @@ function makeCaptcha(purpose) {
 document.querySelector(".forgot-btn").addEventListener("click", () => {
     makeCaptcha("forgot");
 });
-if (document.querySelector(".unVerified")) {
-    document.querySelector(".unVerified").addEventListener("click", () => {
+if (document.getElementById("unVerifiedBtn")) {
+    document.getElementById("unVerifiedBtn").addEventListener("click", () => {
         makeCaptcha("email-verification");
     })
 }
