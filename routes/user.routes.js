@@ -24,7 +24,7 @@ function userRoute(viewName) {
 }
 router.get("/account", optionalVerifyToken, userRoute("users/my-account"));
 router.post("/updateProfilePic", optionalVerifyToken, upload.single("file"), async (req, res) => {
-    const filePath = req.file.path
+    const filePath = req.file.buffer
     let folderName = "profile_pics";
     const imageUrl = await uploadOnCloudinary(filePath, folderName);
     if (!imageUrl) {

@@ -196,7 +196,7 @@ router.post("/manage-products/edit-product", verifyAdmin,
   async (req, res) => {
     const files = req.files;
     const newData = JSON.parse(req.body.newData);
-    // console.log(newData);
+    console.log(newData);
 
     let folderName = "product_pics";
     for (const file of files) {
@@ -252,11 +252,11 @@ router.post("/manage-products/add-products", verifyAdmin, optionalVerifyToken, u
   const token = req.user
   const user = await userModel.findById(token._QCUI_UI);
   let thumbnail = req.files['thumbnail'];
-  thumbnail = thumbnail[0].path;
+  thumbnail = thumbnail[0].buffer;
 
   let galleryURLs = req.files['galleryURLs'] || [];
   galleryURLs = galleryURLs.map((e) => {
-    return e.path;
+    return e.buffer;
   })
   let folderName = "product_pics";
   const imageUrl = await uploadOnCloudinary(thumbnail, folderName);
