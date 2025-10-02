@@ -196,10 +196,11 @@ router.post("/manage-products/edit-product", verifyAdmin,
   async (req, res) => {
     const files = req.files;
     const newData = JSON.parse(req.body.newData);
+    // console.log(newData);
 
     let folderName = "product_pics";
     for (const file of files) {
-      const url = await uploadOnCloudinary(file.path, folderName);
+      const url = await uploadOnCloudinary(file.buffer, folderName);
       if (!url) {
         return res.status(500).json({ success: false, message: "Cloudinary upload failed" });
       }
