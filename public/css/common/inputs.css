@@ -15,6 +15,7 @@
  .field select {
      width: 100%;
      padding: 10px 12px;
+     color: #1b1b1b;
      font-size: 16px;
      border: 1px solid #545454;
      border-radius: 6px;
@@ -24,11 +25,14 @@
  }
 
  .field select {
-     color: #545454;
      appearance: none;
      -webkit-appearance: none;
      -moz-appearance: none;
      cursor: pointer;
+ }
+
+ .field option {
+     color: #545454;
  }
 
  .field select::after {
@@ -64,7 +68,7 @@
  }
 
  .field select:focus+label,
- .field select:not([value=""])+labe {
+ .field select:valid+label {
      top: -8px;
      font-size: 13px;
      color: #545454;
