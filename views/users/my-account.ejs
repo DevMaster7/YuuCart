@@ -74,7 +74,7 @@
                     </span>
                     <div class="personal-detail">
                         <div class="name">Email:</div>
-                        <div class="value" style="display: flex;justify-content: space-between;flex-wrap: wrap;">
+                        <div class="value" id="mail" style="display: flex;justify-content: space-between;flex-wrap: wrap;">
                             <div id="email"><%= user.email %></div>
                             <% if (user.emailVerified) { %>
                             <div class="badge verified" id="verifiedBtn">
@@ -122,7 +122,6 @@
                     <div class="personal-detail pass">
                         <div class="name">Old Password:</div>
                         <div class="pass-con">
-
                             <input type="password" id="oldPass" class="value" style="cursor: text;">
                             <i class="fa-solid fa-eye eye"></i>
                         </div>
@@ -139,7 +138,6 @@
                 <div class="personal-detail pass">
                     <div class="name">Confirm Password:</div>
                     <div class="pass-con">
-
                         <input type="password" id="confirmPass" class="value" style="cursor: text;">
                         <i class="fa-solid fa-eye eye"></i>
                     </div>

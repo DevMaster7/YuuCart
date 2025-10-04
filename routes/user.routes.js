@@ -75,7 +75,6 @@ router.get("/edit-my-account", optionalVerifyToken, async (req, res) => {
 router.post("/updateUser",
     body("NewObj.Name").trim().isLength({ min: 3 }),
     body("NewObj.Username").trim().isLength({ min: 5 }),
-    body("NewObj.Email").trim().isEmail().isLength({ min: 13 }),
     body("NewObj.Phone_Number").trim().isLength({ min: 10 }),
     body("NewObj.Address").trim().isLength({ min: 5 }),
     body("NewObj.City").trim().isLength({ min: 5 }),
@@ -84,12 +83,11 @@ router.post("/updateUser",
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array(), message: "Invalid data!" });
         }
-        const { Name, Username, Email, Phone_Number, Address, City } = req.body.NewObj;
+        const { Name, Username, Phone_Number, Address, City } = req.body.NewObj;
         const token = req.user;
         const user = await userModel.findById(token._QCUI_UI);
         user.fullname = Name;
         user.username = Username;
-        user.email = Email;
         user.phone = Phone_Number;
         user.address = Address;
         user.city = City;
