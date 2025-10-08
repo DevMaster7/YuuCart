@@ -81,7 +81,8 @@ main {
 }
 
 .nav-con .logo-con {
-    width: 210px;
+    /* width: 210px; */
+    margin-right: 50px;
     display: flex;
     align-items: center;
     position: relative;
@@ -99,7 +100,7 @@ main {
     height: 40px;
     display: flex;
     text-align: center;
-    width: 160px;
+    /* width: 160px; */
     clip-path: inset(0 100% 0 0);
     animation: revealText 1.7s ease-out forwards;
     justify-content: center;
@@ -108,7 +109,7 @@ main {
 
 .nav-con .icon-con {
     position: absolute;
-    left: 155px;
+    left: 100%;
     animation: moveCart 1.5s ease-out forwards;
 }
 
@@ -133,7 +134,7 @@ main {
     }
 
     100% {
-        left: 155px;
+        left: 100%;
         opacity: 1;
     }
 }
@@ -155,17 +156,17 @@ main {
 @keyframes bounce {
     0% {
         transform: translateY(0);
-        left: 155px;
+        /* left: 155px; */
     }
 
     50% {
         transform: translateY(-8px);
-        left: 155px;
+        /* left: 155px; */
     }
 
     100% {
         transform: translateY(0);
-        left: 155px;
+        /* left: 155px; */
     }
 }
 
@@ -293,10 +294,6 @@ main {
     display: ruby;
 }
 
-.heading-text div {
-    width: 200px;
-}
-
 .heading-text div span {
     color: var(--Accent);
     white-space: nowrap;
@@ -307,7 +304,7 @@ main {
     display: flex;
     width: 100%;
     border-right: 3px solid var(--Accent);
-    animation: typing 6s ease-in infinite alternate, blink .9s infinite;
+    animation: typing 3s ease-in infinite alternate, blink .9s infinite;
 }
 
 @keyframes typing {

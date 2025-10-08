@@ -1,58 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Badges</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QuickCart Logo Animation</title>
   <style>
-    .badge {
-      display: inline-flex;
+    body {
+      background: #f4f7fb;
+      font-family: "Poppins", sans-serif;
+      height: 100vh;
+      display: flex;
       align-items: center;
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size: 13px;
-      font-family: Arial, sans-serif;
-      font-weight: 500;
-      gap: 5px;
+      justify-content: center;
+      overflow: hidden;
     }
 
-    .verified {
-      background: #e0f9e7;
-      color: #0f5132;
-      border: 1px solid #0f5132;
+    :root {
+      --accent: #64B6AC;
+      --tag: #FF6F00;
+      --dark: #0A192F;
     }
 
-    .unverified {
-      background: #fde2e2;
-      color: #842029;
-      border: 1px solid #842029;
+    .logo-con {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 12px;
+      opacity: 0;
+      transform: translateX(-100px);
+      animation: iconEnter 1.3s ease forwards;
+      position: relative;
     }
 
-    .badge svg {
-      width: 14px;
-      height: 14px;
+    @keyframes iconEnter {
+      0% {
+        opacity: 0;
+        transform: translateX(-100px);
+      }
+
+      60% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      80% {
+        transform: translateX(20px);
+      }
+
+      100% {
+        transform: translateX(0);
+      }
+    }
+
+    .icon {
+      width: 52px;
+      height: 52px;
+      display: block;
+      transform-origin: center;
+    }
+
+    /* jump animation */
+    @keyframes jump {
+      0% {
+        transform: translateY(0);
+      }
+
+      25% {
+        transform: translateY(-12px);
+      }
+
+      50% {
+        transform: translateY(0);
+      }
+
+      75% {
+        transform: translateY(-8px);
+      }
+
+      100% {
+        transform: translateY(0);
+      }
+    }
+
+    .icon.jump {
+      animation: jump 0.6s ease 1.5s 1;
+      /* start jump after slide */
+    }
+
+    .logo-text {
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--dark);
+      opacity: 0;
+      transform: translateX(-20px);
+      animation: textReveal 0.8s ease forwards;
+      animation-delay: 1s;
+    }
+
+    @keyframes textReveal {
+      0% {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
     }
   </style>
 </head>
+
 <body>
+  <div class="logo-con">
+    <a href="#" class="icon-con" aria-label="QuickCart Logo" title="QuickCart">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 3H6L9 15H19L22 6H7" stroke="#64B6AC" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" />
+        <circle cx="10" cy="18" r="2" stroke="#CCD6F6" stroke-width="2" fill="none" />
+        <circle cx="18" cy="18" r="2" stroke="#CCD6F6" stroke-width="2" fill="none" />
+        <g class="tag">
+          <path d="M15 5L18 8L16 10L13 7L15 5Z" stroke-linecap="round" stroke-linejoin="round" fill="#FF6F00"
+            stroke="#FF6F00" stroke-width="1.5" />
+          <circle cx="15" cy="7" r="0.8" fill="#0A192F" />
+        </g>
+      </svg>
+    </a>
+    <div class="logo-text">QuickCart</div>
+  </div>
 
-  <!-- Verified Badge -->
-  <span class="badge verified">
-    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-        d="M5 13l4 4L19 7" />
-    </svg>
-    Verified
-  </span>
-
-  <!-- Unverified Badge -->
-  <span class="badge unverified">
-    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <circle cx="12" cy="12" r="9" stroke-width="2"/>
-      <line x1="12" y1="8" x2="12" y2="12" stroke-width="2" />
-      <line x1="12" y1="16" x2="12" y2="16" stroke-width="2" />
-    </svg>
-    Unverified
-  </span>
-
+  <script>
+    // Wait till animation end then trigger jump effect
+    window.addEventListener('DOMContentLoaded', () => {
+      const icon = document.querySelector('.icon');
+      setTimeout(() => {
+        icon.classList.add('jump');
+      }, 1300); // after slide and reveal done
+    });
+  </script>
 </body>
+
 </html>

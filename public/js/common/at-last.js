@@ -6,5 +6,5 @@ function replaceTextInNode(node, search, replace) {
     }
 }
 
-replaceTextInNode(document.body, "QuickCart", "eRolley");
-replaceTextInNode(document.head, "QuickCart", "eRolley");
+replaceTextInNode(document.body, "QuickCart", "YuuCart");
+replaceTextInNode(document.head, "QuickCart", "YuuCart");
