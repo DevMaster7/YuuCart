@@ -146,7 +146,7 @@ router.get("/wishlist", optionalVerifyToken, async (req, res) => {
     res.render("users/my-wishlist", { user, products, slugify });
 });
 
-router.get("/reward-and-redeem", optionalVerifyToken, userRoute("users/reward"));
+router.get("/rewards-center", optionalVerifyToken, userRoute("users/reward"));
 
 router.get("/settings", optionalVerifyToken, userRoute("users/setting"));
 
