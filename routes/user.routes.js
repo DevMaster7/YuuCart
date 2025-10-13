@@ -22,6 +22,13 @@ function userRoute(viewName) {
         res.render(viewName, { user });
     };
 }
+router.get("/getUser", optionalVerifyToken, async (req, res) => {
+    const token = req.user;
+    if (!token) return res.status(400).json({ success: false, message: "User not found!" });
+    const user = await userModel.findById(token._QCUI_UI);
+    if (!user) return res.status(400).json({ success: false, message: "User not found!" });
+    res.status(200).json({ success: true, user });
+})
 router.get("/account", optionalVerifyToken, userRoute("users/my-account"));
 router.post("/updateProfilePic", optionalVerifyToken, upload.single("file"), async (req, res) => {
     const filePath = req.file.buffer
@@ -139,7 +146,7 @@ router.get("/wishlist", optionalVerifyToken, async (req, res) => {
     res.render("users/my-wishlist", { user, products, slugify });
 });
 
-router.get("/reward-and-redeem", optionalVerifyToken, userRoute("users/reward-and-redeem"));
+router.get("/reward-and-redeem", optionalVerifyToken, userRoute("users/reward"));
 
 router.get("/settings", optionalVerifyToken, userRoute("users/setting"));
 

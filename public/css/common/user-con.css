@@ -15,13 +15,13 @@
     display: flex;
 }
 
-.user-con img{
+.user-con img {
     width: 100%;
     object-fit: cover;
 }
 
 .user-content-con {
-    width: 180px;
+    width: 260px;
     border-radius: 3px;
     position: absolute;
     z-index: 9;
@@ -47,6 +47,75 @@
     border-bottom: 10px solid transparent;
 }
 
+.user-content-con .info-con {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgb(139, 139, 139);
+}
+
+.user-content-con .user-info {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 5px;
+}
+
+.user-content-con .user-info .big {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--Primary);
+}
+
+.user-content-con .user-info .small {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 10px;
+    font-weight: 500;
+    color: rgb(166, 166, 166);
+}
+
+.badge {
+    width: 12px;
+    height: 12px;
+}
+
+.user-info .badge svg {
+    width: 100%;
+    height: 100%;
+}
+
+.verified {
+    background: #e0f9e7;
+    color: #0f5132;
+    border: 1px solid #0f5132;
+}
+
+.unverified {
+    background: #fde2e2;
+    color: #842029;
+    border: 1px solid #842029;
+}
+
+.user-content-con .meta-info {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.user-content-con .meta-info .icon {
+    width: 20px;
+    height: 20px;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.user-content-con .meta-info span {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--Accent);
+}
+
 .user-content-con .side-btns {
     display: flex;
     align-items: center;
@@ -54,27 +123,19 @@
     position: relative;
     font-size: 19px;
     font-weight: 500;
-    color: var(--Primary);
+    color: #023047;
     transition: .1s ease;
 }
 
 .user-content-con .icon {
     width: 25px;
     height: 25px;
-    fill: var(--Primary);
+    fill: #023047;
     transition: .1s ease;
 }
 
-.side-btns:hover {
-    color: var(--Accent);
-}
-
-.side-btns:hover .icon {
-  fill: var(--Accent);
-}
-
 @media (max-width: 450px) {
-    .user-con{
+    .user-con {
         width: 29px;
         height: 29px;
     }

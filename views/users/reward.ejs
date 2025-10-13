@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head data-page="Reward And Redeem">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/css/output.css">
+    <link rel="stylesheet" href="/css/common/loader.css">
+    <link rel="stylesheet" href="/css/users/reward.css">
+    <link rel="stylesheet" href="/css/users/user-sidebar.css">
+    <link rel="stylesheet" href="/css/common/user-admin-nav.css">
+    <link rel="stylesheet" href="/css/common/logout.css">
+    <link rel="stylesheet" href="/css/common/underdev.css">
+    <link rel="stylesheet" href="/css/common/footer.css">
+    <title>Reward and Redeem - QuickCart</title>
+</head>
+
+<body>
+
+    <div class="main-container">
+        <div class="side-nav-con"></div>
+        <div class="content">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+                <div>
+                    <h1 style="margin:0;color:var(--primary)">Rewards & Redeem</h1>
+                    <div class="muted">Earn points, unlock perks, and redeem for discounts or exclusive items.</div>
+                </div>
+                <div style="text-align:right">
+                    <div class="muted">Your brand</div>
+                    <div style="font-weight:700;color:var(--secondary)">Sigma Store</div>
+                </div>
+            </div>
+
+            <div class="grid">
+                <!-- LEFT COLUMN -->
+                <div>
+                    <div class="card">
+                        <div class="profile">
+                            <div class="avatar" id="avatar">M</div>
+                            <div>
+                                <h2 id="userName">Muneeb</h2>
+                                <div class="muted">Member since 2025 • Tier: <span id="userTier">Bronze</span></div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top:14px">
+                            <div class="points-big" id="pointsVal">320 pts</div>
+                            <div class="muted">Estimated value: <strong id="pointsValue">Rs.160</strong></div>
+
+                            <div style="margin-top:12px">
+                                <div class="muted" style="font-size:12px;text-transform:uppercase">Progress to next tier
+                                </div>
+                                <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+                                <div
+                                    style="display:flex;justify-content:space-between;margin-top:8px;font-size:13px;color:var(--muted)">
+                                    <span id="tierRange">0 pts</span><span id="tierTarget">1000 pts</span></div>
+                            </div>
+
+                            <div class="actions">
+                                <button class="btn primary" id="checkInBtn">Daily Check-in</button>
+                                <button class="btn ghost" id="spinBtn">Spin to Win</button>
+                            </div>
+
+                            <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+                                <input id="refInput" aria-label="Referral link"
+                                    style="flex:1;padding:8px;border-radius:8px;border:1px solid #e7eef3" readonly>
+                                <button class="btn small accent" id="copyRef">Copy</button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin-top:14px">
+                        <div style="display:flex;align-items:center;justify-content:space-between">
+                            <div>
+                                <div style="font-size:12px;color:var(--muted);text-transform:uppercase">Quick Actions
+                                </div>
+                                <div style="font-weight:700">Redeem & Special Offers</div>
+                            </div>
+                            <div class="muted">Balance: <strong id="pointsSmall">320</strong> pts</div>
+                        </div>
+
+                        <div id="catalog" class="catalog"></div>
+
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN -->
+                <div>
+                    <div class="card" style="margin-bottom:12px">
+                        <div style="display:flex;align-items:center;justify-content:space-between">
+                            <div>
+                                <div style="font-size:12px;color:var(--muted);text-transform:uppercase">Activity</div>
+                                <div style="font-weight:700">Recent transactions</div>
+                            </div>
+                            <div class="muted">Total: <strong id="pointsTotal">320</strong> pts</div>
+                        </div>
+
+                        <div style="margin-top:12px" id="txList"></div>
+                    </div>
+
+                    <div class="card">
+                        <div style="display:flex;gap:12px;align-items:center;justify-content:space-between">
+                            <div>
+                                <div style="font-size:12px;color:var(--muted);text-transform:uppercase">Daily Fun</div>
+                                <div style="font-weight:700">Spin the wheel — once per 24h</div>
+                            </div>
+                            <div style="width:220px">
+                                <div class="spin" id="spinBox">🎯</div>
+                            </div>
+                        </div>
+                        <div style="margin-top:10px;color:var(--muted);font-size:13px">Spin rewards: points (10–500),
+                            free
+                            shipping voucher, small coupon. Server validation required in production.</div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalRoot" style="display:none"></div>
+
+    <script src="/js/common/at-start.js"></script>
+    <script src="/js/common/user-admin-nav.js"></script>
+    <script src="/js/users/reward.js"></script>
+    <script src="/js/common/footer.js"></script>
+    <script src="/js/common/at-last.js"></script>
+</body>
+
+</html>

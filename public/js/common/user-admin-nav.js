@@ -35,18 +35,25 @@ window.addEventListener("scroll", () => {
 });
 
 let sideBarDiv = document.querySelector(".side-nav-con");
-function userSideBarMaker() {
-    let userFullname = document.getElementsByTagName("head")[0].dataset.fullname
-    let userImg = document.getElementsByTagName("head")[0].dataset.img
+async function getUser() {
+    let res = await fetch("/user/getUser", {
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' },
+    });
+    let data = await res.json();
+    return data
+}
+async function userSideBarMaker() {
+    let userData = await getUser();
     sideBarDiv.innerHTML = `<div class="side-nav">
                 <div class="user-con">
                     <div class="img-con">
-                        <img src="${userImg}" alt="user">
+                        <img src="${userData.user.userImg}" alt="user">
                     </div>
                     <div class="user-detail">
                         <div class="user-greet">Hello</div>
                         <div class="user-name">
-                            ${userFullname}
+                            ${userData.user.fullname}
                         </div>
                     </div>
                 </div>

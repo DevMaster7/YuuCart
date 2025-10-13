@@ -137,7 +137,9 @@ function mainFun() {
                 <button id="verify-pass-btn">Confirm Password</button>
             </div>
         </div>`
-    document.getElementsByTagName("body")[0].prepend(passWrapDiv);
+    let body = document.getElementsByTagName("body")[0]
+    body.prepend(passWrapDiv);
+    body.style.overflow = "hidden";
 
     document.querySelector(".verify-pass-wrap").addEventListener("click", (e) => {
         if (e.target == document.querySelector(".verify-pass-con") || e.target == document.querySelector(".verify-pass-err") || e.target == document.querySelector(".verify-pass-input") || e.target == document.querySelector(".text") || e.target == document.querySelector("#verify-pass-btn") || e.target == document.querySelector("#pass") || e.target == document.querySelector(".eye")) {

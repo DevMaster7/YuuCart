@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head data-info="<%= success %>" data-page="My Account" data-gcp="<%= RECAPTCHA_SITE_KEY %>"
-    data-img="<%= user.userImg %>" data-fullname="<%= user.fullname %>">
+<head data-info="<%= success %>" data-page="My Account" data-gcp="<%= RECAPTCHA_SITE_KEY %>">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
@@ -74,7 +73,8 @@
                     </span>
                     <div class="personal-detail">
                         <div class="name">Email:</div>
-                        <div class="value" id="mail" style="display: flex;justify-content: space-between;flex-wrap: wrap;">
+                        <div class="value" id="mail"
+                            style="display: flex;justify-content: space-between;flex-wrap: wrap;">
                             <div id="email"><%= user.email %></div>
                             <% if (user.emailVerified) { %>
                             <div class="badge verified" id="verifiedBtn">

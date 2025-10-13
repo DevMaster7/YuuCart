@@ -1,0 +1,229 @@
+:root {
+    --primary: #023047;
+    /* deep navy */
+    --secondary: #219EBC;
+    /* cyan */
+    --accent: #FB8500;
+    /* orange */
+    --highlight: #F8F9FA;
+    /* background */
+    --heading: #CCD6F6;
+    /* light periwinkle */
+    --muted: #556677;
+    --card-bg: #ffffff;
+    --glass: rgba(255, 255, 255, 0.6);
+    --success: #16a34a;
+    --danger: #dc2626;
+    --shadow: 0 8px 30px rgba(2, 48, 71, 0.08);
+}
+
+/* Reset & basics */
+* {
+    box-sizing: border-box
+}
+
+body {
+    margin: 0;
+    font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    background: linear-gradient(180deg, var(--highlight), #eaf6fb);
+    color: var(--primary)
+}
+
+a {
+    color: inherit
+}
+
+.content {
+    max-width: 1100px;
+    margin: 36px auto;
+    padding: 20px
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 20px
+}
+
+/* Cards */
+.card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: var(--shadow)
+}
+
+/* Profile */
+.profile {
+    display: flex;
+    gap: 14px;
+    align-items: center
+}
+
+.avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+    background: linear-gradient(180deg, var(--heading), var(--secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 22px
+}
+
+h1,
+h2 {
+    margin: 0
+}
+
+.muted {
+    color: var(--muted);
+    font-size: 13px
+}
+
+.points-big {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-top: 8px
+}
+
+.progress {
+    height: 12px;
+    border-radius: 16px;
+    background: #e6eef3;
+    overflow: hidden;
+    margin-top: 12px
+}
+
+.progress>i {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--secondary), var(--accent));
+    width: 10%;
+    transition: width .6s ease
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px
+}
+
+.btn {
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 0;
+    cursor: pointer;
+    font-weight: 600
+}
+
+.btn.primary {
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    color: white
+}
+
+.btn.ghost {
+    background: transparent;
+    border: 1px solid rgba(2, 48, 71, 0.06)
+}
+
+.btn.accent {
+    background: var(--accent);
+    color: white
+}
+
+.small {
+    font-size: 13px;
+    padding: 8px 10px
+}
+
+/* Rewards grid */
+.catalog {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin-top: 12px
+}
+
+.reward {
+    padding: 12px;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #fff, #fbfbfd);
+    border: 1px solid rgba(2, 48, 71, 0.03)
+}
+
+.reward .title {
+    font-weight: 700;
+    color: var(--primary)
+}
+
+.reward .meta {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 6px
+}
+
+/* Transactions */
+.txn {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px dashed #eef4f8
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%
+}
+
+/* Modal */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(2, 48, 71, 0.38);
+    display: flex;
+    align-items: center;
+    justify-content: center
+}
+
+.modal {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 480px;
+    width: 92%;
+    box-shadow: var(--shadow)
+}
+
+/* Spin */
+.spin {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 120px;
+    border-radius: 12px;
+    background: linear-gradient(180deg, #fff, #fffefc);
+    border: 1px solid rgba(2, 48, 71, 0.04);
+    font-size: 28px
+}
+
+/* Responsive */
+@media (max-width:880px) {
+    .grid {
+        grid-template-columns: 1fr
+    }
+
+    .avatar {
+        width: 56px;
+        height: 56px
+    }
+
+    .content {
+        padding: 14px
+    }
+}
