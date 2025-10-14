@@ -60,6 +60,7 @@
 }
 
 .user-content-con .user-info .big {
+    text-align: start;
     font-size: 16px;
     font-weight: 600;
     color: var(--Primary);

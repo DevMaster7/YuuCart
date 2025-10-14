@@ -113,7 +113,7 @@ main {
     animation: moveCart 1.5s ease-out forwards;
 }
 
-.nav-con .icon {
+.nav-con .logo-con .icon {
     width: 50px;
     height: 50px;
 }
@@ -191,13 +191,8 @@ main {
     display: none;
 }
 
-.user-con img {
-    width: 100%;
-    object-fit: cover;
-}
-
 .user-content-con {
-    width: 180px;
+    width: 260px;
     border-radius: 3px;
     position: absolute;
     background: var(--Highlight);
@@ -221,32 +216,6 @@ main {
     border-left: 10px solid var(--Highlight);
     border-top: 10px solid transparent;
     border-bottom: 10px solid transparent;
-}
-
-.user-content-con .side-btns {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    position: relative;
-    font-size: 19px;
-    font-weight: 500;
-    color: var(--Primary);
-    transition: .1s ease;
-}
-
-.user-content-con .icon {
-    width: 25px;
-    height: 25px;
-    fill: var(--Primary);
-    transition: .1s ease;
-}
-
-.side-btns:hover {
-    color: var(--Accent);
-}
-
-.side-btns:hover .icon {
-    fill: var(--Accent);
 }
 
 .landing-page {
