@@ -28,15 +28,9 @@
     <div class="main-container">
         <div class="side-nav-con"></div>
         <div class="content">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
-                <div>
-                    <h1 style="margin:0;color:var(--primary)">Rewards & Redeem</h1>
-                    <div class="muted">Earn points, unlock perks, and redeem for discounts or exclusive items.</div>
-                </div>
-                <div style="text-align:right">
-                    <div class="muted">Your brand</div>
-                    <div style="font-weight:700;color:var(--secondary)">Sigma Store</div>
-                </div>
+            <div class="heading-con">
+                <h1 class="heading">Rewards Center</h1>
+                <div class="muted">Earn points, unlock perks, and redeem for discounts or exclusive items.</div>
             </div>
 
             <div class="grid">
@@ -44,15 +38,22 @@
                 <div>
                     <div class="card">
                         <div class="profile">
-                            <div class="avatar" id="avatar">M</div>
+                            <img class="avatar" src="<%= user.userImg %>" alt="">
                             <div>
-                                <h2 id="userName">Muneeb</h2>
-                                <div class="muted">Member since 2025 • Tier: <span id="userTier">Bronze</span></div>
+                                <h2 id="userName"><%= user.fullname %></h2>
+                                <div class="muted">
+                                    Member since <%= new Date(user.joiningDate).toDateString().slice(11) %> • Tier:
+                                    <strong id="userTier">Bronze</strong>
+                                    <img class="tier-tag" src="/assets/tier/wood.png" alt="">
+                                </div>
                             </div>
                         </div>
 
                         <div style="margin-top:14px">
-                            <div class="points-big" id="pointsVal">320 pts</div>
+                            <div class="points-big">
+                                <div id="pointsVal"><%= user.YuuCoin %> Yuu</div>
+                                <img src="/assets/coin.png" alt="">
+                            </div>
                             <div class="muted">Estimated value: <strong id="pointsValue">Rs.160</strong></div>
 
                             <div style="margin-top:12px">
@@ -64,10 +65,7 @@
                                     <span id="tierRange">0 pts</span><span id="tierTarget">1000 pts</span></div>
                             </div>
 
-                            <div class="actions">
-                                <button class="btn primary" id="checkInBtn">Daily Check-in</button>
-                                <button class="btn ghost" id="spinBtn">Spin to Win</button>
-                            </div>
+                            <button class="btn primary" id="checkInBtn">Daily Check-in</button>
 
                             <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
                                 <input id="refInput" aria-label="Referral link"
@@ -95,20 +93,70 @@
 
                 <!-- RIGHT COLUMN -->
                 <div>
-                    <div class="card" style="margin-bottom:12px">
-                        <div style="display:flex;align-items:center;justify-content:space-between">
-                            <div>
-                                <div style="font-size:12px;color:var(--muted);text-transform:uppercase">Activity</div>
-                                <div style="font-weight:700">Recent transactions</div>
+                    <div class="card" style="margin-bottom:12px;overflow: hidden;">
+                        <div class="wheel-wrap">
+                            <div class="wheel-stage">
+                                <div class="pointer" aria-hidden></div>
+                                <div id="wheel" class="wheel" role="img" aria-label="Prize wheel">
+                                    <svg width="420" height="420" viewBox="0 0 420 420"
+                                        xmlns="http://www.w3.org/2000/svg" aria-hidden="false">
+                                        <g>
+
+                                            <path
+                                                d="M 210.0 210.0 L 390.1333 106.0000 A 208.0 208.0 0 0 0 210.0000 2.0000 Z"
+                                                fill="#F97316" stroke="#0b1220" stroke-width="1" />
+                                            <path
+                                                d="M 210.0 210.0 L 390.1333 314.0000 A 208.0 208.0 0 0 0 390.1333 106.0000 Z"
+                                                fill="#60A5FA" stroke="#0b1220" stroke-width="1" />
+                                            <path
+                                                d="M 210.0 210.0 L 210.0000 418.0000 A 208.0 208.0 0 0 0 390.1333 314.0000 Z"
+                                                fill="#34D399" stroke="#0b1220" stroke-width="1" />
+                                            <path
+                                                d="M 210.0 210.0 L 29.8667 314.0000 A 208.0 208.0 0 0 0 210.0000 418.0000 Z"
+                                                fill="#06B6D4" stroke="#0b1220" stroke-width="1" />
+                                            <path
+                                                d="M 210.0 210.0 L 29.8667 106.0000 A 208.0 208.0 0 0 0 29.8667 314.0000 Z"
+                                                fill="#E5E7EB" stroke="#0b1220" stroke-width="1" />
+                                            <path
+                                                d="M 210.0 210.0 L 210.0000 2.0000 A 208.0 208.0 0 0 0 29.8667 106.0000 Z"
+                                                fill="#F43F5E" stroke="#0b1220" stroke-width="1" />
+
+
+                                            <text x="274.48" y="98.3174" transform="rotate(210 274.48 98.3174)"
+                                                font-size="12" text-anchor="middle" dominant-baseline="middle">10%
+                                                OFF</text>
+                                            <text x="338.96" y="210" transform="rotate(270 338.96 210)" font-size="12"
+                                                text-anchor="middle" dominant-baseline="middle">20% OFF</text>
+                                            <text x="274.48" y="321.6826" transform="rotate(330 274.48 321.6826)"
+                                                font-size="12" text-anchor="middle" dominant-baseline="middle">Free
+                                                Mug</text>
+                                            <text x="145.52" y="321.6826" transform="rotate(30 145.52 321.6826)"
+                                                font-size="12" text-anchor="middle" dominant-baseline="middle">Free
+                                                Shipping</text>
+                                            <text x="81.04" y="210" transform="rotate(90 81.04 210)" font-size="12"
+                                                text-anchor="middle" dominant-baseline="middle">No Prize</text>
+                                            <text x="145.52" y="98.3174" transform="rotate(150 145.52 98.3174)"
+                                                font-size="12" text-anchor="middle" dominant-baseline="middle">50%
+                                                OFF</text>
+
+
+                                            <circle cx="210" cy="210" r="75" fill="#071325" />
+                                            <text x="210" y="214" text-anchor="middle" font-size="14" fill="#fff"
+                                                style="font-weight:900">SPIN</text>
+                                        </g>
+                                    </svg>
+                                </div>
+
+                                <div id="centerBtn" class="center-button" tabindex="0" role="button"
+                                    aria-pressed="false" aria-label="Spin the wheel">SPIN</div>
+
+                                <div id="confetti" class="confetti" aria-hidden="true"></div>
                             </div>
-                            <div class="muted">Total: <strong id="pointsTotal">320</strong> pts</div>
+
+                            <div id="resultBox" class="result" aria-live="polite" style="display:none;">Congratulations!
+                            </div>
                         </div>
-
-                        <div style="margin-top:12px" id="txList"></div>
-                    </div>
-
-                    <div class="card">
-                        <div style="display:flex;gap:12px;align-items:center;justify-content:space-between">
+                        <!-- <div style="display:flex;gap:12px;align-items:center;justify-content:space-between">
                             <div>
                                 <div style="font-size:12px;color:var(--muted);text-transform:uppercase">Daily Fun</div>
                                 <div style="font-weight:700">Spin the wheel — once per 24h</div>
@@ -119,9 +167,20 @@
                         </div>
                         <div style="margin-top:10px;color:var(--muted);font-size:13px">Spin rewards: points (10–500),
                             free
-                            shipping voucher, small coupon. Server validation required in production.</div>
+                            shipping voucher, small coupon. Server validation required in production.</div> -->
                     </div>
 
+                    <div class="card">
+                        <div style="display:flex;align-items:center;justify-content:space-between">
+                            <div>
+                                <div style="font-size:12px;color:var(--muted);text-transform:uppercase">Activity</div>
+                                <div style="font-weight:700">Recent transactions</div>
+                            </div>
+                            <div class="muted">Total: <strong id="pointsTotal">320</strong> pts</div>
+                        </div>
+
+                        <div style="margin-top:12px" id="txList"></div>
+                    </div>
                 </div>
             </div>
         </div>

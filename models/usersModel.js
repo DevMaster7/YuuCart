@@ -2,8 +2,7 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
     joiningDate: {
-        type: Date,
-        default: Date.now
+        type: Date
     },
     userImg: {
         type: String,
@@ -32,6 +31,22 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         minlength: 8,
+    },
+    YuuCoin: {
+        type: Number,
+        default: 0
+    },
+    dailySpin: {
+        spin: Boolean,
+        newSpinAt: Date,
+    },
+    Reffer: {
+        from: String,
+        refferCode: String,
+        url: String,
+        yourReffers: [
+            { type: String }
+        ]
     },
     isAdmin: {
         type: Boolean,
@@ -69,7 +84,7 @@ const userSchema = new mongoose.Schema({
         location: String,
         purpose: String
     },
-    
+
 })
 
 const userModel = mongoose.model("users", userSchema);

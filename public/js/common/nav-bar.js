@@ -91,17 +91,27 @@ async function userLinks(e, userData) {
     }
     let userLinksDiv = document.createElement("div")
     userLinksDiv.classList.add("user-content-con")
-    userLinksDiv.innerHTML = `<div class="info-con">
-                    <div class="user-info">
-                        <div class="big">${userData.user.fullname}</div>
-                        <div class="small">
-                            <div>${userData.user.email}</div>
-                            ${verifyBadge}
+    userLinksDiv.innerHTML = `<div class="meta-con">
+                    <div class="info-con">
+                        <div class="user-info">
+                            <div class="big">${userData.user.username}</div>
+                            <div class="small">
+                                <div>${userData.user.email}</div>
+                                ${verifyBadge}
+                            </div>
+                        </div>
+                        <div class="meta-info">
+                            <img class="icon" src="/assets/coin.png" alt="">
+                            <span>100Yuu</span>
                         </div>
                     </div>
-                    <div class="meta-info">
-                        <img class="icon" src="/assets/coin.png" alt="">
-                        <span>100Yuu</span>
+                    <div class="tier-con">
+                        <div class="tier-info">
+                            <div class="muted">Tier: <strong>Wood</strong></div>
+                            <img src="/assets/tier/wood.png" alt="">
+                        </div>
+                        <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+                        
                     </div>
                 </div>
                 <a href="/user/account" class="side-btns">

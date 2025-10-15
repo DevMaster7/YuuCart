@@ -1,7 +1,8 @@
 const express = require("express");
 const userRouter = require("./routes/user.routes");
 const adminRouter = require("./routes/admin.routes");
-const shopRouter = require("./routes/shop.routes")
+const shopRouter = require("./routes/shop.routes");
+const addonsRouter = require("./routes/addons.routes");
 const dbConnection = require("./config/db");
 const cookieParser = require("cookie-parser");
 const sendEmail = require("./utils/sendOTP");
@@ -53,6 +54,18 @@ app.get("/", optionalVerifyToken, async (req, res) => {
     return res.render("home", { user: [] });
   }
   const user = await userModel.findById(tokenUser._QCUI_UI);
+
+  // let result = await userModel.updateMany(
+  //   {},
+  //   {
+  //     $set: {
+  //       'dailySpin.spin': true,
+  //       'dailySpin.newSpinAt': new Date()
+  //     },
+  //   }
+  // );
+  // console.log(result);
+
   res.render("home", { user });
 })
 app.get("/auth/google/register",
@@ -80,15 +93,38 @@ app.get("/auth/google/callback",
     if (action == "register") {
       if (!user) {
         let img = await uploadUrlOnCloudinary(data.photos[0].value, "profile_pics");
+
+        // Email to Username
         function usernameFromEmail(email) {
           return email.split("@")[0].replace(/[^a-zA-Z0-9]/g, "");
         }
+
+        // Date to Reffer Code
+        const joiningDate = new Date();
+        function generateRefCode() {
+          const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+          let code = "";
+          for (let i = 0; i < 6; i++) {
+            code += chars[Math.floor(Math.random() * chars.length)];
+          }
+          return code;
+        }
+        const refferCode = generateRefCode();
+
         let userData = {
+          joiningDate,
           userImg: img,
           fullname: data.displayName,
           provider: data.provider,
           username: usernameFromEmail(data.emails[0].value),
-          email: data.emails[0].value
+          email: data.emails[0].value,
+          dailySpin: {
+            spin: true,
+            newSpinAt: new Date()
+          },
+          Reffer: {
+            refferCode
+          }
         }
         req.session.userData = userData;
         req.flash("success", "enter-pass");
@@ -147,7 +183,6 @@ app.post("/user/register/enterpass", async (req, res) => {
   const hashPassword = await bcrypt.hash(password, 10);
   userData.password = hashPassword;
   await userModel.create(userData);
-  // console.log(password, confirmPassword);
   delete req.session.userData;
   return res.status(200).json({ success: true, message: "Password set successfully!" });
 })
@@ -321,6 +356,7 @@ app.get("/terms-and-conditions", (req, res) => {
 app.use("/user", userRouter);
 app.use("/admin", adminRouter);
 app.use("/shop", shopRouter);
+app.use("/addons", addonsRouter);
 
 // Page Not Found
 app.use((req, res) => {

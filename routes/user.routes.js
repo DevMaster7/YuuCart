@@ -181,7 +181,21 @@ router.post("/register",
             });
         }
         const hashPassword = await bcrypt.hash(password, 10);
+
+        // Reffer code generator
+        let joiningDate = new Date();
+        function generateRefCode() {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            let code = "";
+            for (let i = 0; i < 6; i++) {
+                code += chars[Math.floor(Math.random() * chars.length)];
+            }
+            return code;
+        }
+        const refferCode = generateRefCode();
+
         const newUser = await userModel.create({
+            joiningDate,
             fullname,
             provider: "local",
             username,
@@ -189,7 +203,14 @@ router.post("/register",
             phone,
             city,
             address,
-            password: hashPassword
+            password: hashPassword,
+            dailySpin: {
+                spin: true,
+                newSpinAt: new Date()
+            },
+            Reffer: {
+                refferCode
+            }
         })
         const user = {
             fullname,
