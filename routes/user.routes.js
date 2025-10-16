@@ -182,19 +182,9 @@ router.post("/register",
         }
         const hashPassword = await bcrypt.hash(password, 10);
 
-        // Reffer code generator
-        let joiningDate = new Date();
-        function generateRefCode() {
-            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            let code = "";
-            for (let i = 0; i < 6; i++) {
-                code += chars[Math.floor(Math.random() * chars.length)];
-            }
-            return code;
-        }
-        const refferCode = generateRefCode();
+        const joiningDate = new Date();
 
-        const newUser = await userModel.create({
+        await userModel.create({
             joiningDate,
             fullname,
             provider: "local",
@@ -204,22 +194,13 @@ router.post("/register",
             city,
             address,
             password: hashPassword,
-            dailySpin: {
-                spin: true,
-                newSpinAt: new Date()
-            },
+            spinDate: joiningDate,
             Reffer: {
-                refferCode
+                refferCode: username,
+                url: `${process.env.BASE_URL}/user/register?reffer=${username}`,
             }
         })
-        const user = {
-            fullname,
-            username,
-            phone,
-            city,
-            address
-        }
-        return res.status(201).json({ success: true, message: "User registered successfully", user });
+        return res.status(201).json({ success: true, message: "User registered successfully" });
     })
 
 router.get("/login", optionalVerifyToken, (req, res) => {

@@ -1,9 +1,7 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
-    joiningDate: {
-        type: Date
-    },
+    joiningDate: Date,
     userImg: {
         type: String,
         default: "/assets/defaultUser.jpg"
@@ -32,21 +30,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         minlength: 8,
     },
+    spinDate: Date,
     YuuCoin: {
         type: Number,
         default: 0
-    },
-    dailySpin: {
-        spin: Boolean,
-        newSpinAt: Date,
-    },
-    Reffer: {
-        from: String,
-        refferCode: String,
-        url: String,
-        yourReffers: [
-            { type: String }
-        ]
     },
     isAdmin: {
         type: Boolean,
@@ -70,6 +57,14 @@ const userSchema = new mongoose.Schema({
             default: false
         }
     },
+    Reffer: {
+        from: String,
+        refferCode: String,
+        url: String,
+        yourReffers: [
+            { type: String }
+        ]
+    },
     userCart: [
         { type: String },
     ],
@@ -84,7 +79,6 @@ const userSchema = new mongoose.Schema({
         location: String,
         purpose: String
     },
-
 })
 
 const userModel = mongoose.model("users", userSchema);

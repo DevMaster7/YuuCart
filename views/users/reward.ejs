@@ -67,12 +67,14 @@
 
                             <button class="btn primary" id="checkInBtn">Daily Check-in</button>
 
-                            <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
-                                <input id="refInput" aria-label="Referral link"
-                                    style="flex:1;padding:8px;border-radius:8px;border:1px solid #e7eef3" readonly>
-                                <button class="btn small accent" id="copyRef">Copy</button>
+                            <div style="margin-top:12px;display: flex;flex-direction: column;">
+                                <span style="font-size: 7px;color: rgb(154, 154, 154);">Friends Loyalty Tester!</span>
+                                <div style="display:flex;gap:8px;align-items:center">
+                                    <input id="refInput" aria-label="Referral link" value="<%= user.Reffer.url %>"
+                                        style="flex:1;padding:8px;border-radius:8px;border:1px solid #e7eef3" readonly>
+                                    <button class="btn small accent" id="copyRef">Copy</button>
+                                </div>
                             </div>
-
                         </div>
                     </div>
 
@@ -186,7 +188,9 @@
         </div>
     </div>
 
-    <div id="modalRoot" style="display:none"></div>
+    <div id="modalRoot" style="display:none">
+        
+    </div>
 
     <script src="/js/common/at-start.js"></script>
     <script src="/js/common/user-admin-nav.js"></script>

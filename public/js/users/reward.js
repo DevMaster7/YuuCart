@@ -65,8 +65,6 @@ async function getUser() {
 
     async function spin() {
         const userId = data.user._id;
-        // console.log(userId);
-        // const time = new Date();
         const res = await fetch('/addons/useSpin', {
             method: 'post',
             headers: { 'Content-Type': 'application/json' },
@@ -77,7 +75,7 @@ async function getUser() {
             console.log(res1.message);
             return
         };
-        // if (spinning || !data.user.dailySpin.spin) return
+
         spinning = true;
         resultBox.style.display = "none";
 
@@ -418,25 +416,44 @@ async function getUser() {
 //     }, 1200);
 // });
 
-// document.getElementById('copyRef').addEventListener('click', () => {
-//     const ip = document.getElementById('refInput');
-//     ip.select();
-//     document.execCommand('copy');
-//     showModal('Copied', 'Referral link copied to clipboard');
-// });
+document.getElementById('copyRef').addEventListener('click', () => {
+    const ip = document.getElementById('refInput');
+    ip.select();
+    document.execCommand('copy');
+    showModal('Copied', 'Referral link copied to clipboard');
+});
 
-// function showModal(title, content) {
-//     const root = document.getElementById('modalRoot');
-//     root.style.display = 'block';
-//     root.innerHTML =
-//         `<div class='modal-backdrop' onclick='closeModal()'><div class='modal' onclick='event.stopPropagation()'><h3 style='margin-top:0'>${title}</h3><div style='color:var(--muted);margin-top:8px'>${content}</div><div style='text-align:right;margin-top:16px'><button class='btn ghost' onclick='closeModal()'>Close</button></div></div></div>`;
-// }
+function showModal(title, content) {
+    const root = document.getElementById('modalRoot');
+    document.body.style.overflow = 'hidden';
+    root.style.display = 'block';
+    if (title == "Copied") {
+        root.innerHTML = `<div class='modal-backdrop' onclick='closeModal()'>
+            <div class='modal' onclick='event.stopPropagation()'>
+                <h2 style='margin-top:0'>Loyalty Test!</h2>
+                <div style='color:var(--muted);margin-top:8px'>
+                    If you want to see your friend's loyalty than send the <strong>copied link</strong>
+                    to your friend.<br>
+                    <strong>Don't tell him about this test :)</strong>
+                </div>
+                <div style='text-align:right;margin-top:16px'><button class='btn ghost'
+                        onclick='closeModal()'>Close</button></div>
+            </div>
+        </div>`
+    } else {
+        root.innerHTML =
+            `<div class='modal-backdrop' onclick='closeModal()'><div class='modal' onclick='event.stopPropagation()'><h2 style='margin-top:0'>${title}</h2><div style='color:var(--muted);margin-top:8px'>${content}</div><div style='text-align:right;margin-top:16px'><button class='btn ghost' onclick='closeModal()'>Close</button></div></div></div>`;
+        setTimeout(() => {
+            closeModal();
+        }, 2500)
+    }
+}
 
-// function closeModal() {
-//     const root = document.getElementById('modalRoot');
-//     root.style.display = 'none';
-//     root.innerHTML = '';
-// }
+function closeModal() {
+    const root = document.getElementById('modalRoot');
+    document.body.style.overflow = 'auto';
+    root.style.display = 'none';
+    root.innerHTML = '';
+}
 
-// window.closeModal = closeModal;
-// window.addEventListener('beforeunload', save);
+window.closeModal = closeModal;

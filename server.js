@@ -55,13 +55,21 @@ app.get("/", optionalVerifyToken, async (req, res) => {
   }
   const user = await userModel.findById(tokenUser._QCUI_UI);
 
+  // const users = await userModel.find({});
+  // for (const use of users) {
+  //   await userModel.updateOne(
+  //     { _id: use._id },
+  //     { $set: { 'Reffer.url': `${process.env.BASE_URL}/user/register?reffer=${use.username}` } }
+  //   );
+  // }
+  // console.log(`Success`);
+
   // let result = await userModel.updateMany(
   //   {},
   //   {
   //     $set: {
-  //       'dailySpin.spin': true,
-  //       'dailySpin.newSpinAt': new Date()
-  //     },
+  //       'Reffer.refferCode': 
+  //     }
   //   }
   // );
   // console.log(result);
@@ -99,17 +107,7 @@ app.get("/auth/google/callback",
           return email.split("@")[0].replace(/[^a-zA-Z0-9]/g, "");
         }
 
-        // Date to Reffer Code
         const joiningDate = new Date();
-        function generateRefCode() {
-          const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-          let code = "";
-          for (let i = 0; i < 6; i++) {
-            code += chars[Math.floor(Math.random() * chars.length)];
-          }
-          return code;
-        }
-        const refferCode = generateRefCode();
 
         let userData = {
           joiningDate,
@@ -118,12 +116,10 @@ app.get("/auth/google/callback",
           provider: data.provider,
           username: usernameFromEmail(data.emails[0].value),
           email: data.emails[0].value,
-          dailySpin: {
-            spin: true,
-            newSpinAt: new Date()
-          },
+          spinDate: joiningDate,
           Reffer: {
-            refferCode
+            refferCode: username,
+            url: `${process.env.BASE_URL}/user/register?reffer=${username}`,
           }
         }
         req.session.userData = userData;

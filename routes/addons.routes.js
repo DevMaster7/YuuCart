@@ -18,11 +18,10 @@ router.post("/useSpin", async (req, res) => {
     const user = await userModel.findOne({ _id: userId })
     let spinTime = new Date();
 
-    if (user.dailySpin.spin || new Date(user.dailySpin.newSpinAt) <= spinTime) {
+    if (new Date(user.spinDate) <= spinTime) {
         spinTime = spinTime.setHours(spinTime.getHours() + 24);
 
-        user.dailySpin.spin = false
-        user.dailySpin.newSpinAt = spinTime
+        user.spinDate = new Date(spinTime)
         await user.save()
 
         res.status(200).json({ success: true })
