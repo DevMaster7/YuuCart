@@ -100,8 +100,9 @@ app.get("/auth/google/callback",
     const action = req.query.state;
     if (action == "register") {
       if (!user) {
-        let img = await uploadOnCloudinary(data.photos[0].value, "profile_pics");
+        // let img = await uploadOnCloudinary(data.photos[0].value, "profile_pics");
 
+        console.log(data.photos[0].value);
         // Email to Username
         function usernameFromEmail(email) {
           return email.split("@")[0].replace(/[^a-zA-Z0-9]/g, "");
@@ -111,7 +112,7 @@ app.get("/auth/google/callback",
 
         let userData = {
           joiningDate,
-          userImg: img,
+          // userImg: img,
           fullname: data.displayName,
           provider: data.provider,
           username: usernameFromEmail(data.emails[0].value),
