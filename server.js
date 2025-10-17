@@ -14,7 +14,7 @@ const bcrypt = require("bcrypt");
 const env = require("dotenv");
 const flash = require("connect-flash");
 const passport = require("passport");
-const { uploadUrlOnCloudinary } = require("./config/cloudinary");
+const { uploadOnCloudinary } = require("./config/cloudinary");
 const jwt = require("jsonwebtoken");
 const app = express();
 
@@ -100,7 +100,7 @@ app.get("/auth/google/callback",
     const action = req.query.state;
     if (action == "register") {
       if (!user) {
-        let img = await uploadUrlOnCloudinary(data.photos[0].value, "profile_pics");
+        let img = await uploadOnCloudinary(data.photos[0].value, "profile_pics");
 
         // Email to Username
         function usernameFromEmail(email) {

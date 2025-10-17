@@ -1,7 +1,9 @@
 let bubbleCon = document.querySelector(".left");
-
 let head = document.getElementsByTagName("head")[0];
-if (head.dataset.info == "enter-pass") {
+if (window.location.href.includes("reffer")) {
+
+    // console.log(`pageeeeeeeeeeeeeeee`);
+} else if (head.dataset.info == "enter-pass") {
     let forgotPassHTML = `<div class="pass-con">
         <form id="enterPassForm">
         <div class="heading">Enter Your Password</div>
@@ -19,8 +21,8 @@ if (head.dataset.info == "enter-pass") {
             <button type="submit">Continue</button>
           </form>
         </div>`;
-    document.querySelector("body").style.overflow = "hidden";
-    document.querySelector(".main-container").querySelector(".con").innerHTML = forgotPassHTML;
+    document.body.style.overflow = "hidden";
+    document.getElementById("modalRoot").innerHTML = forgotPassHTML;
 
     document.getElementById("enterPassForm").addEventListener("submit", async (e) => {
         e.preventDefault();
