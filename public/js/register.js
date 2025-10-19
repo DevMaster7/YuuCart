@@ -46,7 +46,7 @@ if (url.includes("reffer")) {
     document.querySelector(".reject").addEventListener("click", async () => {
         document.querySelector(".modal-wrap").remove();
         document.body.style.overflow = "auto";
-        await fetch("/user/refReject", {
+        await fetch("/user/refferReject", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

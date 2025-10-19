@@ -164,7 +164,7 @@ router.post("/refferAprove", async (req, res) => {
         status: true
     }
     req.session.save();
-    
+
     res.status(200).json({ message: "success" });
 })
 router.post("/refferReject", async (req, res) => {
@@ -174,7 +174,7 @@ router.post("/refferReject", async (req, res) => {
         status: false
     }
     req.session.save();
-    
+
     res.status(200).json({ message: "success" });
 })
 router.post("/register",
@@ -208,11 +208,10 @@ router.post("/register",
 
         const joiningDate = new Date();
 
+        let Reffer = req.session.reffer
         let from = "";
-        if (req.session.reffer) {
-            if (req.session.reffer.status) {
-                from = req.session.reffer.from;
-            }
+        if (Reffer && Reffer.status) {
+            from = req.session.reffer.from;
         }
 
         await userModel.create({
@@ -233,10 +232,16 @@ router.post("/register",
             }
         })
 
-        if (from != "") {
-            const refferUser = await userModel.findOne({ username: from });
-            refferUser.Reffer.yourReffers.push(username);
-            await refferUser.save();
+        if (Reffer) {
+            const refferUser = await userModel.findOne({ username: Reffer.from });
+            if (Reffer.status) {
+                console.log(`True FriendShip`);
+                refferUser.Reffer.yourReffers.push(username);
+                await refferUser.save();
+            }
+            else if (!Reffer.status) {
+                console.log(`LoL Fake FriendShip`);
+            }
         }
 
         delete req.session.reffer

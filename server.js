@@ -127,10 +127,8 @@ app.get("/auth/google/callback",
         const joiningDate = new Date();
 
         let from = "";
-        if (Reffer) {
-          if (Reffer.status) {
-            from = Reffer.from;
-          }
+        if (Reffer && Reffer.status) {
+          from = Reffer.from;
         }
 
         let userData = {
@@ -148,11 +146,18 @@ app.get("/auth/google/callback",
           }
         }
 
-        if (from != "") {
-          const refferUser = await userModel.findOne({ username: from });
-          refferUser.Reffer.yourReffers.push(username);
-          await refferUser.save();
+        if (Reffer) {
+          const refferUser = await userModel.findOne({ username: Reffer.from });
+          if (Reffer.status) {
+            console.log(`True FriendShip`);
+            refferUser.Reffer.yourReffers.push(username);
+            await refferUser.save();
+          }
+          else if (!Reffer.status) {
+            console.log(`LoL Fake FriendShip`);
+          }
         }
+
 
         delete req.session.reffer;
 
