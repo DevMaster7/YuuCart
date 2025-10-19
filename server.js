@@ -84,24 +84,27 @@ app.get("/", optionalVerifyToken, async (req, res) => {
   res.render("home", { user });
 })
 app.get("/auth/google/register", (req, res, next) => {
-  const stateData = JSON.stringify({
+  const stateDataReg = JSON.stringify({
     action: "register",
     Reffer: req.session.reffer
   });
   passport.authenticate("google", {
     scope: ["profile", "email"],
     prompt: "consent",
-    state: encodeURIComponent(stateData)
+    state: encodeURIComponent(stateDataReg)
   })(req, res, next);
 });
-app.get("/auth/google/login",
+app.get("/auth/google/login", (req, res, next) => {
+  const stateDataLog = JSON.stringify({
+    action: "login",
+  });
   passport.authenticate("google", {
     scope: ["profile", "email"],
     // prompt: "consent", // Get premission also
     prompt: "select_account", // Select account only
-    state: "login"
-  })
-);
+    state: encodeURIComponent(stateDataLog)
+  })(req, res, next);
+});
 app.get("/auth/google/callback",
   passport.authenticate("google", { failureRedirect: "/login" }),
   async (req, res) => {
@@ -109,9 +112,9 @@ app.get("/auth/google/callback",
     const user = await userModel.findOne({ email: data.emails[0].value });
     const state = JSON.parse(decodeURIComponent(req.query.state));
     const action = state.action;
-    const Reffer = state.Reffer;
 
     if (action == "register") {
+      const Reffer = state.Reffer;
       if (!user) {
         let img = await uploadImageFromUrl(data.photos[0].value, "profile_pics");
 
