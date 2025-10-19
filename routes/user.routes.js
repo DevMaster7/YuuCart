@@ -246,13 +246,11 @@ router.post("/register",
             const refferUser = await userModel.findOne({ username: Reffer.from });
             if (Reffer.status) {
                 // console.log(`True FriendShip`);
-                refferUser.Reffer.yourReffers.push(userData.username);
+                refferUser.Reffer.yourReffers.push(username);
                 let msg = {
-                    textContent: `
-        Well, well… someone actually joined through the link! <br>
-        Unlike the ones who sold out for our <strong>100Yuu</strong> coins, you two just proved that friendship still exists in this economy.<br>
-        Loyalty level: Premium 💙
-        `,
+                    textContent: `Well, well… someone actually joined through the link! <br>
+        Unlike the ones who sold out for our <strong>100Yuu</strong> coins, you and <strong style="color:#FB8500;">${username}</strong> just proved that friendship still exists in this economy.<br>
+        Loyalty level: Premium 💙`,
                     sendingDate: new Date(),
                     seen: true
                 }
@@ -262,7 +260,7 @@ router.post("/register",
             }
             else if (!Reffer.status) {
                 // console.log(`LoL Fake FriendShip`);
-                const newUser = await userModel.findOne({ username: userData.username });
+                const newUser = await userModel.findOne({ username: username });
                 newUser.YuuCoin += 100;
                 await newUser.save();
 

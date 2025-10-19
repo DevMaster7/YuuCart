@@ -175,6 +175,12 @@ body {
     border-radius: 10px;
 }
 
+.messages {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
 /* Message card */
 .msg {
     display: flex;
@@ -188,7 +194,7 @@ body {
     transition: transform .18s ease, box-shadow .18s ease;
 }
 
-.msg.active{
+.msg.active {
     border: 2px solid var(--Accent);
 }
 

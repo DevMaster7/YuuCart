@@ -221,11 +221,9 @@ app.post("/user/register/enterpass", async (req, res) => {
       // console.log(`True FriendShip`);
       refferUser.Reffer.yourReffers.push(userData.username);
       let msg = {
-        textContent: `
-        Well, well… someone actually joined through the link! <br>
-        Unlike the ones who sold out for our <strong>100Yuu</strong> coins, you two just proved that friendship still exists in this economy.<br>
-        Loyalty level: Premium 💙
-        `,
+        textContent: `Well, well… someone actually joined through the link! <br>
+        Unlike the ones who sold out for our <strong>100Yuu</strong> coins, you and <strong style="color:#FB8500;">${userData.username}</strong> just proved that friendship still exists in this economy.<br>
+        Loyalty level: Premium 💙`,
         sendingDate: new Date(),
         seen: true
       }
@@ -243,8 +241,7 @@ app.post("/user/register/enterpass", async (req, res) => {
         textContent: `
         It appears that your friend just reject your referral link — all for <strong>100Yuu</strong> coins. <br>
         Interesting how loyalty seems to lose its shine when there’s a small number of valuable Yuu attached to it. Perhaps your friendship was worth a less than our <strong>100Yuu</strong> after all. <br>
-        To prevent fight between both of you we can't give you his username to you 🙂
-        `,
+        To prevent fight between both of you we can't give you his username to you 🙂`,
         sendingDate: new Date(),
         seen: true
       }
