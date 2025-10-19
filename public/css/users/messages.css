@@ -184,7 +184,12 @@ body {
     border-radius: 12px;
     background: #ffffff;
     border: 1px solid #e5e7eb;
+    cursor: pointer;
     transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.msg.active{
+    border: 2px solid var(--Accent);
 }
 
 .msg:hover {
@@ -193,17 +198,11 @@ body {
 }
 
 .avatar {
-    min-width: 56px;
-    min-height: 56px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, var(--Secondary), var(--Primary));
-    color: var(--Highlight);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 18px;
-    flex-shrink: 0;
+    width: 45px;
+    height: 45px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 1px solid var(--Heading);
 }
 
 .msg-body {
@@ -217,13 +216,12 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
 }
 
 .name {
     color: var(--Primary);
     font-weight: 700;
-    font-size: 15px;
+    font-size: 18px;
 }
 
 .time {
@@ -287,6 +285,12 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.modal-meta {
+    display: flex;
+    align-items: center;
+    gap: 7px;
 }
 
 .modal-title {

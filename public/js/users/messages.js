@@ -1,5 +1,30 @@
 // Minimal, dependency-free JavaScript for opening messages in a modal
-(function () {
+(async function () {
+    let res = await fetch("/user/getUser", {
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' },
+    });
+    let data = await res.json();
+    data.user.messages.forEach(msg => {
+        let msgHTML = `<article class="msg ${msg.seen ? "active" : ""}" data-id="${msg._id}" role="listitem" data-id="1" aria-label="${msg.from}">
+                            <div class="msg-body">
+                                <div class="row">
+                                    <div style="display:flex;align-items:center;gap:12px">    
+                                        <img class="avatar" src="/assets/logo_google_aligned.png" alt="">
+                                        <div>    
+                                            <div class="name">${msg.from}</div>
+                                            <div class="time">${new Date(msg.sendingDate).toLocaleString()}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text" id="textContent">
+                                    ${msg.textContent}
+                                </div>
+                            </div>
+                        </article>`
+        document.querySelector('.messages').innerHTML += msgHTML
+    });
+
     const msgs = Array.from(document.querySelectorAll('.msg'));
     const backdrop = document.getElementById('modalBackdrop');
     const modalTitle = document.getElementById('modalTitle');
@@ -12,17 +37,33 @@
 
     let currentIndex = -1;
 
-    function openAt(index) {
+    async function openAt(index) {
         const el = msgs[index];
         if (!el) return;
         currentIndex = index;
+        
+        if (el.classList.contains('active')) {
+            await fetch("/user/editMessage", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    id: el.dataset.id
+                })
+            })
+            el.classList.remove('active');
+        }
+
         const name = el.querySelector('.name').textContent.trim();
         const time = el.querySelector('.time').textContent.trim();
-        const text = el.querySelector('.text').textContent.trim();
+        const avatar = el.querySelector('.avatar').src;
+        const text = el.querySelector('.text').innerHTML;
 
         modalTitle.textContent = name;
         modalTime.textContent = time;
-        modalBody.textContent = text;
+        modalAvatar.src = avatar;
+        modalBody.innerHTML = text;
 
         backdrop.style.display = 'flex';
         backdrop.setAttribute('aria-hidden', 'false');

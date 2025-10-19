@@ -218,12 +218,38 @@ app.post("/user/register/enterpass", async (req, res) => {
   if (Reffer) {
     const refferUser = await userModel.findOne({ username: Reffer.from });
     if (Reffer.status) {
-      console.log(`True FriendShip`);
+      // console.log(`True FriendShip`);
       refferUser.Reffer.yourReffers.push(userData.username);
+      let msg = {
+        textContent: `
+        Well, well… someone actually joined through the link! <br>
+        Unlike the ones who sold out for our <strong>100Yuu</strong> coins, you two just proved that friendship still exists in this economy.<br>
+        Loyalty level: Premium 💙
+        `,
+        sendingDate: new Date(),
+        seen: true
+      }
+      refferUser.YuuCoin += 100;
+      refferUser.messages.push(msg);
       await refferUser.save();
     }
     else if (!Reffer.status) {
-      console.log(`LoL Fake FriendShip`);
+      // console.log(`LoL Fake FriendShip`);
+      const newUser = await userModel.findOne({ username: userData.username });
+      newUser.YuuCoin += 100;
+      await newUser.save();
+
+      let msg = {
+        textContent: `
+        It appears that your friend just reject your referral link — all for <strong>100Yuu</strong> coins. <br>
+        Interesting how loyalty seems to lose its shine when there’s a small number of valuable Yuu attached to it. Perhaps your friendship was worth a less than our <strong>100Yuu</strong> after all. <br>
+        To prevent fight between both of you we can't give you his username to you 🙂
+        `,
+        sendingDate: new Date(),
+        seen: true
+      }
+      refferUser.messages.push(msg);
+      await refferUser.save();
     }
   }
 

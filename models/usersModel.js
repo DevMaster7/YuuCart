@@ -67,9 +67,14 @@ const userSchema = new mongoose.Schema({
     },
     messages: [
         {
+            from: {
+                type: String,
+                default: "YuuTeam"
+            },
+            fromImg: String,
             textContent: String,
             sendingDate: Date,
-            status: Boolean
+            seen: Boolean
         }
     ],
     userCart: [
