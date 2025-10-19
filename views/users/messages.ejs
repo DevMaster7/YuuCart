@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+
+<head data-page="Messages">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/css/output.css">
+    <link rel="stylesheet" href="/css/common/loader.css">
+    <link rel="stylesheet" href="/css/users/messages.css">
+    <link rel="stylesheet" href="/css/users/user-sidebar.css">
+    <link rel="stylesheet" href="/css/common/user-admin-nav.css">
+    <link rel="stylesheet" href="/css/common/logout.css">
+    <link rel="stylesheet" href="/css/common/footer.css">
+    <title>Messages - QuickCart</title>
+</head>
+
+<body>
+    <div class="main-container">
+        <div class="side-nav-con"></div>
+        <div class="wrap" role="region" aria-label="User messages review panel">
+            <aside class="sidebar" aria-label="Summary">
+                <div class="brand">
+                    <div class="logo">MR</div>
+                    <div class="brand-text">
+                        <div class="title">Message Reviewer</div>
+                        <div class="sub">Review user-submitted messages</div>
+                    </div>
+                </div>
+
+                <div class="info">
+                    <p style="margin:0 0 10px 0">Click any message card to open it in a readable modal. This file is an
+                        interactive
+                        static mock — it uses JavaScript only for UI (no network calls).</p>
+
+                    <div class="meta-card" aria-hidden="true">
+                        <div class="meta-row" style="margin-bottom:8px">
+                            <div class="k">Total messages</div>
+                            <div class="v" id="metaTotal">3</div>
+                        </div>
+                        <div class="meta-row">
+                            <div class="k">Latest</div>
+                            <div class="v" id="metaLatest">Oct 18, 2025</div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="main" aria-label="Messages list">
+                <div class="page-head">
+                    <div>
+                        <div class="page-title">User Messages</div>
+                        <div class="page-sub">Scrollable review list — click to open message</div>
+                    </div>
+                    <div style="display:flex;gap:10px;align-items:center"><span class="tag">Reviewer</span></div>
+                </div>
+
+                <div class="list-box" role="list" aria-label="Messages" id="listBox">
+                    <div class="messages">
+                        <article class="msg" role="listitem" data-id="1" aria-label="Message from Ali Khan">
+                            <div class="avatar" aria-hidden="true">A</div>
+                            <div class="msg-body">
+                                <div class="row">
+                                    <div class="name">Ali Khan</div>
+                                    <div class="time">Oct 18, 2025 — 10:24 AM</div>
+                                </div>
+                                <div class="text">Great experience using your website. The layout is clean and
+                                    performance
+                                    is excellent.
+                                    Keep it up!</div>
+                            </div>
+                        </article>
+                        <article class="msg" role="listitem" data-id="1" aria-label="Message from Ali Khan">
+                            <div class="avatar" aria-hidden="true">A</div>
+                            <div class="msg-body">
+                                <div class="row">
+                                    <div class="name">Ali Khan</div>
+                                    <div class="time">Oct 18, 2025 — 10:24 AM</div>
+                                </div>
+                                <div class="text">Great experience using your website. The layout is clean and
+                                    performance
+                                    is excellent.
+                                    Keep it up!</div>
+                            </div>
+                        </article>
+                        <article class="msg" role="listitem" data-id="1" aria-label="Message from Ali Khan">
+                            <div class="avatar" aria-hidden="true">A</div>
+                            <div class="msg-body">
+                                <div class="row">
+                                    <div class="name">Ali Khan</div>
+                                    <div class="time">Oct 18, 2025 — 10:24 AM</div>
+                                </div>
+                                <div class="text">Great experience using your website. The layout is clean and
+                                    performance
+                                    is excellent.
+                                    Keep it up!</div>
+                            </div>
+                        </article>
+                        <article class="msg" role="listitem" data-id="1" aria-label="Message from Ali Khan">
+                            <div class="avatar" aria-hidden="true">A</div>
+                            <div class="msg-body">
+                                <div class="row">
+                                    <div class="name">Ali Khan</div>
+                                    <div class="time">Oct 18, 2025 — 10:24 AM</div>
+                                </div>
+                                <div class="text">Great experience using your website. The layout is clean and
+                                    performance
+                                    is excellent.
+                                    Keep it up!</div>
+                            </div>
+                        </article>
+                        <article class="msg" role="listitem" data-id="1" aria-label="Message from Ali Khan">
+                            <div class="avatar" aria-hidden="true">A</div>
+                            <div class="msg-body">
+                                <div class="row">
+                                    <div class="name">Ali Khan</div>
+                                    <div class="time">Oct 18, 2025 — 10:24 AM</div>
+                                </div>
+                                <div class="text">Great experience using your website. The layout is clean and
+                                    performance
+                                    is excellent.
+                                    Keep it up!</div>
+                            </div>
+                        </article>
+                        <article class="msg" role="listitem" data-id="1" aria-label="Message from Ali Khan">
+                            <div class="avatar" aria-hidden="true">A</div>
+                            <div class="msg-body">
+                                <div class="row">
+                                    <div class="name">Ali Khan</div>
+                                    <div class="time">Oct 18, 2025 — 10:24 AM</div>
+                                </div>
+                                <div class="text">Great experience using your website. The layout is clean and
+                                    performance
+                                    is excellent.
+                                    Keep it up!</div>
+                            </div>
+                        </article>
+                        <article class="msg" role="listitem" data-id="1" aria-label="Message from Ali Khan">
+                            <div class="avatar" aria-hidden="true">A</div>
+                            <div class="msg-body">
+                                <div class="row">
+                                    <div class="name">Ali Khan</div>
+                                    <div class="time">Oct 18, 2025 — 10:24 AM</div>
+                                </div>
+                                <div class="text">Great experience using your website. The layout is clean and
+                                    performance
+                                    is excellent.
+                                    Keep it up!</div>
+                            </div>
+                        </article>
+                        <article class="msg" role="listitem" data-id="1" aria-label="Message from Ali Khan">
+                            <div class="avatar" aria-hidden="true">A</div>
+                            <div class="msg-body">
+                                <div class="row">
+                                    <div class="name">Ali Khan</div>
+                                    <div class="time">Oct 18, 2025 — 10:24 AM</div>
+                                </div>
+                                <div class="text">Great experience using your website. The layout is clean and
+                                    performance
+                                    is excellent.
+                                    Keep it up!</div>
+                            </div>
+                        </article>
+
+                        <article class="msg" role="listitem" data-id="2" aria-label="Message from Sara Malik">
+                            <div class="avatar" aria-hidden="true">S</div>
+                            <div class="msg-body">
+                                <div class="row">
+                                    <div class="name">Sara Malik</div>
+                                    <div class="time">Oct 18, 2025 — 08:10 AM</div>
+                                </div>
+                                <div class="text">I would love to see a dark mode toggle feature soon. Also, consider
+                                    larger
+                                    font sizes
+                                    for accessibility.</div>
+                            </div>
+                        </article>
+
+                        <article class="msg" role="listitem" data-id="3" aria-label="Message from Muneeb Ahmed">
+                            <div class="avatar" aria-hidden="true">M</div>
+                            <div class="msg-body">
+                                <div class="row">
+                                    <div class="name">Muneeb Ahmed</div>
+                                    <div class="time">Oct 17, 2025 — 14:05</div>
+                                </div>
+                                <div class="text">Your project designs are very professional and clean! Would like a
+                                    downloadable report
+                                    of messages in future.</div>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="empty" aria-hidden="true">End of messages</div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="modal" role="document" aria-labelledby="modalTitle">
+            <div class="modal-head">
+                <div>
+                    <div id="modalTitle" class="modal-title">Message title</div>
+                    <div id="modalTime" class="modal-time">time</div>
+                </div>
+                <div style="display:flex;gap:8px;align-items:center">
+                    <button class="close-x" id="closeBtn" aria-label="Close">✕</button>
+                </div>
+            </div>
+
+            <div id="modalBody" class="modal-body">Full message content will appear here when you open a message.</div>
+
+            <div class="modal-actions">
+                <button class="btn-ghost" id="prevBtn">← Prev</button>
+                <button class="btn-ghost" id="nextBtn">Next →</button>
+                <button class="btn" id="doneBtn">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/common/at-start.js"></script>
+    <script src="/js/common/user-admin-nav.js"></script>
+    <script src="/js/users/messages.js"></script>
+    <script src="/js/common/footer.js"></script>
+    <script src="/js/common/at-last.js"></script>
+</body>
+
+</html>

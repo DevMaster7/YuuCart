@@ -65,6 +65,13 @@ const userSchema = new mongoose.Schema({
             { type: String }
         ]
     },
+    messages: [
+        {
+            textContent: String,
+            sendingDate: Date,
+            status: Boolean
+        }
+    ],
     userCart: [
         { type: String },
     ],

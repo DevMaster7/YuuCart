@@ -14,7 +14,7 @@ const bcrypt = require("bcrypt");
 const env = require("dotenv");
 const flash = require("connect-flash");
 const passport = require("passport");
-const { uploadOnCloudinary } = require("./config/cloudinary");
+const { uploadImageFromUrl } = require("./config/cloudinary");
 const jwt = require("jsonwebtoken");
 const app = express();
 
@@ -49,41 +49,51 @@ app.use((req, res, next) => {
 
 // Routes
 app.get("/", optionalVerifyToken, async (req, res) => {
+  // let result = await userModel.updateMany(
+  //   {},
+  //   {
+  //     $set: {
+  //       "Reffer.from": ''
+  //     }
+  //   }
+  // );
+  // console.log(result);
+
+  // const users = await userModel.find({});
+  // for (const use of users) {
+  //   await userModel.updateOne(
+  //     { _id: use._id },
+  //     {
+  //       $set: {
+  //         'Reffer.from': '',
+  //         'Reffer.refferCode': use.username,
+  //         'Reffer.url': `${process.env.BASE_URL}/user/register?reffer=${use.username}`,
+  //         'Reffer.yourReffers': []
+  //       },
+  //     }
+  //   );
+  // }
+  // console.log(`Success`);
+
   const tokenUser = req.user;
   if (!tokenUser) {
     return res.render("home", { user: [] });
   }
   const user = await userModel.findById(tokenUser._QCUI_UI);
 
-  // const users = await userModel.find({});
-  // for (const use of users) {
-  //   await userModel.updateOne(
-  //     { _id: use._id },
-  //     { $set: { 'Reffer.url': `${process.env.BASE_URL}/user/register?reffer=${use.username}` } }
-  //   );
-  // }
-  // console.log(`Success`);
-
-  // let result = await userModel.updateMany(
-  //   {},
-  //   {
-  //     $set: {
-  //       'Reffer.refferCode': 
-  //     }
-  //   }
-  // );
-  // console.log(result);
-
   res.render("home", { user });
 })
-app.get("/auth/google/register",
+app.get("/auth/google/register", (req, res, next) => {
+  const stateData = JSON.stringify({
+    action: "register",
+    Reffer: req.session.reffer
+  });
   passport.authenticate("google", {
     scope: ["profile", "email"],
-    prompt: "consent", // Get premission also
-    // prompt: "select_account", // Select account only
-    state: "register"
-  })
-);
+    prompt: "consent",
+    state: encodeURIComponent(stateData)
+  })(req, res, next);
+});
 app.get("/auth/google/login",
   passport.authenticate("google", {
     scope: ["profile", "email"],
@@ -97,32 +107,52 @@ app.get("/auth/google/callback",
   async (req, res) => {
     const data = req.user;
     const user = await userModel.findOne({ email: data.emails[0].value });
-    const action = req.query.state;
+    const state = JSON.parse(decodeURIComponent(req.query.state));
+    const action = state.action;
+    const Reffer = state.Reffer;
+
     if (action == "register") {
       if (!user) {
-        // let img = await uploadOnCloudinary(data.photos[0].value, "profile_pics");
+        let img = await uploadImageFromUrl(data.photos[0].value, "profile_pics");
 
-        console.log(data.photos[0].value);
         // Email to Username
         function usernameFromEmail(email) {
           return email.split("@")[0].replace(/[^a-zA-Z0-9]/g, "");
         }
+        const username = usernameFromEmail(data.emails[0].value)
 
         const joiningDate = new Date();
 
+        let from = "";
+        if (Reffer) {
+          if (Reffer.status) {
+            from = Reffer.from;
+          }
+        }
+
         let userData = {
           joiningDate,
-          // userImg: img,
+          userImg: img,
           fullname: data.displayName,
           provider: data.provider,
-          username: usernameFromEmail(data.emails[0].value),
+          username,
           email: data.emails[0].value,
           spinDate: joiningDate,
           Reffer: {
+            from,
             refferCode: username,
             url: `${process.env.BASE_URL}/user/register?reffer=${username}`,
           }
         }
+
+        if (from != "") {
+          const refferUser = await userModel.findOne({ username: from });
+          refferUser.Reffer.yourReffers.push(username);
+          await refferUser.save();
+        }
+
+        delete req.session.reffer;
+
         req.session.userData = userData;
         req.flash("success", "enter-pass");
         return res.redirect("/user/register");

@@ -21,4 +21,16 @@ const uploadOnCloudinary = async (fileBuffer, folderName) => {
   });
 };
 
-module.exports = { uploadOnCloudinary };
+const uploadImageFromUrl = async (imageUrl, folderName) => {
+  try {
+    const result = await cloudinary.uploader.upload(imageUrl, {
+      folder: folderName,
+    });
+    return result.secure_url;
+  } catch (error) {
+    console.error("Error uploading image from URL:", error);
+    throw error;
+  }
+};
+
+module.exports = { uploadOnCloudinary, uploadImageFromUrl };

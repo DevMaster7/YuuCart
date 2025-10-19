@@ -125,7 +125,8 @@ router.post("/change-password", optionalVerifyToken, async (req, res) => {
     await user.save();
     return res.status(200).json({ success: true, message: "Password changed successfully!" });
 })
-
+router.get("/reward-center", optionalVerifyToken, userRoute("users/reward"));
+router.get("/messages", optionalVerifyToken, userRoute("users/messages"));
 router.get("/orders", optionalVerifyToken, async (req, res) => {
     const token = req.user;
     if (!token) return res.redirect("/user/login");
@@ -136,7 +137,6 @@ router.get("/orders", optionalVerifyToken, async (req, res) => {
     await user.save();
     res.render("users/my-orders", { user, slugify });
 });
-
 router.get("/wishlist", optionalVerifyToken, async (req, res) => {
     const token = req.user;
     if (!token) return res.redirect("/user/login");
@@ -145,13 +145,37 @@ router.get("/wishlist", optionalVerifyToken, async (req, res) => {
     const products = await productModel.find({ _id: user.userWishlist });
     res.render("users/my-wishlist", { user, products, slugify });
 });
-
-router.get("/reward-center", optionalVerifyToken, userRoute("users/reward"));
-
 router.get("/settings", optionalVerifyToken, userRoute("users/setting"));
 
-router.get("/register", (req, res) => {
+router.get("/register", async (req, res) => {
+    const reffer = req.query.reffer;
+
+    if (reffer) {
+        const refferUser = await userModel.findOne({ username: reffer });
+        if (!refferUser) return res.redirect("/user/register");
+    }
+
     res.render("register")
+})
+router.post("/refferAprove", async (req, res) => {
+    const { reffer } = req.body;
+    req.session.reffer = {
+        from: reffer,
+        status: true
+    }
+    req.session.save();
+    
+    res.status(200).json({ message: "success" });
+})
+router.post("/refferReject", async (req, res) => {
+    const { reffer } = req.body;
+    req.session.reffer = {
+        from: reffer,
+        status: false
+    }
+    req.session.save();
+    
+    res.status(200).json({ message: "success" });
 })
 router.post("/register",
     body("fullname").trim().isLength({ min: 3 }),
@@ -184,6 +208,13 @@ router.post("/register",
 
         const joiningDate = new Date();
 
+        let from = "";
+        if (req.session.reffer) {
+            if (req.session.reffer.status) {
+                from = req.session.reffer.from;
+            }
+        }
+
         await userModel.create({
             joiningDate,
             fullname,
@@ -196,10 +227,20 @@ router.post("/register",
             password: hashPassword,
             spinDate: joiningDate,
             Reffer: {
+                from,
                 refferCode: username,
                 url: `${process.env.BASE_URL}/user/register?reffer=${username}`,
             }
         })
+
+        if (from != "") {
+            const refferUser = await userModel.findOne({ username: from });
+            refferUser.Reffer.yourReffers.push(username);
+            await refferUser.save();
+        }
+
+        delete req.session.reffer
+
         return res.status(201).json({ success: true, message: "User registered successfully" });
     })
 

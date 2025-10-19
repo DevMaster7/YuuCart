@@ -21,17 +21,81 @@ html {
     background-color: var(--Highlight);
 }
 
-.error {
+.modal-wrap {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #02304737;
     position: fixed;
     top: 0;
-    z-index: 9;
-    user-select: none;
-    background: #00000085;
-    color: var(--Highlight);
-    border-bottom-left-radius: 6px;
-    border-bottom-right-radius: 6px;
-    padding: 10px;
-    display: none;
+    backdrop-filter: blur(2px);
+    z-index: 10;
+}
+
+.wrap {
+    background: white;
+    border-radius: 16px;
+    padding: 24px 28px;
+    width: 90%;
+    max-width: 420px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    text-align: center;
+}
+
+.heading {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--Primary);
+    margin-bottom: 10px;
+}
+
+.wrap .text-content {
+    color: var(--Primary);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.wrap strong {
+    color: var(--Accent);
+}
+
+.wrap span {
+    font-size: 12px;
+}
+
+.btns {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.btn {
+    padding: 8px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s ease;
+    font-size: 14px;
+}
+
+.btn.aprove {
+    background: var(--Secondary);
+    color: white;
+}
+
+.btn.reject {
+    background: #e0e0e0;
+    color: var(--Primary);
+}
+
+.btn.aprove:hover {
+    background: #1e8ca8;
+}
+
+.btn.reject:hover {
+    background: #d6d6d6;
 }
 
 .left {
@@ -235,6 +299,12 @@ html {
     font-size: 13px;
     color: red;
     display: none;
+}
+
+.cong-msg {
+    color: rgb(106, 106, 106);
+    font-size: 13px;
+    margin: 10px 0px;
 }
 
 .right form .submit-btn {

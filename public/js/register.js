@@ -1,10 +1,64 @@
 let bubbleCon = document.querySelector(".left");
 let head = document.getElementsByTagName("head")[0];
-if (window.location.href.includes("reffer")) {
+let url = window.location.href
+if (url.includes("reffer")) {
+    const params = new URLSearchParams(new URL(url).search);
+    const refferName = params.get("reffer");
+    let refferHTML = `<div class="modal-wrap">
+                <div class="wrap">
+                    <div class="heading">Hello Friend 👋</div>
+                    <div class="text-content">
+                        I think you came from <strong>${refferName}</strong>.<br>
+                        If you sign up using your friend’s referral link, he will get
+                        <strong>100 Yuu</strong>
+                        <span>(which can be used to buy items from our store)</span> and you
+                        will get nothing.<br><br>
+                        But if you refuse, you will get <strong>100 Yuu</strong> and more prizes.
+                    </div>
+                    <div class="btns">
+                        <div class="btn aprove">Yes, refer him</div>
+                        <div class="btn reject">No thanks</div>
+                    </div>
+                </div>
+            </div>`
+    document.body.style.overflow = "hidden";
+    document.getElementById("modalRoot").innerHTML = refferHTML;
 
-    // console.log(`pageeeeeeeeeeeeeeee`);
+    document.querySelector(".aprove").addEventListener("click", async () => {
+        document.querySelector(".modal-wrap").remove();
+        document.body.style.overflow = "auto";
+        console.log(refferName);
+        await fetch("/user/refferAprove", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                reffer: refferName
+            })
+        })
+        let div = document.createElement("div");
+        div.classList.add("cong-msg");
+        div.innerHTML = `Now you are reffer of <strong>${refferName}</strong>`;
+        document.getElementById("registerForm").insertAdjacentElement("beforebegin", div);
+        document.querySelector(".continue-btn").style.margin = "0";
+    })
+    document.querySelector(".reject").addEventListener("click", async () => {
+        document.querySelector(".modal-wrap").remove();
+        document.body.style.overflow = "auto";
+        await fetch("/user/refReject", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                reffer: refferName
+            })
+        })
+        window.location.href = "/user/register"
+    })
 } else if (head.dataset.info == "enter-pass") {
-    let forgotPassHTML = `<div class="pass-con">
+    let newPassHTML = `<div class="pass-con">
         <form id="enterPassForm">
         <div class="heading">Enter Your Password</div>
         <div class="field">
@@ -22,7 +76,7 @@ if (window.location.href.includes("reffer")) {
           </form>
         </div>`;
     document.body.style.overflow = "hidden";
-    document.getElementById("modalRoot").innerHTML = forgotPassHTML;
+    document.getElementById("modalRoot").innerHTML = newPassHTML;
 
     document.getElementById("enterPassForm").addEventListener("submit", async (e) => {
         e.preventDefault();
