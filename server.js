@@ -126,11 +126,6 @@ app.get("/auth/google/callback",
 
         const joiningDate = new Date();
 
-        let from = "";
-        if (Reffer && Reffer.status) {
-          from = Reffer.from;
-        }
-
         let userData = {
           joiningDate,
           userImg: img,
@@ -139,27 +134,8 @@ app.get("/auth/google/callback",
           username,
           email: data.emails[0].value,
           spinDate: joiningDate,
-          Reffer: {
-            from,
-            refferCode: username,
-            url: `${process.env.BASE_URL}/user/register?reffer=${username}`,
-          }
+          Reffer,
         }
-
-        if (Reffer) {
-          const refferUser = await userModel.findOne({ username: Reffer.from });
-          if (Reffer.status) {
-            console.log(`True FriendShip`);
-            refferUser.Reffer.yourReffers.push(username);
-            await refferUser.save();
-          }
-          else if (!Reffer.status) {
-            console.log(`LoL Fake FriendShip`);
-          }
-        }
-
-
-        delete req.session.reffer;
 
         req.session.userData = userData;
         req.flash("success", "enter-pass");
@@ -217,8 +193,42 @@ app.post("/user/register/enterpass", async (req, res) => {
   }
   const hashPassword = await bcrypt.hash(password, 10);
   userData.password = hashPassword;
-  await userModel.create(userData);
+
+  let Reffer = userData.Reffer;
+  let from = "";
+  if (Reffer && Reffer.status) {
+    from = Reffer.from;
+  }
+
+  await userModel.create({
+    joiningDate: userData.joiningDate,
+    userImg: userData.userImg,
+    fullname: userData.fullname,
+    provider: userData.provider,
+    username: userData.username,
+    email: userData.email,
+    spinDate: userData.spinDate,
+    Reffer: {
+      from,
+      refferCode: userData.username,
+      url: `${process.env.BASE_URL}/user/register?reffer=${userData.username}`,
+    }
+  });
+
+  if (Reffer) {
+    const refferUser = await userModel.findOne({ username: Reffer.from });
+    if (Reffer.status) {
+      console.log(`True FriendShip`);
+      refferUser.Reffer.yourReffers.push(userData.username);
+      await refferUser.save();
+    }
+    else if (!Reffer.status) {
+      console.log(`LoL Fake FriendShip`);
+    }
+  }
+
   delete req.session.userData;
+
   return res.status(200).json({ success: true, message: "Password set successfully!" });
 })
 app.post("/verify-captcha", async (req, res) => {
