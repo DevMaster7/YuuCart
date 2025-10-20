@@ -71,7 +71,10 @@ const userSchema = new mongoose.Schema({
                 type: String,
                 default: "YuuTeam"
             },
-            fromImg: String,
+            fromImg: {
+                type: String,
+                default: "/assets/logo_google_aligned.png"
+            },
             textContent: String,
             sendingDate: Date,
             seen: Boolean

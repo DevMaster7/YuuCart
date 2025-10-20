@@ -59,21 +59,36 @@ app.get("/", optionalVerifyToken, async (req, res) => {
   // );
   // console.log(result);
 
-  // const users = await userModel.find({});
-  // for (const use of users) {
-  //   await userModel.updateOne(
-  //     { _id: use._id },
-  //     {
-  //       $set: {
-  //         'Reffer.from': '',
-  //         'Reffer.refferCode': use.username,
-  //         'Reffer.url': `${process.env.BASE_URL}/user/register?reffer=${use.username}`,
-  //         'Reffer.yourReffers': []
-  //       },
-  //     }
-  //   );
-  // }
-  // console.log(`Success`);
+//   const users = await userModel.find({});
+// for (const use of users) {
+//   // Step 1: Remove all existing messages
+//   await userModel.updateOne(
+//     { _id: use._id },
+//     { $unset: { messages: "" } }
+//   );
+
+//   // Step 2: Add the new welcome message
+//   await userModel.updateOne(
+//     { _id: use._id },
+//     {
+//       $push: {
+//         messages: {
+//           textContent: `Assalam o Alaikum, <strong style="color:#FB8500;">${use.fullname}</strong>!<br>
+//             Welcome to <strong style="color:#FB8500;">YuuCart</strong><br>
+//             We’re delighted to have you join our community!<br>
+//             Explore, shop, and enjoy a seamless experience — we hope you’ll love everything we have to offer.<br><br>
+//             <strong>With Warm Regards,</strong><br>
+//             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong style="color:#FB8500;">The YuuTeam</strong>`,
+//           sendingDate: use.joiningDate,
+//           seen: true
+//         }
+//       }
+//     }
+//   );
+// }
+
+// console.log("Success! ✅");
+
 
   const tokenUser = req.user;
   if (!tokenUser) {
@@ -212,28 +227,48 @@ app.post("/user/register/enterpass", async (req, res) => {
       from,
       refferCode: userData.username,
       url: `${process.env.BASE_URL}/user/register?reffer=${userData.username}`,
-    }
+    },
+    messages: [{
+      textContent: `Assalam o Alaikum, <strong style="color:#FB8500;">${userData.fullname}</strong>!<br>
+            Welcome to <strong style="color:#FB8500;">YuuCart</strong><br>
+            We’re delighted to have you join our community!<br>
+            Explore, shop, and enjoy a seamless experience — we hope you’ll love everything we have to offer.<br><br>
+            <strong>With Warm Regards,</strong><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong style="color:#FB8500;">The YuuTeam</strong>`,
+      sendingDate: new Date(),
+      seen: true
+    }],
   });
 
   if (Reffer) {
     const refferUser = await userModel.findOne({ username: Reffer.from });
+    const newUser = await userModel.findOne({ username: userData.username });
     if (Reffer.status) {
       // console.log(`True FriendShip`);
-      refferUser.Reffer.yourReffers.push(userData.username);
       let msg = {
         textContent: `Well, well… someone actually joined through the link! <br>
-        Unlike the ones who sold out for our <strong>100Yuu</strong> coins, you and <strong style="color:#FB8500;">${userData.username}</strong> just proved that friendship still exists in this economy.<br>
-        Loyalty level: Premium 💙`,
+                Unlike the ones who sold out for our <strong>100Yuu</strong> coins, your friend <strong style="color:#FB8500;">${userData.username}</strong> just proved that friendship still exists in this economy.<br>
+                Loyalty level: Premium 💙`,
         sendingDate: new Date(),
         seen: true
       }
       refferUser.YuuCoin += 100;
+      refferUser.Reffer.yourReffers.push(userData.username);
       refferUser.messages.push(msg);
       await refferUser.save();
+
+      let newMsg = {
+        textContent: `Well, well… someone actually joined through the link! <br>
+                Unlike the ones who sold out for our <strong>100Yuu</strong> coins, you just proved that friendship still exists in this economy.<br>
+                Loyalty level: Premium 💙`,
+        sendingDate: new Date(),
+        seen: true
+      }
+      newUser.messages.push(newMsg);
+      await newUser.save();
     }
     else if (!Reffer.status) {
       // console.log(`LoL Fake FriendShip`);
-      const newUser = await userModel.findOne({ username: userData.username });
       newUser.YuuCoin += 100;
       await newUser.save();
 

@@ -5,15 +5,24 @@
         headers: { 'Content-Type': 'application/json' },
     });
     let data = await res.json();
-    data.user.messages.forEach(msg => {
+    data.user.messages.reverse().forEach(msg => {
+        let date = new Date(msg.sendingDate).toLocaleString("en-GB", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true
+        });
         let msgHTML = `<article class="msg ${msg.seen ? "active" : ""}" data-id="${msg._id}" role="listitem" data-id="1" aria-label="${msg.from}">
                             <div class="msg-body">
                                 <div class="row">
                                     <div style="display:flex;align-items:center;gap:12px">    
-                                        <img class="avatar" src="/assets/logo_google_aligned.png" alt="">
+                                        <img class="avatar" src="${msg.fromImg}" alt="">
                                         <div>    
                                             <div class="name">${msg.from}</div>
-                                            <div class="time">${new Date(msg.sendingDate).toLocaleString()}</div>
+                                            <div class="time">${date}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -41,7 +50,7 @@
         const el = msgs[index];
         if (!el) return;
         currentIndex = index;
-        
+
         if (el.classList.contains('active')) {
             await fetch("/user/editMessage", {
                 method: "POST",

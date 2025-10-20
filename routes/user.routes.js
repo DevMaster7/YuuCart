@@ -239,37 +239,56 @@ router.post("/register",
                 from,
                 refferCode: username,
                 url: `${process.env.BASE_URL}/user/register?reffer=${username}`,
-            }
+            },
+            messages: [{
+                textContent: `Assalam o Alaikum, <strong style="color:#FB8500;">${use.fullname}</strong>!<br>
+            Welcome to <strong style="color:#FB8500;">YuuCart</strong><br>
+            We’re delighted to have you join our community!<br>
+            Explore, shop, and enjoy a seamless experience — we hope you’ll love everything we have to offer.<br><br>
+            <strong>With Warm Regards,</strong><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong style="color:#FB8500;">The YuuTeam</strong>`,
+                sendingDate: new Date(),
+                seen: true
+            }],
         })
 
         if (Reffer) {
             const refferUser = await userModel.findOne({ username: Reffer.from });
+            const newUser = await userModel.findOne({ username: username });
             if (Reffer.status) {
                 // console.log(`True FriendShip`);
-                refferUser.Reffer.yourReffers.push(username);
                 let msg = {
                     textContent: `Well, well… someone actually joined through the link! <br>
-        Unlike the ones who sold out for our <strong>100Yuu</strong> coins, you and <strong style="color:#FB8500;">${username}</strong> just proved that friendship still exists in this economy.<br>
-        Loyalty level: Premium 💙`,
+                Unlike the ones who sold out for our <strong>100Yuu</strong> coins, your friend <strong style="color:#FB8500;">${username}</strong> just proved that friendship still exists in this economy.<br>
+                Loyalty level: Premium 💙`,
                     sendingDate: new Date(),
                     seen: true
                 }
                 refferUser.YuuCoin += 100;
+                refferUser.Reffer.yourReffers.push(username);
                 refferUser.messages.push(msg);
                 await refferUser.save();
+
+                let newMsg = {
+                    textContent: `Well, well… someone actually joined through the link! <br>
+                Unlike the ones who sold out for our <strong>100Yuu</strong> coins, you just proved that friendship still exists in this economy.<br>
+                Loyalty level: Premium 💙`,
+                    sendingDate: new Date(),
+                    seen: true
+                }
+                newUser.messages.push(newMsg);
+                await newUser.save();
             }
             else if (!Reffer.status) {
                 // console.log(`LoL Fake FriendShip`);
-                const newUser = await userModel.findOne({ username: username });
                 newUser.YuuCoin += 100;
                 await newUser.save();
 
                 let msg = {
                     textContent: `
-        It appears that your friend just reject your referral link — all for <strong>100Yuu</strong> coins. <br>
-        Interesting how loyalty seems to lose its shine when there’s a small number of valuable Yuu attached to it. Perhaps your friendship was worth a less than our <strong>100Yuu</strong> after all. <br>
-        To prevent fight between both of you we can't give you his username to you 🙂
-        `,
+                It appears that your friend just reject your referral link — all for <strong>100Yuu</strong> coins. <br>
+                Interesting how loyalty seems to lose its shine when there’s a small number of valuable Yuu attached to it. Perhaps your friendship was worth a less than our <strong>100Yuu</strong> after all. <br>
+                To prevent fight between both of you we can't give you his username to you 🙂`,
                     sendingDate: new Date(),
                     seen: true
                 }
