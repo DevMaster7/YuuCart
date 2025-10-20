@@ -51,19 +51,6 @@
         if (!el) return;
         currentIndex = index;
 
-        if (el.classList.contains('active')) {
-            await fetch("/user/editMessage", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    id: el.dataset.id
-                })
-            })
-            el.classList.remove('active');
-        }
-
         const name = el.querySelector('.name').textContent.trim();
         const time = el.querySelector('.time').textContent.trim();
         const avatar = el.querySelector('.avatar').src;
@@ -78,6 +65,19 @@
         backdrop.setAttribute('aria-hidden', 'false');
         // focus management
         doneBtn.focus();
+        
+        if (el.classList.contains('active')) {
+            await fetch("/user/editMessage", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    id: el.dataset.id
+                })
+            })
+            el.classList.remove('active');
+        }
     }
 
     function closeModal() {
