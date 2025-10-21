@@ -25,53 +25,23 @@
 <body>
     <div class="main-container">
         <div class="side-nav-con"></div>
-        <div class="wrap" role="region" aria-label="User messages review panel">
-            <aside class="sidebar" aria-label="Summary">
-                <div class="brand">
-                    <div class="logo">MR</div>
-                    <div class="brand-text">
-                        <div class="title">Message Reviewer</div>
-                        <div class="sub">Review user-submitted messages</div>
-                    </div>
+        <div class="content" aria-label="Messages list">
+            <div class="page-head">
+                <div>
+                    <div class="page-title">Messages</div>
+                    <div class="page-sub">Stay connected with us and get updates about your orders or offers</div>
                 </div>
+            </div>
 
-                <div class="info">
-                    <p style="margin:0 0 10px 0">Click any message card to open it in a readable modal. This file is an
-                        interactive
-                        static mock — it uses JavaScript only for UI (no network calls).</p>
+            <div class="list-box" role="list" aria-label="Messages" id="listBox">
+                <div class="messages">
 
-                    <div class="meta-card" aria-hidden="true">
-                        <div class="meta-row" style="margin-bottom:8px">
-                            <div class="k">Total messages</div>
-                            <div class="v" id="metaTotal">--</div>
-                        </div>
-                        <div class="meta-row">
-                            <div class="k">Latest</div>
-                            <div class="v" id="metaLatest">--</div>
-                        </div>
-                    </div>
                 </div>
-            </aside>
-
-            <main class="main" aria-label="Messages list">
-                <div class="page-head">
-                    <div>
-                        <div class="page-title">User Messages</div>
-                        <div class="page-sub">Scrollable review list — click to open message</div>
-                    </div>
-                </div>
-
-                <div class="list-box" role="list" aria-label="Messages" id="listBox">
-                    <div class="messages">
-                    </div>
-                    <div class="empty" aria-hidden="true">No messages</div>
-                </div>
-            </main>
+                <div class="empty" aria-hidden="true">No messages</div>
+            </div>
         </div>
     </div>
 
-
-    <!-- Modal -->
     <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-hidden="true">
         <div class="modal" role="document" aria-labelledby="modalTitle">
             <div class="modal-head">

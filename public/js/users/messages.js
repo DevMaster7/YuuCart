@@ -22,7 +22,7 @@
                                         <img class="avatar" src="${msg.fromImg}" alt="">
                                         <div>    
                                             <div class="name">${msg.from}</div>
-                                            <div class="time">${date}</div>
+                                            <div class="time" data-date="${msg.sendingDate}">${date}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -116,8 +116,19 @@
     });
 
     // update meta totals (in sidebar)
-    const metaTotal = document.getElementById('metaTotal');
-    if (metaTotal) metaTotal.textContent = msgs.length;
+    // const metaTotal = document.getElementById('metaTotal');
+    // const metaLatest = document.getElementById('metaLatest');
+    // if (metaTotal) metaTotal.textContent = msgs.length;
+    // console.log(new Date(msgs[0].querySelector('.time').dataset.date));
+    // if (metaLatest) metaLatest.textContent = new Date(msgs[0].querySelector('.time').dataset.date).toLocaleString("en-GB", {
+    //     day: "2-digit",
+    //     month: "2-digit",
+    //     year: "numeric",
+    //     hour: "2-digit",
+    //     minute: "2-digit",
+    //     second: "2-digit",
+    //     hour12: true
+    // });
 
     // set initial aria-hidden
     backdrop.setAttribute('aria-hidden', 'true');

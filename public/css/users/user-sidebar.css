@@ -4,6 +4,7 @@
     --Accent: #FB8500;
     --Highlight: #F8F9FA;
     --Heading: #CCD6F6;
+    --muted: #6b7280;
 }
 
 body,
@@ -11,7 +12,7 @@ html {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #e7edff80;
+    background-color: #f4f7ff80;
     min-height: 100vh;
     scroll-behavior: smooth;
 }
@@ -21,16 +22,49 @@ html {
     display: flex;
 }
 
-.side-nav {
+.side-nav-con {
     position: sticky;
     top: 65px;
-    width: 280px;
+    width: 350px;
+    height: calc(100vh - 65px);
+    overflow: hidden;
+    border-right: 1px solid var(--Heading);
+    transition: all 0.3s ease-in-out;
+}
+
+.side-nav {
+    height: 100%;
+    overflow-y: hidden;
     display: flex;
     flex-direction: column;
     background: var(--Highlight);
-    color: var(--Primary);
-    border-right: 1px solid var(--Heading);
-    border-bottom: 1px solid var(--Heading);
+}
+
+.side-nav-con:hover .side-nav {
+    overflow-y: auto;
+}
+
+.side-nav::-webkit-scrollbar {
+    width: 4px;
+}
+
+.side-nav::-webkit-scrollbar-thumb {
+    background: rgb(154, 154, 154);
+    border-radius: 4px;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.side-nav-con:hover .side-nav::-webkit-scrollbar-thumb {
+    opacity: 1;
+}
+
+.side-nav::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.side-nav {
+    scroll-behavior: smooth;
 }
 
 .user-con {
@@ -104,6 +138,32 @@ html {
     fill: var(--Highlight) !important;
 }
 
+.content {
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.page-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.page-title {
+    color: var(--Accent);
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.page-sub {
+    color: var(--muted);
+    font-size: 13px;
+}
+
 @media (max-width: 770px) {
     .side-nav-con {
         width: 100%;
@@ -118,12 +178,22 @@ html {
     }
 
     .side-nav {
-        height: 89%;
+        width: 75%;
         overflow-y: auto;
         border-right: none;
         transform: translateX(-100%);
         transition: all 0.3s ease-in-out;
         position: unset;
         top: unset;
+    }
+}
+
+@media (max-width:630px) {
+    .page-title {
+        font-size: 26px;
+    }
+
+    .page-sub {
+        font-size: 11px;
     }
 }

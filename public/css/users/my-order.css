@@ -6,20 +6,6 @@
     --Heading: #CCD6F6;
 }
 
-.content-con {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 10px 10px 30px;
-}
-
-.content-con .heading {
-    font-size: 28px;
-    font-weight: 600;
-    color: var(--Accent);
-}
-
 .tab-bar {
     width: 100%;
     display: flex;
@@ -210,9 +196,6 @@
 }
 
 @media (max-width: 630px) {
-    .content-con .heading {
-        font-size: 26px;
-    }
 
     .tab-bar .tab {
         padding: 7px 0px;
@@ -266,12 +249,8 @@
 }
 
 @media (max-width: 460px) {
-    .content-con {
-        padding: 0px;
-    }
-
-    .content-con .heading {
-        padding: 10px 10px 0px;
+    .content {
+        padding: 2px !important;
     }
 
     .tab-bar {

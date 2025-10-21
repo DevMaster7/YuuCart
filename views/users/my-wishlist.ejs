@@ -29,28 +29,82 @@
     <div class="main-container">
         <div class="side-nav-con">
         </div>
-        <div class="content-con">
-            <div class="heading">Your Wishlist</div>
-            <% if(products.length!==0) { %>
-            <div class="tab-bar-con">
-                <div class="products-count">
-                    I Hope You Will Get <%= products.length==1 ? "That" : "These" %> "<%= products.length %>" <%=
-                                    products.length==1 ? "Product" : "Products" %> As Soon As Possible
+        <div class="content">
+            <div class="page-head">
+                <div>
+                    <div class="page-title">My Wishlist</div>
+                    <div class="page-sub">Save your favorite products and keep them ready for your next purchase</div>
                 </div>
             </div>
-            <% } %>
-            <div class="products-list-con">
+            <div>
                 <% if(products.length!==0) { %>
-                <% products.forEach(product=> { %>
-                <a class="main-card" href="/shop/<%= slugify(product.proName, {lower: true}) %>-<%= product._id %>">
-                    <div class="cards">
-                        <div class="product-img" data-productid="<%= product._id %>">
-                            <img src="<%= product.image %>" alt="">
-                        </div>
-                        <div class="pro-details">
-                            <div>
-                                <div class="pro-name">
-                                    <%= product.proName %>
+                <div class="tab-bar-con">
+                    <div class="products-count">
+                        I Hope You Will Get <%= products.length==1 ? "That" : "These" %> "<%= products.length %>" <%=
+                                    products.length==1 ? "Product" : "Products" %> As Soon As Possible
+                    </div>
+                </div>
+                <% } %>
+                <div class="products-list-con">
+                    <% if(products.length!==0) { %>
+                    <% products.forEach(product=> { %>
+                    <a class="main-card" href="/shop/<%= slugify(product.proName, {lower: true}) %>-<%= product._id %>">
+                        <div class="cards">
+                            <div class="product-img" data-productid="<%= product._id %>">
+                                <img src="<%= product.image %>" alt="">
+                            </div>
+                            <div class="pro-details">
+                                <div>
+                                    <div class="pro-name">
+                                        <%= product.proName %>
+                                    </div>
+                                    <div class="pro-price-con">
+                                        <div>
+                                            <div class="pro-price">Rs.
+                                                <%= product.proPrice %>
+                                            </div>
+                                            <div class="before-dis">Rs.
+                                                <%= product.proOrignalPrice %>
+                                            </div>
+                                            <div class="discount">-
+                                                <%= product.proDiscount %>%
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="pro-info">
+                                        <div class="another">
+                                            <div class="pro-buyer">
+                                                <%= product.proBuyer>=1000?Math.floor((product.proBuyer/1000) * 10) / 10+"K":product.proBuyer %>
+                                                Sold
+                                            </div>
+                                            <div class="pro-rate">
+                                                <div class="stars-con">
+                                                    <div class="stars"
+                                                        style="font-size:1.1em;--rating: <%= ((product.proRating/5)*100) %>%;">
+                                                    </div>
+                                                </div>
+                                                <span class="pro-revs">(<%= product.proNoOfReviews %>)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="customizeable">
+                                        <% if (product.customization) { %>
+                                        Customizeable
+                                        <% } else { %>
+                                        Non Customizeable
+                                        <% } %>
+                                    </div>
+                                    <div
+                                        style="width: 100%; display: flex; align-items: center; justify-content: space-between;">
+                                        <button class="add-cart-btn mobile-cart-btn" onclick="handleButtonClick(event)">
+                                            Add To Cart</button>
+                                        <svg class="trash-btn" title="Remove Product From Wishlist"
+                                            onclick="handleButtonClick(event)" xmlns="http://www.w3.org/2000/svg"
+                                            height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3">
+                                            <path
+                                                d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" />
+                                        </svg>
+                                    </div>
                                 </div>
                                 <div class="pro-price-con">
                                     <div>
@@ -64,69 +118,22 @@
                                             <%= product.proDiscount %>%
                                         </div>
                                     </div>
-                                </div>
-                                <div class="pro-info">
-                                    <div class="another">
-                                        <div class="pro-buyer">
-                                            <%= product.proBuyer>=1000?Math.floor((product.proBuyer/1000) * 10) / 10+"K":product.proBuyer %>
-                                            Sold
-                                        </div>
-                                        <div class="pro-rate">
-                                            <div class="stars-con">
-                                                <div class="stars"
-                                                    style="font-size:1.1em;--rating: <%= ((product.proRating/5)*100) %>%;">
-                                                </div>
-                                            </div>
-                                            <span class="pro-revs">(<%= product.proNoOfReviews %>)</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="customizeable">
-                                    <% if (product.customization) { %>
-                                    Customizeable
-                                    <% } else { %>
-                                    Non Customizeable
-                                    <% } %>
-                                </div>
-                                <div
-                                    style="width: 100%; display: flex; align-items: center; justify-content: space-between;">
-                                    <button class="add-cart-btn mobile-cart-btn" onclick="handleButtonClick(event)">
+                                    <button class="cart-btn add-cart-btn" onclick="handleButtonClick(event)">
                                         Add To Cart</button>
-                                    <svg class="trash-btn" title="Remove Product From Wishlist"
-                                        onclick="handleButtonClick(event)" xmlns="http://www.w3.org/2000/svg"
-                                        height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3">
-                                        <path
-                                            d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" />
-                                    </svg>
                                 </div>
-                            </div>
-                            <div class="pro-price-con">
-                                <div>
-                                    <div class="pro-price">Rs.
-                                        <%= product.proPrice %>
-                                    </div>
-                                    <div class="before-dis">Rs.
-                                        <%= product.proOrignalPrice %>
-                                    </div>
-                                    <div class="discount">-
-                                        <%= product.proDiscount %>%
-                                    </div>
-                                </div>
-                                <button class="cart-btn add-cart-btn" onclick="handleButtonClick(event)">
-                                    Add To Cart</button>
                             </div>
                         </div>
+                    </a>
+                    <% }) %>
+                    <% } else { %>
+                    <div class="empty-con">
+                        <img src="/assets/wish-list.png" alt="Empty Wishlist" />
+                        <h3>Your Wishlist is Empty</h3>
+                        <p>Start adding your favorite products!</p>
+                        <a href="/shop" class="explore-btn">Explore Products</a>
                     </div>
-                </a>
-                <% }) %>
-                <% } else { %>
-                <div class="empty-con">
-                    <img src="/assets/wish-list.png" alt="Empty Wishlist" />
-                    <h3>Your Wishlist is Empty</h3>
-                    <p>Start adding your favorite products!</p>
-                    <a href="/shop" class="explore-btn">Explore Products</a>
+                    <% } %>
                 </div>
-                <% } %>
             </div>
         </div>
     </div>

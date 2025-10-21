@@ -16,26 +16,9 @@
     --muted: #94a3b8;
     --accent: #06b6d4;
     --glass: rgba(255, 255, 255, 0.04);
-    --size: 420px;
+    --size: 400px;
     --pointer-size: 36px;
     --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-}
-
-.content {
-    width: 100%;
-    padding: 20px
-}
-
-.heading-con {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 10px;
-}
-
-.heading-con .heading {
-    font-size: 28px;
-    font-weight: 600;
-    color: var(--accent);
 }
 
 .grid {

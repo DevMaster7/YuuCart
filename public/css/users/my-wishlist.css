@@ -6,21 +6,6 @@
     --Heading: #CCD6F6;
 }
 
-.content-con {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    padding: 0px 10px 10px;
-}
-
-.content-con .heading {
-    font-size: 28px;
-    font-weight: 600;
-    padding: 10px;
-    padding-left: 0px;
-    color: var(--Accent);
-}
-
 .tab-bar-con {
     width: 100%;
     display: flex;
