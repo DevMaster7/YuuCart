@@ -45,8 +45,8 @@
                                 <h2 id="userName"><%= user.fullname %></h2>
                                 <div class="muted">
                                     Member since <%= new Date(user.joiningDate).toDateString().slice(11) %> • Tier:
-                                    <strong id="userTier">Bronze</strong>
-                                    <img class="tier-tag" src="/assets/tier/wood.png" alt="">
+                                    <strong id="userTier">--</strong>
+                                    <img class="tier-tag" id="tierTag" src="" alt="--">
                                 </div>
                             </div>
                         </div>
@@ -56,7 +56,7 @@
                                 <div id="pointsVal"><%= user.YuuCoin %> Yuu</div>
                                 <img src="/assets/coin.png" alt="">
                             </div>
-                            <div class="muted">Estimated value: <strong id="pointsValue">Rs.160</strong></div>
+                            <div class="muted">Estimated value: <strong id="pointsValue">--</strong></div>
 
                             <div style="margin-top:12px">
                                 <div class="muted" style="font-size:12px;text-transform:uppercase">Progress to next tier
@@ -64,7 +64,7 @@
                                 <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
                                 <div
                                     style="display:flex;justify-content:space-between;margin-top:8px;font-size:13px;color:var(--muted)">
-                                    <span id="tierRange">0 pts</span><span id="tierTarget">1000 pts</span></div>
+                                    <span id="tierRange">-- Yuu</span><span id="tierTarget">-- Yuu</span></div>
                             </div>
 
                             <button class="btn primary" id="checkInBtn">Daily Check-in</button>
@@ -87,7 +87,7 @@
                                 </div>
                                 <div style="font-weight:700">Redeem & Special Offers</div>
                             </div>
-                            <div class="muted">Balance: <strong id="pointsSmall">320</strong> pts</div>
+                            <div class="muted">Balance: <strong id="pointsSmall">--</strong> Yuu</div>
                         </div>
 
                         <div id="catalog" class="catalog"></div>
@@ -102,7 +102,7 @@
                             <div class="wheel-stage">
                                 <div class="pointer" aria-hidden></div>
                                 <div id="wheel" class="wheel" role="img" aria-label="Prize wheel">
-                                    <svg width="420" height="420" viewBox="0 0 420 420"
+                                    <svg viewBox="0 0 420 420" preserveAspectRatio="xMidYMid meet"
                                         xmlns="http://www.w3.org/2000/svg" aria-hidden="false">
                                         <g>
 
@@ -160,27 +160,15 @@
                             <div id="resultBox" class="result" aria-live="polite" style="display:none;">Congratulations!
                             </div>
                         </div>
-                        <!-- <div style="display:flex;gap:12px;align-items:center;justify-content:space-between">
-                            <div>
-                                <div style="font-size:12px;color:var(--muted);text-transform:uppercase">Daily Fun</div>
-                                <div style="font-weight:700">Spin the wheel — once per 24h</div>
-                            </div>
-                            <div style="width:220px">
-                                <div class="spin" id="spinBox">🎯</div>
-                            </div>
-                        </div>
-                        <div style="margin-top:10px;color:var(--muted);font-size:13px">Spin rewards: points (10–500),
-                            free
-                            shipping voucher, small coupon. Server validation required in production.</div> -->
                     </div>
 
                     <div class="card">
                         <div style="display:flex;align-items:center;justify-content:space-between">
                             <div>
                                 <div style="font-size:12px;color:var(--muted);text-transform:uppercase">Activity</div>
-                                <div style="font-weight:700">Recent transactions</div>
+                                <div style="font-weight:700">Recent Yuu transactions</div>
                             </div>
-                            <div class="muted">Total: <strong id="pointsTotal">320</strong> pts</div>
+                            <div class="muted">Total: <strong id="pointsTotal">--</strong> Yuu</div>
                         </div>
 
                         <div style="margin-top:12px" id="txList"></div>
@@ -190,9 +178,7 @@
         </div>
     </div>
 
-    <div id="modalRoot" style="display:none">
-
-    </div>
+    <div id="modalRoot" class="modal"></div>
 
     <script src="/js/common/at-start.js"></script>
     <script src="/js/common/user-admin-nav.js"></script>

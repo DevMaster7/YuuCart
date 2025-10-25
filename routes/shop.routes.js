@@ -4,7 +4,7 @@ const slugify = require("slugify");
 const optionalVerifyToken = require("../middleware/optionalVerifyToken");
 const productModel = require("../models/productsModel");
 const userModel = require("../models/usersModel");
-const coupanModel = require("../models/coupansModel");
+const { coupanModel } = require("../models/offersModel");
 const orderModel = require("../models/ordersModel");
 const router = express.Router();
 

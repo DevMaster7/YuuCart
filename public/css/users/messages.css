@@ -236,10 +236,6 @@
     .main {
         order: 1
     }
-
-    .list-box {
-        height: 420px
-    }
 }
 
 @media (max-width:520px) {

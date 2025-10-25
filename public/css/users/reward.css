@@ -16,15 +16,16 @@
     --muted: #94a3b8;
     --accent: #06b6d4;
     --glass: rgba(255, 255, 255, 0.04);
-    --size: 400px;
+    --size: 360px;
     --pointer-size: 36px;
     --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
 }
 
 .grid {
     display: grid;
+    justify-content: center;
     grid-template-columns: 1fr 1fr;
-    gap: 20px
+    gap: 20px;
 }
 
 /* Cards */
@@ -64,8 +65,8 @@ h2 {
 }
 
 .tier-tag {
-    width: 14px;
-    height: 14px;
+    width: 23px;
+    height: 22px;
     user-select: none;
     -webkit-user-drag: none;
 }
@@ -99,8 +100,131 @@ h2 {
     display: block;
     height: 100%;
     background: linear-gradient(90deg, var(--secondary), var(--accent));
-    width: 10%;
+    width: 0%;
     transition: width .6s ease
+}
+
+/* Daily CheckIn */
+.reward-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    padding: 30px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.reward-card::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(33, 158, 188, 0.08) 0%, transparent 70%);
+    z-index: 0;
+    animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.check-progress {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-items: center;
+    gap: 12px;
+    position: relative;
+}
+
+.day7 {
+    grid-column: 1 / span 3;
+    width: 100% !important;
+    text-align: center;
+}
+
+.day1 {
+    grid-column: 1 / 2;
+    grid-row: 3;
+}
+
+.day2 {
+    grid-column: 2 / 3;
+    grid-row: 3;
+}
+
+.day3 {
+    grid-column: 3 / 4;
+    grid-row: 3;
+}
+
+.day4 {
+    grid-column: 1 / 2;
+    grid-row: 2;
+}
+
+.day5 {
+    grid-column: 2 / 3;
+    grid-row: 2;
+}
+
+.day6 {
+    grid-column: 3 / 4;
+    grid-row: 2;
+}
+
+.day {
+    background: #f1f5f9;
+    border-radius: 12px;
+    padding: 12px;
+    width: 70px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    transition: all 0.3s ease;
+    box-shadow: inset 0 0 0 2px #d1d5db;
+    position: relative;
+}
+
+.day.active {
+    background: var(--secondary);
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(33, 158, 188, 0.4);
+}
+
+.day.active::after {
+    content: "★";
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: var(--accent);
+    color: white;
+    font-size: 10px;
+    padding: 3px 5px;
+    border-radius: 50%;
+    box-shadow: 0 0 5px rgba(251, 133, 0, 0.6);
+}
+
+.day span {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    margin-top: 4px;
+}
+
+.day.active span {
+    color: #dbeafe;
 }
 
 .btn {
@@ -173,23 +297,67 @@ h2 {
     border-radius: 50%
 }
 
-.modal-backdrop {
+/* ===== Modal ===== */
+.modal {
     position: fixed;
-    z-index: 4;
     inset: 0;
-    background: rgba(2, 48, 71, 0.38);
+    background: #02304727;
     display: flex;
     align-items: center;
-    justify-content: center
+    justify-content: center;
+    display: none;
+    z-index: 1000;
+    backdrop-filter: blur(2px);
 }
 
-.modal {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    max-width: 480px;
-    width: 92%;
-    box-shadow: var(--shadow)
+.modal-content {
+    background: #fff;
+    padding: 25px 30px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    animation: pop 0.3s ease;
+}
+
+@keyframes pop {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.modal-content h2 {
+    color: var(--secondary);
+    margin-top: 0;
+}
+
+.modal-content p {
+    color: rgb(79, 79, 79);
+    margin-top: 5px;
+}
+
+.modal-content span {
+    font-size: 13px;
+}
+
+.modal-content button {
+    background: var(--secondary);
+    color: white;
+    border: none;
+    padding: 5px 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.modal-content button:hover {
+    background: #0b8499;
 }
 
 /* Spining Wheel */
@@ -236,6 +404,8 @@ h2 {
 }
 
 .wheel svg {
+    width: 100%;
+    height: 100%;
     display: block
 }
 
@@ -243,6 +413,7 @@ h2 {
     font-weight: 800;
     fill: #071325;
     font-family: var(--font-sans);
+    user-select: none;
     transform-box: fill-box;
     transform-origin: center;
     transform: rotate(calc(-1 * var(--wheel-rotation, 0deg)));
@@ -324,5 +495,11 @@ svg text {
 
     .wheel-stage {
         margin: 0 auto
+    }
+}
+
+@media (max-width:400px) {
+    :root {
+        --size: 300px;
     }
 }

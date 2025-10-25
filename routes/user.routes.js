@@ -7,6 +7,7 @@ const slugify = require("slugify");
 const userModel = require("../models/usersModel");
 const productModel = require("../models/productsModel");
 const orderModel = require("../models/ordersModel");
+const { redeemModel } = require("../models/offersModel");
 const { uploadOnCloudinary } = require("../config/cloudinary");
 const upload = require("../middleware/multerConfig");
 const fs = require("fs");
@@ -28,6 +29,10 @@ router.get("/getUser", optionalVerifyToken, async (req, res) => {
     const user = await userModel.findById(token._QCUI_UI);
     if (!user) return res.status(400).json({ success: false, message: "User not found!" });
     res.status(200).json({ success: true, user });
+})
+router.get("/getRedeems", optionalVerifyToken, async (req, res) => {
+    let redeems = await redeemModel.find();
+    res.status(200).json({ success: true, redeems });
 })
 router.get("/account", optionalVerifyToken, userRoute("users/my-account"));
 router.post("/updateProfilePic", optionalVerifyToken, upload.single("file"), async (req, res) => {

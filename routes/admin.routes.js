@@ -1,7 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const productModel = require("../models/productsModel");
-const coupanModel = require("../models/coupansModel");
+const { coupanModel } = require("../models/offersModel");
+const { redeemModel } = require("../models/offersModel");
 const userModel = require("../models/usersModel");
 const orderModel = require("../models/ordersModel");
 const slugify = require("slugify");
@@ -373,6 +374,26 @@ router.post("/manage-coupans/add-coupans", verifyAdmin, optionalVerifyToken, asy
     coupanEndingDate: coupanEndDate,
   })
   res.redirect("/admin/manage-coupans");
+})
+
+
+router.post("/manage-coupans/add-redeem", verifyAdmin, async (req, res) => {
+  const { Title, subTitle, Description, cost, limitation, RedeemEndDate } = req.body;
+  await redeemModel.create({
+    title: Title,
+    subtitle: subTitle,
+    description: Description,
+    cost,
+    limitation,
+    endingDate: RedeemEndDate
+  })
+
+  // res.redirect("/admin/manage-coupans");
+  // const { userID, coupans } = req.body;
+  // const user = await userModel.findById(userID);
+  // user.coupans.push(coupans);
+  // await user.save();
+  res.status(200).json({ success: true });
 })
 
 module.exports = router;

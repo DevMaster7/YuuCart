@@ -35,6 +35,23 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    checkIn: {
+        lastCheck: {
+            type: Date,
+            default: null
+        },
+        streak: {
+            type: Number,
+            default: 0
+        }
+    },
+    Yuutx: [
+        {
+            desc: { type: String },
+            Yuu: { type: Number },
+            date: { type: Date, default: Date.now }
+        }
+    ],
     isAdmin: {
         type: Boolean,
         default: false

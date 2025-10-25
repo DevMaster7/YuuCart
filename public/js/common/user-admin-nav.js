@@ -44,7 +44,7 @@ async function getUser() {
     return data
 }
 async function userSideBarMaker() {
-    let userData = await getUser();
+    const userData = await getUser();
     sideBarDiv.innerHTML = `<div class="side-nav">
                 <div class="user-con">
                     <div class="img-con">

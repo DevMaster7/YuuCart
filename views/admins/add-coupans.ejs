@@ -52,6 +52,37 @@
                 <button class="btn-submit">Add Coupan</button>
             </form>
         </div>
+        <form class="form" action="/admin/manage-coupans/add-redeem" method="post">
+            <div class="inputs">
+
+                <div class="field">
+                    <input type="text" name="Title" placeholder=" " required />
+                    <label for="Title">Title</label>
+                </div>
+                <div class="field">
+                    <input type="text" name="subTitle" placeholder=" " required />
+                    <label for="subTitle">SubTitle</label>
+                </div>
+                <div class="field">
+                    <input type="text" name="Description" placeholder=" " />
+                    <label for="Description">Description</label>
+                </div>
+                <div class="field">
+                    <input type="number" name="cost" placeholder=" " required />
+                    <label for="cost">Cost</label>
+                </div>
+                <div class="field">
+                    <input type="number" name="limitation" placeholder=" " />
+                    <label for="limitation">limitation</label>
+                </div>
+                <div class="field">
+                    <input type="date" name="RedeemEndDate" placeholder=" " />
+                    <label for="RedeemEndDate">Redeem EndDate</label>
+                </div>
+
+            </div>
+            <button class="btn-submit">Add Redeem</button>
+        </form>
     </div>
 
     <script src="/js/common/at-start.js"></script>
