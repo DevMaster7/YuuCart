@@ -8,7 +8,7 @@
     --card-bg: #ffffff;
     --glass: rgba(255, 255, 255, 0.6);
     --success: #16a34a;
-    --danger: #dc2626;
+    --danger: #f11c1c;
     --shadow: 0 8px 30px rgba(2, 48, 71, 0.08);
 
     --bg: #0f1724;
@@ -235,6 +235,20 @@ h2 {
     font-weight: 600
 }
 
+.btn.liquid {
+    color: var(--secondary);
+    border: 1px solid var(--secondary);
+    background-image: url("/assets/blueLiquid.png");
+    background-repeat: repeat-x;
+    background-position: 0 -100%;
+    transition: .7s ease;
+}
+
+.btn.liquid:hover {
+    color: white;
+    background-position: center;
+}
+
 .btn.primary {
     margin-top: 14px;
     background: var(--secondary);
@@ -291,6 +305,27 @@ h2 {
     border-bottom: 1px dashed #eef4f8
 }
 
+.tx-list-con {
+    height: 385px;
+    overflow: hidden;
+}
+
+.tx-list {
+    margin-top: 12px;
+    height: calc(100% - 55px);
+    overflow-y: scroll;
+}
+
+.tx-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.tx-list::-webkit-scrollbar-thumb {
+    background: rgb(154, 154, 154);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
 .dot {
     width: 10px;
     height: 10px;
@@ -306,7 +341,7 @@ h2 {
     align-items: center;
     justify-content: center;
     display: none;
-    z-index: 1000;
+    z-index: 50;
     backdrop-filter: blur(2px);
 }
 
@@ -411,6 +446,7 @@ h2 {
 
 .wheel svg text {
     font-weight: 800;
+    font-size: 15px;
     fill: #071325;
     font-family: var(--font-sans);
     user-select: none;
@@ -448,20 +484,11 @@ svg text {
     font-family: var(--font-sans)
 }
 
-.result {
-    margin-top: 8px;
-    padding: 10px 14px;
-    border-radius: 10px;
-    background: linear-gradient(90deg, rgba(6, 182, 212, 0.08), rgba(96, 165, 250, 0.03));
-    color: #e6f8fb;
-    font-weight: 700
-}
-
 .confetti {
     pointer-events: none;
-    position: absolute;
+    position: fixed;
     inset: 0;
-    z-index: 2;
+    z-index: 100;
     overflow: hidden
 }
 

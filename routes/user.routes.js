@@ -270,6 +270,7 @@ router.post("/register",
                     seen: true
                 }
                 refferUser.YuuCoin += 100;
+                refferUser.Yuutx.push({ desc: "Referral Bonus", Yuu: 100 });
                 refferUser.Reffer.yourReffers.push(username);
                 refferUser.messages.push(msg);
                 await refferUser.save();
@@ -287,6 +288,7 @@ router.post("/register",
             else if (!Reffer.status) {
                 // console.log(`LoL Fake FriendShip`);
                 newUser.YuuCoin += 100;
+                newUser.Yuutx.push({ desc: "Betray Bonus", Yuu: 100 });
                 await newUser.save();
 
                 let msg = {

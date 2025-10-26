@@ -332,8 +332,8 @@ main {
     color: var(--Secondary);
     border: 2px solid var(--Secondary);
     cursor: pointer;
-    background-image: url("/assets/blueLiquid.png");
     border-radius: 5px;
+    background-image: url("/assets/blueLiquid.png");
     background-repeat: repeat-x;
     background-position: 0 -100%;
     transition: .7s ease;

@@ -13,23 +13,6 @@ const fs = require("fs");
 const path = require('node:path');
 const router = express.Router();
 
-router.post("/useSpin", async (req, res) => {
-    const { userId } = req.body
-    const user = await userModel.findOne({ _id: userId })
-    let spinTime = new Date();
-
-    if (new Date(user.spinDate) <= spinTime) {
-        spinTime = spinTime.setHours(spinTime.getHours() + 24);
-
-        user.spinDate = new Date(spinTime)
-        await user.save()
-
-        return res.status(200).json({ success: true })
-    }
-
-    return res.status(400).json({ success: false, message: "You have already used your spin!" })
-})
-
 router.post("/checkIn", async (req, res) => {
     const { userId } = req.body;
     const user = await userModel.findOne({ _id: userId });
@@ -44,6 +27,7 @@ router.post("/checkIn", async (req, res) => {
         user.checkIn.lastCheck = now;
         user.checkIn.streak = 1;
         user.YuuCoin += REWARDS[0];
+        user.Yuutx.push({ desc: "Daily Check-in", Yuu: REWARDS[0] });
         await user.save();
         return res.status(200).json({
             success: true,
@@ -74,10 +58,11 @@ router.post("/checkIn", async (req, res) => {
 
     // ⚠️ Missed due to delay (24+ hours but still next date)
     if (dayDiff === 1 && hoursPassed >= 24) {
-        user.checkIn.streak = 1;
         const reward = REWARDS[0];
-        user.YuuCoin += reward;
         user.checkIn.lastCheck = now;
+        user.checkIn.streak = 1;
+        user.YuuCoin += reward;
+        user.Yuutx.push({ desc: "Daily Check-in", Yuu: reward });
         await user.save();
         return res.status(200).json({
             success: true,
@@ -93,6 +78,7 @@ router.post("/checkIn", async (req, res) => {
         const reward = REWARDS[user.checkIn.streak - 1];
         user.YuuCoin += reward;
         user.checkIn.lastCheck = now;
+        user.Yuutx.push({ desc: "Daily Check-in", Yuu: reward });
         await user.save();
         return res.status(200).json({
             success: true,
@@ -108,6 +94,7 @@ router.post("/checkIn", async (req, res) => {
         const reward = REWARDS[0];
         user.YuuCoin += reward;
         user.checkIn.lastCheck = now;
+        user.Yuutx.push({ desc: "Daily Check-in", Yuu: reward });
         await user.save();
         return res.status(200).json({
             success: true,
@@ -117,5 +104,54 @@ router.post("/checkIn", async (req, res) => {
         });
     }
 });
+
+router.post("/useSpin", async (req, res) => {
+    const { userId } = req.body
+    const user = await userModel.findOne({ _id: userId })
+    let spinTime = new Date();
+
+    // if (new Date(user.spinDate) <= spinTime) {
+    //     spinTime = spinTime.setHours(spinTime.getHours() + 24);
+
+    //     user.spinDate = new Date(spinTime)
+    //     await user.save()
+
+    return res.status(200).json({ success: true })
+    // }
+
+    // return res.status(400).json({ success: false, message: "You have already used your spin!" })
+})
+router.post("/spinReward", async (req, res) => {
+    let { userId, reward } = req.body;
+    const user = await userModel.findOne({ _id: userId });
+    if (!user) return res.redirect("/user/login");
+
+    if (reward.includes("Yuu")) {
+        reward = Number(reward.replace("Yuu", ""));
+
+        user.YuuCoin += reward
+        user.Yuutx.push({ desc: "Daily Spin", Yuu: reward });
+        await user.save();
+    }
+    // else {
+
+    // }
+    return res.status(200).json({ success: true });
+})
+
+router.post("/redeemReward", async (req, res) => {
+    const { userId, item } = req.body;
+    const user = await userModel.findOne({ _id: userId });
+    if (!user) return res.redirect("/user/login");
+
+    let itemName = item.title.toLowerCase().replace(/\s/g, '');
+    let redeemCode = `${user.username}-${itemName}`;
+    user.YuuCoin -= item.cost;
+    user.Yuutx.push({ desc: `Redeemed ${item.title}`, Yuu: -item.cost });
+    user.userRedeems.push({ [redeemCode]: item });
+    await user.save();
+    
+    res.status(200).json({ success: true, redeemCode });
+})
 
 module.exports = router;
