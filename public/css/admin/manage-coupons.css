@@ -10,7 +10,7 @@
     width: 100%;
 }
 
-.show-coupans {
+.show-coupons {
     width: 100%;
     padding: 10px 15px;
     display: flex;
@@ -93,12 +93,12 @@
     cursor: pointer;
 }
 
-.coupan-container {
+.coupon-container {
     padding: 10px;
     padding-top: 0px;
 }
 
-.coupan-box {
+.coupon-box {
     padding: 10px;
     display: flex;
     flex-direction: column;

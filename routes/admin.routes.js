@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const productModel = require("../models/productsModel");
-const { coupanModel } = require("../models/offersModel");
+const { couponModel } = require("../models/offersModel");
 const { redeemModel } = require("../models/offersModel");
 const userModel = require("../models/usersModel");
 const orderModel = require("../models/ordersModel");
@@ -62,7 +62,7 @@ router.get("/admin-data", async (req, res) => {
   ]);
 
   let allProducts = await productModel.find();
-  let allCoupans = await coupanModel.find();
+  let allCoupons = await couponModel.find();
 
   let data = {
     allUsers,
@@ -73,7 +73,7 @@ router.get("/admin-data", async (req, res) => {
     orderChartDetails: ordersData,
     allOrders,
     allProducts,
-    allCoupans
+    allCoupons
   }
   res.status(200).json({ data })
 })
@@ -81,8 +81,8 @@ router.get("/", verifyAdmin, async (req, res) => {
   const users = await userModel.find();
   const orders = await orderModel.find();
   const products = await productModel.find();
-  const coupans = await coupanModel.find();
-  res.render("admins/admin-dashboard", { users, orders, products, coupans });
+  const coupons = await couponModel.find();
+  res.render("admins/admin-dashboard", { users, orders, products, coupons });
 });
 
 // Orders
@@ -145,7 +145,7 @@ router.post("/change-user-role", verifyAdmin, async (req, res) => {
   user.isAdmin = roleStatus;
   if (!roleStatus) {
     user.allowed.manageProducts = false
-    user.allowed.manageCoupans = false
+    user.allowed.manageCoupons = false
     user.allowed.manageOrders = false
     user.allowed.manageUsers = false
   }
@@ -319,18 +319,18 @@ router.post("/manage-products/add-products", verifyAdmin, optionalVerifyToken, u
   res.redirect("/admin/manage-products/add-products")
 })
 
-// Coupans
-router.get("/manage-coupans", verifyAdmin, allowPage("manageCoupans"), async (req, res) => {
-  let coupans = await coupanModel.find();
-  for (const coupan of coupans) {
-    if (new Date(coupan.coupanEndingDate) < new Date()) {
-      coupan.Status = false;
-      await coupan.save();
+// Coupons
+router.get("/manage-coupons", verifyAdmin, allowPage("manageCoupons"), async (req, res) => {
+  let coupons = await couponModel.find();
+  for (const coupon of coupons) {
+    if (new Date(coupon.couponEndingDate) < new Date()) {
+      coupon.Status = false;
+      await coupon.save();
     }
   }
-  res.render("admins/manage-coupans", { coupans });
+  res.render("admins/manage-coupons", { coupons });
 });
-// router.get('/manage-coupans/search', verifyAdmin, allowPage("manageCoupans"), async (req, res) => {
+// router.get('/manage-coupons/search', verifyAdmin, allowPage("manageCoupons"), async (req, res) => {
 //   const search = req.query.query;
 //   if (!search || search.trim() === "") {
 //     return res.status(400).render("PNF")
@@ -343,57 +343,38 @@ router.get("/manage-coupans", verifyAdmin, allowPage("manageCoupans"), async (re
 //   if (mongoose.Types.ObjectId.isValid(search)) {
 //     orConditions.push({ _id: search });
 //   }
-//   const coupans = await productModel.find({ $or: orConditions });
-//   res.render("admins/manage-coupans", { coupans, slugify });
+//   const coupons = await productModel.find({ $or: orConditions });
+//   res.render("admins/manage-coupons", { coupons, slugify });
 // });
-router.post("/manage-coupans/edit-coupans", verifyAdmin, async (req, res) => {
-  const { id, Status, coupanCode, coupanDiscount, coupanLimit, coupanEndingDate, coupanDescription } = req.body;
-  await coupanModel.findByIdAndUpdate(id, {
+router.post("/manage-coupons/edit-coupons", verifyAdmin, async (req, res) => {
+  const { id, Status, couponCode, couponDiscount, couponLimit, couponEndingDate, couponDescription } = req.body;
+  await couponModel.findByIdAndUpdate(id, {
     Status,
-    coupanCode,
-    coupanDiscount,
-    coupanLimit,
-    coupanDescription,
-    coupanEndingDate,
+    couponCode,
+    couponDiscount,
+    couponLimit,
+    couponDescription,
+    couponEndingDate,
   });
-  res.status(200).json({ success: true, message: "Coupans updated successfully" });
+  res.status(200).json({ success: true, message: "Coupons updated successfully" });
 })
-router.get("/manage-coupans/add-coupans", verifyAdmin, allowPage("manageCoupans"), (req, res) => {
-  res.render("admins/add-coupans")
+router.get("/manage-coupons/add-coupons", verifyAdmin, allowPage("manageCoupons"), (req, res) => {
+  res.render("admins/add-coupons")
 })
-router.post("/manage-coupans/add-coupans", verifyAdmin, optionalVerifyToken, async (req, res) => {
+router.post("/manage-coupons/add-coupons", verifyAdmin, optionalVerifyToken, async (req, res) => {
   const token = req.user
   const user = await userModel.findById(token._QCUI_UI);
-  const { coupanCode, coupanDiscount, coupanLimit, coupanEndDate, coupanDescription } = req.body;
-  const newCoupan = await coupanModel.create({
+  const { couponCode, couponDiscount, couponLimit, couponEndDate, couponDescription } = req.body;
+  await couponModel.create({
     AddedBy: user.username,
-    coupanCode,
-    coupanDiscount,
-    coupanLimit,
-    coupanDescription,
-    coupanEndingDate: coupanEndDate,
+    couponCode,
+    couponDiscount,
+    couponLimit,
+    couponDescription,
+    couponEndingDate: couponEndDate,
   })
-  res.redirect("/admin/manage-coupans");
+  res.redirect("/admin/manage-coupons");
 })
 
-
-router.post("/manage-coupans/add-redeem", verifyAdmin, async (req, res) => {
-  const { Title, subTitle, Description, cost, limitation, RedeemEndDate } = req.body;
-  await redeemModel.create({
-    title: Title,
-    subtitle: subTitle,
-    description: Description,
-    cost,
-    limitation,
-    endingDate: RedeemEndDate
-  })
-
-  // res.redirect("/admin/manage-coupans");
-  // const { userID, coupans } = req.body;
-  // const user = await userModel.findById(userID);
-  // user.coupans.push(coupans);
-  // await user.save();
-  res.status(200).json({ success: true });
-})
 
 module.exports = router;

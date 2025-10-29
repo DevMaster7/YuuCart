@@ -18,8 +18,8 @@ async function getRedeemsData() {
 (async function () {
     const userData = await getUserData();
     const user = userData.user
-    const redeems = await getRedeemsData();
-    const CATALOG = redeems.redeems
+    // const redeems = await getRedeemsData();
+    // const CATALOG = redeems.redeems
 
     // ===== Render =====
     function renderAll() {
@@ -133,7 +133,7 @@ async function getRedeemsData() {
                 {
                     label: 'Free Mug',
                     color: '#F43F5E',
-                    weight: 0
+                    weight: 10
                 },
                 ],
                 fullSpins: 5,
@@ -272,71 +272,71 @@ async function getRedeemsData() {
         })();
 
         // Catalog
-        (function () {
-            document.getElementById("catalog").innerHTML = CATALOG
-                .filter(item => item.limitation > 0 && new Date(item.endingDate) > Date.now() && item.status)
-                .map(item =>
-                    `<div class="reward">
-                  <div class="title">${item.title}</div>
-                  <div class="meta">${item.subtitle}</div>
-                  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-                    <div style="font-size:12px;color:var(--muted)">Cost: <strong>${item.cost} Yuu</strong></div>
-                    <div>
-                      <button class="btn small ghost" onclick="viewDetail('${item.title}')">Details</button>
-                      <button class="btn small liquid" onclick="redeem('${item.title}')">Redeem</button>
-                    </div>
-                  </div>
-                </div>`
-                ).join("");
-            window.redeem = title => {
-                const item = CATALOG.find(i => i.title === title);
-                if (!item) return;
-                let totalYuu = Number(document.getElementById("pointsVal").innerHTML.replace("Yuu", ""));
-                if (totalYuu >= item.cost) {
-                    showModal("Are You Sure?",
-                        `Are you sure to redeem <strong>${item.title}</strong> <br> For <strong style="color: var(--accent);">${item.cost} Yuu</strong>`,
-                        `<button class="btn" onclick="redeemConfirm('${item.title}')">Redeem</button>
-                        <button class="btn" style="background-color:var(--danger)" onclick="closeModal()">Cancel</button>`);
-                    window.redeemConfirm = async title => {
-                        const item = CATALOG.find(i => i.title === title);
-                        if (!item) return;
-                        let res = await fetch('/addons/redeemReward', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({ userId: user._id, item })
-                        })
-                        let res1 = await res.json();
-                        if (res1.success) {
-                            renderAgain(-item.cost, `Redeem:${item.title}`, new Date())
-                            showModal("Redeem Confirmed!",
-                                `You redeemed <strong>${item.title}</strong>. Check the usage details`,
-                                "<button class=\"btn\" onclick=\"closeModal()\">OK</button>"
-                            );
-                        }
-                    }
-                }
-                else {
-                    showModal("Not enough Yuu!",
-                        `You need <strong>${item.cost - totalYuu} Yuu</strong> to redeem ${item.title}`,
-                        "<button class=\"btn\" onclick=\"closeModal()\">OK</button>"
-                    );
-                }
-            };
+        // (function () {
+        //     document.getElementById("catalog").innerHTML = CATALOG
+        //         .filter(item => item.limitation > 0 && new Date(item.endingDate) > Date.now() && item.status)
+        //         .map(item =>
+        //             `<div class="reward">
+        //           <div class="title">${item.title}</div>
+        //           <div class="meta">${item.subtitle}</div>
+        //           <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+        //             <div style="font-size:12px;color:var(--muted)">Cost: <strong>${item.cost} Yuu</strong></div>
+        //             <div>
+        //               <button class="btn small ghost" onclick="viewDetail('${item.title}')">Details</button>
+        //               <button class="btn small liquid" onclick="redeem('${item.title}')">Redeem</button>
+        //             </div>
+        //           </div>
+        //         </div>`
+        //         ).join("");
+        //     window.redeem = title => {
+        //         const item = CATALOG.find(i => i.title === title);
+        //         if (!item) return;
+        //         let totalYuu = Number(document.getElementById("pointsVal").innerHTML.replace("Yuu", ""));
+        //         if (totalYuu >= item.cost) {
+        //             showModal("Are You Sure?",
+        //                 `Are you sure to redeem <strong>${item.title}</strong> <br> For <strong style="color: var(--accent);">${item.cost} Yuu</strong>`,
+        //                 `<button class="btn" onclick="redeemConfirm('${item.title}')">Redeem</button>
+        //                 <button class="btn" style="background-color:var(--danger)" onclick="closeModal()">Cancel</button>`);
+        //             window.redeemConfirm = async title => {
+        //                 const item = CATALOG.find(i => i.title === title);
+        //                 if (!item) return;
+        //                 let res = await fetch('/addons/redeemReward', {
+        //                     method: 'POST',
+        //                     headers: {
+        //                         'Content-Type': 'application/json'
+        //                     },
+        //                     body: JSON.stringify({ userId: user._id, item })
+        //                 })
+        //                 let res1 = await res.json();
+        //                 if (res1.success) {
+        //                     renderAgain(-item.cost, `Redeem: ${item.title}`, new Date())
+        //                     showModal("Redeem Confirmed!",
+        //                         `You redeemed <strong>${item.title}</strong>. Check the usage details`,
+        //                         "<button class=\"btn\" onclick=\"closeModal()\">OK</button>"
+        //                     );
+        //                 }
+        //             }
+        //         }
+        //         else {
+        //             showModal("Not enough Yuu!",
+        //                 `You need <strong>${item.cost - totalYuu} Yuu</strong> to redeem ${item.title}`,
+        //                 "<button class=\"btn\" onclick=\"closeModal()\">OK</button>"
+        //             );
+        //         }
+        //     };
 
-            window.viewDetail = title => {
-                const item = CATALOG.find(i => i.title === title);
-                if (item) showModal(item.title,
-                    `${item.subtitle} — Cost: <strong>${item.cost} Yuu</strong> <br> <span>${item.description}</span>`,
-                    "<button class=\"btn\" onclick=\"closeModal()\">OK</button>",
-                    `<div style="display:flex;align-items:right;padding-top:12px;">
-                        ${item.endingDate ? `<div style="font-size:10px;color:var(--muted);padding-right:4px">Ended on: ${new Date(item.endingDate).toLocaleString("en-GB", { weekday: "long", day: "numeric", month: "numeric", year: "numeric" })}</div>` : ""}
-                        ${item.limitation ? `<div style="font-size:10px;color:var(--muted);padding-left:4px;border-left:1px solid var(--muted);">Left: (${item.limitation})</div>` : ""}
-                    </div>`
-                );
-            };
-        })();
+        //     window.viewDetail = title => {
+        //         const item = CATALOG.find(i => i.title === title);
+        //         if (item) showModal(item.title,
+        //             `${item.subtitle} — Cost: <strong>${item.cost} Yuu</strong> <br> <span>${item.description}</span>`,
+        //             "<button class=\"btn\" onclick=\"closeModal()\">OK</button>",
+        //             `<div style="display:flex;align-items:right;padding-top:12px;">
+        //                 ${item.endingDate ? `<div style="font-size:10px;color:var(--muted);padding-right:4px">Ended on: ${new Date(item.endingDate).toLocaleString("en-GB", { weekday: "long", day: "numeric", month: "numeric", year: "numeric" })}</div>` : ""}
+        //                 ${item.limitation ? `<div style="font-size:10px;color:var(--muted);padding-left:4px;border-left:1px solid var(--muted);">Left: (${item.limitation})</div>` : ""}
+        //             </div>`
+        //         );
+        //     };
+        // })();
 
         // Transactions
         (function () {

@@ -1,7 +1,7 @@
 async function getData() {
     const response = await fetch("/admin/admin-data");
     const returnData = await response.json();
-    console.log(returnData.data.allCoupans);
+    console.log(returnData.data.allCoupons);
 
     // User Data
     let userData = returnData.data.userChartDetails.agg
@@ -43,12 +43,12 @@ async function getData() {
     const userSeries = fillDays(userData, startingUser);
 
     // Coupon Data
-    let coupons = returnData.data.allCoupans;
+    let coupons = returnData.data.allCoupons;
     coupons = coupons.map((coupon) => {
         return {
-            code: coupon.coupanCode,
-            discount: coupon.coupanDiscount,
-            limit: coupon.coupanLimit,
+            code: coupon.couponCode,
+            discount: coupon.couponDiscount,
+            limit: coupon.couponLimit,
             active: coupon.Status
         }
     })
@@ -60,7 +60,7 @@ async function getData() {
             users: returnData.data.allUsers,
             products: returnData.data.allProducts,
             orders: returnData.data.allOrders,
-            coupons: returnData.data.allCoupans
+            coupons: returnData.data.allCoupons
         },
         userSeries,
         orderSeries: returnData.data.orderChartDetails,

@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const productModel = require("../models/productsModel");
-const { coupanModel } = require("../models/offersModel");
+const { couponModel } = require("../models/offersModel");
 const userModel = require("../models/usersModel");
 const orderModel = require("../models/ordersModel");
 const slugify = require("slugify");
@@ -120,7 +120,8 @@ router.post("/useSpin", async (req, res) => {
     // }
 
     // return res.status(400).json({ success: false, message: "You have already used your spin!" })
-})
+});
+
 router.post("/spinReward", async (req, res) => {
     let { userId, reward } = req.body;
     const user = await userModel.findOne({ _id: userId });
@@ -134,24 +135,26 @@ router.post("/spinReward", async (req, res) => {
         await user.save();
     }
     // else {
+    //     let rewardKey = `${user.username}-${reward.toLowerCase().replace(/\s/g, '')}`
 
+    //     user.userRedeems.push({ [rewardKey]: reward });
+    //     await user.save();
     // }
     return res.status(200).json({ success: true });
-})
+});
 
-router.post("/redeemReward", async (req, res) => {
-    const { userId, item } = req.body;
-    const user = await userModel.findOne({ _id: userId });
-    if (!user) return res.redirect("/user/login");
+// router.post("/redeemReward", async (req, res) => {
+//     const { userId, item } = req.body;
+//     const user = await userModel.findOne({ _id: userId });
+//     if (!user) return res.redirect("/user/login");
 
-    let itemName = item.title.toLowerCase().replace(/\s/g, '');
-    let redeemCode = `${user.username}-${itemName}`;
-    user.YuuCoin -= item.cost;
-    user.Yuutx.push({ desc: `Redeemed ${item.title}`, Yuu: -item.cost });
-    user.userRedeems.push({ [redeemCode]: item });
-    await user.save();
-    
-    res.status(200).json({ success: true, redeemCode });
-})
+//     let redeemCode = `${user.username}-${item.title.toLowerCase().replace(/\s/g, '')}`;
+//     user.userRedeems.push({ [redeemCode]: item });
+//     user.YuuCoin -= item.cost;
+//     user.Yuutx.push({ desc: `Redeemed: ${item.title}`, Yuu: -item.cost });
+//     await user.save();
+
+//     res.status(200).json({ success: true, redeemCode });
+// });
 
 module.exports = router;

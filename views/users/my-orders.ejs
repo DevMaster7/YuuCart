@@ -93,21 +93,21 @@
                                 </div>
                             </div>
                             <div style="padding-right: 3px;">
-                                <% if (order.productDetails[0].coupanName === "none") { %>
+                                <% if (order.productDetails[0].couponName === "none") { %>
                                 <div class="total">Total Amount: <span>Rs.
-                                        <%= order.productDetails[0].totalBeforeCoupan %></span>
+                                        <%= order.productDetails[0].totalBeforeCoupon %></span>
                                 </div>
                                 <% }else{ %>
                                 <div class="total"
                                     style="opacity: 0.4; font-size: 14px; cursor: default; user-select: none;">Total
                                     Amount: <span>Rs.
-                                        <%= order.productDetails[0].totalBeforeCoupan %></span></div>
-                                <div class="order-info">Coupan: <span><%= order.productDetails[0].coupanName %></span>
+                                        <%= order.productDetails[0].totalBeforeCoupon %></span></div>
+                                <div class="order-info">Coupon: <span><%= order.productDetails[0].couponName %></span>
                                 </div>
                                 <div class="order-info">Discount:
-                                    <span><%= order.productDetails[0].coupanDiscount %></span></div>
+                                    <span><%= order.productDetails[0].couponDiscount %></span></div>
                                 <div class="total">Total Amount: <span>Rs.
-                                        <%= order.productDetails[0].totalAfterCoupan %></span>
+                                        <%= order.productDetails[0].totalAfterCoupon %></span>
                                 </div>
                                 <% } %>
                             </div>

@@ -1,5 +1,5 @@
 function main(e) {
-    let card = e.closest(".coupan-box");
+    let card = e.closest(".coupon-box");
     card.querySelector(".save").style.display = "flex";
     card.querySelector(".edit").style.display = "none";
     card.querySelector(".cancel").style.display = "flex";
@@ -33,8 +33,8 @@ document.querySelectorAll(".edit").forEach((e) => {
 
 document.querySelectorAll(".save").forEach((e) => {
     e.addEventListener("click", async () => {
-        let card = e.closest(".coupan-box")
-        let id = card.querySelector(".coupan-id").innerHTML
+        let card = e.closest(".coupon-box")
+        let id = card.querySelector(".coupon-id").innerHTML
         let status;
         card.querySelector(".status").innerHTML.toLocaleLowerCase() == "true" ? status = true : status = false
         let data = {
@@ -46,7 +46,7 @@ document.querySelectorAll(".save").forEach((e) => {
             let value = e.value
             data[key] = value
         })
-        let res = await fetch("/admin/manage-coupans/edit-coupans", {
+        let res = await fetch("/admin/manage-coupons/edit-coupons", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -85,7 +85,7 @@ document.querySelectorAll(".save").forEach((e) => {
 
 document.querySelectorAll(".cancel").forEach((e) => {
     e.addEventListener("click", () => {
-        let card = e.closest(".coupan-box");
+        let card = e.closest(".coupon-box");
         card.querySelector(".status").innerHTML = card.querySelector(".status").parentElement.dataset.info === "true" ? "True" : "False"
         card.querySelector(".status").style.color = card.querySelector(".status").parentElement.dataset.info === "true" ? "#00bb00" : "#ff0000"
         card.querySelector(".save").style.display = "none";

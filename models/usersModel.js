@@ -45,9 +45,6 @@ const userSchema = new mongoose.Schema({
             default: 0
         }
     },
-    userRedeems: [
-        {}
-    ],
     Yuutx: [
         {
             desc: { type: String },
@@ -64,7 +61,7 @@ const userSchema = new mongoose.Schema({
             type: Boolean,
             default: false
         },
-        manageCoupans: {
+        manageCoupons: {
             type: Boolean,
             default: false
         },

@@ -4,7 +4,7 @@ const slugify = require("slugify");
 const optionalVerifyToken = require("../middleware/optionalVerifyToken");
 const productModel = require("../models/productsModel");
 const userModel = require("../models/usersModel");
-const { coupanModel } = require("../models/offersModel");
+const { couponModel } = require("../models/offersModel");
 const orderModel = require("../models/ordersModel");
 const router = express.Router();
 
@@ -177,17 +177,19 @@ router.post("/checkout", optionalVerifyToken, async (req, res) => {
 router.post("/apply-coupon", async (req, res) => {
     try {
         const { coupon } = req.body;
-        const foundCoupan = await coupanModel.findOne({ coupanCode: coupon });
-        if (foundCoupan == null || !foundCoupan) {
+        const foundCoupon = await couponModel.findOne({ couponCode: coupon });
+
+        if (!foundCoupon) {
             return res.status(400).json({ success: false, message: "Invalid Coupon Code!" });
         }
-        if (!foundCoupan.Status) {
+        // if (foundCoupon) {
+        if (!foundCoupon.Status) {
             return res.status(400).json({ success: false, message: "Coupon Not Available Now!" });
         }
-        if (foundCoupan.coupanLimit <= 0) {
+        if (foundCoupon.couponLimit <= 0) {
             return res.status(400).json({ success: false, message: "Coupon Limit Reached!" });
         }
-        if (new Date(foundCoupan.coupanEndingDate) < new Date()) {
+        if (new Date(foundCoupon.couponEndingDate) < new Date()) {
             return res.status(400).json({ success: false, message: "Coupon Expired!" });
         }
 
@@ -195,14 +197,16 @@ router.post("/apply-coupon", async (req, res) => {
             success: true,
             message: "Coupon Applied Successfully!",
             coupon: {
-                code: foundCoupan.coupanCode,
-                discount: foundCoupan.coupanDiscount,
-                limit: foundCoupan.coupanLimit,
-                startDate: foundCoupan.coupanStartingDate,
-                endDate: foundCoupan.coupanEndingDate,
-                description: foundCoupan.coupanDescription,
+                code: foundCoupon.couponCode,
+                discount: foundCoupon.couponDiscount,
+                limit: foundCoupon.couponLimit,
+                startDate: foundCoupon.couponStartingDate,
+                endDate: foundCoupon.couponEndingDate,
+                description: foundCoupon.couponDescription,
             }
         });
+        // }
+
 
     } catch (err) {
         console.error(err);
@@ -216,17 +220,17 @@ router.post("/place-order", optionalVerifyToken, async (req, res) => {
     if (user.address == undefined || user.address == "" || user.city == undefined || user.city == "" || user.phone == undefined || user.phone == "" || !user.emailVerified) {
         return res.status(400).json({ success: false, message: "Please Fill All The Details!" });
     }
-    const { coupanName } = req.body;
-    if (coupanName !== null) {
-        const foundCoupan = await coupanModel.findOne({ coupanCode: coupanName });
-        foundCoupan.coupanLimit -= 1;
-        if (foundCoupan.coupanLimit <= 0) {
-            foundCoupan.Status = false;
+    const { couponName } = req.body;
+    if (couponName !== null) {
+        const foundCoupon = await couponModel.findOne({ couponCode: couponName });
+        foundCoupon.couponLimit -= 1;
+        if (foundCoupon.couponLimit <= 0) {
+            foundCoupon.Status = false;
         }
-        if (new Date(foundCoupan.coupanEndingDate) < new Date()) {
-            foundCoupan.Status = false;
+        if (new Date(foundCoupon.couponEndingDate) < new Date()) {
+            foundCoupon.Status = false;
         }
-        await foundCoupan.save();
+        await foundCoupon.save();
     }
 
     const productDeliveryData = req.body.productDeliveryData;

@@ -6,24 +6,17 @@ document.querySelector(".acc-btn").addEventListener("click", () => {
 })
 
 let msg = document.querySelector(".msg")
-document.querySelector(".coupan-btn").addEventListener("click", async () => {
-    const coupanCode = document.querySelector(".input-coupan").value.trim();
+document.querySelector(".coupon-btn").addEventListener("click", async () => {
+    const couponCode = document.querySelector(".input-coupon").value.trim();
 
-    if (!coupanCode) {
-        msg.classList.remove("success");
-        msg.classList.add("err");
-        setTimeout(() => {
-            msg.classList.remove("err");
-        }, 5000)
-        return msg.innerHTML = "Please Enter a Valid Coupon Code!";
-    }
+    if (!couponCode) return
 
     const response = await fetch("/shop/apply-coupon", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ coupon: coupanCode }),
+        body: JSON.stringify({ coupon: couponCode }),
     });
 
     const result = await response.json();
@@ -45,7 +38,7 @@ document.querySelector(".coupan-btn").addEventListener("click", async () => {
         document.querySelector(".c-discount").getElementsByTagName("span")[0].innerHTML = `-${c.discount}%`;
         let discountedPrice = Math.ceil((price * c.discount) / 100)
         let finalPrice = price - discountedPrice;
-        document.querySelector(".total-price-with-coupan").innerHTML = `Total After Coupan: Rs.${finalPrice}`;
+        document.querySelector(".total-price-with-coupon").innerHTML = `Total After Coupon: Rs.${finalPrice}`;
     } else {
         msg.innerHTML = result.message;
         msg.classList.remove("success");
@@ -85,10 +78,10 @@ document.querySelector(".payment-con").getElementsByTagName("button")[0].addEven
             productColorPrice = Number(e.querySelector(".color-price").innerHTML.split("Rs.")[1].trim());
         }
         let subTotalPrice = Number(e.querySelector(".total").innerHTML.split("Rs.")[1].trim());
-        let totalBeforeCoupan = Number(document.querySelector(".total-price").innerHTML.split("Rs.")[1].trim());
-        let coupanName;
-        let coupanDiscount;
-        let totalAfterCoupan;
+        let totalBeforeCoupon = Number(document.querySelector(".total-price").innerHTML.split("Rs.")[1].trim());
+        let couponName;
+        let couponDiscount;
+        let totalAfterCoupon;
         let paymentMethod;
         document.querySelectorAll(".payment-options").forEach((e) => {
             if (e.classList.contains("active")) {
@@ -96,14 +89,14 @@ document.querySelector(".payment-con").getElementsByTagName("button")[0].addEven
             }
         })
         if (document.querySelector(".c-name").getElementsByTagName("span")[0].innerHTML == "--") {
-            coupanName = "none"
-            coupanDiscount = "none"
-            totalAfterCoupan = totalBeforeCoupan
+            couponName = "none"
+            couponDiscount = "none"
+            totalAfterCoupon = totalBeforeCoupon
         }
         else {
-            coupanName = document.querySelector(".c-name").getElementsByTagName("span")[0].innerHTML;
-            coupanDiscount = document.querySelector(".c-discount").getElementsByTagName("span")[0].innerHTML;
-            totalAfterCoupan = Number(document.querySelector(".total-price-with-coupan").innerHTML.split("Rs.")[1].trim());
+            couponName = document.querySelector(".c-name").getElementsByTagName("span")[0].innerHTML;
+            couponDiscount = document.querySelector(".c-discount").getElementsByTagName("span")[0].innerHTML;
+            totalAfterCoupon = Number(document.querySelector(".total-price-with-coupon").innerHTML.split("Rs.")[1].trim());
         }
         x = {
             productId,
@@ -117,33 +110,33 @@ document.querySelector(".payment-con").getElementsByTagName("button")[0].addEven
             productColor,
             productColorPrice,
             subTotalPrice,
-            totalBeforeCoupan,
-            coupanName,
-            coupanDiscount,
-            totalAfterCoupan,
+            totalBeforeCoupon,
+            couponName,
+            couponDiscount,
+            totalAfterCoupon,
             paymentMethod
         }
         productDeliveryData.push(x)
     })
-    let coupanName;
+    let couponName;
     if (document.querySelector(".c-name").getElementsByTagName("span")[0].innerHTML == "--") {
-        coupanName = null
+        couponName = null
     }
     else {
-        coupanName = document.querySelector(".c-name").getElementsByTagName("span")[0].innerHTML
+        couponName = document.querySelector(".c-name").getElementsByTagName("span")[0].innerHTML
     }
     const res = await fetch("/shop/place-order", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ productDeliveryData, coupanName }),
+        body: JSON.stringify({ productDeliveryData, couponName }),
     })
     const res1 = await res.json();
     if (res1.success) {
         window.location.replace("/user/orders");
     }
-    else{
+    else {
         window.location.replace("/user/account");
     }
 })

@@ -235,13 +235,13 @@ html {
     overflow: hidden;
 }
 
-.input-coupan-con {
+.input-coupon-con {
     display: flex;
     border-bottom: 1px solid var(--Heading);
     background: #ececec87;
 }
 
-.input-coupan-con input {
+.input-coupon-con input {
     width: 100%;
     padding: 10px;
     outline: none;
@@ -251,7 +251,7 @@ html {
     background: transparent;
 }
 
-.input-coupan-con button {
+.input-coupon-con button {
     padding: 5px;
     color: var(--Accent);
     border-left: 1px solid var(--Heading);
@@ -261,7 +261,7 @@ html {
     transition: .7s ease;
 }
 
-.input-coupan-con button:hover {
+.input-coupon-con button:hover {
     color: white;
     background-position: center;
 }
@@ -295,7 +295,7 @@ html {
     font-weight: 600;
 }
 
-.coupan-con {
+.coupon-con {
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -311,7 +311,7 @@ html {
     font-weight: 600;
 }
 
-.total-price-with-coupan {
+.total-price-with-coupon {
     font-size: 22px;
     color: var(--Accent);
     font-weight: 600;

@@ -8,8 +8,8 @@ else if (pageName == 'orders') {
 else if (pageName == 'products') {
     mainFun('products')
 }
-else if (pageName == 'coupans') {
-    mainFun('coupans')
+else if (pageName == 'coupons') {
+    mainFun('coupons')
 }
 
 function mainFun(page) {

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head data-page="coupans">
+<head data-page="coupons">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
@@ -10,12 +10,12 @@
     <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="/css/output.css">
     <link rel="stylesheet" href="/css/common/loader.css">
-    <link rel="stylesheet" href="/css/admin/manage-coupans.css">
+    <link rel="stylesheet" href="/css/admin/manage-coupons.css">
     <link rel="stylesheet" href="/css/admin/admin-sidebar.css">
     <link rel="stylesheet" href="/css/common/user-admin-nav.css">
     <link rel="stylesheet" href="/css/admin/admin-search.css">
     <link rel="stylesheet" href="/css/common/footer.css">
-    <title>Admin - Manage Coupans</title>
+    <title>Admin - Manage Coupons</title>
 </head>
 
 <body>
@@ -23,9 +23,9 @@
         <div class="side-nav-con">
         </div>
         <div class="content-con">
-            <div class="show-coupans">
+            <div class="show-coupons">
                 <div class="search-con">
-                    <input type="search" name="search" id="search" placeholder="Search Coupans..." />
+                    <input type="search" name="search" id="search" placeholder="Search Coupons..." />
                     <button id="search-btn">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
@@ -34,7 +34,7 @@
                     <div class="filter-bar-con">
                         <div class="flex gap-2">
                             <div class="text"><i class="fa-solid fa-filter"></i> Filtered Items:
-                                <span>(<%= coupans.length %>)</span></div>
+                                <span>(<%= coupons.length %>)</span></div>
                             <div class="select-btn">Select All</div>
                         </div>
 
@@ -79,48 +79,48 @@
                         </div>
                     </div>
                     <div class="new-btn-con">
-                        <a href="/admin/manage-coupans/add-coupans" class="btn">Create New Coupans!</a>
+                        <a href="/admin/manage-coupons/add-coupons" class="btn">Create New Coupons!</a>
                     </div>
-                    <div id="coupanContainer" class="coupan-container">
-                        <% coupans.forEach(coupan => { %>
-                        <div id="<%= coupan._id %>" class="coupan-box">
-                            <div class="info-text">Coupan ID:&nbsp;
-                                <span class="text coupan-id"><%= coupan._id %></span>
+                    <div id="couponContainer" class="coupon-container">
+                        <% coupons.forEach(coupon => { %>
+                        <div id="<%= coupon._id %>" class="coupon-box">
+                            <div class="info-text">Coupon ID:&nbsp;
+                                <span class="text coupon-id"><%= coupon._id %></span>
                             </div>
                             <div class="info-text">Version:&nbsp;
-                                <span class="text"><%= coupan.__v %></span>
+                                <span class="text"><%= coupon.__v %></span>
                             </div>
-                            <div class="info-text" data-info="<%= coupan.Status %>">Coupan Status:&nbsp;
+                            <div class="info-text" data-info="<%= coupon.Status %>">Coupon Status:&nbsp;
                                 <span class="text status"
-                                    style="color: <%= coupan.Status==true?"#00bb00":"#ff0000" %>;"><%= coupan.Status==true?"True":"False" %></span>
+                                    style="color: <%= coupon.Status==true?"#00bb00":"#ff0000" %>;"><%= coupon.Status==true?"True":"False" %></span>
                             </div>
-                            <div class="coupanCode info-text" data-info="<%= coupan.coupanCode %>">Coupan Code:&nbsp;
-                                <span class="text txt edited-info"><%= coupan.coupanCode %></span>
+                            <div class="couponCode info-text" data-info="<%= coupon.couponCode %>">Coupon Code:&nbsp;
+                                <span class="text txt edited-info"><%= coupon.couponCode %></span>
                             </div>
-                            <div class="coupanDiscount info-text" data-info="<%= coupan.coupanDiscount %>">Coupan
+                            <div class="couponDiscount info-text" data-info="<%= coupon.couponDiscount %>">Coupon
                                 Discount:&nbsp;
-                                <span class="text num edited-info"><%= coupan.coupanDiscount %></span>
+                                <span class="text num edited-info"><%= coupon.couponDiscount %></span>
                                 <nav>%</nav>
                             </div>
-                            <div class="coupanLimit info-text" data-info="<%= coupan.coupanLimit %>">Coupan Limit:&nbsp;
-                                <span class="text num edited-info"><%= coupan.coupanLimit %></span>
+                            <div class="couponLimit info-text" data-info="<%= coupon.couponLimit %>">Coupon Limit:&nbsp;
+                                <span class="text num edited-info"><%= coupon.couponLimit %></span>
                             </div>
-                            <div class="coupanDescription info-text" data-info="<%= coupan.coupanDescription %>">Coupan
+                            <div class="couponDescription info-text" data-info="<%= coupon.couponDescription %>">Coupon
                                 Description:&nbsp;
-                                <span class="text txt edited-info"><%= coupan.coupanDescription %></span>
+                                <span class="text txt edited-info"><%= coupon.couponDescription %></span>
                             </div>
-                            <div class="coupanStartingDate info-text" data-info="<%= coupan.coupanStartingDate %>">
-                                Coupan
+                            <div class="couponStartingDate info-text" data-info="<%= coupon.couponStartingDate %>">
+                                Coupon
                                 StartingDate:&nbsp;
-                                <span class="text date edited-info"><%= coupan.coupanStartingDate %></span>
+                                <span class="text date edited-info"><%= coupon.couponStartingDate %></span>
                             </div>
-                            <div class="coupanEndingDate info-text" data-info="<%= coupan.coupanEndingDate %>">Coupan
+                            <div class="couponEndingDate info-text" data-info="<%= coupon.couponEndingDate %>">Coupon
                                 EndingDate:&nbsp;
-                                <span class="text date edited-info"><%= coupan.coupanEndingDate %></span>
+                                <span class="text date edited-info"><%= coupon.couponEndingDate %></span>
                             </div>
                             <div class="info-text">Added By:&nbsp;
                                 <span class="text">
-                                    <a href="/admin/manage-users/#<%= coupan.AddedBy %>"><%= coupan.AddedBy %></a>
+                                    <a href="/admin/manage-users/#<%= coupon.AddedBy %>"><%= coupon.AddedBy %></a>
                                 </span>
                             </div>
                             <div class="btn-con">
@@ -137,7 +137,7 @@
     </div>
 
     <script src="/js/common/at-start.js"></script>
-    <script src="/js/admin/manage-coupans.js"></script>
+    <script src="/js/admin/manage-coupons.js"></script>
     <script src="/js/common/user-admin-nav.js"></script>
     <script src="/js/admin/admin-search.js"></script>
     <script src="/js/common/footer.js"></script>

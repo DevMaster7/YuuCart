@@ -30,10 +30,6 @@ router.get("/getUser", optionalVerifyToken, async (req, res) => {
     if (!user) return res.status(400).json({ success: false, message: "User not found!" });
     res.status(200).json({ success: true, user });
 })
-router.get("/getRedeems", optionalVerifyToken, async (req, res) => {
-    let redeems = await redeemModel.find();
-    res.status(200).json({ success: true, redeems });
-})
 router.get("/account", optionalVerifyToken, userRoute("users/my-account"));
 router.post("/updateProfilePic", optionalVerifyToken, upload.single("file"), async (req, res) => {
     const filePath = req.file.buffer
