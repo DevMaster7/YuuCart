@@ -132,7 +132,6 @@ async function getRedeemsData() {
         fullSpins: 5,
     };
     const wheel = document.getElementById("wheel");
-    const resultBox = document.getElementById("resultBox");
     const centerBtn = document.getElementById("centerBtn");
     const confettiEl = document.getElementById("confetti");
     let spinning = false;
@@ -272,6 +271,11 @@ async function getRedeemsData() {
             if (isLimitOver || userHasUsed) return true;
 
             return true;
+        })
+        .sort((a, b) => {
+            const aUsed = a.userList.includes(user._id);
+            const bUsed = b.userList.includes(user._id);
+            return aUsed - bUsed;
         })
         .map(item => `
                     <div class="reward">
