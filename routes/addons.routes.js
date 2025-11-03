@@ -115,16 +115,16 @@ router.post("/useSpin", async (req, res) => {
     const user = await userModel.findOne({ _id: userId })
     let spinTime = new Date();
 
-    // if (new Date(user.spinDate) <= spinTime) {
-    //     spinTime = spinTime.setHours(spinTime.getHours() + 24);
+    if (new Date(user.spinDate) <= spinTime) {
+        spinTime = spinTime.setHours(spinTime.getHours() + 24);
 
-    //     user.spinDate = new Date(spinTime)
-    //     await user.save()
+        user.spinDate = new Date(spinTime)
+        await user.save()
 
-    return res.status(200).json({ success: true })
-    // }
+        return res.status(200).json({ success: true })
+    }
 
-    // return res.status(400).json({ success: false, message: "You have already used your spin!" })
+    return res.status(400).json({ success: false, message: "You have already used your spin!" })
 });
 
 router.post("/spinReward", async (req, res) => {
@@ -161,7 +161,7 @@ router.post("/redeemReward", async (req, res) => {
     if (!foundReward) return res.status(400).json({ success: false });
 
     if (foundReward.userList.includes(user._id)) return res.status(400).json({ success: false, message: "You have already redeemed this reward!" });
-    
+
     user.YuuCoin -= foundReward.couponCost;
     user.Yuutx.push({ desc: `Redeem: ${foundReward.couponTitle}`, Yuu: -foundReward.couponCost });
     await user.save();
