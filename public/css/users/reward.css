@@ -279,13 +279,16 @@ h2 {
 }
 
 .reward {
+    position: relative;
+    overflow: hidden;
     padding: 12px;
     border-radius: 10px;
     background: linear-gradient(180deg, #fff, #fbfbfd);
-    border: 1px solid rgba(2, 48, 71, 0.03)
+    border: 1px solid rgb(11 30 39 / 10%);
 }
 
 .reward .title {
+    font-size: 19px;
     font-weight: 700;
     color: var(--primary)
 }
@@ -346,6 +349,7 @@ h2 {
 }
 
 .modal-content {
+    width: 450px;
     background: #fff;
     padding: 25px 30px;
     border-radius: 16px;
@@ -386,7 +390,7 @@ h2 {
     border: none;
     padding: 5px 15px;
     border-radius: 8px;
-    margin-top: 15px;
+    margin-top: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
 }

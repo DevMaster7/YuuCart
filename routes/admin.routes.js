@@ -2,7 +2,6 @@ const express = require("express");
 const mongoose = require("mongoose");
 const productModel = require("../models/productsModel");
 const { couponModel } = require("../models/offersModel");
-const { redeemModel } = require("../models/offersModel");
 const userModel = require("../models/usersModel");
 const orderModel = require("../models/ordersModel");
 const slugify = require("slugify");
@@ -362,19 +361,25 @@ router.get("/manage-coupons/add-coupons", verifyAdmin, allowPage("manageCoupons"
   res.render("admins/add-coupons")
 })
 router.post("/manage-coupons/add-coupons", verifyAdmin, optionalVerifyToken, async (req, res) => {
-  const token = req.user
+  const token = req.user;
   const user = await userModel.findById(token._QCUI_UI);
-  const { couponCode, couponDiscount, couponLimit, couponEndDate, couponDescription } = req.body;
+  const { couponCode, couponTitle, couponSubTitle, couponLimit, couponDescription, couponEndDate, couponCost, couponType, benefitType, benefitValue } = req.body;
+
   await couponModel.create({
     AddedBy: user.username,
     couponCode,
-    couponDiscount,
+    couponType,
+    couponTitle,
+    couponSubTitle,
     couponLimit,
     couponDescription,
     couponEndingDate: couponEndDate,
-  })
-  res.redirect("/admin/manage-coupons");
-})
+    couponCost,
+    benefitType,
+    benefitValue
+  });
 
+  res.status(200).json({ success: true, message: "Coupon added successfully" });
+});
 
 module.exports = router;

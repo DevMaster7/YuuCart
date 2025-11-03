@@ -6,13 +6,16 @@ const couponSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
-    Redeemed: {
-        type: Boolean,
-        required: true
+    couponType: {
+        type: String,
     },
-    userList:[],
+    userList: {
+        type: [String],
+        default: undefined
+    },
     couponCode: String,
-    couponDiscount: Number,
+    couponTitle: String,
+    couponSubTitle: String,
     couponLimit: Number,
     couponDescription: String,
     couponStartingDate: {
@@ -20,9 +23,24 @@ const couponSchema = new mongoose.Schema({
         default: Date.now
     },
     couponEndingDate: Date,
+    couponCost: {
+        type: Number,
+        default: 0
+    },
+    orderLimit: String,
+    benefitType: String,
+    benefitValue: String
 })
 
-const couponModel = mongoose.model("coupon", couponSchema);
+couponSchema.pre("save", function (next) {
+    if (this.couponType == "forall") {
+        this.userList = undefined;
+    } else if (!this.userList) {
+        this.userList = [];
+    }
+    next();
+});
 
+const couponModel = mongoose.model("coupon", couponSchema);
 
 module.exports = { couponModel }

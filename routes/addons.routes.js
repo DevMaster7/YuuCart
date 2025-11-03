@@ -13,6 +13,11 @@ const fs = require("fs");
 const path = require('node:path');
 const router = express.Router();
 
+router.get("/getRedeems", async (req, res) => {
+    const redeems = await couponModel.find({ couponType: "redeem" });
+    res.status(200).json({ success: true, redeems });
+})
+
 router.post("/checkIn", async (req, res) => {
     const { userId } = req.body;
     const user = await userModel.findOne({ _id: userId });
@@ -123,7 +128,7 @@ router.post("/useSpin", async (req, res) => {
 });
 
 router.post("/spinReward", async (req, res) => {
-    let { userId, reward } = req.body;
+    let { userId, rewardId, reward } = req.body;
     const user = await userModel.findOne({ _id: userId });
     if (!user) return res.redirect("/user/login");
 
@@ -134,27 +139,40 @@ router.post("/spinReward", async (req, res) => {
         user.Yuutx.push({ desc: "Daily Spin", Yuu: reward });
         await user.save();
     }
-    // else {
-    //     let rewardKey = `${user.username}-${reward.toLowerCase().replace(/\s/g, '')}`
+    else {
+        let foundReward = await couponModel.findOne({ _id: rewardId, couponType: "spin" })
+        if (!foundReward) return res.status(400).json({ success: false });
 
-    //     user.userRedeems.push({ [rewardKey]: reward });
-    //     await user.save();
-    // }
+        if (foundReward.couponLimit) {
+            foundReward.couponLimit -= 1;
+        }
+        foundReward.userList.push(user._id);
+        await foundReward.save();
+    }
     return res.status(200).json({ success: true });
 });
 
-// router.post("/redeemReward", async (req, res) => {
-//     const { userId, item } = req.body;
-//     const user = await userModel.findOne({ _id: userId });
-//     if (!user) return res.redirect("/user/login");
+router.post("/redeemReward", async (req, res) => {
+    const { userId, item } = req.body;
+    const user = await userModel.findOne({ _id: userId });
+    if (!user) return res.redirect("/user/login");
 
-//     let redeemCode = `${user.username}-${item.title.toLowerCase().replace(/\s/g, '')}`;
-//     user.userRedeems.push({ [redeemCode]: item });
-//     user.YuuCoin -= item.cost;
-//     user.Yuutx.push({ desc: `Redeemed: ${item.title}`, Yuu: -item.cost });
-//     await user.save();
+    const foundReward = await couponModel.findOne({ _id: item._id })
+    if (!foundReward) return res.status(400).json({ success: false });
 
-//     res.status(200).json({ success: true, redeemCode });
-// });
+    if (foundReward.userList.includes(user._id)) return res.status(400).json({ success: false, message: "You have already redeemed this reward!" });
+    
+    user.YuuCoin -= foundReward.couponCost;
+    user.Yuutx.push({ desc: `Redeem: ${foundReward.couponTitle}`, Yuu: -foundReward.couponCost });
+    await user.save();
+
+    if (foundReward.couponLimit) {
+        foundReward.couponLimit -= 1;
+    }
+    foundReward.userList.push(user._id);
+    await foundReward.save();
+
+    res.status(200).json({ success: true });
+});
 
 module.exports = router;
