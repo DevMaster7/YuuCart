@@ -174,39 +174,71 @@ router.post("/checkout", optionalVerifyToken, async (req, res) => {
     return res.status(200).json({ success: true });
 })
 
-router.post("/apply-coupon", async (req, res) => {
+router.post("/apply-coupon", optionalVerifyToken, async (req, res) => {
     try {
-        const { coupon } = req.body;
-        const foundCoupon = await couponModel.findOne({ couponCode: coupon });
+        const { coupon, mainPrice } = req.body;
+        const user = await userModel.findById(req.user._QCUI_UI);
+        if (!user) return res.redirect("/user/login");
 
+        const foundCoupon = await couponModel.findOne({
+            $or: [
+                { couponCode: coupon, userList: { $exists: false } },
+
+                { couponCode: coupon, userList: { $in: [user._id] } }
+            ]
+        });
+
+        // Checking...
         if (!foundCoupon) {
-            return res.status(400).json({ success: false, message: "Invalid Coupon Code!" });
+            return res.status(400).json({ success: false, message: "Invalid Coupon Code!" })
         }
-        // if (foundCoupon) {
         if (!foundCoupon.Status) {
             return res.status(400).json({ success: false, message: "Coupon Not Available Now!" });
         }
-        if (foundCoupon.couponLimit <= 0) {
-            return res.status(400).json({ success: false, message: "Coupon Limit Reached!" });
-        }
-        if (new Date(foundCoupon.couponEndingDate) < new Date()) {
-            return res.status(400).json({ success: false, message: "Coupon Expired!" });
-        }
-
-        return res.json({
-            success: true,
-            message: "Coupon Applied Successfully!",
-            coupon: {
-                code: foundCoupon.couponCode,
-                discount: foundCoupon.couponDiscount,
-                limit: foundCoupon.couponLimit,
-                startDate: foundCoupon.couponStartingDate,
-                endDate: foundCoupon.couponEndingDate,
-                description: foundCoupon.couponDescription,
+        if (foundCoupon.couponEndingDate) {
+            if (new Date(foundCoupon.couponEndingDate) < new Date()) {
+                return res.status(400).json({ success: false, message: "Coupon Expired!" });
             }
-        });
-        // }
+        }
+        if (foundCoupon.orderLimit) {
+            let orderLimitArr = foundCoupon.orderLimit.split("-");
+            orderLimitArr = orderLimitArr
+                .map(e => Number(e.replace(/[^0-9]/g, "")))
+                .filter(num => !isNaN(num) && num > 0);
 
+            if (orderLimitArr.length == 1) {
+                if (mainPrice < orderLimitArr[0]) {
+                    return res.status(400).json({ success: false, message: "Coupon Not Applicable For This Order!" });
+                }
+            } else {
+                if (mainPrice < orderLimitArr[0] || mainPrice > orderLimitArr[1]) {
+                    return res.status(400).json({ success: false, message: "Coupon Not Applicable For This Order!" });
+                }
+            }
+        }
+
+        if (foundCoupon.couponType === "forall") {
+            if (typeof foundCoupon.couponLimit === "number") {
+                if (foundCoupon.couponLimit <= 0) {
+                    return res.status(400).json({ success: false, message: "Coupon Limit Reached!" });
+                }
+                foundCoupon.couponLimit -= 1;
+            }
+        } else {
+            foundCoupon.userList = foundCoupon.userList.filter(id => id != user._id);
+        }
+
+        await foundCoupon.save();
+
+        res.status(200).json({
+            success: true,
+            coupon: {
+                couponCode: foundCoupon.couponCode,
+                benefitType: foundCoupon.benefitType,
+                benefitValue: foundCoupon.benefitValue
+            },
+            message: "Coupon Applied Successfully!"
+        });
 
     } catch (err) {
         console.error(err);
