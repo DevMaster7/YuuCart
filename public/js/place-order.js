@@ -43,11 +43,11 @@ document.querySelector(".coupon-btn").addEventListener("click", async () => {
 
         couponName.innerHTML = couponDetails.couponCode;
         if (couponDetails.benefitType == "discount") {
-            couponBene.innerHTML = `-${couponDetails.benefitValue}%`;
+            couponBene.innerHTML = `${couponDetails.benefitValue}%`;
             let discountedPrice = Math.ceil((mainPrice * couponDetails.benefitValue) / 100)
             finalPrice = mainPrice - discountedPrice;
         } else if (couponDetails.benefitType == "rupeeOff") {
-            couponBene.innerHTML = `Rs. -${couponDetails.benefitValue}`;
+            couponBene.innerHTML = `Rs. ${couponDetails.benefitValue}`;
             finalPrice = mainPrice - couponDetails.benefitValue;
         } else if (couponDetails.benefitType == "freeProduct") {
             console.log(`Free Product`);

@@ -217,19 +217,6 @@ router.post("/apply-coupon", optionalVerifyToken, async (req, res) => {
             }
         }
 
-        if (foundCoupon.couponType === "forall") {
-            if (typeof foundCoupon.couponLimit === "number") {
-                if (foundCoupon.couponLimit <= 0) {
-                    return res.status(400).json({ success: false, message: "Coupon Limit Reached!" });
-                }
-                foundCoupon.couponLimit -= 1;
-            }
-        } else {
-            foundCoupon.userList = foundCoupon.userList.filter(id => id != user._id);
-        }
-
-        await foundCoupon.save();
-
         res.status(200).json({
             success: true,
             coupon: {
@@ -249,21 +236,36 @@ router.post("/apply-coupon", optionalVerifyToken, async (req, res) => {
 router.post("/place-order", optionalVerifyToken, async (req, res) => {
     const userID = req.user._QCUI_UI;
     const user = await userModel.findById(userID);
+    const couponName = req.body.couponName;
     if (user.address == undefined || user.address == "" || user.city == undefined || user.city == "" || user.phone == undefined || user.phone == "" || !user.emailVerified) {
         return res.status(400).json({ success: false, message: "Please Fill All The Details!" });
     }
-    const { couponName } = req.body;
-    if (couponName !== null) {
-        const foundCoupon = await couponModel.findOne({ couponCode: couponName });
-        foundCoupon.couponLimit -= 1;
-        if (foundCoupon.couponLimit <= 0) {
-            foundCoupon.Status = false;
-        }
-        if (new Date(foundCoupon.couponEndingDate) < new Date()) {
-            foundCoupon.Status = false;
-        }
-        await foundCoupon.save();
+
+    const foundCoupon = await couponModel.findOne({ couponCode: couponName });
+    if (!foundCoupon) {
+        return res.status(400).json({ success: false, message: "Invalid Coupon Code!" });
     }
+    if (!foundCoupon.Status) {
+        return res.status(400).json({ success: false, message: "Coupon Not Available Now!" });
+    }
+    if (foundCoupon.couponEndingDate) {
+        if (new Date(foundCoupon.couponEndingDate) < new Date()) {
+            return res.status(400).json({ success: false, message: "Coupon Expired!" });
+        }
+    }
+
+    if (foundCoupon.couponType === "forall") {
+        if (typeof foundCoupon.couponLimit === "number") {
+            if (foundCoupon.couponLimit <= 0) {
+                return res.status(400).json({ success: false, message: "Coupon Limit Reached!" });
+            }
+            foundCoupon.couponLimit -= 1;
+        }
+    } else {
+        foundCoupon.userList = foundCoupon.userList.filter(id => id != user._id);
+    }
+
+    await foundCoupon.save();
 
     const productDeliveryData = req.body.productDeliveryData;
     const data = productDeliveryData.map((item) => {
