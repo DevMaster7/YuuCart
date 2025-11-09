@@ -1,4 +1,14 @@
-
+async function mainFun() {
+    let res = await fetch("/api/frontUser", {
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' },
+    })
+    let data = await res.json();
+    console.log(data);
+    // return data
+}
+mainFun()
+// console.log(``);
 
 let landDivs = Array.from(document.querySelector(".extra-pics-videos").getElementsByTagName("div"))
 let mobileDivs = Array.from(document.querySelector(".extra-pics-videos-land").getElementsByTagName("div"))
@@ -210,3 +220,122 @@ document.querySelector(".buy-btn").addEventListener("click", async () => {
     }
 })
 
+
+document.getElementById("addReview")?.addEventListener("click", () => {
+    showModal("Add Review", `
+        <div class="review-form">
+            <div class="rev-stars" id="stars">
+                ${[...Array(5)].map((_, i) => `<div class="star" data-value="${i + 1}"><i class="fa fa-star"></i></div>`).join('')}
+            </div>
+
+            <input type="number" id="ratingNumber" step="0.1" min="0" max="5" placeholder="Rate 0–5" />
+
+            <textarea id="comment" placeholder="Write your review..."></textarea>
+            <input type="file" id="images" multiple accept="image/*" />
+            <button class="submit-btn" id="submitReview">Submit Review</button>
+        </div>
+    `);
+
+    const starElems = document.querySelectorAll("#stars .star");
+    const ratingInput = document.getElementById("ratingNumber");
+    let selectedRating = 0;
+
+    starElems.forEach(star => {
+        star.addEventListener("click", () => {
+            selectedRating = parseInt(star.dataset.value);
+            ratingInput.value = selectedRating;
+            updateStars(selectedRating);
+        });
+    });
+
+    ratingInput.addEventListener("input", () => {
+        let val = parseFloat(ratingInput.value);
+        if (isNaN(val)) val = 0;
+        if (val < 0) val = 0;
+        if (val > 5) val = 5;
+        selectedRating = val;
+        updateStars(val);
+    });
+
+    function updateStars(rating) {
+        starElems.forEach((star, i) => {
+            const fillPercent = Math.min(Math.max(rating - i, 0), 1) * 100;
+            star.querySelector("i").style.background = `linear-gradient(90deg, #ffb703 ${fillPercent}%, #ccc ${fillPercent}%)`;
+            star.querySelector("i").style.webkitBackgroundClip = "text";
+            star.querySelector("i").style.webkitTextFillColor = "transparent";
+        });
+    }
+
+    document.getElementById("submitReview").addEventListener("click", async () => {
+        const id = document.querySelector(".product-pic-con").dataset.id;
+        // console.log(id);
+        const comment = document.getElementById("comment").value.trim();
+        // const images = document.getElementById("images").value;
+        const formData = new FormData();
+        formData.append("review[id]", id);
+        formData.append("review[rating]", selectedRating);
+        formData.append("review[comment]", comment);
+        for (let file of document.querySelector("#images").files) {
+            formData.append("images", file); // yahan file object jata hai, not path
+        }
+        let res = await fetch("/shop/addReview", {
+            method: 'POST',
+            body: formData
+        });
+        let data = await res.json();
+        if (data.success) {
+            document.getElementById("addReview").remove();
+            let newRev = `<div class="review">
+                        <div class="meta">
+                            <div style="width: fit-content;display: flex;flex-direction: column;align-items: center;">
+                                <strong><%= review.name %></strong>
+                                <span style="font-size: 10px;text-align: center;color: #6f6f6f;"><%= review.username %>
+                                </span>
+                            </div>
+                            <p><%= review.comment %></p>
+                            <div style="display: flex;gap: 7px;">
+                                <% review.meta.forEach(img => { %>
+                                <div class="img-con">
+                                    <img src="<%= img %>" alt="img">
+                                </div>
+                                <% }) %>
+                            </div>
+                        </div>
+                        <div class="meta">
+                            <div style="display: flex; gap: 5px;align-items: center;">
+                                <div class="stars-con">
+                                    <div class="stars"
+                                        style="font-size:1.1em;--rating: <%= ((review.rating/5)*100) %>%;"></div>
+                                </div>
+                                <div class="small-txt">(<%= review.rating %>)</div>
+                            </div>
+                            <div class="small-txt"><%= timeAgo(review.time) %></div>
+                        </div>
+                    </div>`
+            closeModal();
+        }
+        else {
+            showModal("Error", `<p>${data.message}</p>`);
+        }
+    });
+});
+
+function showModal(title, content) {
+    const root = document.getElementById("modalRoot");
+    root.innerHTML = `
+        <div class="modal-content">
+            <h2>${title}</h2>
+            ${content}
+        </div>`;
+    document.body.style.overflow = "hidden";
+    root.style.display = "flex";
+}
+function closeModal() {
+    const root = document.getElementById("modalRoot");
+    root.style.display = "none";
+    root.innerHTML = "";
+    document.body.style.overflow = "auto";
+}
+window.addEventListener("click", e => {
+    if (e.target.id === "modalRoot") closeModal();
+});

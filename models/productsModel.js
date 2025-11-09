@@ -54,7 +54,7 @@ const productSchema = new mongoose.Schema({
     },
     Reviews: [
         {
-            userId: {
+            username: {
                 type: String,
                 required: true
             },
@@ -62,18 +62,12 @@ const productSchema = new mongoose.Schema({
                 type: String,
                 required: true
             },
-            username: {
-                type: String,
-                required: true
-            },
             rating: {
                 type: Number,
                 required: true
             },
-            meta: [
-                { metaImg: String }
-            ],
-            review: {
+            meta: [],
+            comment: {
                 type: String,
                 required: true
             },
@@ -85,15 +79,11 @@ const productSchema = new mongoose.Schema({
     ],
     AnswerQuestions: [
         {
-            userId: {
+            username: {
                 type: String,
                 required: true
             },
             name: {
-                type: String,
-                required: true
-            },
-            username: {
                 type: String,
                 required: true
             },

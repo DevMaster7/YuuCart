@@ -279,26 +279,50 @@
                 </div>
             </div>
             <div class="section">
-                <div class="heading">Reviews</div>
+                <div style="display: flex;align-items: center;justify-content: space-between;margin: 0 0 8px;">
+                    <div class="heading">Reviews</div>
+                    <% if (user && user.userOrders) { %>
+                    <% const hasConfirmed = user.userOrders.some(order => 
+                        order.productDetails.some(prod => 
+                        prod.productId.toString() === product._id.toString() && 
+                        order.orderInfo.orderStatus === "Delivered" && 
+                        !product.Reviews.some(review => review.username.toString() === user.username.toString())
+                        )); %>
+                    <% if (hasConfirmed) { %>
+                    <button class="box-btn" id="addReview">+</button>
+                    <% } %>
+                    <% } %>
+                </div>
                 <div class="reviews">
+                    <% product.Reviews.forEach(review => { %>
                     <div class="review">
                         <div class="meta">
-                            <strong>Ali</strong>
-                            <p>Great product, highly recommend!</p>
-                            <div class="img-con">
-                                <img src="/assets/customizabale/MugWhite.png" alt="img">
+                            <div style="width: fit-content;display: flex;flex-direction: column;align-items: center;">
+                                <strong><%= review.name %></strong>
+                                <span style="font-size: 10px;text-align: center;color: #6f6f6f;"><%= review.username %>
+                                </span>
+                            </div>
+                            <p><%= review.comment %></p>
+                            <div style="display: flex;gap: 7px;">
+                                <% review.meta.forEach(img => { %>
+                                <div class="img-con">
+                                    <img src="<%= img %>" alt="img">
+                                </div>
+                                <% }) %>
                             </div>
                         </div>
                         <div class="meta">
                             <div style="display: flex; gap: 5px;align-items: center;">
                                 <div class="stars-con">
-                                    <div class="stars" style="font-size:1.1em;--rating: 100%;"></div>
+                                    <div class="stars"
+                                        style="font-size:1.1em;--rating: <%= ((review.rating/5)*100) %>%;"></div>
                                 </div>
-                                <div class="small-txt">(5)</div>
+                                <div class="small-txt">(<%= review.rating %>)</div>
                             </div>
-                            <div class="small-txt">1 week ago</div>
+                            <div class="small-txt"><%= timeAgo(review.time) %></div>
                         </div>
                     </div>
+                    <% }) %>
                 </div>
             </div>
             <div class="section">
@@ -366,6 +390,7 @@
             </div>
         </div>
     </div>
+    <div id="modalRoot" class="modal"></div>
 
     <script src="/js/common/at-start.js"></script>
     <script src="/js/product.js"></script>

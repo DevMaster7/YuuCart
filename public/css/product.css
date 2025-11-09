@@ -546,6 +546,19 @@ p.desc {
     color: #51545a;
 }
 
+.section .box-btn {
+    font-size: 19px;
+    font-weight: 600;
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
+    background: rgba(232, 232, 232, 0.697);
+    border: 1px solid var(--Heading);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .reviews {
     display: flex;
     flex-direction: column;
@@ -739,6 +752,127 @@ p.desc {
 .customizeable {
     font-size: 7.5px;
     color: #8f8f8f;
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: #02304727;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    backdrop-filter: blur(3px);
+}
+
+.modal-content {
+    width: 420px;
+    background: #fff;
+    border-radius: 18px;
+    padding: 25px 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: pop 0.3s ease;
+}
+
+@keyframes pop {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.modal-content h2 {
+    margin-bottom: 10px;
+    text-align: center;
+    color: var(--Primary);
+    font-size: x-large;
+    font-weight: 600;
+}
+
+.review-form .rev-stars {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+    gap: 6px;
+}
+
+.review-form .rev-stars .star i {
+    font-size: 28px;
+    color: #ccc;
+    cursor: pointer;
+    transition: 0.2s;
+    background: linear-gradient(90deg, #ccc 100%, #ccc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.review-form .rev-stars .star:hover i {
+    transform: scale(1.1);
+}
+
+.review-form .rev-stars i.active {
+    color: #ffb703;
+}
+
+.review-form input[type="number"] {
+    width: 80px;
+    text-align: center;
+    font-size: 16px;
+    padding: 6px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin: 10px auto;
+    display: block;
+}
+
+.review-form textarea {
+    width: 100%;
+    height: 100px;
+    resize: none;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    font-size: 14px;
+    outline: none;
+}
+
+.review-form textarea:focus {
+    border-color: #0077b6;
+}
+
+.review-form input[type="file"] {
+    margin-bottom: 15px;
+    border: 1px dashed #bbb;
+    border-radius: 10px;
+    padding: 10px;
+    background: #fafafa;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.review-form input[type="file"]:hover {
+    background: #f2f2f2;
+}
+
+.submit-btn {
+    width: 100%;
+    background: var(--Secondary);
+    color: white;
+    padding: 10px 0;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background 0.3s;
+}
+
+.submit-btn:hover {
+    background:#1d839d;
 }
 
 /* responsive */

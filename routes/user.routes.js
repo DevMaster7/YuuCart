@@ -18,9 +18,10 @@ function userRoute(viewName) {
     return async (req, res) => {
         const token = req.user;
         if (!token) return res.redirect("/user/login");
-        const user = await userModel.findById(token._QCUI_UI);
-        if (!user) return res.redirect("/user/login");
-        res.render(viewName, { user });
+        const foundUser = await userModel.findById(token._QCUI_UI);
+        if (!foundUser) return res.redirect("/user/login");
+
+        res.render(viewName, { user:foundUser });
     };
 }
 router.get("/getUser", optionalVerifyToken, async (req, res) => {

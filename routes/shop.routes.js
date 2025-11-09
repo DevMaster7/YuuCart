@@ -5,8 +5,12 @@ const optionalVerifyToken = require("../middleware/optionalVerifyToken");
 const productModel = require("../models/productsModel");
 const userModel = require("../models/usersModel");
 const { couponModel } = require("../models/offersModel");
+const { uploadOnCloudinary } = require("../config/cloudinary");
+const upload = require("../middleware/multerConfig");
 const orderModel = require("../models/ordersModel");
 const router = express.Router();
+const path = require("path");
+const fs = require("fs");
 
 router.get("/", optionalVerifyToken, async (req, res) => {
     try {
@@ -50,13 +54,73 @@ router.get("/:slug-:id", optionalVerifyToken, async (req, res) => {
             res.render("product", { product, products, slugify, userCart: [], user: [] });
         } else {
             const user = await userModel.findById(tokenUser._QCUI_UI);
+
+            function timeAgo(date) {
+                const seconds = Math.floor((Date.now() - new Date(date)) / 1000);
+
+                const intervals = {
+                    year: 31536000,
+                    month: 2592000,
+                    week: 604800,
+                    day: 86400,
+                    hour: 3600,
+                    minute: 60,
+                };
+
+                if (seconds < 5) return "just now";
+
+                for (const [key, value] of Object.entries(intervals)) {
+                    const interval = Math.floor(seconds / value);
+                    if (interval >= 1) {
+                        return interval === 1 ? `${interval} ${key} ago` : `${interval} ${key}s ago`;
+                    }
+                }
+
+                return `${seconds} seconds ago`;
+            }
+
             const userCart = user?.userCart || [];
-            res.render("product", { product, products, slugify, userCart, user });
+            res.render("product", { product, products, slugify, userCart, user, timeAgo });
         }
     } catch (error) {
         console.error("ERROR:", error);
         return res.status(500).send("Internal server error");
     }
+});
+
+router.post("/addReview", upload.array("images"), optionalVerifyToken, async (req, res) => {
+    const { id, rating, comment } = req.body.review;
+    const user = await userModel.findById(req.user._QCUI_UI);
+    if (!user) return res.redirect("/user/login");
+
+    const product = await productModel.findById(id);
+    if (!product) return res.status(404).json({ success: false, message: "Product not found" });
+
+    const hasConfirmed = user.userOrders.some(order =>
+        order.productDetails.some(prod => prod.productId.toString() === product._id.toString() && order.orderInfo.orderStatus === "Delivered" && !product.Reviews.some(review => review.username.toString() === user.username.toString()))
+    );
+    if (!hasConfirmed) {
+        return res.status(400).json({ success: false, message: "You have not confirmed your order yet!" });
+    }
+
+    const meta = [];
+    for (const file of req.files) {
+        const url = await uploadOnCloudinary(file.buffer, "reviews");
+        meta.push(url);
+    }
+
+    const time = new Date();
+    product.Reviews.push({
+        username: user.username,
+        name: user.fullname,
+        rating,
+        comment,
+        meta,
+        time
+    });
+    await product.save();
+
+    res.status(200).json({ success: true });
 });
 
 router.get("/search", optionalVerifyToken, async (req, res) => {
@@ -241,33 +305,37 @@ router.post("/place-order", optionalVerifyToken, async (req, res) => {
         return res.status(400).json({ success: false, message: "Please Fill All The Details!" });
     }
 
-    const foundCoupon = await couponModel.findOne({ couponCode: couponName });
-    if (!foundCoupon) {
-        return res.status(400).json({ success: false, message: "Invalid Coupon Code!" });
-    }
-    if (!foundCoupon.Status) {
-        return res.status(400).json({ success: false, message: "Coupon Not Available Now!" });
-    }
-    if (foundCoupon.couponEndingDate) {
-        if (new Date(foundCoupon.couponEndingDate) < new Date()) {
-            return res.status(400).json({ success: false, message: "Coupon Expired!" });
+    if (couponName) {
+        const foundCoupon = await couponModel.findOne({ couponCode: couponName });
+        if (!foundCoupon) {
+            return res.status(400).json({ success: false, message: "Invalid Coupon Code!" });
         }
-    }
-
-    if (foundCoupon.couponType === "forall") {
-        if (typeof foundCoupon.couponLimit === "number") {
-            if (foundCoupon.couponLimit <= 0) {
-                return res.status(400).json({ success: false, message: "Coupon Limit Reached!" });
+        if (!foundCoupon.Status) {
+            return res.status(400).json({ success: false, message: "Coupon Not Available Now!" });
+        }
+        if (foundCoupon.couponEndingDate) {
+            if (new Date(foundCoupon.couponEndingDate) < new Date()) {
+                return res.status(400).json({ success: false, message: "Coupon Expired!" });
             }
-            foundCoupon.couponLimit -= 1;
         }
-    } else {
-        foundCoupon.userList = foundCoupon.userList.filter(id => id != user._id);
+
+        if (foundCoupon.couponType === "forall") {
+            if (typeof foundCoupon.couponLimit === "number") {
+                if (foundCoupon.couponLimit <= 0) {
+                    return res.status(400).json({ success: false, message: "Coupon Limit Reached!" });
+                }
+                foundCoupon.couponLimit -= 1;
+            }
+        } else {
+            foundCoupon.userList = foundCoupon.userList.filter(id => id != user._id);
+        }
+
+        await foundCoupon.save();
     }
 
-    await foundCoupon.save();
 
     const productDeliveryData = req.body.productDeliveryData;
+    console.log(productDeliveryData);
     const data = productDeliveryData.map((item) => {
         const newItem = { ...item };
         delete newItem.paymentMethod;
@@ -289,6 +357,11 @@ router.post("/place-order", optionalVerifyToken, async (req, res) => {
             PaymentMethod: productDeliveryData[0].paymentMethod,
         }
     });
+    productDeliveryData.forEach(async (pro) => {
+        const product = await productModel.findById(pro.productId);
+        product.proBuyer += 1;
+        await product.save();
+    })
     res.status(200).json({ success: true, message: "Order Placed Successfully!" });
 })
 

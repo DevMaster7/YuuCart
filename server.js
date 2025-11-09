@@ -3,6 +3,7 @@ const userRouter = require("./routes/user.routes");
 const adminRouter = require("./routes/admin.routes");
 const shopRouter = require("./routes/shop.routes");
 const addonsRouter = require("./routes/addons.routes");
+const apiRouter = require("./routes/api.routes");
 const dbConnection = require("./config/db");
 const cookieParser = require("cookie-parser");
 const sendEmail = require("./utils/sendOTP");
@@ -462,6 +463,7 @@ app.use("/user", userRouter);
 app.use("/admin", adminRouter);
 app.use("/shop", shopRouter);
 app.use("/addons", addonsRouter);
+app.use("/api", apiRouter);
 
 // Page Not Found
 app.use((req, res) => {
