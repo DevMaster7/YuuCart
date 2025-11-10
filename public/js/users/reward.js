@@ -1,13 +1,5 @@
-async function getUserData() {
-    let res = await fetch("/user/getUser", {
-        method: 'get',
-        headers: { 'Content-Type': 'application/json' },
-    });
-    let data = await res.json();
-    return data
-}
-async function getRedeemsData() {
-    let res = await fetch("/addons/getRedeems", {
+async function getRewardsData() {
+    let res = await fetch("/api/frontRewardCenter", {
         method: 'get',
         headers: { 'Content-Type': 'application/json' },
     });
@@ -16,19 +8,10 @@ async function getRedeemsData() {
 }
 
 (async function () {
-    const userDataRes = await getUserData();
-    const user = userDataRes.user;
-    const redeemsRes = await getRedeemsData();
-    const CATALOG = redeemsRes.redeems;
-    // ===== Render =====
+    const rewardData = await getRewardsData();
 
-    // Render User
-    document.getElementById("userName").textContent = user.fullname;
-    document.getElementById("pointsVal").textContent = `${user.YuuCoin} Yuu`;
-    document.getElementById("pointsSmall").textContent = user.YuuCoin;
-    document.getElementById("pointsTotal").textContent = user.YuuCoin;
-    document.getElementById("pointsValue").textContent = `Rs.${Math.round(user.YuuCoin * 0.5)}`;
-    document.getElementById("refInput").value = user.Reffer.url;
+    const YuuCoins = Number(document.getElementById("pointsVal").innerHTML.split(" ")[0].trim());
+    document.getElementById("pointsValue").textContent = `Rs.${Math.round(YuuCoins * 0.5)}`;
 
     // Tier Progress
     const TIERS = [
@@ -42,10 +25,10 @@ async function getRedeemsData() {
         { name: "Master", img: "/assets/tier/master.png", min: 15000, max: 9999999999 },
     ];
     const getTier = points => TIERS.find(t => points >= t.min && points <= t.max)?.name || "Bronze";
-    const tier = TIERS.find(t => t.name === getTier(user.YuuCoin));
+    const tier = TIERS.find(t => t.name === getTier(YuuCoins));
     const next = TIERS.find(t => t.min > tier.min) || { min: tier.max + 1 };
-    const progress = Math.min(1, (user.YuuCoin - tier.min) / (next.min - tier.min));
-    document.getElementById("userTier").textContent = getTier(user.YuuCoin);
+    const progress = Math.min(1, (YuuCoins - tier.min) / (next.min - tier.min));
+    document.getElementById("userTier").textContent = getTier(YuuCoins);
     document.getElementById("progressBar").style.width = `${Math.round(progress * 100)}%`;
     document.getElementById("tierRange").textContent = `${tier.min} Yuu`;
     document.getElementById("tierTag").src = `${tier.img}`;
@@ -53,26 +36,40 @@ async function getRedeemsData() {
 
     // Check In
     document.getElementById("checkInBtn").addEventListener("click", async () => {
-        let res = await fetch("/addons/checkIn", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ userId: user._id })
-        });
-        let res1 = await res.json();
-        if (res1.success) {
-            let streak = res1.streak
-            let root = document.getElementById("modalRoot")
-            document.body.style.overflow = "hidden";
-            root.style.display = "flex";
-            root.innerHTML = `
+        const lastMidnight = new Date(rewardData.user.checkIn.lastCheck);
+        let now = new Date();
+        lastMidnight.setHours(0, 0, 0, 0);
+        const todayMidnight = new Date(now);
+        todayMidnight.setHours(0, 0, 0, 0);
+        const dayDiff = Math.floor((todayMidnight - lastMidnight) / (1000 * 60 * 60 * 24));
+
+        if (!(dayDiff === 0)) {
+            let res = await fetch("/addons/checkIn", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            });
+            let res1 = await res.json();
+            if (res1.success) {
+                let streak = res1.streak
+                let root = document.getElementById("modalRoot")
+                document.body.style.overflow = "hidden";
+                root.style.display = "flex";
+                root.innerHTML = `
                                     <div class="reward-card">
                                         <div id="checkInProgress" class="check-progress"></div>
                                     </div>
                                     `
-            renderProgress(streak);
-            renderAgain(res1.reward, "Daily Check-in", new Date());
+                renderProgress(streak);
+                renderAgain(res1.reward, "Daily Check-in", new Date());
+            }
+            else {
+                showModal("Already Checked In",
+                    "You’ve already claimed today’s reward!",
+                    "<button class=\"btn\" onclick=\"closeModal()\">OK</button>"
+                );
+            }
         }
         else {
             showModal("Already Checked In",
@@ -114,9 +111,9 @@ async function getRedeemsData() {
         },
         {
             label: '5% OFF',
-            id: "6903737d93bbd64fdc7e8315",
+            code: "SAVE5WITHSPIN",
             color: '#06B6D4',
-            weight: 20
+            weight: 200
         },
         {
             label: 'No Prize',
@@ -147,11 +144,9 @@ async function getRedeemsData() {
     }
     async function spin() {
         if (spinning) return;
-        const userId = user._id;
         const res = await fetch('/addons/useSpin', {
             method: 'post',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId })
         })
         const res1 = await res.json();
 
@@ -188,7 +183,7 @@ async function getRedeemsData() {
                     await fetch('/addons/spinReward', {
                         method: 'post',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ userId, rewardId: seg.id, reward: seg.label })
+                        body: JSON.stringify({ rewardId: seg.code, reward: seg.label })
                     });
                 }
                 else {
@@ -255,30 +250,22 @@ async function getRedeemsData() {
             }, fall + 800);
         }
     }
-    centerBtn.addEventListener("click", spin);
+    centerBtn.addEventListener("click", () => {
+        if (new Date(rewardData.user.spinDate) <= new Date()) {
+            spin()
+        }
+        else {
+            showModal("Already Spinned!",
+                "You've already use your today's spin!",
+                "<button class=\"btn\" onclick=\"closeModal()\">OK</button>"
+            );
+        }
+    });
 
     // Catalog
-    document.getElementById("catalog").innerHTML = CATALOG
-        .filter(item => {
-            const isExpiredOrInactive = new Date(item.couponEndingDate) <= Date.now() || !item.Status;
-            const isLimitOver = item.couponLimit <= 0;
-            const userHasUsed = item.userList.includes(user._id);
-
-            if (isExpiredOrInactive) return false;
-
-            if (!userHasUsed && isLimitOver) return false;
-
-            if (isLimitOver || userHasUsed) return true;
-
-            return true;
-        })
-        .sort((a, b) => {
-            const aUsed = a.userList.includes(user._id);
-            const bUsed = b.userList.includes(user._id);
-            return aUsed - bUsed;
-        })
-        .map(item => `
-                    <div class="reward">
+    const CATALOG = rewardData.coupons;
+    document.getElementById("catalog").innerHTML = CATALOG.map(item => `
+                    <div class="reward" data-ident="${item.couponCode}">
                         <div class="title">${item.couponTitle}</div>
                         <div class="meta">${item.couponSubTitle}</div>
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
@@ -286,78 +273,81 @@ async function getRedeemsData() {
                                 Cost: <strong style="color: var(--accent);">${item.couponCost} Yuu</strong>
                             </span>
                             <div>
-                            <button class="btn small ghost" onclick="viewDetail('${item._id}')">Details</button>
-                            ${item.userList.includes(user._id) ? `` : `<button class="btn small liquid" onclick="redeem('${item._id}')">Redeem</button>`}
+                            <button class="btn small ghost simple-detail">Details</button>
+                            ${item.has ? `` : `<button class="btn small liquid redeem-detail">Redeem</button>`}
                             </div>
                         </div>
                     </div>`
-        ).join("");
-    window.redeem = rep => {
-        const item = CATALOG.find(i => i._id === rep);
-        if (!item) return;
-        let totalYuu = Number(document.getElementById("pointsVal").innerHTML.replace("Yuu", ""));
-        if (totalYuu >= item.couponCost) {
-            showModal("Are You Sure?",
-                `Are you sure to redeem <strong>${item.couponTitle}</strong> <br> For <strong style="color: var(--accent);">${item.couponCost} Yuu</strong>`,
-                `<button class="btn" onclick="redeemConfirm('${item._id}')">Redeem</button>
-                        <button class="btn" style="background-color:var(--danger)" onclick="closeModal()">Cancel</button>`);
-            window.redeemConfirm = async rep => {
-                const item = CATALOG.find(i => i._id === rep);
-                if (!item) return;
-                let res = await fetch('/addons/redeemReward', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ userId: user._id, item })
+    ).join("");
+    document.querySelectorAll(".redeem-detail").forEach(btn => {
+        btn.addEventListener("click", e => {
+            let identifier = e.target.closest(".reward").dataset.ident
+            const item = CATALOG.find(i => i.couponCode === identifier);
+            if (!item) return;
+            if (YuuCoins >= item.couponCost) {
+                showModal("Are You Sure?",
+                    `Are you sure to redeem <strong>${item.couponTitle}</strong> <br> For <strong style="color: var(--accent);">${item.couponCost} Yuu</strong>`,
+                    `<button class="btn" id="redeemConfirm">Redeem</button>
+                            <button class="btn" style="background-color:var(--danger)" onclick="closeModal()">Cancel</button>`);
+                document.getElementById("redeemConfirm").addEventListener("click", async () => {
+                    let res = await fetch('/addons/redeemReward', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ item })
+                    })
+                    let res1 = await res.json();
+                    if (res1.success) {
+                        showModal("Redeem Confirmed!",
+                            `You redeemed <strong>${item.couponTitle}</strong>. Check the usage details`,
+                            "<button class=\"btn\" onclick=\"closeModal()\">OK</button>"
+                        );
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                    }
+                    else {
+                        showModal("Redeem Failed!",
+                            `You already redeemed <strong>${item.couponTitle}</strong>. Check the usage details`,
+                            "<button class=\"btn\" onclick=\"closeModal()\">OK</button>"
+                        );
+                    }
                 })
-                let res1 = await res.json();
-                if (res1.success) {
-                    // renderAgain(-item.couponCost, `Redeem: ${item.couponTitle}`, new Date());
-                    showModal("Redeem Confirmed!",
-                        `You redeemed <strong>${item.couponTitle}</strong>. Check the usage details`,
-                        "<button class=\"btn\" onclick=\"closeModal()\">OK</button>"
-                    );
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 2000);
-                }
-                else {
-                    showModal("Redeem Failed!",
-                        `You already redeemed <strong>${item.couponTitle}</strong>. Check the usage details`,
-                        "<button class=\"btn\" onclick=\"closeModal()\">OK</button>"
-                    );
-                }
             }
-        }
-        else {
-            showModal("Not enough Yuu!",
-                `You need <strong>${item.couponCost - totalYuu} Yuu</strong> to redeem ${item.couponTitle}`,
-                "<button class=\"btn\" onclick=\"closeModal()\">OK</button>"
-            );
-        }
-    };
-    window.viewDetail = rep => {
-        const item = CATALOG.find(i => i._id === rep);
-        if (item) showModal(
-            item.couponTitle,
-            `${item.couponSubTitle}<br><span>${item.couponDescription}</span>
+            else {
+                showModal("Not enough Yuu!",
+                    `You need <strong>${item.couponCost - YuuCoins} Yuu</strong> to redeem ${item.couponTitle}`,
+                    "<button class=\"btn\" onclick=\"closeModal()\">OK</button>"
+                );
+            }
+        });
+    });
+    document.querySelectorAll(".simple-detail").forEach(btn => {
+        btn.addEventListener("click", e => {
+            let identifier = e.target.closest(".reward").dataset.ident
+            const item = CATALOG.find(i => i.couponCode === identifier);
+            if (!item) return;
+            if (item) showModal(
+                item.couponTitle,
+                `${item.couponSubTitle}<br><span>${item.couponDescription}</span>
                     <span style="display:flex;justify-content:flex-start;">
                         <span style="font-size:0.9rem;font-weight:600;text-align: start;">
                             ${item.orderLimit ? `Order Limit: <strong style="color: var(--accent);">${item.orderLimit}</strong>` : ""}<br>
-                            ${item.userList.includes(user._id) ? `Enter: <strong style="color: var(--accent);">${item.couponCode}</strong>` : `Cost: <strong style="color: var(--accent);">${item.couponCost} Yuu</strong>`}
+                            ${item.has ? `Enter: <strong style="color: var(--accent);">${item.couponCode}</strong>` : `Cost: <strong style="color: var(--accent);">${item.couponCost} Yuu</strong>`}
                         </span>
                     </span>`,
-            "<button class=\"btn\" onclick=\"closeModal()\">OK</button>",
-            `<div style="display:flex;align-items:right;padding-top:12px;">
+                "<button class=\"btn\" onclick=\"closeModal()\">OK</button>",
+                `<div style="display:flex;align-items:right;padding-top:12px;">
                         ${item.couponEndingDate ? `<div style="font-size:10px;color:var(--muted);padding-right:4px">Ended on: ${new Date(item.couponEndingDate).toLocaleString("en-GB", { weekday: "long", day: "numeric", month: "numeric", year: "numeric" })}</div>` : ""}
                         ${item.couponLimit ? `<div style="font-size:10px;color:var(--muted);padding-left:4px;border-left:1px solid var(--muted);">Left: (${item.couponLimit})</div>` : ""}
                     </div>`
-        );
-    };
+            );
+        })
+    });
 
-    // Transactions
-    const TX = user.Yuutx;
+    // // Transactions
+    const TX = rewardData.user.Yuutx;
     document.getElementById("txList").innerHTML = TX.reverse().map(t => `
             <div class="txn">
             <div style="width:8px;height:8px;border-radius:50%;background:${t.Yuu > 0 ? "var(--accent)" : "var(--danger)"}"></div>
@@ -383,10 +373,10 @@ async function getRedeemsData() {
 
     // ===== Modal =====
     function renderAgain(newCoins, desc, date) {
-        document.getElementById("pointsVal").textContent = `${user.YuuCoin + newCoins} Yuu`;
-        document.getElementById("pointsSmall").textContent = user.YuuCoin + newCoins;
-        document.getElementById("pointsTotal").textContent = user.YuuCoin + newCoins;
-        document.getElementById("pointsValue").textContent = `Rs.${Math.round((user.YuuCoin + newCoins) * 0.5)}`;
+        document.getElementById("pointsVal").textContent = `${YuuCoins + newCoins} Yuu`;
+        document.getElementById("pointsSmall").textContent = YuuCoins + newCoins;
+        document.getElementById("pointsTotal").textContent = YuuCoins + newCoins;
+        document.getElementById("pointsValue").textContent = `Rs.${Math.round((YuuCoins + newCoins) * 0.5)}`;
 
         const TIERS = [
             { name: "Wood", img: "/assets/tier/wood.png", min: 0, max: 999 },
@@ -399,10 +389,10 @@ async function getRedeemsData() {
             { name: "Master", img: "/assets/tier/master.png", min: 15000, max: 9999999999 },
         ];
         const getTier = points => TIERS.find(t => points >= t.min && points <= t.max)?.name || "Bronze";
-        const tier = TIERS.find(t => t.name === getTier(user.YuuCoin + newCoins));
+        const tier = TIERS.find(t => t.name === getTier(YuuCoins + newCoins));
         const next = TIERS.find(t => t.min > tier.min) || { min: tier.max + 1 };
-        const progress = Math.min(1, (user.YuuCoin + newCoins - tier.min) / (next.min - tier.min));
-        document.getElementById("userTier").textContent = getTier(user.YuuCoin + newCoins);
+        const progress = Math.min(1, (YuuCoins + newCoins - tier.min) / (next.min - tier.min));
+        document.getElementById("userTier").textContent = getTier(YuuCoins + newCoins);
         document.getElementById("progressBar").style.width = `${Math.round(progress * 100)}%`;
         document.getElementById("tierRange").textContent = `${tier.min} Yuu`;
         document.getElementById("tierTag").src = `${tier.img}`;

@@ -38,10 +38,9 @@ document.querySelector(".update-btn").addEventListener("click", async () => {
         window.location.href = '/user/account';
     }
     else {
-        let msg = res1.errors[0].path.slice(7);
         let div = document.createElement("div");
-        div.classList.add("err");
-        div.innerHTML = `Something went wrong at ${msg}!`;
+        div.classList.add("error");
+        div.innerHTML = `${res1.message}`;
         document.querySelector(".btns-err").prepend(div);
         setTimeout(() => {
             document.querySelector(".err").remove();

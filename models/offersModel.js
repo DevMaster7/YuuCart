@@ -13,7 +13,10 @@ const couponSchema = new mongoose.Schema({
         type: [String],
         default: undefined
     },
-    couponCode: String,
+    couponCode: {
+        type: String,
+        unique: true
+    },
     couponTitle: String,
     couponSubTitle: String,
     couponLimit: Number,

@@ -36,7 +36,7 @@ window.addEventListener("scroll", () => {
 
 let sideBarDiv = document.querySelector(".side-nav-con");
 async function getUser() {
-    let res = await fetch("/user/getUser", {
+    let res = await fetch("/api/frontUser", {
         method: 'get',
         headers: { 'Content-Type': 'application/json' },
     });

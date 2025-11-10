@@ -14,24 +14,40 @@ const fs = require("fs");
 const path = require('node:path');
 const router = express.Router();
 
-function userRoute(viewName) {
-    return async (req, res) => {
-        const token = req.user;
-        if (!token) return res.redirect("/user/login");
-        const foundUser = await userModel.findById(token._QCUI_UI);
-        if (!foundUser) return res.redirect("/user/login");
-
-        res.render(viewName, { user:foundUser });
-    };
+function pickFields(obj, fields = []) {
+    const result = {};
+    for (const field of fields) {
+        const keys = field.split('.');
+        let value = obj;
+        for (const key of keys) {
+            if (value && typeof value === 'object' && key in value) {
+                value = value[key];
+            } else {
+                value = undefined;
+                break;
+            }
+        }
+        if (value !== undefined) {
+            // Set nested structure in result
+            let current = result;
+            for (let i = 0; i < keys.length - 1; i++) {
+                current[keys[i]] = current[keys[i]] || {};
+                current = current[keys[i]];
+            }
+            current[keys[keys.length - 1]] = value;
+        }
+    }
+    return result;
 }
-router.get("/getUser", optionalVerifyToken, async (req, res) => {
-    const token = req.user;
-    if (!token) return res.status(400).json({ success: false, message: "User not found!" });
-    const user = await userModel.findById(token._QCUI_UI);
-    if (!user) return res.status(400).json({ success: false, message: "User not found!" });
-    res.status(200).json({ success: true, user });
-})
-router.get("/account", optionalVerifyToken, userRoute("users/my-account"));
+
+router.get("/account", optionalVerifyToken, async (req, res) => {
+    let foundUser = await userModel.findById(req.user._QCUI_UI);
+    if (!foundUser) return res.redirect("/user/login");
+
+    foundUser = foundUser.toObject();
+    const user = pickFields(foundUser, ["userImg", "fullname", "username", "phone", "address", "city", "email", "emailVerified"]);
+    res.render("users/my-account", { user });
+});
 router.post("/updateProfilePic", optionalVerifyToken, upload.single("file"), async (req, res) => {
     const filePath = req.file.buffer
     let folderName = "profile_pics";
@@ -50,7 +66,7 @@ router.post("/verifyUser", optionalVerifyToken,
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array(), message: "Password is Too Short!" });
+            return res.status(400).json({ success: false, message: "Password is Too Short!" });
         }
         const { pass } = req.body;
         const token = req.user;
@@ -72,13 +88,15 @@ router.get("/edit-my-account", optionalVerifyToken, async (req, res) => {
     res.setHeader("Pragma", "no-cache");
     res.setHeader("Expires", "0");
 
-    const token = req.user;
-    if (!token) return res.redirect("/user/login");
-    const user = await userModel.findById(token._QCUI_UI);
-    if (!user) return res.redirect("/user/login");
+    let foundUser = await userModel.findById(req.user._QCUI_UI);
+    if (!foundUser) return res.redirect("/user/login");
+
     const EditToken = req.cookies.UEANT;
     if (!EditToken) return res.redirect("/user/account");
     res.clearCookie('UEANT');
+
+    foundUser = foundUser.toObject();
+    const user = pickFields(foundUser, ["userImg", "fullname", "username", "phone", "address", "city", "email", "emailVerified"]);
     res.render("users/edit-my-acc", { user });
 });
 router.post("/updateUser",
@@ -88,20 +106,24 @@ router.post("/updateUser",
     body("NewObj.Address").trim().isLength({ min: 5 }),
     body("NewObj.City").trim().isLength({ min: 5 }),
     optionalVerifyToken, async (req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array(), message: "Invalid data!" });
+        try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({ success: false, message: "Invalid data!" });
+            }
+            const { Name, Username, Phone_Number, Address, City } = req.body.NewObj;
+            const user = await userModel.findById(req.user._QCUI_UI);
+            user.fullname = Name;
+            user.username = Username;
+            user.phone = Phone_Number;
+            user.address = Address;
+            user.city = City;
+            await user.save();
+            return res.status(200).json({ success: true });
+        } catch (error) {
+            if (error.code === 11000) return res.status(400).json({ success: false, message: "Invalid data!" });
+            return res.status(500).json({ success: false, message: "Something went wrong!" });
         }
-        const { Name, Username, Phone_Number, Address, City } = req.body.NewObj;
-        const token = req.user;
-        const user = await userModel.findById(token._QCUI_UI);
-        user.fullname = Name;
-        user.username = Username;
-        user.phone = Phone_Number;
-        user.address = Address;
-        user.city = City;
-        await user.save();
-        return res.status(200).json({ success: true });
     })
 router.post("/change-password", optionalVerifyToken, async (req, res) => {
     const { oldPass, newPass, confirmPass } = req.body;
@@ -127,8 +149,22 @@ router.post("/change-password", optionalVerifyToken, async (req, res) => {
     await user.save();
     return res.status(200).json({ success: true, message: "Password changed successfully!" });
 })
-router.get("/reward-center", optionalVerifyToken, userRoute("users/reward"));
-router.get("/messages", optionalVerifyToken, userRoute("users/messages"));
+router.get("/reward-center", optionalVerifyToken, async (req, res) => {
+    let foundUser = await userModel.findById(req.user._QCUI_UI);
+    if (!foundUser) return res.redirect("/user/login");
+
+    foundUser = foundUser.toObject();
+    const user = pickFields(foundUser, ["userImg", "fullname", "username", "phone", "address", "city", "YuuCoin", "joiningDate", "Reffer.url"]);
+    res.render("users/reward", { user });
+});
+router.get("/messages", optionalVerifyToken, async (req, res) => {
+    let foundUser = await userModel.findById(req.user._QCUI_UI);
+    if (!foundUser) return res.redirect("/user/login");
+
+    foundUser = foundUser.toObject();
+    const user = pickFields(foundUser, ["userImg", "fullname", "username", "phone", "address", "city", "messages"]);
+    res.render("users/messages", { user });
+});
 router.post("/editMessage", optionalVerifyToken, async (req, res) => {
     const token = req.user;
     const { id } = req.body;
@@ -142,11 +178,29 @@ router.post("/editMessage", optionalVerifyToken, async (req, res) => {
 router.get("/orders", optionalVerifyToken, async (req, res) => {
     const token = req.user;
     if (!token) return res.redirect("/user/login");
-    const user = await userModel.findById(token._QCUI_UI);
-    if (!user) return res.redirect("/user/login");
+    let foundUser = await userModel.findById(token._QCUI_UI);
+    if (!foundUser) return res.redirect("/user/login");
+
     const orders = await orderModel.find({ "userDetails.userId": token._QCUI_UI });
-    user.userOrders = orders;
-    await user.save();
+    foundUser.userOrders = orders;
+    await foundUser.save();
+
+    foundUser = foundUser.toObject();
+    foundUser.userOrders = foundUser.userOrders.map(order => {
+        // 1️⃣ Remove _id from the order itself
+        const { _id, ...rest } = order;
+
+        // 2️⃣ Remove userId from userDetails
+        if (rest.userDetails?.userId) {
+            const { userId, ...uDetails } = rest.userDetails;
+            rest.userDetails = uDetails;
+        }
+
+        return rest;
+    });
+
+    const user = pickFields(foundUser, ["userImg", "fullname", "username", "phone", "address", "city", "userOrders"]);
+
     res.render("users/my-orders", { user, slugify });
 });
 router.get("/wishlist", optionalVerifyToken, async (req, res) => {
@@ -154,10 +208,23 @@ router.get("/wishlist", optionalVerifyToken, async (req, res) => {
     if (!token) return res.redirect("/user/login");
     const user = await userModel.findById(token._QCUI_UI);
     if (!user) return res.redirect("/user/login");
-    const products = await productModel.find({ _id: user.userWishlist });
-    res.render("users/my-wishlist", { user, products, slugify });
+
+    let foundProducts = await productModel.find({ _id: user.userWishlist });
+
+    const products = foundProducts.map((product) => {
+        product = product.toObject();
+        product = pickFields(product, ["_id", "image", "proName", "proImg", "proPrice", "proPrice", "proOrignalPrice", "proDiscount", "proBuyer", "proRating", "proNoOfReviews", "customization"]);
+
+        return product;
+    });
+
+    res.render("users/my-wishlist", { products, slugify });
 });
-router.get("/settings", optionalVerifyToken, userRoute("users/setting"));
+router.get("/settings", optionalVerifyToken, async (req, res) => {
+    let foundUser = await userModel.findById(req.user._QCUI_UI);
+    if (!foundUser) return res.redirect("/user/login");
+    res.render("users/setting");
+});
 
 router.get("/register", async (req, res) => {
     const reffer = req.query.reffer;

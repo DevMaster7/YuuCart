@@ -44,7 +44,7 @@ async function main() {
 }
 main();
 async function getUser() {
-    let res = await fetch("/user/getUser", {
+    let res = await fetch("/api/frontUser", {
         method: 'get',
         headers: { 'Content-Type': 'application/json' },
     });
@@ -102,13 +102,13 @@ async function userLinks(e, userData) {
                         </div>
                         <div class="meta-info">
                             <img class="icon" src="/assets/coin.png" alt="">
-                            <span>100Yuu</span>
+                            <span id="pointsVal">${userData.user.YuuCoin} Yuu</span>
                         </div>
                     </div>
                     <div class="tier-con">
                         <div class="tier-info">
-                            <div class="muted">Tier: <strong>Wood</strong></div>
-                            <img src="/assets/tier/wood.png" alt="">
+                            <div class="muted">Tier: <strong id="userTier">--</strong></div>
+                            <img id="tierTag" src="/assets/tier/wood.png" alt="--">
                         </div>
                         <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
                         
@@ -166,12 +166,33 @@ async function userLinks(e, userData) {
                     </svg>
                     <div>Logout</div>
                 </button>`;
+
     if (e !== "home") {
         document.querySelector(".nav-con").querySelector(".right").prepend(userLinksDiv)
     }
     else {
         document.querySelector(".nav-con").append(userLinksDiv)
     }
+
+    // Tier Progress
+    const YuuCoins = userData.user.YuuCoin;
+    const TIERS = [
+        { name: "Wood", img: "/assets/tier/wood.png", min: 0, max: 999 },
+        { name: "Iron", img: "/assets/tier/iron.png", min: 1000, max: 1999 },
+        { name: "Bronze", img: "/assets/tier/bronze.png", min: 2000, max: 3499 },
+        { name: "Silver", img: "/assets/tier/silver.png", min: 3500, max: 4999 },
+        { name: "Gold", img: "/assets/tier/gold.png", min: 5000, max: 6499 },
+        { name: "Diamond", img: "/assets/tier/diamond.png", min: 7000, max: 9999 },
+        { name: "Platinum", img: "/assets/tier/platinum.png", min: 10000, max: 14999 },
+        { name: "Master", img: "/assets/tier/master.png", min: 15000, max: 9999999999 },
+    ];
+    const getTier = points => TIERS.find(t => points >= t.min && points <= t.max)?.name || "Bronze";
+    const tier = TIERS.find(t => t.name === getTier(YuuCoins));
+    const next = TIERS.find(t => t.min > tier.min) || { min: tier.max + 1 };
+    const progress = Math.min(1, (YuuCoins - tier.min) / (next.min - tier.min));
+    document.getElementById("userTier").innerHTML = getTier(YuuCoins);
+    document.getElementById("progressBar").style.width = `${Math.round(progress * 100)}%`;
+    document.getElementById("tierTag").src = `${tier.img}`;
 
 
     let userContentCon = document.querySelector(".user-content-con");

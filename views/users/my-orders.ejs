@@ -54,7 +54,7 @@
                 <div class="orders-con" id="orderCon">
                     <% if (user.userOrders.length !== 0) { %>
                     <% user.userOrders.reverse().forEach((order) =>{ %>
-                    <div class="order-box" data-status="<%= order.orderInfo.orderStatus %>">
+                    <div class="order-box" data-status="<%= order.orderInfo.orderStatus %>"><%= order.userDetails.userId %>
                         <% order.productDetails.forEach((orderdetail) =>{ %>
                         <div class="inner-con">
                             <a href="/shop/<%= slugify(orderdetail.productName, {lower: true}) %>-<%= orderdetail.productId %>"

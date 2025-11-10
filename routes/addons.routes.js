@@ -18,9 +18,9 @@ router.get("/getRedeems", async (req, res) => {
     res.status(200).json({ success: true, redeems });
 })
 
-router.post("/checkIn", async (req, res) => {
-    const { userId } = req.body;
-    const user = await userModel.findOne({ _id: userId });
+router.post("/checkIn", optionalVerifyToken, async (req, res) => {
+    // const { userId } = req.body;
+    const user = await userModel.findById(req.user._QCUI_UI);
     if (!user) return res.status(404).json({ success: false, message: "User not found" });
 
     const REWARDS = [10, 20, 40, 60, 100, 150, 300];
@@ -110,9 +110,9 @@ router.post("/checkIn", async (req, res) => {
     }
 });
 
-router.post("/useSpin", async (req, res) => {
-    const { userId } = req.body
-    const user = await userModel.findOne({ _id: userId })
+router.post("/useSpin", optionalVerifyToken, async (req, res) => {
+    const user = await userModel.findOne({ _id: req.user._QCUI_UI });
+    if (!user) return res.redirect("/user/login");
     let spinTime = new Date();
 
     if (new Date(user.spinDate) <= spinTime) {
@@ -127,9 +127,9 @@ router.post("/useSpin", async (req, res) => {
     return res.status(400).json({ success: false, message: "You have already used your spin!" })
 });
 
-router.post("/spinReward", async (req, res) => {
-    let { userId, rewardId, reward } = req.body;
-    const user = await userModel.findOne({ _id: userId });
+router.post("/spinReward", optionalVerifyToken, async (req, res) => {
+    let { rewardId, reward } = req.body;
+    const user = await userModel.findById(req.user._QCUI_UI);
     if (!user) return res.redirect("/user/login");
 
     if (reward.includes("Yuu")) {
@@ -140,24 +140,22 @@ router.post("/spinReward", async (req, res) => {
         await user.save();
     }
     else {
-        let foundReward = await couponModel.findOne({ _id: rewardId, couponType: "spin" })
+        let foundReward = await couponModel.findOne({ couponCode: rewardId, couponType: "spin" })
         if (!foundReward) return res.status(400).json({ success: false });
 
-        if (foundReward.couponLimit) {
-            foundReward.couponLimit -= 1;
-        }
+        if (foundReward.couponLimit) foundReward.couponLimit -= 1;
         foundReward.userList.push(user._id);
         await foundReward.save();
     }
     return res.status(200).json({ success: true });
 });
 
-router.post("/redeemReward", async (req, res) => {
-    const { userId, item } = req.body;
-    const user = await userModel.findOne({ _id: userId });
+router.post("/redeemReward", optionalVerifyToken, async (req, res) => {
+    const { item } = req.body;
+    const user = await userModel.findById(req.user._QCUI_UI);
     if (!user) return res.redirect("/user/login");
 
-    const foundReward = await couponModel.findOne({ _id: item._id })
+    const foundReward = await couponModel.findOne({ couponCode: item.couponCode })
     if (!foundReward) return res.status(400).json({ success: false });
 
     if (foundReward.userList.includes(user._id)) return res.status(400).json({ success: false, message: "You have already redeemed this reward!" });
