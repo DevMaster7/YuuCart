@@ -39,80 +39,96 @@ function pickFields(obj, fields = []) {
 }
 
 router.get("/frontUser", optionalVerifyToken, async (req, res) => {
-    const token = req.user;
-    if (!token) return res.redirect("/user/login");
-    let foundUser = await userModel.findById(token._QCUI_UI);
-    if (!foundUser) return res.redirect("/user/login");
+    try {
+        const token = req.user;
+        if (!token) return res.redirect("/user/login");
+        let foundUser = await userModel.findById(token._QCUI_UI);
+        if (!foundUser) return res.redirect("/user/login");
 
-    foundUser = foundUser.toObject();
-    const user = pickFields(foundUser, ["userImg", "fullname", "username", "phone", "address", "city", "email", "emailVerified", "YuuCoin"]);
+        foundUser = foundUser.toObject();
+        const user = pickFields(foundUser, ["userImg", "fullname", "username", "phone", "address", "city", "email", "emailVerified", "YuuCoin"]);
 
-    res.status(200).json({ success: true, user });
+        res.status(200).json({ success: true, user });
+    } catch (error) {
+        console.error("ERROR:", error);
+        return res.status(500).render("errors/500", {
+            title: "500 | Internal Server Error",
+            message: "Something went wrong while loading this page. Please try again later.",
+        });
+    }
 })
 
 router.get("/frontRewardCenter", optionalVerifyToken, async (req, res) => {
-    let foundUser = await userModel.findById(req.user._QCUI_UI);
-    if (!foundUser) return res.redirect("/user/login");
+    try {
+        let foundUser = await userModel.findById(req.user._QCUI_UI);
+        if (!foundUser) return res.redirect("/user/login");
 
-    let coupons = await couponModel.find();
-    coupons = coupons
-        .filter(item => {
-            const isExpiredOrInactive =
-                new Date(item.couponEndingDate) <= Date.now() || !item.Status;
+        let coupons = await couponModel.find();
+        coupons = coupons
+            .filter(item => {
+                const isExpiredOrInactive =
+                    new Date(item.couponEndingDate) <= Date.now() || !item.Status;
 
-            const isLimitOver = item.couponLimit <= 0;
+                const isLimitOver = item.couponLimit <= 0;
 
-            const userHasUsed =
-                Array.isArray(item.userList) &&
-                item.userList.some(id => id.toString() === foundUser._id.toString());
+                const userHasUsed =
+                    Array.isArray(item.userList) &&
+                    item.userList.some(id => id.toString() === foundUser._id.toString());
 
-            if (isExpiredOrInactive) return false;
-            if (!userHasUsed && isLimitOver) return false;
+                if (isExpiredOrInactive) return false;
+                if (!userHasUsed && isLimitOver) return false;
 
-            return true;
-        })
-        .sort((a, b) => {
-            const aUsed =
-                Array.isArray(a.userList) &&
-                a.userList.some(id => id.toString() === foundUser._id.toString());
-            const bUsed =
-                Array.isArray(b.userList) &&
-                b.userList.some(id => id.toString() === foundUser._id.toString());
-            return aUsed - bUsed; // unused first, used last
-        })
-        .map(item => {
-            item = item.toObject();
+                return true;
+            })
+            .sort((a, b) => {
+                const aUsed =
+                    Array.isArray(a.userList) &&
+                    a.userList.some(id => id.toString() === foundUser._id.toString());
+                const bUsed =
+                    Array.isArray(b.userList) &&
+                    b.userList.some(id => id.toString() === foundUser._id.toString());
+                return aUsed - bUsed; // unused first, used last
+            })
+            .map(item => {
+                item = item.toObject();
 
-            const userHasUsed =
-                Array.isArray(item.userList) &&
-                item.userList.some(id => id.toString() === foundUser._id.toString());
+                const userHasUsed =
+                    Array.isArray(item.userList) &&
+                    item.userList.some(id => id.toString() === foundUser._id.toString());
 
-            let {
-                _id,
-                AddedBy,
-                Status,
-                couponType,
-                benefitType,
-                couponStartingDate,
-                userList,
-                ...rest
-            } = item;
+                let {
+                    _id,
+                    AddedBy,
+                    Status,
+                    couponType,
+                    benefitType,
+                    couponStartingDate,
+                    userList,
+                    ...rest
+                } = item;
 
-            if (!userHasUsed) rest = { has: false, ...rest }
-            else rest = { has: true, ...rest };
+                if (!userHasUsed) rest = { has: false, ...rest }
+                else rest = { has: true, ...rest };
 
+                return rest;
+            });
+
+        foundUser = foundUser.toObject();
+        foundUser.Yuutx = foundUser.Yuutx.map(tx => {
+            const { _id, ...rest } = tx;
             return rest;
         });
 
-    foundUser = foundUser.toObject();
-    foundUser.Yuutx = foundUser.Yuutx.map(tx => {
-        const { _id, ...rest } = tx;
-        return rest;
-    });
+        const user = pickFields(foundUser, ["spinDate", "checkIn.lastCheck", "Yuutx"]);
 
-    const user = pickFields(foundUser, ["spinDate", "checkIn.lastCheck", "Yuutx"]);
-
-    res.status(200).json({ success: true, user, coupons });
+        res.status(200).json({ success: true, user, coupons });
+    } catch (error) {
+        console.error("ERROR:", error);
+        return res.status(500).render("errors/500", {
+            title: "500 | Internal Server Error",
+            message: "Something went wrong while loading this page. Please try again later.",
+        });
+    }
 })
 
 module.exports = router;

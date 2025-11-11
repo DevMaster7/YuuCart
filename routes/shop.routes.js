@@ -23,10 +23,12 @@ router.get("/", optionalVerifyToken, async (req, res) => {
             const userCart = user?.userCart || [];
             return res.render('shop', { products, slugify, userCart, user });
         }
-    }
-    catch (error) {
+    } catch (error) {
         console.error("ERROR:", error);
-        return res.status(500).send("Internal server error");
+        return res.status(500).render("errors/500", {
+            title: "500 | Internal Server Error",
+            message: "Something went wrong while loading this page. Please try again later.",
+        });
     }
 });
 
@@ -36,19 +38,19 @@ router.get("/:slug-:id", optionalVerifyToken, async (req, res) => {
         const { slug, id } = req.params;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).render("PNF")
+            return res.status(400).render("errors/404")
         }
 
         const product = await productModel.findById(id);
         const products = await productModel.find();
         if (!product) {
-            return res.status(404).render("PNF")
+            return res.status(404).render("errors/404")
         }
 
         const expectedSlug = slugify(product.proName, { lower: true });
 
         if (slug !== expectedSlug) {
-            return res.status(404).render("PNF")
+            return res.status(404).render("errors/404")
         }
         if (!tokenUser) {
             res.render("product", { product, products, slugify, userCart: [], user: [] });
@@ -84,51 +86,60 @@ router.get("/:slug-:id", optionalVerifyToken, async (req, res) => {
         }
     } catch (error) {
         console.error("ERROR:", error);
-        return res.status(500).send("Internal server error");
+        return res.status(500).render("errors/500", {
+            title: "500 | Internal Server Error",
+            message: "Something went wrong while loading this page. Please try again later.",
+        });
     }
 });
 
 router.post("/addReview", upload.array("images"), optionalVerifyToken, async (req, res) => {
-    const { id, rating, comment } = req.body.review;
-    const user = await userModel.findById(req.user._QCUI_UI);
-    if (!user) return res.redirect("/user/login");
+    try {
+        const { id, rating, comment } = req.body.review;
+        const user = await userModel.findById(req.user._QCUI_UI);
+        if (!user) return res.redirect("/user/login");
 
-    const product = await productModel.findById(id);
-    if (!product) return res.status(404).json({ success: false, message: "Product not found" });
+        const product = await productModel.findById(id);
+        if (!product) return res.status(404).json({ success: false, message: "Product not found" });
 
-    const hasConfirmed = user.userOrders.some(order =>
-        order.productDetails.some(prod => prod.productId.toString() === product._id.toString() && order.orderInfo.orderStatus === "Delivered" && !product.Reviews.some(review => review.username.toString() === user.username.toString()))
-    );
-    if (!hasConfirmed) {
-        return res.status(400).json({ success: false, message: "You have not confirmed your order yet!" });
+        const hasConfirmed = user.userOrders.some(order =>
+            order.productDetails.some(prod => prod.productId.toString() === product._id.toString() && order.orderInfo.orderStatus === "Delivered" && !product.Reviews.some(review => review.username.toString() === user.username.toString()))
+        );
+        if (!hasConfirmed) {
+            return res.status(400).json({ success: false, message: "You have not confirmed your order yet!" });
+        }
+
+        const meta = [];
+        for (const file of req.files) {
+            const url = await uploadOnCloudinary(file.buffer, "reviews");
+            meta.push(url);
+        }
+
+        const time = new Date();
+        product.Reviews.push({
+            username: user.username,
+            name: user.fullname,
+            rating,
+            comment,
+            meta,
+            time
+        });
+        await product.save();
+
+        res.status(200).json({ success: true });
+    } catch (error) {
+        console.error("ERROR:", error);
+        return res.status(500).render("errors/500", {
+            title: "500 | Internal Server Error",
+            message: "Something went wrong while loading this page. Please try again later.",
+        });
     }
-
-    const meta = [];
-    for (const file of req.files) {
-        const url = await uploadOnCloudinary(file.buffer, "reviews");
-        meta.push(url);
-    }
-
-    const time = new Date();
-    product.Reviews.push({
-        username: user.username,
-        name: user.fullname,
-        rating,
-        comment,
-        meta,
-        time
-    });
-    await product.save();
-
-    res.status(200).json({ success: true });
 });
 
 router.get("/search", optionalVerifyToken, async (req, res) => {
-    const search = req.query.query;
-    if (!search || search.trim() === "") {
-        return res.status(400).render("PNF")
-    }
     try {
+        const search = req.query.query;
+        if (!search || search.trim() === "") return res.status(400).render("errors/404")
         const tokenUser = req.user;
         const regex = new RegExp(search, "i");
         const results = await productModel.find({ proName: regex });
@@ -142,7 +153,10 @@ router.get("/search", optionalVerifyToken, async (req, res) => {
         }
     } catch (error) {
         console.error("ERROR:", error);
-        return res.status(500).send("Internal server error");
+        return res.status(500).render("errors/500", {
+            title: "500 | Internal Server Error",
+            message: "Something went wrong while loading this page. Please try again later.",
+        });
     }
 });
 
@@ -155,10 +169,12 @@ router.get("/cart", optionalVerifyToken, async (req, res) => {
         const user = await userModel.findById(tokenUser._QCUI_UI);
         const foundProducts = await productModel.find({ _id: { $in: user.userCart } });
         res.render("cart", { products: foundProducts, user });
-    }
-    catch (error) {
+    } catch (error) {
         console.error("ERROR:", error);
-        return res.status(500).send("Internal server error");
+        return res.status(500).render("errors/500", {
+            title: "500 | Internal Server Error",
+            message: "Something went wrong while loading this page. Please try again later.",
+        });
     }
 })
 
@@ -173,20 +189,31 @@ router.post("/add-to-cart", optionalVerifyToken, async (req, res) => {
             await user.save();
         }
         res.status(200).json({ success: true });
-    } catch (err) {
-        console.error("Error adding to cart:", err);
-        res.status(500).json({ error: "Server error" });
+    } catch (error) {
+        console.error("ERROR:", error);
+        return res.status(500).render("errors/500", {
+            title: "500 | Internal Server Error",
+            message: "Something went wrong while loading this page. Please try again later.",
+        });
     }
 });
 
 router.post("/delete-from-cart", optionalVerifyToken, async (req, res) => {
-    const productIDs = req.body.productIDs;
-    const tokenUser = req.user._QCUI_UI;
-    const user = await userModel.findById(tokenUser);
-    if (!user) return res.status(404).render("PNF");
-    user.userCart = user.userCart.filter(id => !productIDs.includes(id));
-    await user.save();
-    res.status(200).json({ success: true });
+    try {
+        const productIDs = req.body.productIDs;
+        const tokenUser = req.user._QCUI_UI;
+        const user = await userModel.findById(tokenUser);
+        if (!user) return res.status(404).render("errors/404");
+        user.userCart = user.userCart.filter(id => !productIDs.includes(id));
+        await user.save();
+        res.status(200).json({ success: true });
+    } catch (error) {
+        console.error("ERROR:", error);
+        return res.status(500).render("errors/500", {
+            title: "500 | Internal Server Error",
+            message: "Something went wrong while loading this page. Please try again later.",
+        });
+    }
 })
 
 router.post("/add-to-wishlist", optionalVerifyToken, async (req, res) => {
@@ -200,42 +227,69 @@ router.post("/add-to-wishlist", optionalVerifyToken, async (req, res) => {
             await user.save();
         }
         res.status(200).json({ success: true });
-    } catch (err) {
-        console.error("Error adding to wishlist:", err);
-        res.status(500).json({ error: "Server error" });
+    } catch (error) {
+        console.error("ERROR:", error);
+        return res.status(500).render("errors/500", {
+            title: "500 | Internal Server Error",
+            message: "Something went wrong while loading this page. Please try again later.",
+        });
     }
 })
 
 router.post("/remove-from-wishlist", optionalVerifyToken, async (req, res) => {
-    const { proID } = req.body;
-    const tokenUser = req.user._QCUI_UI;
-    const user = await userModel.findById(tokenUser);
-    if (!user) return res.status(404).render("PNF");
-    user.userWishlist = user.userWishlist.filter(id => !proID.includes(id));
-    await user.save();
-    res.status(200).json({ success: true });
+    try {
+        const { proID } = req.body;
+        const tokenUser = req.user._QCUI_UI;
+        const user = await userModel.findById(tokenUser);
+        if (!user) return res.status(404).render("errors/404");
+        user.userWishlist = user.userWishlist.filter(id => !proID.includes(id));
+        await user.save();
+        res.status(200).json({ success: true });
+    } catch (error) {
+        console.error("ERROR:", error);
+        return res.status(500).render("errors/500", {
+            title: "500 | Internal Server Error",
+            message: "Something went wrong while loading this page. Please try again later.",
+        });
+    }
 })
 
 router.get("/checkout", optionalVerifyToken, async (req, res) => {
-    const tokenUser = req.user;
-    if (!tokenUser) return res.status(401).redirect("/user/login");
-    const user = await userModel.findById(tokenUser._QCUI_UI);
-    const productData = req.session.productData;
-    if (!productData) {
-        let url = typeof (req.get('referer'));
-        if (url == "undefined") {
-            return res.redirect("/shop");
+    try {
+        const tokenUser = req.user;
+        if (!tokenUser) return res.status(401).redirect("/user/login");
+        const user = await userModel.findById(tokenUser._QCUI_UI);
+        const productData = req.session.productData;
+        if (!productData) {
+            let url = typeof (req.get('referer'));
+            if (url == "undefined") {
+                return res.redirect("/shop");
+            }
+            return res.redirect(req.get('referer'));
         }
-        return res.redirect(req.get('referer'));
+        delete req.session.productData;
+        return res.render("place-order", { user, productData });
+    } catch (error) {
+        console.error("ERROR:", error);
+        return res.status(500).render("errors/500", {
+            title: "500 | Internal Server Error",
+            message: "Something went wrong while loading this page. Please try again later.",
+        });
     }
-    delete req.session.productData;
-    return res.render("place-order", { user, productData });
 })
 
 router.post("/checkout", optionalVerifyToken, async (req, res) => {
-    const { productData } = req.body
-    req.session.productData = productData;
-    return res.status(200).json({ success: true });
+    try {
+        const { productData } = req.body
+        req.session.productData = productData;
+        return res.status(200).json({ success: true });
+    } catch (error) {
+        console.error("ERROR:", error);
+        return res.status(500).render("errors/500", {
+            title: "500 | Internal Server Error",
+            message: "Something went wrong while loading this page. Please try again later.",
+        });
+    }
 })
 
 router.post("/apply-coupon", optionalVerifyToken, async (req, res) => {
@@ -280,7 +334,6 @@ router.post("/apply-coupon", optionalVerifyToken, async (req, res) => {
                 }
             }
         }
-
         res.status(200).json({
             success: true,
             coupon: {
@@ -290,79 +343,89 @@ router.post("/apply-coupon", optionalVerifyToken, async (req, res) => {
             },
             message: "Coupon Applied Successfully!"
         });
-
-    } catch (err) {
-        console.error(err);
-        return res.status(500).json({ success: false, message: "Server error occurred." });
+    } catch (error) {
+        console.error("ERROR:", error);
+        return res.status(500).render("errors/500", {
+            title: "500 | Internal Server Error",
+            message: "Something went wrong while loading this page. Please try again later.",
+        });
     }
 });
 
 router.post("/place-order", optionalVerifyToken, async (req, res) => {
-    const userID = req.user._QCUI_UI;
-    const user = await userModel.findById(userID);
-    const couponName = req.body.couponName;
-    if (user.address == undefined || user.address == "" || user.city == undefined || user.city == "" || user.phone == undefined || user.phone == "" || !user.emailVerified) {
-        return res.status(400).json({ success: false, message: "Please Fill All The Details!" });
-    }
+    try {
+        const userID = req.user._QCUI_UI;
+        const user = await userModel.findById(userID);
+        const couponName = req.body.couponName;
+        if (user.address == undefined || user.address == "" || user.city == undefined || user.city == "" || user.phone == undefined || user.phone == "" || !user.emailVerified) {
+            return res.status(400).json({ success: false, message: "Please Fill All The Details!" });
+        }
 
-    if (couponName) {
-        const foundCoupon = await couponModel.findOne({ couponCode: couponName });
-        if (!foundCoupon) {
-            return res.status(400).json({ success: false, message: "Invalid Coupon Code!" });
-        }
-        if (!foundCoupon.Status) {
-            return res.status(400).json({ success: false, message: "Coupon Not Available Now!" });
-        }
-        if (foundCoupon.couponEndingDate) {
-            if (new Date(foundCoupon.couponEndingDate) < new Date()) {
-                return res.status(400).json({ success: false, message: "Coupon Expired!" });
+        if (couponName) {
+            const foundCoupon = await couponModel.findOne({ couponCode: couponName });
+            if (!foundCoupon) {
+                return res.status(400).json({ success: false, message: "Invalid Coupon Code!" });
             }
-        }
-
-        if (foundCoupon.couponType === "forall") {
-            if (typeof foundCoupon.couponLimit === "number") {
-                if (foundCoupon.couponLimit <= 0) {
-                    return res.status(400).json({ success: false, message: "Coupon Limit Reached!" });
+            if (!foundCoupon.Status) {
+                return res.status(400).json({ success: false, message: "Coupon Not Available Now!" });
+            }
+            if (foundCoupon.couponEndingDate) {
+                if (new Date(foundCoupon.couponEndingDate) < new Date()) {
+                    return res.status(400).json({ success: false, message: "Coupon Expired!" });
                 }
-                foundCoupon.couponLimit -= 1;
             }
-        } else {
-            foundCoupon.userList = foundCoupon.userList.filter(id => id != user._id);
+
+            if (foundCoupon.couponType === "forall") {
+                if (typeof foundCoupon.couponLimit === "number") {
+                    if (foundCoupon.couponLimit <= 0) {
+                        return res.status(400).json({ success: false, message: "Coupon Limit Reached!" });
+                    }
+                    foundCoupon.couponLimit -= 1;
+                }
+            } else {
+                foundCoupon.userList = foundCoupon.userList.filter(id => id != user._id);
+            }
+
+            await foundCoupon.save();
         }
 
-        await foundCoupon.save();
+
+        const productDeliveryData = req.body.productDeliveryData;
+        console.log(productDeliveryData);
+        const data = productDeliveryData.map((item) => {
+            const newItem = { ...item };
+            delete newItem.paymentMethod;
+            return newItem;
+        });
+
+        await orderModel.create({
+            userDetails: {
+                userId: userID,
+                fullname: user.fullname,
+                username: user.username,
+                email: user.email,
+                phone: user.phone,
+                city: user.city,
+                address: user.address
+            },
+            productDetails: data,
+            orderInfo: {
+                PaymentMethod: productDeliveryData[0].paymentMethod,
+            }
+        });
+        productDeliveryData.forEach(async (pro) => {
+            const product = await productModel.findById(pro.productId);
+            product.proBuyer += 1;
+            await product.save();
+        })
+        res.status(200).json({ success: true, message: "Order Placed Successfully!" });
+    } catch (error) {
+        console.error("ERROR:", error);
+        return res.status(500).render("errors/500", {
+            title: "500 | Internal Server Error",
+            message: "Something went wrong while loading this page. Please try again later.",
+        });
     }
-
-
-    const productDeliveryData = req.body.productDeliveryData;
-    console.log(productDeliveryData);
-    const data = productDeliveryData.map((item) => {
-        const newItem = { ...item };
-        delete newItem.paymentMethod;
-        return newItem;
-    });
-
-    await orderModel.create({
-        userDetails: {
-            userId: userID,
-            fullname: user.fullname,
-            username: user.username,
-            email: user.email,
-            phone: user.phone,
-            city: user.city,
-            address: user.address
-        },
-        productDetails: data,
-        orderInfo: {
-            PaymentMethod: productDeliveryData[0].paymentMethod,
-        }
-    });
-    productDeliveryData.forEach(async (pro) => {
-        const product = await productModel.findById(pro.productId);
-        product.proBuyer += 1;
-        await product.save();
-    })
-    res.status(200).json({ success: true, message: "Order Placed Successfully!" });
 })
 
 module.exports = router

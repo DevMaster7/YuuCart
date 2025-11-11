@@ -6,11 +6,11 @@ async function verifyAdmin(req, res, next) {
   try {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
     const newUser = await userModel.findById(decoded._QCUI_UI);
-    if (!newUser.isAdmin) return res.status(403).render("PNF");
+    if (!newUser.isAdmin) return res.status(403).render("errors/404");
     req.user = decoded;
     next();
   } catch (err) {
-    return res.status(401).render("PNF");
+    return res.status(401).render("errors/404");
   }
 }
 
