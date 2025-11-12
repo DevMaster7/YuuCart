@@ -26,41 +26,44 @@ router.get("/getRedeems", async (req, res) => {
     }
 })
 
-router.post("/checkIn", optionalVerifyToken, async (req, res) => {
+router.get("/checkIn", optionalVerifyToken, async (req, res) => {
     try {
         const user = await userModel.findById(req.user._QCUI_UI);
         if (!user) return res.status(404).json({ success: false, message: "User not found" });
 
         const REWARDS = [10, 20, 40, 60, 100, 150, 300];
-        const now = new Date();
-        const lastCheck = user.checkIn.lastCheck ? new Date(user.checkIn.lastCheck) : null;
+        const nowUTC = new Date();
+        const lastCheckUTC = user.checkIn.lastCheck ? new Date(user.checkIn.lastCheck) : null;
 
-        // 🟢 First-time check-in
-        if (!lastCheck) {
-            user.checkIn.lastCheck = now;
+        // 🌟 First-time check-in
+        if (!lastCheckUTC) {
+            const reward = REWARDS[0];
+            user.checkIn.lastCheck = nowUTC;
             user.checkIn.streak = 1;
-            user.YuuCoin += REWARDS[0];
-            user.Yuutx.push({ desc: "Daily Check-in", Yuu: REWARDS[0] });
+            user.YuuCoin += reward;
+            user.Yuutx.push({ desc: "Daily Check-in", Yuu: reward });
             await user.save();
+
             return res.status(200).json({
                 success: true,
-                message: "First check-in done!",
-                streak: user.checkIn.streak,
-                reward: REWARDS[0],
+                message: "First check-in completed!",
+                streak: 1,
+                reward,
             });
         }
 
-        // 🕛 Compare midnight times (to detect new day)
-        const lastMidnight = new Date(lastCheck);
-        lastMidnight.setHours(0, 0, 0, 0);
+        const nowPKT = new Date(nowUTC.getTime() + 5 * 60 * 60 * 1000);
+        const lastCheckPKT = new Date(lastCheckUTC.getTime() + 5 * 60 * 60 * 1000);
 
-        const todayMidnight = new Date(now);
+        const todayMidnight = new Date(nowPKT);
         todayMidnight.setHours(0, 0, 0, 0);
 
-        const dayDiff = Math.floor((todayMidnight - lastMidnight) / (1000 * 60 * 60 * 24));
-        const hoursPassed = (now - lastCheck) / (1000 * 60 * 60);
+        const lastMidnight = new Date(lastCheckPKT);
+        lastMidnight.setHours(0, 0, 0, 0);
 
-        // ❌ Same day → not allowed
+        const dayDiff = Math.floor((todayMidnight - lastMidnight) / (1000 * 60 * 60 * 24));
+
+        // ❌ Same day → cannot check-in
         if (dayDiff === 0) {
             return res.status(400).json({
                 success: false,
@@ -69,30 +72,17 @@ router.post("/checkIn", optionalVerifyToken, async (req, res) => {
             });
         }
 
-        // ⚠️ Missed due to delay (24+ hours but still next date)
-        if (dayDiff === 1 && hoursPassed >= 24) {
-            const reward = REWARDS[0];
-            user.checkIn.lastCheck = now;
-            user.checkIn.streak = 1;
-            user.YuuCoin += reward;
-            user.Yuutx.push({ desc: "Daily Check-in", Yuu: reward });
-            await user.save();
-            return res.status(200).json({
-                success: true,
-                message: "You missed a day! Streak reset.",
-                streak: user.checkIn.streak,
-                reward,
-            });
-        }
+        // ✅ Next day → streak continues
+        if (dayDiff === 1) {
+            const rewardIndex = user.checkIn.streak % REWARDS.length;
+            const reward = REWARDS[rewardIndex];
 
-        // ✅ Valid next day check-in
-        if (dayDiff === 1 && hoursPassed < 24) {
-            user.checkIn.streak = user.checkIn.streak < 7 ? user.checkIn.streak + 1 : 1;
-            const reward = REWARDS[user.checkIn.streak - 1];
+            user.checkIn.streak += 1;
+            user.checkIn.lastCheck = nowUTC;
             user.YuuCoin += reward;
-            user.checkIn.lastCheck = now;
             user.Yuutx.push({ desc: "Daily Check-in", Yuu: reward });
             await user.save();
+
             return res.status(200).json({
                 success: true,
                 message: "Daily check-in successful!",
@@ -101,21 +91,24 @@ router.post("/checkIn", optionalVerifyToken, async (req, res) => {
             });
         }
 
-        // ❌ Missed multiple days
-        if (dayDiff > 1) {
-            user.checkIn.streak = 1;
+        // 🔴 Missed more than 1 day → streak reset
+        if (dayDiff >= 2) {
             const reward = REWARDS[0];
+
+            user.checkIn.streak = 1;
+            user.checkIn.lastCheck = nowUTC;
             user.YuuCoin += reward;
-            user.checkIn.lastCheck = now;
             user.Yuutx.push({ desc: "Daily Check-in", Yuu: reward });
             await user.save();
+
             return res.status(200).json({
                 success: true,
-                message: "You missed multiple days! Streak reset.",
-                streak: user.checkIn.streak,
+                message: "You missed a day! Streak reset.",
+                streak: 1,
                 reward,
             });
         }
+
     } catch (error) {
         console.error("ERROR:", error);
         return res.status(500).render("errors/500", {
@@ -129,18 +122,32 @@ router.post("/useSpin", optionalVerifyToken, async (req, res) => {
     try {
         const user = await userModel.findOne({ _id: req.user._QCUI_UI });
         if (!user) return res.redirect("/user/login");
-        let spinTime = new Date();
 
-        if (new Date(user.spinDate) <= spinTime) {
-            spinTime = spinTime.setHours(spinTime.getHours() + 24);
+        const nowUTC = new Date();
+        const lastSpinUTC = new Date(user.spinDate);
 
-            user.spinDate = new Date(spinTime)
-            await user.save()
+        const nowPKT = new Date(nowUTC.getTime() + 5 * 60 * 60 * 1000);
+        const lastSpinPKT = new Date(lastSpinUTC.getTime() + 5 * 60 * 60 * 1000);
 
-            return res.status(200).json({ success: true })
+        const todayMidnight = new Date(nowPKT);
+        todayMidnight.setHours(0, 0, 0, 0);
+
+        const lastMidnight = new Date(lastSpinPKT);
+        lastMidnight.setHours(0, 0, 0, 0);
+
+        const dayDiff = Math.floor((todayMidnight - lastMidnight) / (1000 * 60 * 60 * 24));
+
+        if (dayDiff === 0) {
+            return res.status(400).json({ success: false, message: "You have already used your spin!" });
         }
 
-        return res.status(400).json({ success: false, message: "You have already used your spin!" })
+        if (dayDiff >= 1) {
+            user.spinDate = nowUTC;
+            await user.save();
+
+            return res.status(200).json({ success: true })
+        };
+
     } catch (error) {
         console.error("ERROR:", error);
         return res.status(500).render("errors/500", {

@@ -36,21 +36,26 @@ async function getRewardsData() {
 
     // Check In
     document.getElementById("checkInBtn").addEventListener("click", async () => {
-        const lastMidnight = new Date(rewardData.user.checkIn.lastCheck);
-        let now = new Date();
-        lastMidnight.setHours(0, 0, 0, 0);
-        const todayMidnight = new Date(now);
+        const nowUTC = new Date();
+        const lastCheckUTC = rewardData.user.checkIn.lastCheck ? new Date(rewardData.user.checkIn.lastCheck) : null;
+
+        const nowPKT = new Date(nowUTC.getTime() + 5 * 60 * 60 * 1000);
+        const lastCheckPKT = new Date(lastCheckUTC.getTime() + 5 * 60 * 60 * 1000);
+
+        const todayMidnight = new Date(nowPKT);
         todayMidnight.setHours(0, 0, 0, 0);
+
+        const lastMidnight = new Date(lastCheckPKT);
+        lastMidnight.setHours(0, 0, 0, 0);
+
         const dayDiff = Math.floor((todayMidnight - lastMidnight) / (1000 * 60 * 60 * 24));
 
         if (!(dayDiff === 0)) {
             let res = await fetch("/addons/checkIn", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                method: "GET",
             });
             let res1 = await res.json();
+            console.log(res1);
             if (res1.success) {
                 let streak = res1.streak
                 let root = document.getElementById("modalRoot")
@@ -70,8 +75,7 @@ async function getRewardsData() {
                     "<button class=\"btn\" onclick=\"closeModal()\">OK</button>"
                 );
             }
-        }
-        else {
+        } else {
             showModal("Already Checked In",
                 "You’ve already claimed today’s reward!",
                 "<button class=\"btn\" onclick=\"closeModal()\">OK</button>"
@@ -102,7 +106,7 @@ async function getRewardsData() {
         {
             label: '10 Yuu',
             color: '#60A5FA',
-            weight: 5
+            weight: 50
         },
         {
             label: '500 Yuu',
@@ -113,12 +117,12 @@ async function getRewardsData() {
             label: '5% OFF',
             code: "SAVE5WITHSPIN",
             color: '#06B6D4',
-            weight: 200
+            weight: 5
         },
         {
             label: 'No Prize',
             color: '#E5E7EB',
-            weight: 6
+            weight: 2
         },
         {
             label: 'Free Mug',
@@ -251,7 +255,21 @@ async function getRewardsData() {
         }
     }
     centerBtn.addEventListener("click", () => {
-        if (new Date(rewardData.user.spinDate) <= new Date()) {
+        const nowUTC = new Date();
+        const lastSpinUTC = new Date(rewardData.user.spinDate);
+
+        const nowPKT = new Date(nowUTC.getTime() + 5 * 60 * 60 * 1000);
+        const lastSpinPKT = new Date(lastSpinUTC.getTime() + 5 * 60 * 60 * 1000);
+
+        const todayMidnight = new Date(nowPKT);
+        todayMidnight.setHours(0, 0, 0, 0);
+
+        const lastMidnight = new Date(lastSpinPKT);
+        lastMidnight.setHours(0, 0, 0, 0);
+
+        const dayDiff = Math.floor((todayMidnight - lastMidnight) / (1000 * 60 * 60 * 24));
+
+        if (!spinning && !(dayDiff === 0)) {
             spin()
         }
         else {
