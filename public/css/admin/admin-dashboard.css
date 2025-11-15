@@ -112,6 +112,104 @@ h1 {
     box-shadow: var(--shadow)
 }
 
+#couponList::-webkit-scrollbar {
+    width: 4px;
+}
+
+#couponList::-webkit-scrollbar-thumb {
+    background: rgb(154, 154, 154);
+    border-radius: 4px;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+#couponList::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.coupon-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.coupon-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.coupon-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.coupon-title {
+    font-weight: 700;
+    margin: 0;
+    color: #2d3748;
+}
+
+.coupon-sub {
+    font-size: 13px;
+    color: #718096;
+    margin: 0;
+}
+
+.coupon-type {
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: #edf2f7;
+    color: #2d3748;
+    font-weight: 600;
+}
+
+.coupon-body div {
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    margin: 4px 0;
+}
+
+.coupon-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 6px;
+}
+
+.status.active {
+    color: #38A169;
+    font-weight: 600;
+}
+
+.status.inactive {
+    color: #E53E3E;
+    font-weight: 600;
+}
+
+.btn.small {
+    background: #3182CE;
+    border: none;
+    color: white;
+    font-size: 13px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn.small:hover {
+    background: #2B6CB0;
+}
+
+
 .grid .full {
     grid-column: span 12
 }

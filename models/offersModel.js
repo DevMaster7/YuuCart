@@ -20,6 +20,7 @@ const couponSchema = new mongoose.Schema({
     couponTitle: String,
     couponSubTitle: String,
     couponLimit: Number,
+    couponUsage: Number,
     couponDescription: String,
     couponStartingDate: {
         type: Date,

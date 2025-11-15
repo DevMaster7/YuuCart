@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const slugify = require("slugify");
 const optionalVerifyToken = require("../middleware/optionalVerifyToken");
+const verifyAdmin = require("../middleware/verifyAdmin");
 const productModel = require("../models/productsModel");
 const userModel = require("../models/usersModel");
 const orderModel = require("../models/ordersModel");
@@ -122,6 +123,54 @@ router.get("/frontRewardCenter", optionalVerifyToken, async (req, res) => {
         const user = pickFields(foundUser, ["spinDate", "checkIn.lastCheck", "Yuutx"]);
 
         res.status(200).json({ success: true, user, coupons });
+    } catch (error) {
+        console.error("ERROR:", error);
+        return res.status(500).render("errors/500", {
+            title: "500 | Internal Server Error",
+            message: "Something went wrong while loading this page. Please try again later.",
+        });
+    }
+})
+
+router.get("/frontAdminData", optionalVerifyToken, verifyAdmin, async (req, res) => {
+    try {
+        const usersChart = await userModel.aggregate([
+            {
+                $group: {
+                    _id: {
+                        $dateToString: { format: "%Y-%m-%d", date: "$joiningDate" }
+                    },
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { _id: 1 }
+            }
+        ]);
+
+        const orderAgg = await orderModel.aggregate([
+            {
+                $group: {
+                    _id: "$orderInfo.orderStatus",
+                    count: { $sum: 1 }
+                }
+            }
+        ]);
+        const ordersChart = {
+            pending: 0,
+            delivered: 0,
+            return: 0
+        };
+        orderAgg.forEach(item => {
+            const key = item._id.toLowerCase();
+            if (ordersChart[key] !== undefined) {
+                ordersChart[key] = item.count;
+            }
+        });
+
+        const couponsData = await couponModel.find();
+
+        res.status(200).json({ success: true, usersChart, ordersChart, couponsData });
     } catch (error) {
         console.error("ERROR:", error);
         return res.status(500).render("errors/500", {

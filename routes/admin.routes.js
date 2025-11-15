@@ -24,72 +24,13 @@ function allowPage(pageName) {
 }
 
 // Dashboard
-router.get("/admin-data", async (req, res) => {
-  try {
-    // Data related to users
-    let allUsers = await userModel.find();
-    const firstUser = await userModel.findOne().sort({ joiningDate: 1 });
-    const agg = await userModel.aggregate([
-      {
-        $group: {
-          _id: {
-            year: { $year: "$joiningDate" },
-            month: { $month: "$joiningDate" },
-            day: { $dayOfMonth: "$joiningDate" }
-          },
-          count: { $sum: 1 }
-        }
-      }
-    ]);
-
-    // Data related to orders
-    let allOrders = await orderModel.find();
-    const ordersData = await orderModel.aggregate([
-      {
-        $group: {
-          _id: "$orderInfo.orderStatus",
-          count: { $sum: 1 }
-        }
-      },
-      {
-        $project: {
-          _id: 0,
-          status: "$_id",
-          count: 1
-        }
-      }
-    ]);
-
-    let allProducts = await productModel.find();
-    let allCoupons = await couponModel.find();
-
-    let data = {
-      allUsers,
-      userChartDetails: {
-        firstUser,
-        agg
-      },
-      orderChartDetails: ordersData,
-      allOrders,
-      allProducts,
-      allCoupons
-    }
-    res.status(200).json({ data })
-  } catch (error) {
-    console.error("ERROR:", error);
-    return res.status(500).render("errors/500", {
-      title: "500 | Internal Server Error",
-      message: "Something went wrong while loading this page. Please try again later.",
-    });
-  }
-})
 router.get("/", verifyAdmin, async (req, res) => {
   try {
-    const users = await userModel.find();
-    const orders = await orderModel.find();
-    const products = await productModel.find();
-    const coupons = await couponModel.find();
-    res.render("admins/admin-dashboard", { users, orders, products, coupons });
+    const usersCount = await userModel.countDocuments();
+    const ordersCount = await orderModel.countDocuments();
+    const productsCount = await productModel.countDocuments();
+    const couponsCount = await couponModel.countDocuments();
+    res.render("admins/admin-dashboard", { usersCount: usersCount, ordersCount: ordersCount, productsCount: productsCount, couponsCount: couponsCount });
   } catch (error) {
     console.error("ERROR:", error);
     return res.status(500).render("errors/500", {
@@ -98,6 +39,36 @@ router.get("/", verifyAdmin, async (req, res) => {
     });
   }
 });
+router.post("/toggleCoupon", verifyAdmin, async (req, res) => {
+  try {
+    const { code, action } = req.body; // frontend se action bhi milega
+    const foundCoupon = await couponModel.findOne({ couponCode: code });
+
+    if (!foundCoupon) {
+      return res.status(404).json({ success: false, message: "Coupon not found" });
+    }
+
+    // action ke hisaab se Status set karo
+    if (action === "pause") {
+      foundCoupon.Status = false;
+    } else if (action === "resume") {
+      foundCoupon.Status = true;
+    } else {
+      // agar action missing ho ya invalid, toggle kar do (backward compatibility)
+      foundCoupon.Status = !foundCoupon.Status;
+    }
+
+    await foundCoupon.save();
+
+    return res.status(200).json({ success: true, Status: foundCoupon.Status });
+  } catch (error) {
+    console.error("ERROR:", error);
+    return res.status(500).render("errors/500", {
+      title: "500 | Internal Server Error",
+      message: "Something went wrong while loading this page. Please try again later.",
+    });
+  }
+})
 
 // Orders
 router.get("/manage-orders", verifyAdmin, allowPage("manageOrders"), async (req, res) => {

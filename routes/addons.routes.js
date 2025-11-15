@@ -13,19 +13,6 @@ const fs = require("fs");
 const path = require('node:path');
 const router = express.Router();
 
-router.get("/getRedeems", async (req, res) => {
-    try {
-        const redeems = await couponModel.find({ couponType: "redeem" });
-        res.status(200).json({ success: true, redeems });
-    } catch (error) {
-        console.error("ERROR:", error);
-        return res.status(500).render("errors/500", {
-            title: "500 | Internal Server Error",
-            message: "Something went wrong while loading this page. Please try again later.",
-        });
-    }
-})
-
 router.get("/checkIn", optionalVerifyToken, async (req, res) => {
     try {
         const user = await userModel.findById(req.user._QCUI_UI);

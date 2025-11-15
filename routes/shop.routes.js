@@ -46,6 +46,25 @@ router.get("/:slug-:id", optionalVerifyToken, async (req, res) => {
         if (!product) {
             return res.status(404).render("errors/404")
         }
+        const allRatings = product.Reviews.map(r => r.rating);
+        let starCounts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+
+        allRatings.forEach(r => {
+            if (r >= 4.1) starCounts[5]++;
+            else if (r >= 3.1) starCounts[4]++;
+            else if (r >= 2.1) starCounts[3]++;
+            else if (r >= 1.1) starCounts[2]++;
+            else starCounts[0]++;
+        });
+
+        const total = allRatings.length;
+        let distribution = {
+            5: total ? (starCounts[5] / total * 100).toFixed(0) : 0,
+            4: total ? (starCounts[4] / total * 100).toFixed(0) : 0,
+            3: total ? (starCounts[3] / total * 100).toFixed(0) : 0,
+            2: total ? (starCounts[2] / total * 100).toFixed(0) : 0,
+            1: total ? (starCounts[1] / total * 100).toFixed(0) : 0,
+        };
 
         const expectedSlug = slugify(product.proName, { lower: true });
 
@@ -82,7 +101,7 @@ router.get("/:slug-:id", optionalVerifyToken, async (req, res) => {
             }
 
             const userCart = user?.userCart || [];
-            res.render("product", { product, products, slugify, userCart, user, timeAgo });
+            res.render("product", { product, products, slugify, userCart, user, distribution, timeAgo });
         }
     } catch (error) {
         console.error("ERROR:", error);
@@ -96,6 +115,14 @@ router.get("/:slug-:id", optionalVerifyToken, async (req, res) => {
 router.post("/addReview", upload.array("images"), optionalVerifyToken, async (req, res) => {
     try {
         const { id, rating, comment } = req.body.review;
+        let userRating = Number(rating);
+
+        if (isNaN(userRating)) {
+            return res.status(400).json({ success: false, message: "Invalid rating" });
+        }
+
+        if (userRating < 0) userRating = 0;
+        if (userRating > 5) userRating = 5;
         const user = await userModel.findById(req.user._QCUI_UI);
         if (!user) return res.redirect("/user/login");
 
@@ -115,6 +142,10 @@ router.post("/addReview", upload.array("images"), optionalVerifyToken, async (re
             meta.push(url);
         }
 
+        const oldTotal = product.proRating * product.proNoOfReviews;
+        product.proNoOfReviews += 1;
+        product.proRating = (oldTotal + userRating) / product.proNoOfReviews;
+
         const time = new Date();
         product.Reviews.push({
             username: user.username,
@@ -122,11 +153,38 @@ router.post("/addReview", upload.array("images"), optionalVerifyToken, async (re
             rating,
             comment,
             meta,
-            time
+            time,
+
         });
         await product.save();
 
-        res.status(200).json({ success: true });
+        const allRatings = product.Reviews.map(r => r.rating);
+        let starCounts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+
+        allRatings.forEach(r => {
+            if (r >= 4.1) starCounts[5]++;
+            else if (r >= 3.1) starCounts[4]++;
+            else if (r >= 2.1) starCounts[3]++;
+            else if (r >= 1.1) starCounts[2]++;
+            else starCounts[0]++;
+        });
+
+        const total = allRatings.length;
+        let distribution = {
+            5: total ? (starCounts[5] / total * 100).toFixed(0) : 0,
+            4: total ? (starCounts[4] / total * 100).toFixed(0) : 0,
+            3: total ? (starCounts[3] / total * 100).toFixed(0) : 0,
+            2: total ? (starCounts[2] / total * 100).toFixed(0) : 0,
+            1: total ? (starCounts[1] / total * 100).toFixed(0) : 0,
+        };
+
+        res.status(200).json({
+            success: true, product: {
+                proRating: product.proRating,
+                proNoOfReviews: product.proNoOfReviews,
+                distribution
+            }
+        });
     } catch (error) {
         console.error("ERROR:", error);
         return res.status(500).render("errors/500", {
@@ -391,7 +449,6 @@ router.post("/place-order", optionalVerifyToken, async (req, res) => {
 
 
         const productDeliveryData = req.body.productDeliveryData;
-        console.log(productDeliveryData);
         const data = productDeliveryData.map((item) => {
             const newItem = { ...item };
             delete newItem.paymentMethod;

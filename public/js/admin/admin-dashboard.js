@@ -1,178 +1,27 @@
 async function getData() {
-    const response = await fetch("/admin/admin-data");
+    const response = await fetch("/api/frontAdminData");
     const returnData = await response.json();
-    console.log(returnData.data.allCoupons);
-
-    // User Data
-    let userData = returnData.data.userChartDetails.agg
-    let startingUser = returnData.data.userChartDetails.firstUser.joiningDate
-    function toMidnight(date) {
-        const d = new Date(date);
-        d.setHours(0, 0, 0, 0);
-        return d;
-    }
-    function fillDays(data, startDate) {
-        const result = [];
-        let startingDate = toMidnight(startDate);
-        let currentDate = toMidnight(new Date());
-
-        while (startingDate <= currentDate) {
-            const dd = String(startingDate.getDate()).padStart(2, "0");
-            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            const mm = monthNames[startingDate.getMonth()];
-            const dayName = startingDate.toLocaleDateString("en-US", { weekday: "short" });
-
-            const label = `${dd} ${mm} (${dayName})`;
-
-            const match = data.find(d =>
-                d._id.year === startingDate.getFullYear() &&
-                d._id.month === startingDate.getMonth() + 1 &&
-                d._id.day === startingDate.getDate()
-            );
-
-            result.push({
-                date: label,
-                count: match ? match.count : 0
-            });
-
-            startingDate.setDate(startingDate.getDate() + 1);
-        }
-
-        return result;
-    }
-    const userSeries = fillDays(userData, startingUser);
-
-    // Coupon Data
-    let coupons = returnData.data.allCoupons;
-    coupons = coupons.map((coupon) => {
-        return {
-            code: coupon.couponCode,
-            discount: coupon.couponDiscount,
-            limit: coupon.couponLimit,
-            active: coupon.Status
-        }
-    })
-
-    // Complete Data Structure
-    let MOCK = {
-        kpis: {
-            revenue: 0,
-            users: returnData.data.allUsers,
-            products: returnData.data.allProducts,
-            orders: returnData.data.allOrders,
-            coupons: returnData.data.allCoupons
-        },
-        userSeries,
-        orderSeries: returnData.data.orderChartDetails,
-        coupons,
-        productCategories: [{
-            name: 'Apparel',
-            value: 48
-        },
-        {
-            name: 'Accessories',
-            value: 28
-        },
-        {
-            name: 'Home',
-            value: 18
-        },
-        {
-            name: 'Electronics',
-            value: 12
-        },
-        ],
-        recentOrders: [{
-            id: 'ORD-1001',
-            customer: 'Ali Khan',
-            amount: 3200,
-            date: '2025-09-18',
-            status: 'Processing'
-        },
-        {
-            id: 'ORD-1002',
-            customer: 'Sara I.',
-            amount: 1250,
-            date: '2025-09-18',
-            status: 'Pending'
-        },
-        {
-            id: 'ORD-1003',
-            customer: 'Usman R.',
-            amount: 499,
-            date: '2025-09-17',
-            status: 'Shipped'
-        },
-        {
-            id: 'ORD-1004',
-            customer: 'Ayesha',
-            amount: 2199,
-            date: '2025-09-16',
-            status: 'Delivered'
-        },
-        {
-            id: 'ORD-1005',
-            customer: 'Bilal',
-            amount: 799,
-            date: '2025-09-15',
-            status: 'Returned'
-        }
-        ],
-        topProducts: [{
-            id: 'P-01',
-            title: 'Classic Tee',
-            sold: 420
-        },
-        {
-            id: 'P-02',
-            title: 'Limited Mug',
-            sold: 320
-        },
-        {
-            id: 'P-03',
-            title: 'Sticker Pack',
-            sold: 290
-        }
-        ],
-
-    };
-    applyData(MOCK);
-}
-getData();
-
-function fmt(n) {
-    // simple rupee formatting
-    return 'Rs.' + n.toLocaleString('en-PK');
+    return returnData
 }
 
-function applyData(data) {
-    // KPIs
-    document.getElementById('kpiUsers').textContent = data.kpis.users.length;
-    document.getElementById('kpiProducts').textContent = data.kpis.products.length;
-    document.getElementById('kpiOrders').textContent = data.kpis.orders.length;
-    document.getElementById('kpiRevenue').textContent = fmt(data.kpis.revenue);
-
-    document.getElementById('totalUserCount').textContent = `(${data.kpis.users.length})`;
-    document.getElementById('totalOrderCount').textContent = `(${data.kpis.orders.length})`;
-    document.getElementById('totalCouponCount').textContent = `(${data.kpis.coupons.length})`;
-    document.getElementById('totalProductCount').textContent = `(${data.kpis.products.length})`;
+async function applyData() {
+    let Data = await getData();
+    console.log(Data);
 
     // Charts
-    renderUserChart(data.userSeries);
-    renderOrderChart(data.orderSeries);
-    // renderPieChart(data.productCategories);
+    renderUserChart(Data.usersChart);
+    renderOrderChart(Data.ordersChart);
 
-    // // Table & lists
-    renderCoupons(data.coupons);
-    // renderOrdersTable(data.recentOrders);
-    // renderTopProducts(data.topProducts);
+    // Table & lists
+    renderCoupons(Data.couponsData);
 }
 
-let userChart = null,
-    orderChart = null
-function renderUserChart(series) {
-    const days = series.map(item => item.date);
-    const values = series.map(item => item.count);
+applyData();
+
+let userChart = null;
+function renderUserChart(Data) {
+    const days = Data.map(item => item._id);
+    const values = Data.map(item => item.count);
 
     const ctx = document.getElementById("userChart").getContext("2d");
     if (userChart) userChart.destroy();
@@ -227,7 +76,13 @@ function updateUserTrend(chart) {
     document.getElementById("userTrend").textContent = `last ${visibleBars} days`;
 }
 
-function renderOrderChart(series) {
+let orderChart = null;
+function renderOrderChart(Data) {
+    let series = [
+        { status: "Pending", count: Data.pending },
+        { status: "Delivered", count: Data.delivered },
+        { status: "Cancelled", count: Data.return }
+    ];
     const colorMap = {
         Pending: '#F6AD55',
         Delivered: '#38A169',
@@ -273,125 +128,102 @@ function renderOrderChart(series) {
     });
 }
 
-// function renderOrdersChart(statusSeries) {
-//     const ctx = document.getElementById('ordersChart').getContext('2d');
-//     const labels = statusSeries.map(s => s.status);
-//     const values = statusSeries.map(s => s.count);
-//     if (ordersChart) ordersChart.destroy();
-//     ordersChart = new Chart(ctx, {
-//         type: 'bar',
-//         data: {
-//             labels,
-//             datasets: [{
-//                 label: 'Orders',
-//                 data: values,
-//                 backgroundColor: labels.map(lbl => statusColor(lbl)),
-//                 borderRadius: 6
-//             }]
-//         },
-//         options: {
-//             responsive: true,
-//             maintainAspectRatio: false,
-//             scales: {
-//                 x: {
-//                     grid: {
-//                         display: false
-//                     },
-//                     ticks: {
-//                         color: '#64748b'
-//                     }
-//                 },
-//                 y: {
-//                     grid: {
-//                         color: '#f1f5f9'
-//                     },
-//                     ticks: {
-//                         color: '#64748b'
-//                     }
-//                 }
-//             },
-//             plugins: {
-//                 legend: {
-//                     display: false
-//                 }
-//             }
-//         }
-//     });
-// }
-
-
-
-// -------------------------
-// Render lists & tables
-// -------------------------
-// function renderOrdersTable(orders) {
-//     // If no orders provided, use data from MOCK
-//     orders = orders || MOCK.recentOrders;
-//     const filter = document.getElementById('filterStatus').value;
-//     const tbody = document.getElementById('ordersTableBody');
-//     tbody.innerHTML = '';
-//     const filtered = (filter === 'all') ? orders : orders.filter(o => o.status.toLowerCase() === filter
-//         .toLowerCase());
-//     filtered.forEach(o => {
-//         const tr = document.createElement('tr');
-//         tr.innerHTML = `
-//           <td><strong>${o.id}</strong></td>
-//           <td>${o.customer}</td>
-//           <td>${fmt(o.amount)}</td>
-//           <td class="muted">${o.date}</td>
-//           <td><span class="badge ${badgeClass(o.status)}">${o.status}</span></td>
-//         `;
-//         tbody.appendChild(tr);
-//     });
-//     // update total orders count display
-//     document.getElementById('totalOrdersCount').textContent = orders.length;
-// }
-
-// function badgeClass(status) {
-//     const s = status.toLowerCase();
-//     if (s === 'pending') return 'b-pending';
-//     if (s === 'processing') return 'b-processing';
-//     if (s === 'shipped') return 'b-shipped';
-//     if (s === 'delivered') return 'b-delivered';
-//     if (s === 'returned') return 'b-return';
-//     return '';
-// }
-
-// function renderTopProducts(list) {
-//     const cont = document.getElementById('topProducts');
-//     cont.innerHTML = '';
-//     list.forEach(p => {
-//         const el = document.createElement('div');
-//         el.className = 'top-item';
-//         el.innerHTML = `<div class="thumb">${p.title.charAt(0)}</div>
-//                         <div style="flex:1"><div style="font-weight:700">${p.title}</div><div class="muted" style="font-size:13px">${p.sold} sold</div></div>
-//                         <div style="font-weight:700">${p.sold}</div>`;
-//         cont.appendChild(el);
-//     });
-// }
-
-function renderCoupons(list) {
+function renderCoupons(Data) {
     const cont = document.getElementById('couponList');
     cont.innerHTML = '';
-    list.forEach(c => {
+
+    Data.forEach(c => {
+        const now = new Date();
+        const endDate = c.couponEndingDate ? new Date(c.couponEndingDate) : null;
+        const isExpired = endDate && endDate < now;
+        const isActive = c.Status && (!endDate || !isExpired);
         const div = document.createElement('div');
-        div.style.display = 'flex';
-        div.style.justifyContent = 'space-between';
-        div.style.alignItems = 'center';
-        div.style.padding = '8px';
-        div.style.borderRadius = '8px';
-        div.style.background = '#fbfdff';
-        div.innerHTML =
-            `<div>
-            <div style="font-weight:700">${c.code}</div>
-            <div class="muted" style="font-size:13px">Discount: <strong>${c.discount}%</strong></div>
+        div.classList.add('coupon-card');
+        div.innerHTML = `
+            <div class="coupon-header">
+                <div>
+                    <h4 class="coupon-title">${c.couponTitle}</h4>
+                    <p class="coupon-sub">${c.couponSubTitle || ''}</p>
+                </div>
+                <span class="coupon-type ${c.couponType}">
+                    ${c.couponType === "forall" ? "For All Users" : "Custom"}
+                </span>
             </div>
-            <div><button class="btn small ghost" onclick='toggleCoupon("${c.code}")'>${c.active ? 'Pause' : 'Activate'}</button></div>`;
+
+            <div class="coupon-body">
+                <div class="coupon-code">
+                    <span>Code:</span>
+                    <strong>${c.couponCode}</strong>
+                </div>
+                <div class="coupon-benefit">
+                    <span>Type:</span> <strong>${c.benefitType.charAt(0).toUpperCase() + c.benefitType.slice(1)}</strong>
+                </div>
+                <div class="coupon-benefit">
+                    <span>Benefit:</span> <strong>${c.benefitValue}</strong>
+                </div>
+                ${c.couponCost
+                ? `<div class="coupon-cost"><span>Cost:</span> <strong>Rs ${c.couponCost}</strong></div>`
+                : ''}
+                ${c.couponLimit ?
+                `<div class="coupon-limit">
+                    <span>Limit:</span>
+                    <strong>${c.couponLimit}</strong>
+                </div>`
+                : ''}
+                ${Array.isArray(c.userList)
+                ? `<div class="coupon-users"><span>Used by:</span> <strong>${c.couponUsage}</strong></div>`
+                : ''}
+            </div>
+
+            <div class="coupon-footer" data-code="${c.couponCode}">
+                <span class="status ${isActive ? 'active' : 'inactive'}">
+                    ${isActive ? 'Active' : 'Inactive'}
+                </span>
+
+                <button class="btn small" onclick="toggleCoupon('${c.couponCode}')">
+                    ${isActive ? 'Pause' : 'Resume'}
+                </button>
+            </div>`;
+
         cont.appendChild(div);
     });
 }
 
-function refreshAll() {
-    getData();
+async function toggleCoupon(code) {
+    try {
+        const footer = document.querySelector(`.coupon-footer[data-code="${code}"]`);
+        if (!footer) return;
+
+        const statusSpan = footer.querySelector('.status');
+        const button = footer.querySelector('button');
+
+        // Determine current action
+        const action = button.textContent.trim().toLowerCase(); // "pause" or "resume"
+
+        let res = await fetch("/admin/toggleCoupon", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code, action }) // send action to backend
+        });
+
+        let data = await res.json();
+
+        if (data.success) {
+            if (action === 'pause') {
+                statusSpan.classList.remove('active');
+                statusSpan.classList.add('inactive');
+                statusSpan.textContent = 'Inactive';
+                button.textContent = 'Resume';
+            } else if (action === 'resume') {
+                statusSpan.classList.remove('inactive');
+                statusSpan.classList.add('active');
+                statusSpan.textContent = 'Active';
+                button.textContent = 'Pause';
+            }
+        }
+    } catch (err) {
+        console.error("Error toggling coupon:", err);
+    }
 }
+
 

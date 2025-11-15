@@ -42,7 +42,9 @@ function pickFields(obj, fields = []) {
 
 router.get("/account", optionalVerifyToken, async (req, res) => {
     try {
-        let foundUser = await userModel.findById(req.user._QCUI_UI);
+        const token = req.user;
+        if (!token) return res.redirect("/user/login");
+        let foundUser = await userModel.findById(token._QCUI_UI);
         if (!foundUser) return res.redirect("/user/login");
 
         foundUser = foundUser.toObject();
@@ -65,9 +67,11 @@ router.post("/updateProfilePic", optionalVerifyToken, upload.single("file"), asy
             return res.status(500).json({ success: false, message: "Cloudinary upload failed" });
         }
         const token = req.user;
-        const user = await userModel.findById(token._QCUI_UI);
-        user.userImg = imageUrl;
-        await user.save();
+        if (!token) return res.redirect("/user/login");
+        let foundUser = await userModel.findById(token._QCUI_UI);
+        if (!foundUser) return res.redirect("/user/login");
+        foundUser.userImg = imageUrl;
+        await foundUser.save();
         res.redirect("/user/account");
     } catch (error) {
         console.error("ERROR:", error);
@@ -87,7 +91,9 @@ router.post("/verifyUser", optionalVerifyToken,
             }
             const { pass } = req.body;
             const token = req.user;
-            const user = await userModel.findById(token._QCUI_UI);
+            if (!token) return res.redirect("/user/login");
+            let user = await userModel.findById(token._QCUI_UI);
+            if (!user) return res.redirect("/user/login");
             const isMatch = await bcrypt.compare(pass, user.password);
             if (!isMatch) {
                 return res.status(400).json({ message: "Password is incorrect!" });
@@ -113,7 +119,9 @@ router.get("/edit-my-account", optionalVerifyToken, async (req, res) => {
         res.setHeader("Pragma", "no-cache");
         res.setHeader("Expires", "0");
 
-        let foundUser = await userModel.findById(req.user._QCUI_UI);
+        const token = req.user;
+        if (!token) return res.redirect("/user/login");
+        let foundUser = await userModel.findById(token._QCUI_UI);
         if (!foundUser) return res.redirect("/user/login");
 
         const EditToken = req.cookies.UEANT;
@@ -144,7 +152,10 @@ router.post("/updateUser",
                 return res.status(400).json({ success: false, message: "Invalid data!" });
             }
             const { Name, Username, Phone_Number, Address, City } = req.body.NewObj;
-            const user = await userModel.findById(req.user._QCUI_UI);
+            const token = req.user;
+            if (!token) return res.redirect("/user/login");
+            let user = await userModel.findById(token._QCUI_UI);
+            if (!user) return res.redirect("/user/login");
             user.fullname = Name;
             user.username = Username;
             user.phone = Phone_Number;
@@ -194,7 +205,9 @@ router.post("/change-password", optionalVerifyToken, async (req, res) => {
 })
 router.get("/reward-center", optionalVerifyToken, async (req, res) => {
     try {
-        let foundUser = await userModel.findById(req.user._QCUI_UI);
+        const token = req.user;
+        if (!token) return res.redirect("/user/login");
+        let foundUser = await userModel.findById(token._QCUI_UI);
         if (!foundUser) return res.redirect("/user/login");
 
         foundUser = foundUser.toObject();
@@ -210,7 +223,9 @@ router.get("/reward-center", optionalVerifyToken, async (req, res) => {
 });
 router.get("/messages", optionalVerifyToken, async (req, res) => {
     try {
-        let foundUser = await userModel.findById(req.user._QCUI_UI);
+        const token = req.user;
+        if (!token) return res.redirect("/user/login");
+        let foundUser = await userModel.findById(token._QCUI_UI);
         if (!foundUser) return res.redirect("/user/login");
 
         foundUser = foundUser.toObject();
@@ -227,6 +242,7 @@ router.get("/messages", optionalVerifyToken, async (req, res) => {
 router.post("/editMessage", optionalVerifyToken, async (req, res) => {
     try {
         const token = req.user;
+        if (!token) return res.redirect("/user/login");
         const { id } = req.body;
         await userModel.findOneAndUpdate(
             { _id: token._QCUI_UI, "messages._id": id },
@@ -305,7 +321,9 @@ router.get("/wishlist", optionalVerifyToken, async (req, res) => {
 });
 router.get("/settings", optionalVerifyToken, async (req, res) => {
     try {
-        let foundUser = await userModel.findById(req.user._QCUI_UI);
+        const token = req.user;
+        if (!token) return res.redirect("/user/login");
+        let foundUser = await userModel.findById(token._QCUI_UI);
         if (!foundUser) return res.redirect("/user/login");
         res.render("users/setting");
     } catch (error) {

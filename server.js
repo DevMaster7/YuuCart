@@ -60,35 +60,35 @@ app.get("/", optionalVerifyToken, async (req, res) => {
   // );
   // console.log(result);
 
-//   const users = await userModel.find({});
-// for (const use of users) {
-//   // Step 1: Remove all existing messages
-//   await userModel.updateOne(
-//     { _id: use._id },
-//     { $unset: { messages: "" } }
-//   );
+  //   const users = await userModel.find({});
+  // for (const use of users) {
+  //   // Step 1: Remove all existing messages
+  //   await userModel.updateOne(
+  //     { _id: use._id },
+  //     { $unset: { messages: "" } }
+  //   );
 
-//   // Step 2: Add the new welcome message
-//   await userModel.updateOne(
-//     { _id: use._id },
-//     {
-//       $push: {
-//         messages: {
-//           textContent: `Assalam o Alaikum, <strong style="color:#FB8500;">${use.fullname}</strong>!<br>
-//             Welcome to <strong style="color:#FB8500;">YuuCart</strong><br>
-//             We’re delighted to have you join our community!<br>
-//             Explore, shop, and enjoy a seamless experience — we hope you’ll love everything we have to offer.<br><br>
-//             <strong>With Warm Regards,</strong><br>
-//             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong style="color:#FB8500;">The YuuTeam</strong>`,
-//           sendingDate: use.joiningDate,
-//           seen: true
-//         }
-//       }
-//     }
-//   );
-// }
+  //   // Step 2: Add the new welcome message
+  //   await userModel.updateOne(
+  //     { _id: use._id },
+  //     {
+  //       $push: {
+  //         messages: {
+  //           textContent: `Assalam o Alaikum, <strong style="color:#FB8500;">${use.fullname}</strong>!<br>
+  //             Welcome to <strong style="color:#FB8500;">YuuCart</strong><br>
+  //             We’re delighted to have you join our community!<br>
+  //             Explore, shop, and enjoy a seamless experience — we hope you’ll love everything we have to offer.<br><br>
+  //             <strong>With Warm Regards,</strong><br>
+  //             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong style="color:#FB8500;">The YuuTeam</strong>`,
+  //           sendingDate: use.joiningDate,
+  //           seen: true
+  //         }
+  //       }
+  //     }
+  //   );
+  // }
 
-// console.log("Success! ✅");
+  // console.log("Success! ✅");
 
 
   const tokenUser = req.user;
@@ -209,6 +209,7 @@ app.post("/user/register/enterpass", async (req, res) => {
   }
   const hashPassword = await bcrypt.hash(password, 10);
   userData.password = hashPassword;
+  console.log(userData, password, confirmPassword, hashPassword);
 
   let Reffer = userData.Reffer;
   let from = "";
@@ -224,6 +225,7 @@ app.post("/user/register/enterpass", async (req, res) => {
     username: userData.username,
     email: userData.email,
     spinDate: userData.spinDate,
+    password: userData.password,
     Reffer: {
       from,
       refferCode: userData.username,

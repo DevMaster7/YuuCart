@@ -222,7 +222,7 @@
                 <div class="heading">Ratings</div>
                 <div class="inner">
                     <div class="rating-row">
-                        <div class="avg"><%= product.proRating %><span>/5</span></div>
+                        <div class="avg"><%= product.proRating.toFixed(1) %><span>/5</span></div>
                         <div class="stars-con">
                             <div class="stars" style="font-size:1.8em;--rating: <%= ((product.proRating/5)*100) %>%;">
                             </div>
@@ -235,45 +235,45 @@
                                 <div class="stars" style="font-size:1.3em;--rating: 100%;"></div>
                             </div>
                             <div class="bar-wrap">
-                                <div class="bar" style="width:80%"></div>
+                                <div class="bar" id="bar-5" style="width:<%= distribution[5] %>%"></div>
                             </div>
-                            <span>80%</span>
+                            <span id="percent-5"><%= distribution[5] %>%</span>
                         </div>
                         <div class="dist">
                             <div class="stars-con">
                                 <div class="stars" style="font-size:1.3em;--rating: 80%;"></div>
                             </div>
                             <div class="bar-wrap">
-                                <div class="bar" style="width:10%"></div>
+                                <div class="bar" id="bar-4" style="width:<%= distribution[4] %>%"></div>
                             </div>
-                            <span>10%</span>
+                            <span id="percent-4"><%= distribution[4] %>%</span>
                         </div>
                         <div class="dist">
                             <div class="stars-con">
                                 <div class="stars" style="font-size:1.3em;--rating: 60%;"></div>
                             </div>
                             <div class="bar-wrap">
-                                <div class="bar" style="width:5%"></div>
+                                <div class="bar" id="bar-3" style="width:<%= distribution[3] %>%"></div>
                             </div>
-                            <span>5%</span>
+                            <span id="percent-3"><%= distribution[3] %>%</span>
                         </div>
                         <div class="dist">
                             <div class="stars-con">
                                 <div class="stars" style="font-size:1.3em;--rating: 40%;"></div>
                             </div>
                             <div class="bar-wrap">
-                                <div class="bar" style="width:3%"></div>
+                                <div class="bar" id="bar-2" style="width:<%= distribution[2] %>%"></div>
                             </div>
-                            <span>3%</span>
+                            <span id="percent-2"><%= distribution[2] %>%</span>
                         </div>
                         <div class="dist">
                             <div class="stars-con">
                                 <div class="stars" style="font-size:1.3em;--rating: 20%;"></div>
                             </div>
                             <div class="bar-wrap">
-                                <div class="bar" style="width:2%"></div>
+                                <div class="bar" id="bar-1" style="width:<%= distribution[1] %>%"></div>
                             </div>
-                            <span>2%</span>
+                            <span id="percent-1"><%= distribution[1] %>%</span>
                         </div>
                     </div>
                 </div>
@@ -294,7 +294,7 @@
                     <% } %>
                 </div>
                 <div class="reviews">
-                    <% product.Reviews.forEach(review => { %>
+                    <% product.Reviews.reverse().forEach(review => { %>
                     <div class="review">
                         <div class="meta">
                             <div style="width: fit-content;display: flex;flex-direction: column;align-items: center;">
@@ -305,8 +305,11 @@
                             <p><%= review.comment %></p>
                             <div style="display: flex;gap: 7px;">
                                 <% review.meta.forEach(img => { %>
-                                <div class="img-con">
-                                    <img src="<%= img %>" alt="img">
+                                <div class="img-box">
+                                    <img src="<%= img %>" alt="">
+                                    <div class="overlay">
+                                        <i class="fa fa-search-plus"></i>
+                                    </div>
                                 </div>
                                 <% }) %>
                             </div>
