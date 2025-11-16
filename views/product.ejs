@@ -216,7 +216,9 @@
         <div class="left">
             <div class="section">
                 <div class="heading">Description</div>
-                <p class="desc"><%= product.proDescription %></p>
+                <div class="content">
+                    <p class="desc"><%= product.proDescription %></p>
+                </div>
             </div>
             <div class="section">
                 <div class="heading">Ratings</div>
@@ -293,53 +295,82 @@
                     <% } %>
                     <% } %>
                 </div>
-                <div class="reviews">
-                    <% product.Reviews.reverse().forEach(review => { %>
-                    <div class="review">
-                        <div class="meta">
-                            <div style="width: fit-content;display: flex;flex-direction: column;align-items: center;">
-                                <strong><%= review.name %></strong>
-                                <span style="font-size: 10px;text-align: center;color: #6f6f6f;"><%= review.username %>
-                                </span>
-                            </div>
-                            <p><%= review.comment %></p>
-                            <div style="display: flex;gap: 7px;">
-                                <% review.meta.forEach(img => { %>
-                                <div class="img-box">
-                                    <img src="<%= img %>" alt="">
-                                    <div class="overlay">
-                                        <i class="fa fa-search-plus"></i>
+                <div class="content">
+                    <div class="reviews">
+                        <% product.Reviews.reverse().forEach(review => { %>
+                        <div class="review">
+                            <div class="meta">
+                                <div
+                                    style="width: fit-content;display: flex;flex-direction: column;align-items: center;">
+                                    <strong><%= review.name %></strong>
+                                    <span
+                                        style="font-size: 10px;text-align: center;color: #6f6f6f;"><%= review.username %>
+                                    </span>
+                                </div>
+                                <p><%= review.comment %></p>
+                                <div style="display: flex;gap: 7px;">
+                                    <% review.meta.forEach(img => { %>
+                                    <div class="img-box">
+                                        <img src="<%= img %>" alt="">
+                                        <div class="overlay">
+                                            <i class="fa fa-search-plus"></i>
+                                        </div>
                                     </div>
+                                    <% }) %>
                                 </div>
-                                <% }) %>
+                            </div>
+                            <div class="meta">
+                                <div style="display: flex; gap: 5px;align-items: center;">
+                                    <div class="stars-con">
+                                        <div class="stars"
+                                            style="font-size:1.1em;--rating: <%= ((review.rating/5)*100) %>%;"></div>
+                                    </div>
+                                    <div class="small-txt">(<%= review.rating %>)</div>
+                                </div>
+                                <div class="small-txt"><%= timeAgo(review.time) %></div>
                             </div>
                         </div>
-                        <div class="meta">
-                            <div style="display: flex; gap: 5px;align-items: center;">
-                                <div class="stars-con">
-                                    <div class="stars"
-                                        style="font-size:1.1em;--rating: <%= ((review.rating/5)*100) %>%;"></div>
-                                </div>
-                                <div class="small-txt">(<%= review.rating %>)</div>
-                            </div>
-                            <div class="small-txt"><%= timeAgo(review.time) %></div>
-                        </div>
+                        <% }) %>
                     </div>
-                    <% }) %>
                 </div>
             </div>
             <div class="section">
-                <div class="heading">Questions & Answers</div>
-                <div class="qa-list">
-                    <div class="qa">
-                        <div class="meta">
-                            <div class="q">Q: Does this come in different colors?</div>
-                            <div class="a">A: Yes, it's available in red, blue, and black.</div>
+                <div style="display: flex;justify-content: space-between;align-items: center;margin: 0 0 8px;"
+                    data-gcp="<%= RECAPTCHA_SITE_KEY %>">
+                    <div class="heading">Questions & Answers</div>
+                    <% if (user.username) { %>
+                    <button id="askQuestionBtn">Ask a Question</button>
+                    <% } %>
+                </div>
+                <div class="content">
+                    <div class="qa-list">
+                        <% product.AnswerQuestions.reverse().forEach(qa => { %>
+                        <div class="qa-con">
+                            <div class="meta" style="width: 100%;">
+                                <div class="qa">
+                                    <div class="q">Q: <%= qa.question %></div>
+                                    <div class="info">
+                                        <strong class="user-name"><%= qa.username %></strong>
+                                        <div class="small-txt"><%= timeAgo(qa.time) %></div>
+                                    </div>
+                                </div>
+                                <% if (qa.answer) { %>
+                                <div class="qa">
+                                    <div class="a">A: <%= qa.answer %></div>
+                                    <div class="info">
+                                        <strong class="user-name">YuuTeam</strong>
+                                        <div class="small-txt">Replied in: <%= timeDifference(qa.time,qa.answerTime) %>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% } else { %>
+                                <div class="qa">
+                                    <div class="a">A: --------</div>
+                                </div>
+                                <% } %>
+                            </div>
                         </div>
-                        <div class="meta">
-                            <div class="small-txt">muneeb</div>
-                            <div class="small-txt">Ans within: 1 week</div>
-                        </div>
+                        <% }) %>
                     </div>
                 </div>
             </div>
@@ -393,6 +424,7 @@
             </div>
         </div>
     </div>
+
     <div id="modalRoot" class="modal"></div>
 
     <script src="/js/common/at-start.js"></script>

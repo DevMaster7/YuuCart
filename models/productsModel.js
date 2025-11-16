@@ -91,13 +91,15 @@ const productSchema = new mongoose.Schema({
                 type: String,
                 required: true
             },
-            answer: {
-                type: String,
-                required: true
-            },
             time: {
                 type: Date,
                 default: Date.now
+            },
+            answer: {
+                type: String
+            },
+            answerTime: {
+                type: Date
             }
         }
     ]

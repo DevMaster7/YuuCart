@@ -71,37 +71,57 @@ router.get("/:slug-:id", optionalVerifyToken, async (req, res) => {
         if (slug !== expectedSlug) {
             return res.status(404).render("errors/404")
         }
+
+        function timeAgo(date) {
+            const seconds = Math.floor((Date.now() - new Date(date)) / 1000);
+
+            const intervals = {
+                year: 31536000,
+                month: 2592000,
+                week: 604800,
+                day: 86400,
+                hour: 3600,
+                minute: 60,
+            };
+
+            if (seconds < 5) return "just now";
+
+            for (const [key, value] of Object.entries(intervals)) {
+                const interval = Math.floor(seconds / value);
+                if (interval >= 1) {
+                    return interval === 1 ? `${interval} ${key} ago` : `${interval} ${key}s ago`;
+                }
+            }
+
+            return `${seconds} seconds ago`;
+        }
+
+        function timeDifference(qTime, aTime) {
+            const diffMs = new Date(aTime) - new Date(qTime); // milliseconds
+            const diffSec = Math.floor(diffMs / 1000);
+
+            if (diffSec < 60) return "just now";
+
+            const minutes = Math.floor(diffSec / 60);
+            if (minutes < 60) return `${minutes} min`;
+
+            const hours = Math.floor(minutes / 60);
+            if (hours < 24) return `${hours} hour${hours > 1 ? "s" : ""}`;
+
+            const days = Math.floor(hours / 24);
+            if (days < 7) return `${days} day${days > 1 ? "s" : ""}`;
+
+            const weeks = Math.floor(days / 7);
+            return `${weeks} week${weeks > 1 ? "s" : ""}`;
+        }
+
         if (!tokenUser) {
-            res.render("product", { product, products, slugify, userCart: [], user: [] });
+            res.render("product", { product, products, slugify, userCart: [], user: [], distribution, timeAgo, timeDifference });
         } else {
             const user = await userModel.findById(tokenUser._QCUI_UI);
 
-            function timeAgo(date) {
-                const seconds = Math.floor((Date.now() - new Date(date)) / 1000);
-
-                const intervals = {
-                    year: 31536000,
-                    month: 2592000,
-                    week: 604800,
-                    day: 86400,
-                    hour: 3600,
-                    minute: 60,
-                };
-
-                if (seconds < 5) return "just now";
-
-                for (const [key, value] of Object.entries(intervals)) {
-                    const interval = Math.floor(seconds / value);
-                    if (interval >= 1) {
-                        return interval === 1 ? `${interval} ${key} ago` : `${interval} ${key}s ago`;
-                    }
-                }
-
-                return `${seconds} seconds ago`;
-            }
-
             const userCart = user?.userCart || [];
-            res.render("product", { product, products, slugify, userCart, user, distribution, timeAgo });
+            res.render("product", { product, products, slugify, userCart, user, distribution, timeAgo, timeDifference });
         }
     } catch (error) {
         console.error("ERROR:", error);
@@ -193,6 +213,54 @@ router.post("/addReview", upload.array("images"), optionalVerifyToken, async (re
         });
     }
 });
+
+router.post("/askQuestion", optionalVerifyToken, async (req, res) => {
+    try {
+        const { id, question, cap_token } = req.body;
+
+        if (!cap_token) return res.status(400).json({ success: false, message: "Please verify captcha!" });
+
+        const token = req.user;
+        if (!token) return res.redirect("/user/login");
+
+        const user = await userModel.findById(token._QCUI_UI);
+        if (!user) return res.redirect("/user/login");
+
+        const product = await productModel.findById(id);
+        if (!product) return res.status(404).json({ success: false, message: "Product not found" });
+
+        const last24Hours = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+        const userQuestions = product.AnswerQuestions.filter(qa =>
+            qa.username == user.username && qa.time >= last24Hours && !qa.answer
+        );
+
+        if (userQuestions.length >= 5) {
+            return res.status(403).json({
+                success: false,
+                message: "You already ask 5 questions in the last 24 hours.<br>Please try again after 24 hours.",
+            });
+        }
+
+        const time = new Date();
+        product.AnswerQuestions.push({
+            username: user.username,
+            name: user.fullname,
+            question,
+            time,
+        });
+
+        await product.save();
+
+        res.status(200).json({ success: true, username: user.username });
+    } catch (error) {
+        console.error("ERROR:", error);
+        return res.status(500).render("errors/500", {
+            title: "500 | Internal Server Error",
+            message: "Something went wrong while loading this page. Please try again later.",
+        });
+    }
+})
 
 router.get("/search", optionalVerifyToken, async (req, res) => {
     try {

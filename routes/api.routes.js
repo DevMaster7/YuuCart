@@ -42,9 +42,9 @@ function pickFields(obj, fields = []) {
 router.get("/frontUser", optionalVerifyToken, async (req, res) => {
     try {
         const token = req.user;
-        if (!token) return res.redirect("/user/login");
+        if (!token) return res.status(404).json({ success: false, message: "not login" });
         let foundUser = await userModel.findById(token._QCUI_UI);
-        if (!foundUser) return res.redirect("/user/login");
+        if (!foundUser) return res.status(404).json({ success: false, message: "not login" });
 
         foundUser = foundUser.toObject();
         const user = pickFields(foundUser, ["userImg", "fullname", "username", "phone", "address", "city", "email", "emailVerified", "YuuCoin"]);

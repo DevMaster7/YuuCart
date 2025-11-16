@@ -25,6 +25,12 @@ html {
     scroll-behavior: smooth;
 }
 
+.error {
+    color: red;
+    font-size: 12px;
+    text-align: center;
+}
+
 .nav-con {
     display: flex;
     align-items: center;
@@ -459,7 +465,7 @@ html {
 }
 
 .additional .left {
-    width: 65%;
+    width: 70%;
     display: flex;
     flex-direction: column;
     align-items: normal;
@@ -472,6 +478,25 @@ html {
     box-shadow: 1px 2px 10px #0000001f;
     padding: 10px;
     border-radius: 3px;
+}
+
+.additional .left .section .content {
+    max-height: 515px;
+    overflow-y: auto;
+}
+
+.additional .left .section .content::-webkit-scrollbar {
+    width: 5px;
+}
+
+.additional .left .section .content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.additional .left .section .content::-webkit-scrollbar-thumb {
+    background: rgba(139, 139, 139, 0.5);
+    border-radius: 10px;
+    transition: background 0.3s ease;
 }
 
 .additional .section .heading {
@@ -652,8 +677,13 @@ p.desc {
     z-index: 3;
 }
 
-.prev-btn { left: 5%; }
-.next-btn { right: 5%; }
+.prev-btn {
+    left: 5%;
+}
+
+.next-btn {
+    right: 5%;
+}
 
 
 .meta strong {
@@ -664,6 +694,19 @@ p.desc {
     font-size: 14px;
     text-align: center;
     color: #6f6f6f;
+}
+
+.meta .info {
+    min-width: 110px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.meta .user-name {
+    font-size: 14px;
+    color: var(--Accent);
 }
 
 .review p {
@@ -677,13 +720,20 @@ p.desc {
     gap: 10px
 }
 
-.qa {
+.qa-con {
     padding: 10px;
     display: flex;
     justify-content: space-between;
     border-radius: 8px;
     background: #f8f9faab;
     border: 1px solid #ccd6f675;
+}
+
+.qa {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .qa .q {
@@ -694,6 +744,22 @@ p.desc {
 .qa .a {
     margin-top: 8px;
     color: var(--muted)
+}
+
+#askQuestionBtn {
+    padding: 8px 16px;
+    background: var(--Secondary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+#askQuestionBtn:hover {
+    background: #1d839d;
 }
 
 .additional .right {
@@ -889,7 +955,7 @@ p.desc {
     display: block;
 }
 
-.review-form textarea {
+textarea {
     width: 100%;
     height: 100px;
     resize: none;
@@ -901,7 +967,7 @@ p.desc {
     outline: none;
 }
 
-.review-form textarea:focus {
+textarea:focus {
     border-color: #0077b6;
 }
 
@@ -917,6 +983,12 @@ p.desc {
 
 .review-form input[type="file"]:hover {
     background: #f2f2f2;
+}
+
+.ask-question-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .submit-btn {

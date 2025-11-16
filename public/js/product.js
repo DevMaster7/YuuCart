@@ -233,12 +233,11 @@ async function mainFun() {
             <input type="file" id="images" multiple accept="image/*" />
             <button class="submit-btn" id="submitReview">Submit Review</button>
         </div>
-    `);
+                `);
 
         const starElems = document.querySelectorAll("#stars .star");
         const ratingInput = document.getElementById("ratingNumber");
         let selectedRating = 0;
-
         starElems.forEach(star => {
             star.addEventListener("click", () => {
                 selectedRating = parseInt(star.dataset.value);
@@ -246,7 +245,6 @@ async function mainFun() {
                 updateStars(selectedRating);
             });
         });
-
         ratingInput.addEventListener("input", () => {
             let val = parseFloat(ratingInput.value);
             if (isNaN(val)) val = 0;
@@ -255,7 +253,6 @@ async function mainFun() {
             selectedRating = val;
             updateStars(val);
         });
-
         function updateStars(rating) {
             starElems.forEach((star, i) => {
                 const fillPercent = Math.min(Math.max(rating - i, 0), 1) * 100;
@@ -273,7 +270,7 @@ async function mainFun() {
             formData.append("review[rating]", selectedRating);
             formData.append("review[comment]", comment);
             for (let file of document.querySelector("#images").files) {
-                formData.append("images", file); // yahan file object jata hai, not path
+                formData.append("images", file);
             }
             let res = await fetch("/shop/addReview", {
                 method: 'POST',
@@ -316,7 +313,7 @@ async function mainFun() {
                 document.querySelector(".reviews").insertAdjacentHTML("afterbegin", newRev);
 
                 document.querySelector(".product-reviews").textContent = `Ratings ${data.product.proNoOfReviews}`;
-                document.querySelector(".stars").style.setProperty("--rating", `${(data.product.proRating / 5) * 100}%`);
+                document.querySelectorAll(".stars").forEach(star => star.style.setProperty("--rating", `${(data.product.proRating / 5) * 100}%`));
                 const ratingRow = document.querySelector(".rating-row");
                 ratingRow.querySelector(".avg").innerHTML = `${data.product.proRating.toFixed(1)}<span>/5</span>`;
                 ratingRow.querySelector(".rating-count").textContent = `${data.product.proNoOfReviews} ratings`;
@@ -391,6 +388,89 @@ async function mainFun() {
     galleryImages.forEach((img, index) => {
         img.addEventListener("click", () => openPopup(index));
     });
+
+    // Q/A
+    document.getElementById("askQuestionBtn").addEventListener("click", () => {
+        let cap_token = "";
+
+        showModal("Ask a Question", `
+        <div class="ask-question-form">
+            <textarea id="question" placeholder="Ask your question..."></textarea>
+            <div id="captcha-container" style="transform: scale(0.8); transform-origin: center;"></div>
+            <div id="message"></div>
+            <button class="submit-btn" id="submitQuestion">Submit Question</button>
+        </div>
+        `);
+
+        grecaptcha.render("captcha-container", {
+            sitekey: document.getElementById("askQuestionBtn").parentElement.dataset.gcp,
+            callback: (token) => {
+                cap_token = token;
+            }
+        });
+
+        document.getElementById("submitQuestion").addEventListener("click", async () => {
+            const id = document.querySelector(".product-pic-con").dataset.id;
+            const question = document.getElementById("question").value;
+
+            if (!question || !cap_token) {
+                document.getElementById("message").classList.add("error");
+                document.getElementById("message").innerHTML = "All fields are required!";
+                setTimeout(() => {
+                    document.getElementById("message").innerHTML = '';
+                }, 2500);
+                return
+            }
+            if (question.trim().length < 10) {
+                document.getElementById("message").classList.add("error");
+                document.getElementById("message").innerHTML = "Ask Question must be at least 10 characters long!";
+                setTimeout(() => {
+                    document.getElementById("message").innerHTML = '';
+                }, 2500);
+                return
+            }
+            
+            let res = await fetch("/shop/askQuestion", {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id,
+                    question,
+                    cap_token
+                })
+            })
+            let data = await res.json();
+
+            if (data.success) {
+                closeModal();
+                let newHTML = `<div class="qa-con">
+                        <div class="meta" style="width: 100%;">
+                            <div class="qa">
+                                <div class="q">Q: ${question}</div>
+                                <div class="info">
+                                    <strong class="user-name">${data.username}</strong>
+                                    <div class="small-txt">just now</div>
+                                </div>
+                            </div>
+                            <div class="qa">
+                                <div class="a">A: --------</div>
+                            </div>
+                        </div>
+                    </div>`
+                document.querySelector(".qa-list").insertAdjacentHTML("afterbegin", newHTML);
+            }
+            else {
+                document.getElementById("message").classList.add("error");
+                document.getElementById("message").innerHTML = data.message;
+                setTimeout(() => {
+                    document.getElementById("message").innerHTML = '';
+                }, 2500);
+            }
+        });
+    });
+
 
     // Additionals
     function showModal(title, content) {
