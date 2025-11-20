@@ -72,6 +72,10 @@ const userSchema = new mongoose.Schema({
         manageUsers: {
             type: Boolean,
             default: false
+        },
+        manageCategories: {
+            type: Boolean,
+            default: false
         }
     },
     Reffer: {

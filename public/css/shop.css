@@ -107,11 +107,67 @@ html {
     width: 100%;
     background: var(--Accent);
     color: var(--Highlight);
+    position: relative;
+}
+
+.category-btn {
+    font-size: 12px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.show-categories-con i {
+    cursor: pointer;
+    transition: all .1s ease;
+}
+
+.dropdown-con {
+    position: absolute;
+    top: 24px;
+    left: 5px;
+    z-index: 99;
+    display: flex;
+}
+
+.dropdown {
+    width: 220px;
+    height: fit-content;
+    padding: 8px 0px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background: #F8F9FA;
+    border-radius: 2px;
+    box-shadow: 0px 0px 6px #00000047;
 }
 
 .category {
-    font-size: 12px;
-    text-align: center;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 400;
+    padding: 0px 8px;
+    line-height: 25px;
+    user-select: none;
+    cursor: pointer;
+    color: #757575;
+    transition: .1s ease;
+}
+
+.category:hover {
+    background: #fff0e08c;
+    color: var(--Accent);
+}
+
+.category i {
+    color: var(--Accent);
+    display: none;
+}
+
+.category:hover i {
+    display: block;
 }
 
 .ads-vouchers-con {

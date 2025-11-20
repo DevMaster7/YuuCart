@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const productModel = require("../models/productsModel");
+const categoriesModel = require("../models/categoriesModel");
 const { couponModel } = require("../models/offersModel");
 const userModel = require("../models/usersModel");
 const orderModel = require("../models/ordersModel");
@@ -197,6 +198,61 @@ router.post("/change-user-allocation", verifyAdmin, async (req, res) => {
     else {
       res.status(401).json({ success: false, message: "Unauthorized" });
     }
+  } catch (error) {
+    console.error("ERROR:", error);
+    return res.status(500).render("errors/500", {
+      title: "500 | Internal Server Error",
+      message: "Something went wrong while loading this page. Please try again later.",
+    });
+  }
+})
+
+// Categories
+router.get("/manage-categories", verifyAdmin, allowPage("manageCategories"), async (req, res) => {
+  try {
+    res.render("admins/manage-cate");
+  } catch (error) {
+    console.error("ERROR:", error);
+    return res.status(500).render("errors/500", {
+      title: "500 | Internal Server Error",
+      message: "Something went wrong while loading this page. Please try again later.",
+    });
+  }
+});
+router.get("/manage-categories/add-category", verifyAdmin, allowPage("manageCategories"),
+  async (req, res) => {
+    try {
+      res.render("admins/add-cate");
+    } catch (error) {
+      console.error("ERROR:", error);
+      return res.status(500).render("errors/500", {
+        title: "500 | Internal Server Error",
+        message: "Something went wrong while loading this page. Please try again later.",
+      });
+    }
+  })
+router.post("/manage-categories/add-category", optionalVerifyToken, verifyAdmin, async (req, res) => {
+  try {
+    const token = req.user;
+    const foundUser = await userModel.findById(token._QCUI_UI);
+
+    const { categoryName, SubName } = req.body;
+    let subCategories = [];
+    SubName.forEach(name => {
+      if (name) {
+        subCategories.push({
+          subName: name
+        })
+      }
+    })
+
+    await categoriesModel.create({
+      AddedBy: foundUser.username,
+      categoryName,
+      subCategories
+    });
+
+    res.status(200).json({ success: true });
   } catch (error) {
     console.error("ERROR:", error);
     return res.status(500).render("errors/500", {

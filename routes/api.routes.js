@@ -4,6 +4,7 @@ const slugify = require("slugify");
 const optionalVerifyToken = require("../middleware/optionalVerifyToken");
 const verifyAdmin = require("../middleware/verifyAdmin");
 const productModel = require("../models/productsModel");
+const categoriesModel = require("../models/categoriesModel");
 const userModel = require("../models/usersModel");
 const orderModel = require("../models/ordersModel");
 const { couponModel } = require("../models/offersModel");
@@ -45,7 +46,6 @@ router.get("/frontUser", optionalVerifyToken, async (req, res) => {
         if (!token) return res.status(404).json({ success: false, message: "not login" });
         let foundUser = await userModel.findById(token._QCUI_UI);
         if (!foundUser) return res.status(404).json({ success: false, message: "not login" });
-
         foundUser = foundUser.toObject();
         const user = pickFields(foundUser, ["userImg", "fullname", "username", "phone", "address", "city", "email", "emailVerified", "YuuCoin"]);
 
@@ -57,6 +57,20 @@ router.get("/frontUser", optionalVerifyToken, async (req, res) => {
             message: "Something went wrong while loading this page. Please try again later.",
         });
     }
+})
+
+router.get("/frontCategories", async (req, res) => {
+    const categories = await categoriesModel.find(
+        {},
+        {
+            _id: 0,
+            AddedBy: 0,
+            "subCategories._id": 0,
+            "subCategories.products": 0
+        }
+    );
+
+    res.status(200).json({ success: true, categories });
 })
 
 router.get("/frontRewardCenter", optionalVerifyToken, async (req, res) => {

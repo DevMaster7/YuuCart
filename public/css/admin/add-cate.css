@@ -1,0 +1,64 @@
+:root {
+    --Primary: #023047;
+    --Secondary: #219EBC;
+    --Accent: #FB8500;
+    --Highlight: #F8F9FA;
+    --Heading: #CCD6F6;
+}
+
+body {
+    background-color: var(--Highlight);
+}
+
+.content-con {
+    width: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+form {
+    width: 90%;
+    padding: 10px;
+    background-color: #f5f5f500;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.back-btn {
+    position: absolute;
+    top: 10px;
+    left: 15px;
+    font-size: 17px;
+    color: var(--Accent);
+    cursor: pointer;
+}
+
+.inputs {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.btn-submit {
+    padding: 5px 15px;
+    text-align: center;
+    color: var(--Accent);
+    border: 2px solid var(--Accent);
+    border-radius: 5px;
+    cursor: pointer;
+    background-image: url(https://devmaster7.github.io/Pages-for-Mega-Project/assets/liquid.png);
+    background-repeat: repeat-x;
+    background-position: 0 -100%;
+    transition: .5s ease;
+}
+
+.btn-submit:hover {
+    color: white;
+    background-position: center;
+}

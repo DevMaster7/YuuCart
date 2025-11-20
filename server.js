@@ -54,7 +54,13 @@ app.get("/", optionalVerifyToken, async (req, res) => {
   //   {},
   //   {
   //     $set: {
-  //       "Reffer.from": ''
+  //       "allowed": {
+  //         manageProducts: false,
+  //         manageCoupons: false,
+  //         manageOrders: false,
+  //         manageUsers: false,
+  //         manageCategories: false
+  //       },
   //     }
   //   }
   // );

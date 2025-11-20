@@ -212,6 +212,7 @@ function adminSideBarMaker() {
                     <a href="/admin/manage-orders">Orders</a>
                     <a href="/admin/manage-users">Users</a>
                     <a href="/admin/manage-products">Products</a>
+                    <a href="/admin/manage-categories">Categories</a>
                     <a href="/admin/manage-coupons">Coupons</a>
                 </div>
             </div>`

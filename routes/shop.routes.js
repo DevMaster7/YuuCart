@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const slugify = require("slugify");
 const optionalVerifyToken = require("../middleware/optionalVerifyToken");
 const productModel = require("../models/productsModel");
+const categoriesModel = require("../models/categoriesModel");
 const userModel = require("../models/usersModel");
 const { couponModel } = require("../models/offersModel");
 const { uploadOnCloudinary } = require("../config/cloudinary");
@@ -260,7 +261,7 @@ router.post("/askQuestion", optionalVerifyToken, async (req, res) => {
             message: "Something went wrong while loading this page. Please try again later.",
         });
     }
-})
+});
 
 router.get("/search", optionalVerifyToken, async (req, res) => {
     try {
@@ -269,6 +270,53 @@ router.get("/search", optionalVerifyToken, async (req, res) => {
         const tokenUser = req.user;
         const regex = new RegExp(search, "i");
         const results = await productModel.find({ proName: regex });
+        if (!tokenUser) {
+            res.render("search-products", { products: results, slugify, userCart: [], user: [] });
+        }
+        else {
+            const user = await userModel.findById(tokenUser._QCUI_UI);
+            const userCart = user?.userCart || [];
+            res.render("search-products", { products: results, slugify, userCart, user });
+        }
+    } catch (error) {
+        console.error("ERROR:", error);
+        return res.status(500).render("errors/500", {
+            title: "500 | Internal Server Error",
+            message: "Something went wrong while loading this page. Please try again later.",
+        });
+    }
+});
+
+router.get("/catelogue", optionalVerifyToken, async (req, res) => {
+    try {
+        const cate = req.query.query.split("-");
+
+        let category = await categoriesModel.findOne({ categoryName: cate[0] });
+        if (!category) return res.status(400).render("errors/404")
+        category = category.toObject();
+
+        let allProducts = [];
+
+        if (cate.length === 1) {
+            category.subCategories.forEach(sub => {
+                if (sub.products && Array.isArray(sub.products)) {
+                    allProducts.push(...sub.products);
+                }
+            });
+        } else if (cate.length === 2) {
+            let sub = category.subCategories.find(s => s.subName === cate[1]);
+            if (!sub) return res.status(404).render("errors/404");
+
+            if (Array.isArray(sub.products)) {
+                allProducts.push(...sub.products);
+            }
+        }
+
+        const results = await productModel.find({
+            _id: { $in: allProducts }
+        });
+
+        const tokenUser = req.user;
         if (!tokenUser) {
             res.render("search-products", { products: results, slugify, userCart: [], user: [] });
         }
@@ -302,7 +350,7 @@ router.get("/cart", optionalVerifyToken, async (req, res) => {
             message: "Something went wrong while loading this page. Please try again later.",
         });
     }
-})
+});
 
 router.post("/add-to-cart", optionalVerifyToken, async (req, res) => {
     try {
@@ -340,7 +388,7 @@ router.post("/delete-from-cart", optionalVerifyToken, async (req, res) => {
             message: "Something went wrong while loading this page. Please try again later.",
         });
     }
-})
+});
 
 router.post("/add-to-wishlist", optionalVerifyToken, async (req, res) => {
     try {
@@ -360,7 +408,7 @@ router.post("/add-to-wishlist", optionalVerifyToken, async (req, res) => {
             message: "Something went wrong while loading this page. Please try again later.",
         });
     }
-})
+});
 
 router.post("/remove-from-wishlist", optionalVerifyToken, async (req, res) => {
     try {
@@ -378,7 +426,7 @@ router.post("/remove-from-wishlist", optionalVerifyToken, async (req, res) => {
             message: "Something went wrong while loading this page. Please try again later.",
         });
     }
-})
+});
 
 router.get("/checkout", optionalVerifyToken, async (req, res) => {
     try {
@@ -402,7 +450,7 @@ router.get("/checkout", optionalVerifyToken, async (req, res) => {
             message: "Something went wrong while loading this page. Please try again later.",
         });
     }
-})
+});
 
 router.post("/checkout", optionalVerifyToken, async (req, res) => {
     try {
@@ -416,7 +464,7 @@ router.post("/checkout", optionalVerifyToken, async (req, res) => {
             message: "Something went wrong while loading this page. Please try again later.",
         });
     }
-})
+});
 
 router.post("/apply-coupon", optionalVerifyToken, async (req, res) => {
     try {
@@ -551,6 +599,6 @@ router.post("/place-order", optionalVerifyToken, async (req, res) => {
             message: "Something went wrong while loading this page. Please try again later.",
         });
     }
-})
+});
 
 module.exports = router
