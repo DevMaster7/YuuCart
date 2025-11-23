@@ -398,7 +398,7 @@ router.post("/manage-products/add-products", verifyAdmin, optionalVerifyToken, u
   { name: 'galleryURLs', minCount: 1, maxCount: 10 }
 ]), async (req, res) => {
   try {
-    const token = req.user
+    const token = req.user;
     const user = await userModel.findById(token._QCUI_UI);
     let thumbnail = req.files['thumbnail'];
     thumbnail = thumbnail[0].buffer;
@@ -447,7 +447,7 @@ router.post("/manage-products/add-products", verifyAdmin, optionalVerifyToken, u
       choose = false
     }
 
-    await productModel.create({
+    const newProduct = await productModel.create({
       AddedBy: user.username,
       image: imageUrl,
       galleryImages,
@@ -463,7 +463,18 @@ router.post("/manage-products/add-products", verifyAdmin, optionalVerifyToken, u
       customization: choose,
       sizeAndPrice,
       colorAndPrice,
-    })
+    });
+
+    if (!newProduct) return res.status(500).json({ success: false, message: "Product creation failed" });
+
+    let category = await categoriesModel.findOne({ categoryName: proCategory });
+    if (!req.body.proSubCategory) {
+      category.products.push(newProduct._id)
+    } else {
+      let subCategory = category.subCategories.find((sub) => sub.subName === req.body.proSubCategory);
+      subCategory.products.push(newProduct._id);
+    }
+    await category.save();
     res.redirect("/admin/manage-products/add-products")
   } catch (error) {
     console.error("ERROR:", error);

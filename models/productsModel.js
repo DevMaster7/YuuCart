@@ -29,7 +29,6 @@ const productSchema = new mongoose.Schema({
     proDescription: String,
     proCategory: {
         type: String,
-        lowercase: true
     },
     stock: {
         type: Boolean,

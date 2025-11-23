@@ -8,7 +8,8 @@ const categorySchema = new mongoose.Schema({
             subName: String,
             products: []
         }
-    ]
+    ],
+    products: []
 });
 
 const categoryModel = mongoose.model("categories", categorySchema);

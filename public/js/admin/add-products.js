@@ -9,6 +9,14 @@ let starCon = document.querySelector(".pro-rate");
 let proReviews = document.querySelector(".pro-revs");
 let imgInput = document.getElementById("image-upload");
 
+async function getCategories() {
+    let res = await fetch("/api/frontCategories", {
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' },
+    });
+    return await res.json();
+}
+
 // Image preview
 imgInput.onchange = function () {
     const file = this.files[0];
@@ -88,6 +96,32 @@ document.getElementById("removeColor").onclick = () => {
     if (last) last.remove();
 };
 
+(async function () {
+    const Data = await getCategories();
+    let mainCateOptions = document.getElementById("chooseCategory");
+    let options = Array.from(Data.categories).map(category => `<option value="${category.categoryName}">${category.categoryName}</option>`).join(" ");
+    mainCateOptions.innerHTML += options;
+
+    mainCateOptions.onchange = () => {
+        let cateValue = mainCateOptions.value;
+        if (cateValue) {
+            let subCategories = Data.categories
+                .find(category => category.categoryName === cateValue).subCategories;
+            document.querySelectorAll(".subcates")?.forEach(subCate => subCate.remove());
+            if (subCategories.length === 0) return;
+            let subOptions = Array.from(subCategories)
+                .map(subCategory => `<option value="${subCategory.subName}">${subCategory.subName}</option>`).join(" ");
+            let subCategoryHTML = `<div class="field subcates">
+                            <select id="chooseSubCategory" name="proSubCategory">
+                                <option value="" disabled selected hidden></option>
+                            </select>
+                            <label for="chooseSubCategory">Sub Category</label>
+                        </div>`
+            mainCateOptions.closest(".field").insertAdjacentHTML("afterend", subCategoryHTML);
+            document.getElementById("chooseSubCategory").innerHTML += subOptions;
+        }
+    }
+})()
 // Color preview
 // function updateColorPreview() {
 //     document.querySelectorAll(".colorInp").forEach(input => {

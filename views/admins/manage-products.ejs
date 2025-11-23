@@ -84,7 +84,7 @@
                     </div>
                     <div id="productContainer" class="product-container">
                         <% products.reverse().forEach(product => { %>
-                        <form data-product='<%- JSON.stringify(product) %>' action="/admin/manage-products/edit-product"
+                        <form action="/admin/manage-products/edit-product"
                             method="post" class="product-card form filter-pro active-card" id="<%= product._id %>">
                             <img src="<%= product.image %>" alt="Product" />
                             <div class="extra-pics">

@@ -298,6 +298,9 @@ router.get("/catelogue", optionalVerifyToken, async (req, res) => {
         let allProducts = [];
 
         if (cate.length === 1) {
+            category.products.forEach(id => {
+                allProducts.push(id)
+            })
             category.subCategories.forEach(sub => {
                 if (sub.products && Array.isArray(sub.products)) {
                     allProducts.push(...sub.products);
