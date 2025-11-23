@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head data-page="search-product">
+<head data-page="search-product" data-type="<%= type %>" data-query="<%= query %>">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="/css/common/stars.css">
     <link rel="stylesheet" href="/css/common/user-con.css">
     <link rel="stylesheet" href="/css/common/logout.css">
+    <link rel="stylesheet" href="/css/common/category.css">
     <link rel="stylesheet" href="/css/common/search.css">
     <link rel="stylesheet" href="/css/search-products.css">
     <link rel="stylesheet" href="/css/common/footer.css">
@@ -63,15 +64,16 @@
             </div>
         </div>
         <div class="show-categories-con">
-            <div class="category" id="all">All</div>
-            <div class="category" id="electronics">> Electronics</div>
+            <div class="category-btn" id="Category">Categories <i class="fa-solid fa-chevron-down" id="arrow"></i></div>
+            <div class="dropdown-con">
+            </div>
         </div>
     </div>
 
     <div class="content-con">
         <% if (products.length==0) { %>
         <div class="no-products">
-            <div class="heading">You Search is Out From Our Imagination</div>
+            <div class="heading"></div>
             <img src="/assets/noResult.png" alt="">
             <div class="products-count">0 Item found for "<span class="no-search"></span>"
             </div>
@@ -239,6 +241,7 @@
     <script src="/js/common/at-start.js"></script>
     <script src="/js/search-products.js"></script>
     <script src="/js/common/nav-bar.js"></script>
+    <script src="/js/common/category.js"></script>
     <script src="/js/common/search.js"></script>
     <script src="/js/common/wishlist.js"></script>
     <script src="/js/common/footer.js"></script>

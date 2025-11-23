@@ -133,6 +133,7 @@ html {
 }
 
 .no-products .heading {
+    text-align: center;
     font-size: 25px;
     color: var(--Accent);
 }
@@ -768,12 +769,12 @@ html {
         height: 160px;
     }
 
-    .products-grid-con .cards .pro-details .pro-info .another .pro-buyer{
+    .products-grid-con .cards .pro-details .pro-info .another .pro-buyer {
         font-size: 10px;
     }
 
-    .stars-con{
-    font-size: 12px;
+    .stars-con {
+        font-size: 12px;
     }
 }
 

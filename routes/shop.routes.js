@@ -271,12 +271,12 @@ router.get("/search", optionalVerifyToken, async (req, res) => {
         const regex = new RegExp(search, "i");
         const results = await productModel.find({ proName: regex });
         if (!tokenUser) {
-            res.render("search-products", { products: results, slugify, userCart: [], user: [] });
+            res.render("search-products", { products: results, type: "search", query: search, slugify, userCart: [], user: [] });
         }
         else {
             const user = await userModel.findById(tokenUser._QCUI_UI);
             const userCart = user?.userCart || [];
-            res.render("search-products", { products: results, slugify, userCart, user });
+            res.render("search-products", { products: results, type: "search", query: search, slugify, userCart, user });
         }
     } catch (error) {
         console.error("ERROR:", error);
@@ -318,12 +318,12 @@ router.get("/catelogue", optionalVerifyToken, async (req, res) => {
 
         const tokenUser = req.user;
         if (!tokenUser) {
-            res.render("search-products", { products: results, slugify, userCart: [], user: [] });
+            res.render("search-products", { products: results, type: "category", query: cate, slugify, userCart: [], user: [] });
         }
         else {
             const user = await userModel.findById(tokenUser._QCUI_UI);
             const userCart = user?.userCart || [];
-            res.render("search-products", { products: results, slugify, userCart, user });
+            res.render("search-products", { products: results, type: "category", query: cate, slugify, userCart, user });
         }
     } catch (error) {
         console.error("ERROR:", error);

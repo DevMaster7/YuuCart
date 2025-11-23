@@ -238,13 +238,15 @@ router.post("/manage-categories/add-category", optionalVerifyToken, verifyAdmin,
 
     const { categoryName, SubName } = req.body;
     let subCategories = [];
-    SubName.forEach(name => {
-      if (name) {
-        subCategories.push({
-          subName: name
-        })
-      }
-    })
+    if (SubName) {
+      SubName.forEach(name => {
+        if (name) {
+          subCategories.push({
+            subName: name
+          })
+        }
+      })
+    }
 
     await categoriesModel.create({
       AddedBy: foundUser.username,

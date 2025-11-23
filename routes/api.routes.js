@@ -75,8 +75,10 @@ router.get("/frontCategories", async (req, res) => {
 
 router.get("/frontRewardCenter", optionalVerifyToken, async (req, res) => {
     try {
-        let foundUser = await userModel.findById(req.user._QCUI_UI);
-        if (!foundUser) return res.redirect("/user/login");
+        let token = req.user;
+        if (!token) return res.status(404).json({ success: false, message: "not login" });
+        let foundUser = await userModel.findById(token._QCUI_UI);
+        if (!foundUser) return res.status(404).json({ success: false, message: "not login" });
 
         let coupons = await couponModel.find();
         coupons = coupons
