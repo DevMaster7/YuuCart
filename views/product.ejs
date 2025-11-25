@@ -200,10 +200,6 @@
             </div>
             <% }else{ %>
             <% } %>
-            <% } else { %>
-            <div class="customize-con">
-                No Customizeable
-            </div>
             <% } %>
         </div>
     </div>
@@ -215,9 +211,14 @@
     <div class="additional">
         <div class="left">
             <div class="section">
-                <div class="heading">Description</div>
-                <div class="content">
-                    <p class="desc"><%= product.proDescription %></p>
+                <!-- <div class="heading">Description</div> -->
+                <div class="desc-content">
+                    <div class="content-wrapper">
+                        <div class="desc"><%- product.proDescription %></div>
+                    </div>
+
+                    <div class="fade-mask"></div>
+                    <button class="load-more">Load More</button>
                 </div>
             </div>
             <div class="section">

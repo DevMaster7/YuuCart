@@ -429,7 +429,7 @@ async function mainFun() {
                 }, 2500);
                 return
             }
-            
+
             let res = await fetch("/shop/askQuestion", {
                 method: 'post',
                 headers: {
@@ -493,3 +493,31 @@ async function mainFun() {
         if (e.target.id === "modalRoot") closeModal();
     });
 })()
+
+const wrapper = document.querySelector(".content-wrapper");
+const fadeMask = document.querySelector(".fade-mask");
+const loadMoreBtn = document.querySelector(".load-more");
+
+let currentHeight = 420;
+let loadMoreHeight = 30000;
+
+function checkIfLoadMoreNeeded() {
+    if (wrapper.scrollHeight <= wrapper.clientHeight + 5) {
+        loadMoreBtn.style.display = "none";
+        fadeMask.style.display = "none";
+    }
+}
+
+checkIfLoadMoreNeeded();
+
+loadMoreBtn.addEventListener("click", () => {
+    let currentMax = parseInt(getComputedStyle(wrapper).maxHeight);
+    wrapper.style.maxHeight = currentMax + loadMoreHeight + "px";
+
+    setTimeout(() => {
+        if (wrapper.scrollHeight <= wrapper.clientHeight + 5) {
+            loadMoreBtn.style.display = "none";
+            fadeMask.style.display = "none";
+        }
+    }, 200);
+});

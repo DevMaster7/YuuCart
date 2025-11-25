@@ -166,6 +166,7 @@ html {
     border: 1px solid var(--Heading);
     min-width: 300px;
     max-width: 300px;
+    min-height: 300px;
     display: flex;
     border-radius: 6px;
     overflow: hidden;
@@ -511,9 +512,87 @@ html {
     display: flex;
 }
 
-p.desc {
-    color: var(--muted);
-    line-height: 1.6
+.desc-content {
+    position: relative;
+}
+
+.content-wrapper {
+    width: 100%;
+    max-height: 420px;
+    padding: 0px 15px;
+    overflow: hidden;
+    position: relative;
+    transition: max-height 0.4s ease;
+}
+
+.fade-mask {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 120px;
+    background: linear-gradient(to bottom, rgba(244, 244, 244, 0), #f4f4f4);
+    pointer-events: none;
+}
+
+.load-more {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: block;
+    margin: 10px auto 0;
+    padding: 12px 25px;
+    border: none;
+    color: var(--Secondary);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.desc {
+    color: #191919;
+}
+
+.desc h1 {
+    font-size: 1.6rem;
+    color: var(--Accent);
+    font-weight: bold;
+    margin: 0.5em 0em;
+}
+
+.desc h2 {
+    font-size: 1.4rem;
+    color: var(--Accent);
+    font-weight: bold;
+    margin: 0.5em 0em;
+}
+
+.desc h3 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 0.4em 0em;
+}
+
+.desc p {
+    margin-bottom: 1em;
+    line-height: 1.5;
+}
+
+.desc ul,
+.desc ol {
+    list-style: disc;
+    padding-left: 1.5em;
+}
+
+.desc li {
+    margin-bottom: 0.5em;
+}
+
+.desc strong,
+.desc b {
+    font-weight: bold;
 }
 
 .rating-row {

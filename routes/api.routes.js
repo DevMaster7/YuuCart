@@ -196,4 +196,22 @@ router.get("/frontAdminData", optionalVerifyToken, verifyAdmin, async (req, res)
     }
 })
 
+router.get("/frontProduct", optionalVerifyToken, async (req, res) => {
+    try {
+        const products = await productModel.find(
+            {},
+            {
+                
+            }
+        );
+        res.status(200).json({ success: true, products });
+    } catch (error) {
+        console.error("ERROR:", error);
+        return res.status(500).render("errors/500", {
+            title: "500 | Internal Server Error",
+            message: "Something went wrong while loading this page. Please try again later.",
+        });
+    }
+})
+
 module.exports = router;

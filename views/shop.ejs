@@ -72,14 +72,6 @@
         <div class="show-categories-con">
             <div class="category-btn" id="Category">Categories <i class="fa-solid fa-chevron-down" id="arrow"></i></div>
             <div class="dropdown-con">
-                <!-- <div class="category">Men's Fashion <i class="fa-solid fa-chevron-right"></i></div>
-                    <div class="category">Women's Fashion <i class="fa-solid fa-chevron-right"></i></div>
-                    <div class="category">Tech and Gadgets <i class="fa-solid fa-chevron-right"></i></div>
-                    <div class="category">Sports and Fitness <i class="fa-solid fa-chevron-right"></i></div>
-                    <div class="category">Kids and Babies <i class="fa-solid fa-chevron-right"></i></div>
-                    <div class="category">Toys and Games <i class="fa-solid fa-chevron-right"></i></div>
-                    <div class="category">Groceries and Food <i class="fa-solid fa-chevron-right"></i></div>
-                    <div class="category">Pets Accessories <i class="fa-solid fa-chevron-right"></i></div> -->
             </div>
         </div>
     </div>
@@ -125,152 +117,173 @@
     <div class="products-categories-con">
         <div class="category-con" id="customizeProducts">
             <div class="product-headings">Customizable Products</div>
-            <div class="products-con">
-                <% products.reverse().forEach(product=> { %> <% if (product.customization) { %>
-                <a class="main-card" href="/shop/<%= slugify(product.proName, { lower: true }) %>-<%= product._id %>">
-                    <div class="cards">
-                        <div class="product-img">
-                            <img src="<%= product.image %>" alt="" />
-                        </div>
-                        <div class="pro-details">
-                            <div class="pro-name">
-                                <%= product.proName %>
+            <div class="products-container">
+                <div class="products-wrapper">
+                    <% products.reverse().forEach(product=> { %>
+                    <% if (product.customization) { %>
+                    <a class="main-card"
+                        href="/shop/<%= slugify(product.proName, { lower: true }) %>-<%= product._id %>">
+                        <div class="cards">
+                            <div class="product-img">
+                                <img src="<%= product.image %>" alt="" />
                             </div>
-                            <div class="pro-price-con">
-                                <div class="pro-price">Rs.<%= product.proPrice %>
+                            <div class="pro-details">
+                                <div class="pro-name">
+                                    <%= product.proName %>
                                 </div>
-                                <% if (product.proDiscount !== 0 || product.proOrignalPrice !== 0) { %>
-                                <div class="before-dis">
-                                    Rs.<%= product.proOrignalPrice %>
-                                </div>
-                                <div class="discount">-<%= product.proDiscount %>%</div>
-                                <% } %>
-                            </div>
-                            <div class="pro-info">
-                                <div style="display: flex; align-items: center; gap: 4px">
-                                    <div class="pro-buyer" title="<%= product.proBuyer %> Sold">
-                                        <%= product.proBuyer>=1000?Math.floor((product.proBuyer/1000) * 10) / 10+"K":product.proBuyer %>
-                                        Sold
+                                <div class="pro-price-con">
+                                    <div class="pro-price">Rs.<%= product.proPrice %>
                                     </div>
-                                    <div class="pro-rate">
-                                        <div class="stars-con">
-                                            <div class="stars" style="--rating: <%= ((product.proRating/5)*100) %>%;">
-                                            </div>
+                                    <% if (product.proDiscount !== 0 || product.proOrignalPrice !== 0) { %>
+                                    <div class="before-dis">
+                                        Rs.<%= product.proOrignalPrice %>
+                                    </div>
+                                    <div class="discount">-<%= product.proDiscount %>%</div>
+                                    <% } %>
+                                </div>
+                                <div class="pro-info">
+                                    <div style="display: flex; align-items: center; gap: 4px">
+                                        <div class="pro-buyer" title="<%= product.proBuyer %> Sold">
+                                            <%= product.proBuyer>=1000?Math.floor((product.proBuyer/1000) * 10) / 10+"K":product.proBuyer %>
+                                            Sold
                                         </div>
-                                        <span class="pro-revs">(<%= product.proNoOfReviews %>)</span>
+                                        <div class="pro-rate">
+                                            <div class="stars-con">
+                                                <div class="stars"
+                                                    style="--rating: <%= ((product.proRating/5)*100) %>%;">
+                                                </div>
+                                            </div>
+                                            <span class="pro-revs">(<%= product.proNoOfReviews %>)</span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="customizeable">
-                                    <% if (product.customization) { %> Customizeable <% } else { %> Non
-                                    Customizeable <% } %>
+                                    <div class="customizeable">
+                                        <% if (product.customization) { %> Customizeable <% } else { %> Non
+                                        Customizeable <% } %>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </a>
-                <% } else { %>
-                <% } %>
-                <% }) %>
+                    </a>
+                    <% } %>
+                    <% }) %>
+                </div>
+
+                <div class="fade-mask"></div>
+                <button class="load-more">Load More</button>
             </div>
         </div>
 
         <div class="category-con" id="saleProducts">
             <div class="product-headings">On Sale!</div>
-            <div class="products-con">
-                <% products.forEach(product=> { %>
-                <% if (product.proDiscount !== 0 || product.proOrignalPrice !== 0) { %>
-                <a class="main-card" href="/shop/<%= slugify(product.proName, { lower: true }) %>-<%= product._id %>">
-                    <div class="cards">
-                        <div class="product-img">
-                            <img src="<%= product.image %>" alt="" />
-                        </div>
-                        <div class="pro-details">
-                            <div class="pro-name">
-                                <%= product.proName %>
+            <div class="products-container">
+                <div class="products-wrapper">
+                    <% products.forEach(product=> { %>
+                    <% if (product.proDiscount !== 0 || product.proOrignalPrice !== 0) { %>
+                    <a class="main-card"
+                        href="/shop/<%= slugify(product.proName, { lower: true }) %>-<%= product._id %>">
+                        <div class="cards">
+                            <div class="product-img">
+                                <img src="<%= product.image %>" alt="" />
                             </div>
-                            <div class="pro-price-con">
-                                <div class="pro-price">Rs.<%= product.proPrice %>
+                            <div class="pro-details">
+                                <div class="pro-name">
+                                    <%= product.proName %>
                                 </div>
-                                <% if (product.proDiscount !== 0 || product.proOrignalPrice !== 0) { %>
-                                <div class="before-dis">
-                                    Rs.<%= product.proOrignalPrice %>
-                                </div>
-                                <div class="discount">-<%= product.proDiscount %>%</div>
-                                <% } %>
-                            </div>
-                            <div class="pro-info">
-                                <div style="display: flex; align-items: center; gap: 4px">
-                                    <div class="pro-buyer" title="<%= product.proBuyer %> Sold">
-                                        <%= product.proBuyer>=1000?Math.floor((product.proBuyer/1000) * 10) / 10+"K":product.proBuyer %>
-                                        Sold
+                                <div class="pro-price-con">
+                                    <div class="pro-price">Rs.<%= product.proPrice %>
                                     </div>
-                                    <div class="pro-rate">
-                                        <div class="stars-con">
-                                            <div class="stars" style="--rating: <%= ((product.proRating/5)*100) %>%;">
-                                            </div>
+                                    <% if (product.proDiscount !== 0 || product.proOrignalPrice !== 0) { %>
+                                    <div class="before-dis">
+                                        Rs.<%= product.proOrignalPrice %>
+                                    </div>
+                                    <div class="discount">-<%= product.proDiscount %>%</div>
+                                    <% } %>
+                                </div>
+                                <div class="pro-info">
+                                    <div style="display: flex; align-items: center; gap: 4px">
+                                        <div class="pro-buyer" title="<%= product.proBuyer %> Sold">
+                                            <%= product.proBuyer>=1000?Math.floor((product.proBuyer/1000) * 10) / 10+"K":product.proBuyer %>
+                                            Sold
                                         </div>
-                                        <span class="pro-revs">(<%= product.proNoOfReviews %>)</span>
+                                        <div class="pro-rate">
+                                            <div class="stars-con">
+                                                <div class="stars"
+                                                    style="--rating: <%= ((product.proRating/5)*100) %>%;">
+                                                </div>
+                                            </div>
+                                            <span class="pro-revs">(<%= product.proNoOfReviews %>)</span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="customizeable">
-                                    <% if (product.customization) { %> Customizeable <% } else { %> Non
-                                    Customizeable <% } %>
+                                    <div class="customizeable">
+                                        <% if (product.customization) { %> Customizeable <% } else { %> Non
+                                        Customizeable <% } %>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </a>
-                <% } %>
-                <% }) %>
+                    </a>
+                    <% } %>
+                    <% }) %>
+                </div>
+
+                <div class="fade-mask"></div>
+                <button class="load-more">Load More</button>
             </div>
         </div>
 
         <div class="category-con" id="allProducts">
             <div class="product-headings">Shop All</div>
-            <div class="products-con">
-                <% products.forEach(product=> { %>
-                <a class="main-card" href="/shop/<%= slugify(product.proName, { lower: true }) %>-<%= product._id %>">
-                    <div class="cards">
-                        <div class="product-img">
-                            <img src="<%= product.image %>" alt="" />
-                        </div>
-                        <div class="pro-details">
-                            <div class="pro-name">
-                                <%= product.proName %>
+            <div class="products-container">
+                <div class="products-wrapper">
+                    <% products.forEach(product=> { %>
+                    <a class="main-card"
+                        href="/shop/<%= slugify(product.proName, { lower: true }) %>-<%= product._id %>">
+                        <div class="cards">
+                            <div class="product-img">
+                                <img src="<%= product.image %>" alt="" />
                             </div>
-                            <div class="pro-price-con">
-                                <div class="pro-price">Rs.<%= product.proPrice %>
+                            <div class="pro-details">
+                                <div class="pro-name">
+                                    <%= product.proName %>
                                 </div>
-                                <% if (product.proDiscount !== 0 || product.proOrignalPrice !== 0) { %>
-                                <div class="before-dis">
-                                    Rs.<%= product.proOrignalPrice %>
-                                </div>
-                                <div class="discount">-<%= product.proDiscount %>%</div>
-                                <% } %>
-                            </div>
-                            <div class="pro-info">
-                                <div style="display: flex; align-items: center; gap: 4px">
-                                    <div class="pro-buyer" title="<%= product.proBuyer %> Sold">
-                                        <%= product.proBuyer>=1000?Math.floor((product.proBuyer/1000) * 10) / 10+"K":product.proBuyer %>
-                                        Sold
+                                <div class="pro-price-con">
+                                    <div class="pro-price">Rs.<%= product.proPrice %>
                                     </div>
-                                    <div class="pro-rate">
-                                        <div class="stars-con">
-                                            <div class="stars" style="--rating: <%= ((product.proRating/5)*100) %>%;">
-                                            </div>
+                                    <% if (product.proDiscount !== 0 || product.proOrignalPrice !== 0) { %>
+                                    <div class="before-dis">
+                                        Rs.<%= product.proOrignalPrice %>
+                                    </div>
+                                    <div class="discount">-<%= product.proDiscount %>%</div>
+                                    <% } %>
+                                </div>
+                                <div class="pro-info">
+                                    <div style="display: flex; align-items: center; gap: 4px">
+                                        <div class="pro-buyer" title="<%= product.proBuyer %> Sold">
+                                            <%= product.proBuyer>=1000?Math.floor((product.proBuyer/1000) * 10) / 10+"K":product.proBuyer %>
+                                            Sold
                                         </div>
-                                        <span class="pro-revs">(<%= product.proNoOfReviews %>)</span>
+                                        <div class="pro-rate">
+                                            <div class="stars-con">
+                                                <div class="stars"
+                                                    style="--rating: <%= ((product.proRating/5)*100) %>%;">
+                                                </div>
+                                            </div>
+                                            <span class="pro-revs">(<%= product.proNoOfReviews %>)</span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="customizeable">
-                                    <% if (product.customization) { %> Customizeable <% } else { %> Non
-                                    Customizeable <% } %>
+                                    <div class="customizeable">
+                                        <% if (product.customization) { %> Customizeable <% } else { %> Non
+                                        Customizeable <% } %>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </a>
-                <% }) %>
+                    </a>
+                    <% }) %>
+                </div>
+
+                <div class="fade-mask"></div>
+                <button class="load-more">Load More</button>
             </div>
         </div>
     </div>

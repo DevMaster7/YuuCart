@@ -1,282 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>7-Day Check-in Rewards</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Load More</title>
 
-  :root {
-    --primary: #219EBC;
-    --accent: #FB8500;
-    --success: #16a34a;
-    --bg: linear-gradient(135deg, #e0f7fa, #f9f9f9);
-    --card-bg: #ffffff;
-    --text: #0a192f;
-    --muted: #6b7280;
-    --shadow: 0 4px 20px rgba(0,0,0,0.1);
-  }
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            padding: 40px 0;
+        }
 
-  body {
-    font-family: 'Poppins', sans-serif;
-    background: var(--bg);
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    color: var(--text);
-    margin: 0;
-    padding: 20px;
-  }
+        .box-container {
+            width: 100%;
+            max-width: 900px;
+            margin: auto;
+            position: relative;
+        }
 
-  h1 {
-    font-size: 2rem;
-    color: var(--primary);
-    margin-bottom: 25px;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-  }
+        /* initially only 3 rows visible */
+        .boxes-wrapper {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 18px;
+            max-height: 520px;  /* 3 rows + thoda preview */
+            overflow: hidden;
+            position: relative;
+            transition: max-height 0.4s ease;
+        }
 
-  .reward-card {
-    background: var(--card-bg);
-    border-radius: 20px;
-    box-shadow: var(--shadow);
-    padding: 30px;
-    width: 100%;
-    max-width: 600px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
+        .box {
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            text-align: center;
+            font-weight: 600;
+        }
 
-  .reward-card::before {
-    content: "";
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(33,158,188,0.08) 0%, transparent 70%);
-    z-index: 0;
-    animation: rotate 20s linear infinite;
-  }
+        /* visible gradient */
+        .fade-mask {
+            position: absolute;
+            bottom: 55px;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            background: linear-gradient(to bottom, rgba(244,244,244,0), #f4f4f4);
+            pointer-events: none;
+            z-index: 5;
+        }
 
-  @keyframes rotate {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-
-  .progress {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-    position: relative;
-    z-index: 1;
-  }
-
-  .day {
-    background: #f1f5f9;
-    border-radius: 12px;
-    padding: 12px;
-    width: 70px;
-    text-align: center;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--muted);
-    transition: all 0.3s ease;
-    box-shadow: inset 0 0 0 2px #d1d5db;
-    position: relative;
-  }
-
-  .day.active {
-    background: var(--primary);
-    color: white;
-    transform: translateY(-6px) scale(1.05);
-    box-shadow: 0 0 15px rgba(33,158,188,0.4);
-  }
-
-  .day.active::after {
-    content: "★";
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    background: var(--accent);
-    color: white;
-    font-size: 10px;
-    padding: 3px 5px;
-    border-radius: 50%;
-    box-shadow: 0 0 5px rgba(251,133,0,0.6);
-  }
-
-  .day span {
-    display: block;
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--muted);
-    margin-top: 4px;
-  }
-
-  .day.active span {
-    color: #dbeafe;
-  }
-
-  .checkin-btn {
-    margin-top: 30px;
-    background: var(--success);
-    border: none;
-    color: white;
-    padding: 14px 30px;
-    border-radius: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.3s;
-    z-index: 2;
-    position: relative;
-    box-shadow: 0 4px 12px rgba(22,163,74,0.3);
-  }
-
-  .checkin-btn:hover {
-    background: #15803d;
-    transform: scale(1.05);
-  }
-
-  .points-display {
-    margin-top: 15px;
-    font-weight: 600;
-    font-size: 14px;
-    color: var(--muted);
-  }
-
-  /* ===== Modal ===== */
-  .modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.45);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    display: none;
-    z-index: 1000;
-  }
-
-  .modal-content {
-    background: #fff;
-    padding: 25px 30px;
-    border-radius: 16px;
-    text-align: center;
-    box-shadow: var(--shadow);
-    animation: pop 0.3s ease;
-  }
-
-  @keyframes pop {
-    from { transform: scale(0.8); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-  }
-
-  .modal-content h3 {
-    color: var(--primary);
-    margin-top: 0;
-  }
-
-  .modal-content button {
-    background: var(--primary);
-    color: white;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 8px;
-    margin-top: 15px;
-    cursor: pointer;
-  }
-
-  .modal-content button:hover {
-    background: var(--accent);
-  }
-</style>
+        .load-more {
+            display: block;
+            margin: 20px auto 0;
+            padding: 12px 24px;
+            background: #111;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+    </style>
 </head>
 <body>
 
-  <h1>🎁 7-Day Check-in Reward</h1>
+<div class="box-container">
 
-  <div class="reward-card">
-    <div id="checkInProgress" class="progress"></div>
-    <button id="checkInBtn" class="checkin-btn">Check In</button>
-    <div class="points-display">Your Points: <span id="pointsVal">0</span> Yuu</div>
-  </div>
+    <div class="boxes-wrapper" id="boxesWrapper"></div>
 
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <h3 id="modalTitle"></h3>
-      <p id="modalMsg"></p>
-      <button onclick="closeModal()">OK</button>
-    </div>
-  </div>
+    <!-- This will VISIBLY show gradient fade -->
+    <div class="fade-mask" id="fadeMask"></div>
+
+    <button id="loadMoreBtn" class="load-more">Load More</button>
+</div>
 
 <script>
-  // ===== CONFIG =====
-  const REWARDS = [10, 20, 40, 60, 100, 150, 300];
+    const wrapper = document.getElementById("boxesWrapper");
+    const fadeMask = document.getElementById("fadeMask");
+    const loadMoreBtn = document.getElementById("loadMoreBtn");
 
-  let user = {
-    id: "user_01",
-    points: 0,
-    checkIn: {
-      streak: 0,
-      lastCheck: null
+    let totalBoxes = 100;
+    let visibleBoxes = 12; // 3 rows
+    let loadMoreCount = 20; // 5 rows per click
+
+    function renderBoxes() {
+        wrapper.innerHTML = "";
+
+        for (let i = 1; i <= visibleBoxes; i++) {
+            if (i > totalBoxes) break;
+
+            const box = document.createElement("div");
+            box.className = "box";
+            box.innerText = "Box " + i;
+
+            wrapper.appendChild(box);
+        }
+
+        // Increase height with smooth expand
+        wrapper.style.maxHeight = (visibleBoxes / 4) * 180 + "px";
+
+        if (visibleBoxes >= totalBoxes) {
+            loadMoreBtn.style.display = "none";
+            fadeMask.style.display = "none";
+        }
     }
-  };
 
-  const formatDate = () => new Date().toISOString().slice(0, 10);
-  const daysBetween = (a, b) => Math.floor((new Date(a) - new Date(b)) / (1000 * 60 * 60 * 24));
+    renderBoxes();
 
-  function dailyCheckIn() {
-    const today = formatDate();
-    const last = user.checkIn.lastCheck;
-
-    if (last === today) {
-      return showMsg("Already Checked In", "You’ve already claimed today’s reward!");
-    }
-
-    if (!last) {
-      user.checkIn.streak = 1;
-    } else {
-      const diff = daysBetween(today, last);
-      user.checkIn.streak = (diff === 1) ? user.checkIn.streak + 1 : 1;
-    }
-
-    if (user.checkIn.streak > 7) user.checkIn.streak = 1;
-
-    const reward = REWARDS[user.checkIn.streak - 1];
-    user.points += reward;
-    user.checkIn.lastCheck = today;
-
-    showMsg(`Day ${user.checkIn.streak} Reward`, `You earned <b>${reward} Yuu</b> today! 🎉<br>Total: ${user.points} Yuu`);
-    document.getElementById("pointsVal").textContent = user.points;
-    renderProgress();
-  }
-
-  function renderProgress() {
-    const streak = user.checkIn.streak;
-    const container = document.getElementById("checkInProgress");
-    container.innerHTML = REWARDS.map((val, i) => `
-      <div class="day ${i < streak ? "active" : ""}">
-        Day ${i + 1}
-        <span>${val} Yuu</span>
-      </div>
-    `).join("");
-  }
-
-  function showMsg(title, msg) {
-    document.getElementById("modalTitle").innerHTML = title;
-    document.getElementById("modalMsg").innerHTML = msg;
-    document.getElementById("modal").style.display = "flex";
-  }
-
-  function closeModal() {
-    document.getElementById("modal").style.display = "none";
-  }
-
-  document.getElementById("checkInBtn").addEventListener("click", dailyCheckIn);
-  renderProgress();
+    loadMoreBtn.addEventListener("click", () => {
+        visibleBoxes += loadMoreCount;
+        renderBoxes();
+    });
 </script>
 
 </body>
