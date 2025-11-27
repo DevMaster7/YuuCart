@@ -175,7 +175,12 @@ if (document.getElementById("registerForm")) {
             window.location.href = '/user/login'
         }
         else {
-            err.innerHTML = data.message
+            if (data.errors) {
+                err.innerHTML = `Invalid ${data.errors[0].path}`
+            }
+            else {
+                err.innerHTML = data.message
+            }
             err.style.display = "block"
         }
     });

@@ -215,7 +215,6 @@ app.post("/user/register/enterpass", async (req, res) => {
   }
   const hashPassword = await bcrypt.hash(password, 10);
   userData.password = hashPassword;
-  console.log(userData, password, confirmPassword, hashPassword);
 
   let Reffer = userData.Reffer;
   let from = "";
@@ -447,12 +446,10 @@ app.post("/verify-otp", optionalVerifyToken, async (req, res) => {
 })
 app.post("/set-new-forgot", optionalVerifyToken, async (req, res) => {
   const { password, confirmPassword } = req.body;
-  console.log(password, confirmPassword);
   if (password !== confirmPassword) {
     return res.status(400).json({ success: false, message: "Passwords do not match!" });
   }
   const email = req.session.email;
-  console.log(email);
   if (!email) return res.status(400).json({ success: false, message: "User not found!" });
   const user = await userModel.findOne({ email: email });
   if (!user) return res.status(400).json({ success: false, message: "User not found!" });

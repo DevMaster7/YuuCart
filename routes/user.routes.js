@@ -398,11 +398,11 @@ router.post("/register",
     async (req, res) => {
         try {
             const captchaToken = req.body["g-recaptcha-response"];
+            if (!captchaToken) return res.status(400).json({ message: "Please verify captcha!" });
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
                 return res.status(400).json({ errors: errors.array(), message: "Invalid data!" });
             }
-            if (!captchaToken) return res.status(400).json({ message: "Please verify captcha!" });
             let { fullname, username, email, phone, address, password, city, confirmPassword } = req.body
             username = username.replace(/\s+/g, '').toLowerCase();
             const emailExists = await userModel.findOne({ email });
@@ -444,7 +444,7 @@ router.post("/register",
                     url: `${process.env.BASE_URL}/user/register?reffer=${username}`,
                 },
                 messages: [{
-                    textContent: `Assalam o Alaikum, <strong style="color:#FB8500;">${use.fullname}</strong>!<br>
+                    textContent: `Assalam o Alaikum, <strong style="color:#FB8500;">${fullname}</strong>!<br>
             Welcome to <strong style="color:#FB8500;">YuuCart</strong><br>
             We’re delighted to have you join our community!<br>
             Explore, shop, and enjoy a seamless experience — we hope you’ll love everything we have to offer.<br><br>
