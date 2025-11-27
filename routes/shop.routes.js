@@ -38,15 +38,29 @@ router.get("/:slug-:id", optionalVerifyToken, async (req, res) => {
         const tokenUser = req.user;
         const { slug, id } = req.params;
 
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).render("errors/404")
-        }
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.status(400).render("errors/404")
 
         const product = await productModel.findById(id);
         const products = await productModel.find();
-        if (!product) {
-            return res.status(404).render("errors/404")
+        if (!product) return res.status(404).render("errors/404")
+
+        const category = await categoriesModel.findOne({ categoryName: product.proCategory });
+        let categoryIds = [];
+
+        if (category) {
+            category.products.forEach(id => {
+                categoryIds.push(id)
+            })
+            category.subCategories.forEach(sub => {
+                if (sub.products && Array.isArray(sub.products)) {
+                    categoryIds.push(...sub.products);
+                }
+            });
+
         }
+        
+        const categoryProducts = await productModel.find({ _id: { $in: categoryIds } });
+
         const allRatings = product.Reviews.map(r => r.rating);
         let starCounts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
 
@@ -117,12 +131,12 @@ router.get("/:slug-:id", optionalVerifyToken, async (req, res) => {
         }
 
         if (!tokenUser) {
-            res.render("product", { product, products, slugify, userCart: [], user: [], distribution, timeAgo, timeDifference });
+            res.render("product", { product, products, slugify, userCart: [], user: [], categoryProducts, distribution, timeAgo, timeDifference });
         } else {
             const user = await userModel.findById(tokenUser._QCUI_UI);
 
             const userCart = user?.userCart || [];
-            res.render("product", { product, products, slugify, userCart, user, distribution, timeAgo, timeDifference });
+            res.render("product", { product, products, slugify, userCart, user, categoryProducts, distribution, timeAgo, timeDifference });
         }
     } catch (error) {
         console.error("ERROR:", error);

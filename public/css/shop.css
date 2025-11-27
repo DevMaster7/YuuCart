@@ -153,7 +153,7 @@ html {
     display: grid;
     justify-items: center;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 18px;
+    gap: 5px;
     max-height: 730px;
     padding: 15px;
     overflow: hidden;
@@ -400,6 +400,9 @@ html {
 }
 
 @media (max-width:490px) {
+    .products-wrapper{
+        padding: 10px 0px;
+    }
 
     .products-wrapper {
         grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
@@ -424,7 +427,7 @@ html {
 
 @media (max-width:420px) {
     .main-card {
-        width: 150px;
+        width: 165px;
     }
 
     .product-img {

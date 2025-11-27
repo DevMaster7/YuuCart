@@ -152,10 +152,6 @@
                     <% } %>
                 </div>
             </div>
-            <% } else { %>
-            <div class="customize-con-mobile">
-                No Customizeable
-            </div>
             <% } %>
             <div class="product-quantity-con">
                 <div class="product-quantity">Quantity:</div>
@@ -338,9 +334,9 @@
             <div class="section">
                 <div style="display: flex;justify-content: space-between;align-items: center;margin: 0 0 8px;"
                     data-gcp="<%= RECAPTCHA_SITE_KEY %>">
-                    <div class="heading">Questions & Answers</div>
+                    <div class="heading">Product FAQ's</div>
                     <% if (user.username) { %>
-                    <button id="askQuestionBtn">Ask a Question</button>
+                    <button id="askQuestionBtn">Ask Question</button>
                     <% } %>
                 </div>
                 <div class="content">
@@ -379,7 +375,50 @@
         <div class="right">
             <div class="section">
                 <div class="heading">You May Like</div>
-                <% products.forEach(product=> { %>
+                <% categoryProducts.forEach(product=> { %>
+                <a class="main-card" href="/shop/<%= slugify(product.proName, { lower: true }) %>-<%= product._id %>">
+                    <div class="cards">
+                        <div class="product-img">
+                            <img src="<%= product.image %>" alt="" />
+                        </div>
+                        <div class="pro-details">
+                            <div class="pro-name">
+                                <%= product.proName %>
+                            </div>
+                            <div class="pro-price-con">
+                                <div class="pro-price">Rs.<%= product.proPrice %>
+                                </div>
+                                <% if (product.proDiscount !== 0 || product.proOrignalPrice !== 0) { %>
+                                <div class="before-dis">
+                                    Rs.<%= product.proOrignalPrice %>
+                                </div>
+                                <div class="discount">-<%= product.proDiscount %>%</div>
+                                <% } %>
+                            </div>
+                            <div class="pro-info">
+                                <div style="display: flex; align-items: center; gap: 4px">
+                                    <div class="pro-buyer" title="<%= product.proBuyer %> Sold">
+                                        <%= product.proBuyer>=1000?Math.floor((product.proBuyer/1000) * 10) / 10+"K":product.proBuyer %>
+                                        Sold
+                                    </div>
+                                    <div class="pro-rate">
+                                        <div class="stars-con">
+                                            <div class="stars" style="--rating: <%= ((product.proRating/5)*100) %>%;">
+                                            </div>
+                                        </div>
+                                        <span class="pro-revs">(<%= product.proNoOfReviews %>)</span>
+                                    </div>
+                                </div>
+                                <div class="customizeable">
+                                    <% if (product.customization) { %> Customizeable <% } else { %> Non
+                                    Customizeable <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <% }) %>
+                <% products.reverse().forEach(product=> { %>
                 <a class="main-card" href="/shop/<%= slugify(product.proName, { lower: true }) %>-<%= product._id %>">
                     <div class="cards">
                         <div class="product-img">
