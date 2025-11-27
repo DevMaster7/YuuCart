@@ -66,8 +66,10 @@ app.get("/", optionalVerifyToken, async (req, res) => {
   // );
   // console.log(result);
 
-  //   const users = await userModel.find({});
-  // for (const use of users) {
+  // const users = await userModel.find({});
+  // for (const user of users) {
+  //   await userModel.updateOne({ _id: user._id }, { $set: { "Reffer.refferCode": user.username, "Reffer.url": process.env.BASE_URL + "/user/register?reffer=" + user.username } });
+  // }
   //   // Step 1: Remove all existing messages
   //   await userModel.updateOne(
   //     { _id: use._id },

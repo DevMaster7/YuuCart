@@ -158,6 +158,8 @@ router.post("/updateUser",
             if (!user) return res.redirect("/user/login");
             user.fullname = Name;
             user.username = Username;
+            user.Reffer.refferCode = Username;
+            user.Reffer.url = process.env.BASE_URL + "/user/register?reffer=" + Username;
             user.phone = Phone_Number;
             user.address = Address;
             user.city = City;
