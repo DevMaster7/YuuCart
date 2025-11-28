@@ -361,37 +361,87 @@ app.get("/send/verification-email", optionalVerifyToken, async (req, res) => {
 
     function getEmailTemplate(type, user, code) {
       const year = new Date().getFullYear();
-
-      let heading = "";
-      let message = "";
-      let note = "";
+      let html;
 
       if (type === "email-verification") {
-        heading = "Verify Your Email Address";
-        message = `To complete your sign up with <strong>QuickCart</strong>, please use the verification code below:`;
-        note = "This code is valid for the next 10 minutes. Please do not share this code with anyone.";
-      }
-      else if (type === "forgot") {
-        heading = "Reset Your Password";
-        message = `We received a request to reset your password for <strong>QuickCart</strong>. Use the code below to proceed:`;
-        note = "This code is valid for the next 10 minutes. If you did not request a password reset, you can ignore this email.";
+        html = `
+  <div style="margin:0; padding:0; background:#F8F9FA; font-family:Arial, sans-serif;">
+    <div style="max-width:600px; margin:40px auto; background:white; border-radius:12px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.08);">
+
+      <!-- HEADER -->
+      <div style="background:#023047; padding:24px; text-align:center;">
+        <h1 style="color:#CCD6F6; margin:0; font-size:26px;">Verify Your Email</h1>
+      </div>
+
+      <!-- CONTENT -->
+      <div style="padding:30px 35px;">
+        <p style="font-size:16px; color:#023047;">Hi <strong>${user.fullname}</strong>,</p>
+
+        <p style="font-size:16px; color:#333; line-height:1.6;">
+          To verify your email in <strong>YuuCart</strong>, please verify your email using the code below:
+        </p>
+
+        <!-- OTP BOX -->
+        <div style="text-align:center; margin:35px 0;">
+            <span style="font-size:34px; font-weight:bold; color:#FB8500; letter-spacing:8px;">
+              ${code}
+            </span>
+        </div>
+
+        <p style="font-size:14px; color:#555; line-height:1.6;">
+          This code is valid for the next <strong>5 minutes</strong>.  
+          Please do not share this code with anyone.
+        </p>
+
+        <hr style="border:none; border-top:1px solid #eee; margin:35px 0;">
+
+        <p style="text-align:center; font-size:13px; color:#999;">
+          &copy; ${year} YuuCart — All Rights Reserved.
+        </p>
+      </div>
+    </div>
+  </div>`;
+      } else if (type === "forgot") {
+        html = `
+  <div style="margin:0; padding:0; background:#F8F9FA; font-family:Arial, sans-serif;">
+    <div style="max-width:600px; margin:40px auto; background:white; border-radius:12px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+
+      <!-- HEADER -->
+      <div style="background:#023047; padding:24px; text-align:center;">
+        <h1 style="color:#CCD6F6; margin:0; font-size:26px;">Reset Your Password</h1>
+      </div>
+
+      <!-- CONTENT -->
+      <div style="padding:30px 35px;">
+        <p style="font-size:16px; color:#023047;">Hi <strong>${user.fullname}</strong>,</p>
+
+        <p style="font-size:16px; color:#333; line-height:1.6;">
+          We received a request to reset your password for <strong>YuuCart</strong>.  
+          Use the security code below to continue:
+        </p>
+
+        <!-- OTP BOX -->
+        <div style="text-align:center; margin:35px 0;">
+            <span style="font-size:34px; font-weight:bold; color:#D9534F; letter-spacing:8px;">
+              ${code}
+            </span>
+        </div>
+
+        <p style="font-size:14px; color:#555; line-height:1.6;">
+          This code is valid for the next <strong>5 minutes</strong>.<br>
+          If you did not request a password reset, you can safely ignore this email.
+        </p>
+
+        <hr style="border:none; border-top:1px solid #eee; margin:35px 0;">
+
+        <p style="text-align:center; font-size:13px; color:#999;">
+          &copy; ${year} YuuCart — All Rights Reserved.
+        </p>
+      </div>
+    </div>
+  </div>`;
       }
 
-      const html = `
-  <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 40px;">
-    <div style="max-width: 600px; margin: auto; background: white; padding: 20px 30px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
-      <h2 style="color: #333;">${heading}</h2>
-      <p style="font-size: 16px; color: #555;">Hi ${user.fullname},</p>
-      <p style="font-size: 16px; color: #555;">${message}</p>
-      <div style="text-align: center; margin: 30px 0;">
-        <span style="font-size: 32px; font-weight: bold; color: #4CAF50; letter-spacing: 5px;">${code}</span>
-      </div>
-      <p style="font-size: 14px; color: #888;">${note}</p>
-      <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
-      <p style="font-size: 12px; color: #aaa; text-align: center;">&copy; ${year} QuickCart. All rights reserved.</p>
-    </div>
-  </div>
-  `;
       return html;
     }
 
@@ -402,6 +452,7 @@ app.get("/send/verification-email", optionalVerifyToken, async (req, res) => {
     const expiresAt = new Date(user.verificationOTP.expiresAt);
     res.render("verify", { email, expiresAt });
   }
+
   delete req.session.captchaVerification;
 });
 app.post("/verify-otp", optionalVerifyToken, async (req, res) => {

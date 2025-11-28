@@ -1,6 +1,7 @@
 const nodemailer = require("nodemailer");
-require("dotenv").config();
+const env = require("dotenv");
 
+env.config();
 async function sendEmail(mail, html) {
   const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -11,9 +12,9 @@ async function sendEmail(mail, html) {
   });
 
   const mailOptions = {
-    from: `"QuickCart 👋" <${process.env.EMAIL}>`,
+    from: `"YuuCart " <${process.env.EMAIL}>`,
     to: `${mail}`,
-    subject: "Your QuickCart OTP Code",
+    subject: "Your YuuCart OTP Code",
     html: `${html}`,
   };
 
