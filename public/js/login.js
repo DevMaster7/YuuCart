@@ -87,9 +87,12 @@ passEye.forEach((e) => {
     })
 })
 
+let captchaToken = null;
+
 document.querySelector(".forgot-btn").addEventListener("click", () => {
     const overlay = document.createElement("div");
     overlay.classList.add("overlay");
+
     overlay.innerHTML = `
         <div class="cap-con">
             <div class="heading-text">Verify If You Want To Send Email</div>
@@ -100,49 +103,74 @@ document.querySelector(".forgot-btn").addEventListener("click", () => {
                 </div>
                 <div id="captcha-container" style="transform: scale(0.8); transform-origin: center;"></div>
                 <div class="err-msg"></div>
-                <button type="submit">Send Email</button>
+
+                <!-- button changed to type="button" -->
+                <button id="finalSubmitBtn" type="button">Send Email</button>
             </form>
         </div>`;
+
     document.body.appendChild(overlay);
     document.body.style.overflow = "hidden";
 
+    // render captcha
     let gcp = document.getElementsByTagName("head")[0].dataset.gcp;
     grecaptcha.render("captcha-container", {
         sitekey: gcp,
-        callback: (token) => onCaptchaSuccess(token, "forgot")
+        callback: (token) => {
+            captchaToken = token; // save but don't submit
+        }
     });
 
+    // close popup on outside click
     overlay.addEventListener("click", (e) => {
         if (!e.target.closest(".cap-con")) {
             overlay.remove();
             document.body.style.overflow = "auto";
         }
     });
+
+    // now final button will call submit handler
+    document.getElementById("finalSubmitBtn").addEventListener("click", () => {
+        handleFinalSubmit("forgot");
+    });
 });
 
-async function onCaptchaSuccess(token, purpose) {
+async function handleFinalSubmit(purpose) {
     const form = document.getElementById("capForm");
     const email = form.getElementsByTagName("input")[0].value;
-    const cap_token = token;
+
+    // validations
+    if (!email.trim()) {
+        return showError("Please enter your email.");
+    }
+
+    if (!captchaToken) {
+        return showError("Please complete the captcha.");
+    }
+
+    // send verification request
     const response = await fetch(form.action, {
         method: form.method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, cap_token, purpose })
+        body: JSON.stringify({ email, cap_token: captchaToken, purpose })
     });
 
     const result = await response.json();
+
     if (result.success) {
         window.location.href = `/send/verification-email?email=${email}&location=login&purpose=${purpose}`;
+    } else {
+        showError(result.message);
     }
-    else {
-        document.querySelector(".cap-con").querySelector(".err-msg").innerHTML = result.message
-        setTimeout(() => {
-            document.querySelector(".cap-con").querySelector(".err-msg").innerHTML = "";
-            setTimeout(() => {
-                document.querySelector(".overlay").remove();
-            }, 500)
-        }, 2000);
-    }
+}
+
+function showError(msg) {
+    const err = document.querySelector(".cap-con .err-msg");
+    err.innerHTML = msg;
+
+    setTimeout(() => {
+        err.innerHTML = "";
+    }, 2000);
 }
 
 document.querySelector(".icon").addEventListener("click", () => {

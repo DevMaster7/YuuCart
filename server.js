@@ -317,6 +317,7 @@ app.get("/send/verification-email", optionalVerifyToken, async (req, res) => {
   res.setHeader("Expires", "0");
 
   if (!req.session.captchaVerification) return res.redirect("/user/login");
+  delete req.session.captchaVerification;
 
   let email = req.query.email;
   let location = req.query.location;
@@ -453,7 +454,6 @@ app.get("/send/verification-email", optionalVerifyToken, async (req, res) => {
     res.render("verify", { email, expiresAt });
   }
 
-  delete req.session.captchaVerification;
 });
 app.post("/verify-otp", optionalVerifyToken, async (req, res) => {
   const inputOTP = req.body.otp;
@@ -499,6 +499,9 @@ app.post("/verify-otp", optionalVerifyToken, async (req, res) => {
 })
 app.post("/set-new-forgot", optionalVerifyToken, async (req, res) => {
   const { password, confirmPassword } = req.body;
+  if (password.length < 8 || confirmPassword.length < 8) {
+    return res.status(400).json({ success: false, message: "Password must be at least 8 characters long!" });
+  }
   if (password !== confirmPassword) {
     return res.status(400).json({ success: false, message: "Passwords do not match!" });
   }

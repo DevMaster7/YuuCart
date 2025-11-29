@@ -1,9 +1,14 @@
 let head = document.getElementsByTagName("head")[0];
 const expiresAt = new Date(head.dataset.expiretime);
+const purpose = new URLSearchParams(window.location.search).get("purpose");
 const timerEl = document.querySelector(".resend").getElementsByTagName("span")[0];
-// console.log(expiresAt, timerEl);
+
 function updateTimer() {
-    const now = new Date();
+    let now = new Date();
+
+    now.setMinutes(now.getMinutes() + 4);
+    now.setSeconds(now.getSeconds() + 55);
+
     const diff = expiresAt - now;
     if (diff <= 0) {
         document.querySelector(".resend").innerHTML = `Didn’t get the code? <button>Resend</button> OTP`
@@ -19,9 +24,10 @@ function updateTimer() {
             document.body.appendChild(overlay);
             document.body.style.overflow = "hidden";
 
+            let gcp = document.getElementsByTagName("head")[0].dataset.gcp;
             grecaptcha.render("captcha-container", {
-                sitekey: "6LdTOrcrAAAAAJ5lTh8huR1i2Na0bEgO3Zqi-8tF",
-                callback: onCaptchaSuccess
+                sitekey: gcp,
+                callback: (token) => onCaptchaSuccess(token, purpose)
             });
 
             overlay.addEventListener("click", (e) => {
@@ -30,12 +36,11 @@ function updateTimer() {
                     document.body.style.overflow = "auto";
                 }
             });
-
         });
 
-        async function onCaptchaSuccess(token) {
+        async function onCaptchaSuccess(token, purpose) {
             const form = document.getElementById("capForm");
-            const email = document.querySelector(".email").innerHTML;
+            const email = document.querySelector(".email").innerHTML.trim();
             const cap_token = token;
             try {
                 const response = await fetch(form.action, {
@@ -46,7 +51,7 @@ function updateTimer() {
 
                 const result = await response.json();
                 if (result.success) {
-                    window.location.href = `/sendmail/forgot-password?email=${email}&location=user`;
+                    window.location.href = `/send/verification-email?email=${email}&location=user&purpose=${purpose}`;
                 }
                 else {
                     document.querySelector(".cap-con").querySelector(".err-msg").innerHTML = result.message
@@ -133,4 +138,3 @@ otpForm.addEventListener("submit", async (e) => {
         }, 2000);
     }
 });
-
