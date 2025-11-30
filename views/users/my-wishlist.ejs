@@ -63,12 +63,14 @@
                                             <div class="pro-price">Rs.
                                                 <%= product.proPrice %>
                                             </div>
+                                            <% if (product.proDiscount !== 0) { %>
                                             <div class="before-dis">Rs.
                                                 <%= product.proOrignalPrice %>
                                             </div>
                                             <div class="discount">-
                                                 <%= product.proDiscount %>%
                                             </div>
+                                            <% } %>
                                         </div>
                                     </div>
                                     <div class="pro-info">
@@ -111,12 +113,14 @@
                                         <div class="pro-price">Rs.
                                             <%= product.proPrice %>
                                         </div>
+                                        <% if (product.proDiscount !== 0) { %>
                                         <div class="before-dis">Rs.
                                             <%= product.proOrignalPrice %>
                                         </div>
                                         <div class="discount">-
                                             <%= product.proDiscount %>%
                                         </div>
+                                        <% } %>
                                     </div>
                                     <button class="cart-btn add-cart-btn" onclick="handleButtonClick(event)">
                                         Add To Cart</button>

@@ -109,7 +109,7 @@
 
             <div class="product-price" data-price="<%= product.proPrice %>">Rs.<%= product.proPrice %>
             </div>
-            <% if (product.proDiscount !== 0 || product.proOrignalPrice !== 0) { %>
+            <% if (product.proDiscount !== 0) { %>
             <div class="product-discount-con">
                 <div data-orignalprice="<%= product.proOrignalPrice %>" class="product-orignal-price">Rs.<%=
                         product.proOrignalPrice %>
@@ -388,7 +388,7 @@
                             <div class="pro-price-con">
                                 <div class="pro-price">Rs.<%= product.proPrice %>
                                 </div>
-                                <% if (product.proDiscount !== 0 || product.proOrignalPrice !== 0) { %>
+                                <% if (product.proDiscount !== 0) { %>
                                 <div class="before-dis">
                                     Rs.<%= product.proOrignalPrice %>
                                 </div>
@@ -431,7 +431,7 @@
                             <div class="pro-price-con">
                                 <div class="pro-price">Rs.<%= product.proPrice %>
                                 </div>
-                                <% if (product.proDiscount !== 0 || product.proOrignalPrice !== 0) { %>
+                                <% if (product.proDiscount !== 0) { %>
                                 <div class="before-dis">
                                     Rs.<%= product.proOrignalPrice %>
                                 </div>

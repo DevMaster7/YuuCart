@@ -8,7 +8,7 @@ const productSchema = new mongoose.Schema({
     proPrice: Number,
     proOrignalPrice: {
         type: Number,
-        default: 0,
+        required: true,
     },
     proDiscount: {
         type: Number,

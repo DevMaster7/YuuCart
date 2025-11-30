@@ -32,10 +32,17 @@
                 </div>
                 <div class="main-con">
                     <div class="filter-bar-con">
-                        <div class="flex gap-2">
-                            <div class="text"><i class="fa-solid fa-filter"></i> Filtered Items:
-                                <span>(<%= products.length %>)</span></div>
-                            <div class="select-btn">Select All</div>
+                        <div style="display: flex;flex-direction: column;">
+                            <div class="text">
+                                <i class="fa-solid fa-filter"></i>
+                                Filtered Items: <span id="filteredNum">(<%= products.length %>)</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <div class="text">
+                                    Selected Items: <span id="selectedNum">(<%= products.length %>)</span>
+                                </div>
+                                <div class="select-btn deselect" id="selectionBTN">Deselect All</div>
+                            </div>
                         </div>
 
                         <div class="filters">
@@ -84,8 +91,8 @@
                     </div>
                     <div id="productContainer" class="product-container">
                         <% products.reverse().forEach(product => { %>
-                        <form action="/admin/manage-products/edit-product"
-                            method="post" class="product-card form filter-pro active-card" id="<%= product._id %>">
+                        <form action="/admin/manage-products/edit-product" method="post"
+                            class="product-card form filter-pro active-card" id="<%= product._id %>">
                             <img src="<%= product.image %>" alt="Product" />
                             <div class="extra-pics">
                                 <% for( let i = 0; i < product.galleryImages.length + 1; i++ ) { %>

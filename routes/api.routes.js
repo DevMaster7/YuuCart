@@ -196,14 +196,9 @@ router.get("/frontAdminData", optionalVerifyToken, verifyAdmin, async (req, res)
     }
 })
 
-router.get("/frontProduct", optionalVerifyToken, async (req, res) => {
+router.get("/backProduct", optionalVerifyToken, async (req, res) => {
     try {
-        const products = await productModel.find(
-            {},
-            {
-                
-            }
-        );
+        const products = await productModel.find();
         res.status(200).json({ success: true, products });
     } catch (error) {
         console.error("ERROR:", error);

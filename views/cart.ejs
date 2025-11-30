@@ -76,7 +76,7 @@
                                     </div>
                                     <div class="pro-cust-price">Rs. <%= product.proPrice %>
                                     </div>
-                                    <% if (product.proDiscount !== 0 || product.proOrignalPrice !== 0) { %>
+                                    <% if (product.proDiscount !== 0) { %>
                                     <div class="before-dis">Rs.
                                         <%= product.proOrignalPrice %>
                                     </div>
@@ -154,7 +154,7 @@
                             </div>
                             <div class="pro-cust-price">Rs. <%= product.proPrice %>
                             </div>
-                            <% if (product.proDiscount !== 0 || product.proOrignalPrice !== 0) { %>
+                            <% if (product.proDiscount !== 0) { %>
                             <div class="before-dis">Rs.
                                 <%= product.proOrignalPrice %>
                             </div>

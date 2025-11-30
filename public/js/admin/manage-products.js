@@ -1,90 +1,125 @@
-// Prevent Editing...
-// document.addEventListener('contextmenu', (e) => {
-//     e.preventDefault()
-// }, false)
-
-// Filters
-function Filter() {
-    let products = document.querySelectorAll(".product-card");
-    let categories = [];
-    products.forEach((product) => {
-        let data = JSON.parse(product.dataset.product);
-        let categoryValue = data.proCategory.toLowerCase();
-        if (categories.includes(categoryValue)) {
-            return;
-        } else {
-            categories.push(categoryValue)
-        }
-    });
-    categories.forEach((category) => {
-        let option = document.createElement("option");
-        option.value = category;
-        option.innerHTML = category;
-        categoryFilter.append(option);
-    })
-    function applyFilters() {
-        let rating = document.getElementById("ratingFilter").value;
-        let discount = document.getElementById("discountFilter").value;
-        let price = document.getElementById("priceFilter").value;
-        let category = document.getElementById("categoryFilter").value;
-
-        let products = document.querySelectorAll(".product-card");
-        products.forEach((product) => {
-            let data = JSON.parse(product.dataset.product);
-
-            let ratingValue = data.proRating;
-            let discountValue = data.proDiscount;
-            let priceValue = data.proPrice;
-            let categoryValue = data.proCategory.toLowerCase();
-
-            let ratingMin = 0, ratingMax = 5;
-            if (rating !== "all") {
-                let [min, max] = rating.split("-").map(Number);
-                ratingMin = min;
-                ratingMax = max || min;
-            }
-
-            let discountMin = 0, discountMax = 100;
-            if (discount !== "all") {
-                let [min, max] = discount.split("-").map(Number);
-                discountMin = min;
-                discountMax = max || min;
-            }
-
-            let priceMin = 0, priceMax = Infinity;
-            if (price !== "all") {
-                [priceMin, priceMax] = price.split("-").map(Number);
-            }
-
-            let matchRating = (ratingValue >= ratingMin && ratingValue <= ratingMax);
-            let matchDiscount = (discountValue >= discountMin && discountValue <= discountMax);
-            let matchPrice = (priceValue >= priceMin && priceValue <= priceMax);
-            let matchCategory = (category === "all" || categoryValue === category);
-
-            if (matchCategory && matchPrice && matchRating && matchDiscount) {
-                product.classList.remove("unfilter")
-                product.classList.add("filter-pro")
-            } else {
-                product.classList.remove("filter-pro")
-                product.classList.add("unfilter")
-            }
-        });
-
-        let filterProducts = Array.from(products).filter((p) => p.classList.contains("filter-pro"));
-        document.querySelector(".text").innerHTML = `<i class="fa-solid fa-filter"></i> Filtered Items: <span>(${filterProducts.length})</span>`
-    }
-    document.getElementById("ratingFilter").addEventListener("change", applyFilters);
-    document.getElementById("discountFilter").addEventListener("change", applyFilters);
-    document.getElementById("priceFilter").addEventListener("change", applyFilters);
-    document.getElementById("categoryFilter").addEventListener("change", applyFilters);
+async function productsData() {
+    const res = await fetch("/api/backProduct");
+    const data = await res.json();
+    return data
 }
-Filter();
+async function categoriesData() {
+    const res = await fetch("/api/frontCategories");
+    const data = await res.json();
+    return data
+}
 
-// Applied Discount
-document.querySelector(".discount-btn").addEventListener("click", () => {
-    let dicountHTML = document.createElement("div")
-    dicountHTML.classList.add("wrapper-confirmation")
-    dicountHTML.innerHTML = `
+(async function () {
+    const pData = await productsData();
+    const cData = await categoriesData();
+    const products = document.querySelectorAll(".product-card");
+
+    // Filters
+    function Filter() {
+        cData.categories.forEach((category) => {
+            let option = document.createElement("option");
+            option.value = category.categoryName;
+            option.innerHTML = category.categoryName;
+            categoryFilter.append(option);
+        })
+        function applyFilters() {
+            let rating = document.getElementById("ratingFilter").value;
+            let discount = document.getElementById("discountFilter").value;
+            let price = document.getElementById("priceFilter").value;
+            let category = document.getElementById("categoryFilter").value;
+
+            products.forEach((product) => {
+                let id = product.id;
+                let data = Array.from(pData.products).find(p => p._id === id);
+
+                let ratingValue = data.proRating;
+                let discountValue = data.proDiscount;
+                let priceValue = data.proPrice;
+                let categoryValue = data.proCategory;
+
+                let ratingMin = 0, ratingMax = 5;
+                if (rating !== "all") {
+                    let [min, max] = rating.split("-").map(Number);
+                    ratingMin = min;
+                    ratingMax = max || min;
+                }
+
+                let discountMin = 0, discountMax = 100;
+                if (discount !== "all") {
+                    let [min, max] = discount.split("-").map(Number);
+                    discountMin = min;
+                    discountMax = max || min;
+                }
+
+                let priceMin = 0, priceMax = Infinity;
+                if (price !== "all") {
+                    [priceMin, priceMax] = price.split("-").map(Number);
+                }
+
+                let matchRating = (ratingValue >= ratingMin && ratingValue <= ratingMax);
+                let matchDiscount = (discountValue >= discountMin && discountValue <= discountMax);
+                let matchPrice = (priceValue >= priceMin && priceValue <= priceMax);
+                let matchCategory = (category === "all" || categoryValue === category);
+
+                if (matchRating && matchDiscount && matchPrice && matchCategory) {
+                    product.classList.remove("unfilter")
+                    product.classList.add("filter-pro")
+                } else {
+                    product.classList.remove("filter-pro")
+                    product.classList.add("unfilter")
+                }
+            });
+
+            let filterProducts = Array.from(products).filter((p) => p.classList.contains("filter-pro"));
+            document.getElementById("filteredNum").innerHTML = `(${filterProducts.length})`
+        }
+        document.getElementById("ratingFilter").addEventListener("change", applyFilters);
+        document.getElementById("discountFilter").addEventListener("change", applyFilters);
+        document.getElementById("priceFilter").addEventListener("change", applyFilters);
+        document.getElementById("categoryFilter").addEventListener("change", applyFilters);
+    }
+    Filter();
+
+    // Card Selection 
+    function updateBTN() {
+        let res = Array.from(products).every(card =>
+            card.classList.contains("active-card")
+        );
+
+        let btn = document.getElementById("selectionBTN");
+
+        if (res) {
+            btn.classList.add("deselect");
+            btn.classList.remove("select");
+            btn.innerHTML = "Deselect All";
+        } else {
+            btn.classList.add("select");
+            btn.classList.remove("deselect");
+            btn.innerHTML = "Select All";
+        }
+        document.getElementById("selectedNum").innerHTML = `(${Array.from(products).filter((p) => p.classList.contains("active-card")).length})`
+    }
+    updateBTN();
+    document.getElementById("selectionBTN").addEventListener("click", () => {
+        if (selectionBTN.classList.contains("select")) {
+            products.forEach(p => p.classList.add("active-card"));
+        } else {
+            products.forEach(p => p.classList.remove("active-card"));
+        }
+        updateBTN();
+    });
+    products.forEach(card => {
+        card.addEventListener("click", () => {
+            card.classList.toggle("active-card");
+            updateBTN();
+        });
+    });
+
+    // Applied Discount
+    document.querySelector(".discount-btn").addEventListener("click", () => {
+        let dicountHTML = document.createElement("div")
+        dicountHTML.classList.add("wrapper-confirmation")
+        dicountHTML.innerHTML = `
         <div class="conformation-con">
         <div class="text">Add Discount!</div>
         <input class="discount-inp" type="number" placeholder="Enter Discount Here...">
@@ -93,247 +128,201 @@ document.querySelector(".discount-btn").addEventListener("click", () => {
         </div>
         </div>`
 
-    let products = document.querySelectorAll(".product-card");
-    let filterProducts = Array.from(products).filter((p) => {
-        if (p.classList.contains("filter-pro") && p.classList.contains("active-card")) {
-            return true
+        let filterProducts = Array.from(products).filter((p) => {
+            if (p.classList.contains("filter-pro") && p.classList.contains("active-card")) {
+                return true
+            }
+        });
+        if (filterProducts.length > 0) {
+            confirmationWrapper(dicountHTML);
+            filterProducts = Array.from(filterProducts).map((product) => {
+                return product.id
+            })
         }
-    });
-    if (filterProducts.length > 0) {
-        confirmationWrapper(dicountHTML);
-        filterProducts = Array.from(filterProducts).map((product) => {
-            return JSON.parse(product.dataset.product)._id
+        document.querySelector(".btn-con").getElementsByTagName("div")[0].addEventListener("click", async () => {
+            let discount = document.querySelector(".discount-inp").value;
+            let s = await fetch(`/admin/manage-products/apply-discount`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ discount, filterProducts }),
+            })
+            const res = await s.json();
+            if (res.success) {
+                window.location.reload();
+            }
         })
-    }
-    document.querySelector(".btn-con").getElementsByTagName("div")[0].addEventListener("click", async () => {
-        let discount = document.querySelector(".discount-inp").value;
-        await fetch(`/admin/manage-products/apply-discount`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ discount, filterProducts }),
+    })
+
+    // Edit Buttons
+    document.querySelectorAll(".edit-btn").forEach(edit_btn => {
+        edit_btn.addEventListener("click", () => {
+            let main = edit_btn.closest(".product-card");
+            btnFunctions(main)
         })
-    })
-})
-
-document.querySelector(".select-btn").addEventListener("click", () => {
-    let products = document.querySelectorAll(".product-card");
-
-    products.forEach((product) => {
-        if (product.classList.contains("active-card")) {
-            product.classList.remove("active-card")
-        }
-        else {
-            product.classList.add("active-card")
-        }
-    })
-})
-
-document.querySelectorAll(".active-card").forEach((e) => {
-    e.addEventListener("click", () => {
-        if (e.classList.contains("active-card")) {
-            e.classList.remove("active-card")
-        }
-        else {
-            e.classList.add("active-card")
-        }
-    })
-})
-
-// Edit Buttons Function 
-let newFilesMap = new Map();
-function btnFunctions(main) {
-    main.querySelectorAll(".edit-info").forEach((e) => {
-        let input = document.createElement("input");
-        input.classList.add("edited-data")
-        let isColorInput = false;
-
-        if (e.classList.contains("color-info")) {
-            input.setAttribute("type", "color");
-            isColorInput = true;
-            let c = e.dataset.color;
-
-            function convertToHexColor(input) {
-                input = input.trim().toLowerCase();
-                if (/^#[0-9a-f]{6}$/.test(input)) return input;
-                if (/^#[0-9a-f]{3}$/.test(input)) {
-                    return '#' + input.slice(1).split('').map(ch => ch + ch).join('');
-                }
-                if (input.startsWith('rgb')) {
-                    let [r, g, b] = input.match(/\d+/g).map(Number);
-                    return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
-                }
-                if (input.startsWith('hsl')) {
-                    let [h, s, l] = input.match(/[\d.]+/g).map(Number);
-                    s /= 100;
-                    l /= 100;
-                    const a = s * Math.min(l, 1 - l);
-                    const f = n => {
-                        const k = (n + h / 30) % 12;
-                        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-                        return Math.round(255 * color).toString(16).padStart(2, '0');
-                    };
-                    return `#${f(0)}${f(8)}${f(4)}`;
-                }
-                return '#000000';
-            }
-            input.value = convertToHexColor(c);
-
-            const colorPriceSpan = e.parentElement.querySelector('.color-price');
-            if (colorPriceSpan) {
-                const priceInput = document.createElement("input");
-                priceInput.classList.add("edited-data", "color-price", "input-info");
-                priceInput.setAttribute("type", "number");
-                priceInput.setAttribute("min", "0");
-                priceInput.value = colorPriceSpan.innerText.trim();
-                colorPriceSpan.replaceWith(priceInput);
-            }
-        }
-        else if (e.classList.contains("size-info")) {
-            input.classList.add("input-info", "size-info")
-            input.value = e.innerText.trim()
-        }
-        else {
-            input.classList.add("input-info");
-            if (e.classList.contains("proName")) {
-                input.classList.add("proName");
-            }
-            let text = e.innerHTML.trim();
-            input.value = text;
-        }
-
-        e.replaceWith(input);
     });
+    let newFilesMap = new Map();
+    function btnFunctions(main) {
+        main.querySelectorAll(".edit-info").forEach((e) => {
+            let input = document.createElement("input");
+            input.classList.add("edited-data")
+            let isColorInput = false;
 
-    let editBtn = main.querySelector(".edit-btn")
-    let deleteBtn = main.querySelector(".delete-btn")
-    let saveBtn = main.querySelector(".save-btn")
-    let cancelBtn = main.querySelector(".cancel-btn")
-    editBtn.style.display = "none"
-    deleteBtn.style.display = "none"
-    saveBtn.style.display = "flex"
-    cancelBtn.style.display = "flex"
+            if (e.classList.contains("color-info")) {
+                input.setAttribute("type", "color");
+                isColorInput = true;
+                let c = e.dataset.color;
 
-    cancelBtn.addEventListener("click", () => {
-        window.location.reload()
-    });
-
-    saveBtn.addEventListener("click", async () => {
-        let newData = {
-            _id: main.querySelector("#product_id").getElementsByTagName("a")[0].innerText,
-            galleryImages: []
-        };
-
-        // Product Details
-        main.querySelectorAll(".edited-data").forEach((e) => {
-            if (e.classList.contains("proName")) {
-                e.setAttribute("data-info", "proName");
-            } else if (!e.classList.contains("value-btn")) {
-                let dataName = e.parentElement.dataset.info;
-                e.setAttribute("data-info", dataName);
-            }
-
-            let key, value;
-
-            if (e.classList.contains("value-btn")) {
-                key = e.dataset.info;
-                value = e.innerText.toLowerCase();
-            } else {
-                function autoConvert(value) {
-                    return /^\d+(\.\d+)?$/.test(value) ? Number(value) : value;
+                function convertToHexColor(input) {
+                    input = input.trim().toLowerCase();
+                    if (/^#[0-9a-f]{6}$/.test(input)) return input;
+                    if (/^#[0-9a-f]{3}$/.test(input)) {
+                        return '#' + input.slice(1).split('').map(ch => ch + ch).join('');
+                    }
+                    if (input.startsWith('rgb')) {
+                        let [r, g, b] = input.match(/\d+/g).map(Number);
+                        return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
+                    }
+                    if (input.startsWith('hsl')) {
+                        let [h, s, l] = input.match(/[\d.]+/g).map(Number);
+                        s /= 100;
+                        l /= 100;
+                        const a = s * Math.min(l, 1 - l);
+                        const f = n => {
+                            const k = (n + h / 30) % 12;
+                            const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+                            return Math.round(255 * color).toString(16).padStart(2, '0');
+                        };
+                        return `#${f(0)}${f(8)}${f(4)}`;
+                    }
+                    return '#000000';
                 }
-                key = e.dataset.info;
-                value = autoConvert(e.value);
+                input.value = convertToHexColor(c);
+
+                const colorPriceSpan = e.parentElement.querySelector('.color-price');
+                if (colorPriceSpan) {
+                    const priceInput = document.createElement("input");
+                    priceInput.classList.add("edited-data", "color-price", "input-info");
+                    priceInput.setAttribute("type", "number");
+                    priceInput.setAttribute("min", "0");
+                    priceInput.value = colorPriceSpan.innerText.trim();
+                    colorPriceSpan.replaceWith(priceInput);
+                }
+            }
+            else if (e.classList.contains("size-info")) {
+                input.classList.add("input-info", "size-info")
+                input.value = e.innerText.trim()
+            }
+            else {
+                input.classList.add("input-info");
+                if (e.classList.contains("proName")) {
+                    input.classList.add("proName");
+                }
+                let text = e.innerHTML.trim();
+                input.value = text;
             }
 
-            newData[key] = value;
+            e.replaceWith(input);
         });
 
-        // Color and Size
-        if (newData.customization == "true") {
-            newData.colorAndPrice = [];
-            const colorInputs = main.querySelectorAll('input[type="color"]');
-            colorInputs.forEach(input => {
-                let priceEl = input.parentElement.querySelector('.color-price');
-                let color = input.value;
-                let price = priceEl ? Number(priceEl.value.trim()) : 0;
-                newData.colorAndPrice.push({ color, price });
+        let editBtn = main.querySelector(".edit-btn")
+        let deleteBtn = main.querySelector(".delete-btn")
+        let saveBtn = main.querySelector(".save-btn")
+        let cancelBtn = main.querySelector(".cancel-btn")
+        editBtn.style.display = "none"
+        deleteBtn.style.display = "none"
+        saveBtn.style.display = "flex"
+        cancelBtn.style.display = "flex"
+
+        cancelBtn.addEventListener("click", () => {
+            window.location.reload()
+        });
+
+        saveBtn.addEventListener("click", async () => {
+            let newData = {
+                _id: main.querySelector("#product_id").getElementsByTagName("a")[0].innerText,
+                galleryImages: []
+            };
+
+            // Product Details
+            main.querySelectorAll(".edited-data").forEach((e) => {
+                if (e.classList.contains("proName")) {
+                    e.setAttribute("data-info", "proName");
+                } else if (!e.classList.contains("value-btn")) {
+                    let dataName = e.parentElement.dataset.info;
+                    e.setAttribute("data-info", dataName);
+                }
+
+                let key, value;
+
+                if (e.classList.contains("value-btn")) {
+                    key = e.dataset.info;
+                    value = e.innerText.toLowerCase();
+                } else {
+                    function autoConvert(value) {
+                        return /^\d+(\.\d+)?$/.test(value) ? Number(value) : value;
+                    }
+                    key = e.dataset.info;
+                    value = autoConvert(e.value);
+                }
+
+                newData[key] = value;
             });
 
-            newData.sizeAndPrice = [];
-            let sizeInputs = main.querySelectorAll(".size-info");
-            sizeInputs.forEach((e) => {
-                let size = e.value.toUpperCase();
-                let price = Number(e.parentElement.lastElementChild.value);
-                newData.sizeAndPrice.push({ size, price });
-            });
-        }
+            // Color and Size
+            if (newData.customization == "true") {
+                newData.colorAndPrice = [];
+                const colorInputs = main.querySelectorAll('input[type="color"]');
+                colorInputs.forEach(input => {
+                    let priceEl = input.parentElement.querySelector('.color-price');
+                    let color = input.value;
+                    let price = priceEl ? Number(priceEl.value.trim()) : 0;
+                    newData.colorAndPrice.push({ color, price });
+                });
 
-        // Product Images
-        const formData = new FormData();
-        main.querySelectorAll(".box").forEach((e) => {
-            if (!e.classList.contains("add-image-label")) {
-                const img = e.querySelector("img");
-                const src = img.src;
+                newData.sizeAndPrice = [];
+                let sizeInputs = main.querySelectorAll(".size-info");
+                sizeInputs.forEach((e) => {
+                    let size = e.value.toUpperCase();
+                    let price = Number(e.parentElement.lastElementChild.value);
+                    newData.sizeAndPrice.push({ size, price });
+                });
+            }
 
-                if (src.includes("cloudinary.com")) {
-                    newData.galleryImages.push(src);
-                } else if (src.startsWith("blob:")) {
-                    const file = newFilesMap.get(src);
-                    if (file) {
-                        formData.append("notIncludedImgs", file);
+            // Product Images
+            const formData = new FormData();
+            main.querySelectorAll(".box").forEach((e) => {
+                if (!e.classList.contains("add-image-label")) {
+                    const img = e.querySelector("img");
+                    const src = img.src;
+
+                    if (src.includes("cloudinary.com")) {
+                        newData.galleryImages.push(src);
+                    } else if (src.startsWith("blob:")) {
+                        const file = newFilesMap.get(src);
+                        if (file) {
+                            formData.append("notIncludedImgs", file);
+                        }
                     }
                 }
+            });
+            formData.append("newData", JSON.stringify(newData));
+
+            const response = await fetch("/admin/manage-products/edit-product", {
+                method: "POST",
+                body: formData,
+            });
+            const data = await response.json();
+            if (data.success) {
+                window.location.reload();
             }
         });
-        formData.append("newData", JSON.stringify(newData));
-
-        const response = await fetch("/admin/manage-products/edit-product", {
-            method: "POST",
-            body: formData,
-        });
-        const data = await response.json();
-        if (data.success) {
-            window.location.reload();
-        }
-    });
-}
-
-// Edit Buttons
-document.querySelectorAll(".edit-btn").forEach(edit_btn => {
-    edit_btn.addEventListener("click", () => {
-        let main = edit_btn.closest(".product-card");
-        btnFunctions(main)
-    })
-});
-
-// Confirmation Function
-function confirmationWrapper(html) {
-    document.getElementsByTagName("body")[0].prepend(html);
-
-    if (document.querySelector(".no")) {
-        document.querySelector(".no").addEventListener("click", () => {
-            document.querySelector(".wrapper-confirmation").remove()
-        })
     }
-    document.querySelector(".wrapper-confirmation").addEventListener('click', (e) => {
-        let mainCon = document.querySelector(".conformation-con")
-        let text = document.querySelector(".text")
-        let input = document.querySelector(".discount-inp")
-        let btnCon = document.querySelector(".btn-con")
-        if (e.target == mainCon || e.target == text || e.target == input || e.target == btnCon) {
-            return
-        }
-        else {
-            document.querySelector(".wrapper-confirmation").remove();
-        }
-    })
-}
 
-// Remove Images Function
-function removeImage() {
-    let picDiv = document.createElement("div")
-    picDiv.classList.add("wrapper-confirmation")
-    picDiv.innerHTML = `
+    // Remove Images Function
+    function removeImage() {
+        let picDiv = document.createElement("div")
+        picDiv.classList.add("wrapper-confirmation")
+        picDiv.innerHTML = `
         <div class="conformation-con">
         <div class="text">Are You Sure To Remove This Image?</div>
         <div class="btn-con">
@@ -341,32 +330,32 @@ function removeImage() {
         <div class="no">No</div>
         </div>
         </div>`
-    document.querySelectorAll(".box").forEach((e) => {
-        e.addEventListener("click", () => {
-            let main = e.closest(".product-card");
-            btnFunctions(main)
-            if (e.classList.length < 2) {
-                confirmationWrapper(picDiv);
-                document.querySelectorAll(".yes").forEach((btn) => {
-                    btn.addEventListener("click", () => {
-                        e.remove()
+        document.querySelectorAll(".box").forEach((e) => {
+            e.addEventListener("click", () => {
+                let main = e.closest(".product-card");
+                btnFunctions(main)
+                if (e.classList.length < 2) {
+                    confirmationWrapper(picDiv);
+                    document.querySelectorAll(".yes").forEach((btn) => {
+                        btn.addEventListener("click", () => {
+                            e.remove()
+                        })
                     })
-                })
-            }
+                }
+            })
         })
-    })
-}
-removeImage()
+    }
+    removeImage()
 
-// Add Images
-document.querySelectorAll(".input-images").forEach((input) => {
-    input.addEventListener("change", () => {
-        Array.from(input.files).forEach((file) => {
-            let blobUrl = URL.createObjectURL(file);
-            newFilesMap.set(blobUrl, file);
-            console.log(newFilesMap);
-            let main = input.closest(".product-card")
-            let html = `
+    // Add Images
+    document.querySelectorAll(".input-images").forEach((input) => {
+        input.addEventListener("change", () => {
+            Array.from(input.files).forEach((file) => {
+                let blobUrl = URL.createObjectURL(file);
+                newFilesMap.set(blobUrl, file);
+                console.log(newFilesMap);
+                let main = input.closest(".product-card")
+                let html = `
             <div class="box">
                 <img src="${blobUrl}" alt="Product">
                 <div>
@@ -377,23 +366,44 @@ document.querySelectorAll(".input-images").forEach((input) => {
                     </svg>
                 </div>
             </div>`
-            main.querySelector(".extra-pics").querySelector(".add-image-label").insertAdjacentHTML("beforebegin", html)
+                main.querySelector(".extra-pics").querySelector(".add-image-label").insertAdjacentHTML("beforebegin", html)
+            })
+            removeImage()
         })
-        removeImage()
     })
-})
 
-// Customize Buttons
-function customizeDropdown() {
-    document.querySelectorAll(".down-btn").forEach((btn) => {
-        btn.addEventListener("click", (e) => {
-            let main = btn.closest(".product-card");
-            e.stopPropagation();
+    // Customize Buttons
+    function customizeDropdown() {
+        document.querySelectorAll(".down-btn").forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+                let main = btn.closest(".product-card");
+                e.stopPropagation();
 
-            const dropdown = btn.querySelector(".dropdown-options");
-            const icon = btn.querySelector("i");
-            const isAlreadyOpen = dropdown.style.display === "flex";
+                const dropdown = btn.querySelector(".dropdown-options");
+                const icon = btn.querySelector("i");
+                const isAlreadyOpen = dropdown.style.display === "flex";
 
+                document.querySelectorAll(".dropdown-options").forEach((d) => {
+                    d.style.display = "none";
+                });
+                document.querySelectorAll(".down-btn i").forEach((i) => {
+                    i.classList.remove("fa-chevron-down");
+                    i.classList.add("fa-chevron-up");
+                });
+
+                if (!isAlreadyOpen) {
+                    dropdown.style.display = "flex";
+                    icon.classList.remove("fa-chevron-up");
+                    icon.classList.add("fa-chevron-down");
+                }
+            });
+        });
+        document.querySelectorAll(".dropdown-options").forEach((dropdown) => {
+            dropdown.addEventListener("click", (e) => {
+                e.stopPropagation();
+            });
+        });
+        window.addEventListener("click", () => {
             document.querySelectorAll(".dropdown-options").forEach((d) => {
                 d.style.display = "none";
             });
@@ -401,147 +411,126 @@ function customizeDropdown() {
                 i.classList.remove("fa-chevron-down");
                 i.classList.add("fa-chevron-up");
             });
-
-            if (!isAlreadyOpen) {
-                dropdown.style.display = "flex";
-                icon.classList.remove("fa-chevron-up");
-                icon.classList.add("fa-chevron-down");
-            }
         });
-    });
-    document.querySelectorAll(".dropdown-options").forEach((dropdown) => {
-        dropdown.addEventListener("click", (e) => {
-            e.stopPropagation();
-        });
-    });
-    window.addEventListener("click", () => {
-        document.querySelectorAll(".dropdown-options").forEach((d) => {
-            d.style.display = "none";
-        });
-        document.querySelectorAll(".down-btn i").forEach((i) => {
-            i.classList.remove("fa-chevron-down");
-            i.classList.add("fa-chevron-up");
-        });
-    });
 
 
-    document.querySelectorAll(".btns").forEach((add_rem) => {
-        add_rem.addEventListener("click", (e) => {
-            let main = add_rem.closest(".product-card");
-            e.preventDefault();
-            btnFunctions(main)
-            dbClick(document)
+        document.querySelectorAll(".btns").forEach((add_rem) => {
+            add_rem.addEventListener("click", (e) => {
+                let main = add_rem.closest(".product-card");
+                e.preventDefault();
+                btnFunctions(main)
+                dbClick(document)
 
-            let sizeHTML = `<div class="info cust-con">
+                let sizeHTML = `<div class="info cust-con">
                                             <input class="edited-data input-info size-info">
                                             <nav style="display: flex; flex-shrink: 0;">= Rs.</nav>
                                             <input class="edited-data input-info">
                                         </div>`
-            let colorHTML = `<div class="info cust-con">
+                let colorHTML = `<div class="info cust-con">
                                                                         <input class="edited-data" type="color">
                                                                         <nav style="display: flex; flex-shrink: 0;">= Rs.</nav>
                                                                         <input class="edited-data color-price input-info" type="number" min="0">
                                          </div>`
-            let btn_con = add_rem.parentElement
-            if (btn_con.classList.contains("size")) {
-                if (add_rem.classList.contains("add")) {
-                    btn_con.insertAdjacentHTML("beforebegin", sizeHTML)
-                    dbClick(document)
-                }
-                else {
-                    dbClick(document)
-                    if (btn_con.parentElement.querySelectorAll(".active").length > 0) {
-                        btn_con.parentElement.querySelectorAll(".active").forEach((active) => {
-                            active.remove()
-                        })
+                let btn_con = add_rem.parentElement
+                if (btn_con.classList.contains("size")) {
+                    if (add_rem.classList.contains("add")) {
+                        btn_con.insertAdjacentHTML("beforebegin", sizeHTML)
+                        dbClick(document)
                     }
                     else {
-                        btn_con.previousElementSibling.remove()
+                        dbClick(document)
+                        if (btn_con.parentElement.querySelectorAll(".active").length > 0) {
+                            btn_con.parentElement.querySelectorAll(".active").forEach((active) => {
+                                active.remove()
+                            })
+                        }
+                        else {
+                            btn_con.previousElementSibling.remove()
+                        }
                     }
+                }
+                else {
+                    if (add_rem.classList.contains("add")) {
+                        btn_con.insertAdjacentHTML("beforebegin", colorHTML)
+                        dbClick(document)
+                    }
+                    else {
+                        dbClick(document)
+                        if (btn_con.parentElement.querySelectorAll(".active").length > 0) {
+                            btn_con.parentElement.querySelectorAll(".active").forEach((active) => {
+                                active.remove()
+                            })
+                        }
+                        else {
+                            btn_con.previousElementSibling.remove()
+                        }
+                    }
+                }
+            })
+        })
+        dbClick(document)
+    }
+    function dbClick(section) {
+        section.querySelectorAll(".cust-con").forEach((cust) => {
+            cust.addEventListener("dblclick", () => {
+                if (!cust.classList.contains("active")) {
+                    cust.classList.add("active");
+                }
+                else {
+                    cust.classList.remove("active");
+                }
+            })
+        })
+    }
+    customizeDropdown()
+
+    // True/False Buttons
+    document.querySelectorAll(".value-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            let main = btn.closest(".product-card");
+            if (btn.innerHTML.trim().toLowerCase() == "true") {
+                btn.innerHTML = "False"
+                btn.style.color = "#ff0000"
+                if (btn.previousElementSibling.innerHTML.trim().toLowerCase() == "customization:") {
+                    let sizehtml = main.querySelector(".btn-con").previousElementSibling
+                    let colorhtml = sizehtml.previousElementSibling
+                    sizehtml.remove()
+                    colorhtml.remove()
                 }
             }
             else {
-                if (add_rem.classList.contains("add")) {
-                    btn_con.insertAdjacentHTML("beforebegin", colorHTML)
-                    dbClick(document)
-                }
-                else {
-                    dbClick(document)
-                    if (btn_con.parentElement.querySelectorAll(".active").length > 0) {
-                        btn_con.parentElement.querySelectorAll(".active").forEach((active) => {
-                            active.remove()
-                        })
-                    }
-                    else {
-                        btn_con.previousElementSibling.remove()
-                    }
-                }
-            }
-        })
-    })
-    dbClick(document)
-}
-function dbClick(section) {
-    section.querySelectorAll(".cust-con").forEach((cust) => {
-        cust.addEventListener("dblclick", () => {
-            if (!cust.classList.contains("active")) {
-                cust.classList.add("active");
-            }
-            else {
-                cust.classList.remove("active");
-            }
-        })
-    })
-}
-customizeDropdown()
+                btn.innerHTML = "True"
+                btn.style.color = "#00bb00"
+                if (btn.previousElementSibling.innerHTML.trim().toLowerCase() == "customization:") {
+                    let productDataStr = main.dataset.product
+                    let product = JSON.parse(productDataStr)
 
-// True/False Buttons
-document.querySelectorAll(".value-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-        let main = btn.closest(".product-card");
-        if (btn.innerHTML.trim().toLowerCase() == "true") {
-            btn.innerHTML = "False"
-            btn.style.color = "#ff0000"
-            if (btn.previousElementSibling.innerHTML.trim().toLowerCase() == "customization:") {
-                let sizehtml = main.querySelector(".btn-con").previousElementSibling
-                let colorhtml = sizehtml.previousElementSibling
-                sizehtml.remove()
-                colorhtml.remove()
-            }
-        }
-        else {
-            btn.innerHTML = "True"
-            btn.style.color = "#00bb00"
-            if (btn.previousElementSibling.innerHTML.trim().toLowerCase() == "customization:") {
-                let productDataStr = main.dataset.product
-                let product = JSON.parse(productDataStr)
-
-                // Sizes HTML
-                let sizesHTML = "";
-                product.sizeAndPrice.forEach((s_p) => {
-                    sizesHTML += `
+                    // Sizes HTML
+                    let sizesHTML = "";
+                    product.sizeAndPrice.forEach((s_p) => {
+                        sizesHTML += `
                     <div class="info">
                         <div class="edit-info size-info">${s_p.size}</div>
                         <nav style="display: flex; flex-shrink: 0;">= Rs.</nav>
                         <span class="edit-info">${s_p.price}</span>
                     </div>
                   `;
-                });
+                    });
 
-                // Colors HTML
-                let colorsHTML = "";
-                product.colorAndPrice.forEach((c_p) => {
-                    colorsHTML += `
+                    // Colors HTML
+                    let colorsHTML = "";
+                    product.colorAndPrice.forEach((c_p) => {
+                        colorsHTML += `
                     <div class="info">
                         <div class="color-info edit-info" data-color="${c_p.color}" style="background: ${c_p.color};"></div>
                         <nav style="display: flex; flex-shrink: 0;">= Rs.</nav>
                         <span class="edit-info">${c_p.price}</span>
                     </div>
                   `;
-                });
+                    });
 
-                // Final HTML
-                let html = `
+                    // Final HTML
+                    let html = `
                   <div class="info">
                     <div>Sizes:</div>&nbsp;
                     <span class="down-btn" style="cursor: pointer;">(${product.sizeAndPrice.length})
@@ -564,18 +553,18 @@ document.querySelectorAll(".value-btn").forEach((btn) => {
                     </span>
                   </div>
                 `;
-                main.querySelector(".btn-con").insertAdjacentHTML("beforebegin", html)
-                customizeDropdown()
+                    main.querySelector(".btn-con").insertAdjacentHTML("beforebegin", html)
+                    customizeDropdown()
+                }
             }
-        }
-        btnFunctions(main)
+            btnFunctions(main)
+        })
     })
-})
 
-// Delete Product
-let deleteDiv = document.createElement("div")
-deleteDiv.classList.add("wrapper-confirmation")
-deleteDiv.innerHTML = `
+    // Delete Product
+    let deleteDiv = document.createElement("div")
+    deleteDiv.classList.add("wrapper-confirmation")
+    deleteDiv.innerHTML = `
     <div class="conformation-con">
     <div class="text">Are You Sure To Delete This Product?</div>
     <div class="btn-con">
@@ -583,20 +572,44 @@ deleteDiv.innerHTML = `
     <div class="no">No</div>
     </div>
     </div>`
-document.querySelectorAll(".delete-btn").forEach((delete_btn) => {
-    delete_btn.addEventListener("click", () => {
-        confirmationWrapper(deleteDiv);
-        document.querySelector(".yes").addEventListener("click", async () => {
-            let productID = delete_btn.closest(".product-card").attributes.id.value
-            const res = await fetch(`/admin/manage-products/delete-product`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ productID }),
+    document.querySelectorAll(".delete-btn").forEach((delete_btn) => {
+        delete_btn.addEventListener("click", () => {
+            confirmationWrapper(deleteDiv);
+            document.querySelector(".yes").addEventListener("click", async () => {
+                let productID = delete_btn.closest(".product-card").attributes.id.value
+                const res = await fetch(`/admin/manage-products/delete-product`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ productID }),
+                })
+                const res1 = await res.json();
+                if (res1.success) {
+                    window.location.reload();
+                }
             })
-            const res1 = await res.json();
-            if (res1.success) {
-                window.location.reload();
-            }
         })
     })
-})
+
+    // Confirmation Function
+    function confirmationWrapper(html) {
+        document.getElementsByTagName("body")[0].prepend(html);
+
+        if (document.querySelector(".no")) {
+            document.querySelector(".no").addEventListener("click", () => {
+                document.querySelector(".wrapper-confirmation").remove()
+            })
+        }
+        document.querySelector(".wrapper-confirmation").addEventListener('click', (e) => {
+            let mainCon = document.querySelector(".conformation-con")
+            let text = document.querySelector(".text")
+            let input = document.querySelector(".discount-inp")
+            let btnCon = document.querySelector(".btn-con")
+            if (e.target == mainCon || e.target == text || e.target == input || e.target == btnCon) {
+                return
+            }
+            else {
+                document.querySelector(".wrapper-confirmation").remove();
+            }
+        })
+    }
+})();

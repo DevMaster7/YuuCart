@@ -6,9 +6,6 @@ const timerEl = document.querySelector(".resend").getElementsByTagName("span")[0
 function updateTimer() {
     let now = new Date();
 
-    now.setMinutes(now.getMinutes() + 4);
-    now.setSeconds(now.getSeconds() + 55);
-
     const diff = expiresAt - now;
     if (diff <= 0) {
         document.querySelector(".resend").innerHTML = `Didn’t get the code? <button>Resend</button> OTP`

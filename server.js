@@ -10,6 +10,7 @@ const sendEmail = require("./utils/sendOTP");
 const session = require("express-session");
 const optionalVerifyToken = require("./middleware/optionalVerifyToken");
 const userModel = require("./models/usersModel");
+const productModel = require("./models/productsModel");
 const morgan = require("morgan");
 const bcrypt = require("bcrypt");
 const env = require("dotenv");
@@ -66,9 +67,22 @@ app.get("/", optionalVerifyToken, async (req, res) => {
   // );
   // console.log(result);
 
-  // const users = await userModel.find({});
-  // for (const user of users) {
-  //   await userModel.updateOne({ _id: user._id }, { $set: { "Reffer.refferCode": user.username, "Reffer.url": process.env.BASE_URL + "/user/register?reffer=" + user.username } });
+  // const r = await productModel.updateMany(
+  //   {},
+  //   [
+  //     {
+  //       $set: {
+  //         proPrice: "$proOrignalPrice"
+  //       }
+  //     }
+  //   ]
+  // );
+
+  // console.log(r);
+
+  // const products = await productModel.find({});
+  // for (const product of products) {
+  //   await productModel.updateOne({ $set: { "product.proPrice": product.proOrignalPrice, } });
   // }
   //   // Step 1: Remove all existing messages
   //   await userModel.updateOne(

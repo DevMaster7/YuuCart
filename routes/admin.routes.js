@@ -321,7 +321,6 @@ router.post("/manage-products/edit-product", verifyAdmin,
     try {
       const files = req.files;
       const newData = JSON.parse(req.body.newData);
-      console.log(newData);
 
       let folderName = "product_pics";
       for (const file of files) {
@@ -361,18 +360,32 @@ router.post("/manage-products/apply-discount", verifyAdmin, async (req, res) => 
     const { filterProducts } = req.body;
     const discount = Number(req.body.discount);
 
-    await productModel.updateMany(
-      { _id: { $in: filterProducts } },
-      [
-        {
-          $set: {
-            proOrignalPrice: { $ceil: "$proPrice" },
-            proPrice: { $ceil: { $subtract: ["$proPrice", { $divide: [{ $multiply: ["$proPrice", discount] }, 100] }] } },
-            proDiscount: discount
+    if (discount !== 0) {
+      await productModel.updateMany(
+        { _id: { $in: filterProducts } },
+        [
+          {
+            $set: {
+              proPrice: { $ceil: { $subtract: ["$proOrignalPrice", { $divide: [{ $multiply: ["$proOrignalPrice", discount] }, 100] }] } },
+              proDiscount: discount
+            }
           }
-        }
-      ]
-    );
+        ]
+      );
+    } else {
+      await productModel.updateMany(
+        { _id: { $in: filterProducts } },
+        [
+          {
+            $set: {
+              proPrice: "$proOrignalPrice",
+              proDiscount: 0
+            }
+          }
+        ]
+      );
+    }
+
     res.status(200).json({ success: true });
   } catch (error) {
     console.error("ERROR:", error);
@@ -421,7 +434,7 @@ router.post("/manage-products/add-products", verifyAdmin, optionalVerifyToken, u
       galleryImages.push(url);
     }
 
-    let { proName, proPrice, proOrignalPrice, proDiscount, proBuyer, proRating, proNoOfReviews, proDescription, proCategory, choose, sizes, sizePrices, colors, colorPrices } = req.body;
+    let { proName, proOrignalPrice, proDiscount, proBuyer, proRating, proNoOfReviews, proDescription, proCategory, choose, sizes, sizePrices, colors, colorPrices } = req.body;
     const sizeAndPrice = [];
     if (sizes && sizePrices) {
       for (let i = 0; i < sizes.length; i++) {
@@ -447,13 +460,21 @@ router.post("/manage-products/add-products", verifyAdmin, optionalVerifyToken, u
       choose = false
     }
 
+    let proPrice;
+    if (sanitizeNumber(proDiscount)) {
+      proPrice = proOrignalPrice - (proOrignalPrice * sanitizeNumber(proDiscount)) / 100;
+    }
+    else {
+      proPrice = proOrignalPrice;
+    }
+
     const newProduct = await productModel.create({
       AddedBy: user.username,
       image: imageUrl,
       galleryImages,
       proName,
       proPrice,
-      proOrignalPrice: sanitizeNumber(proOrignalPrice),
+      proOrignalPrice,
       proDiscount: sanitizeNumber(proDiscount),
       proBuyer: sanitizeNumber(proBuyer),
       proRating: sanitizeNumber(proRating),

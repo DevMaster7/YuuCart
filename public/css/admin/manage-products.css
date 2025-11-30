@@ -75,8 +75,15 @@
 
 .select-btn {
     cursor: pointer;
-    color: var(--Secondary);
     font-weight: 600;
+}
+
+.select-btn.select {
+    color: var(--Secondary);
+}
+
+.select-btn.deselect {
+    color: rgb(255, 10, 10);
 }
 
 .new-btn-con {
