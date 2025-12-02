@@ -236,7 +236,8 @@ router.post("/manage-categories/add-category", optionalVerifyToken, verifyAdmin,
     const token = req.user;
     const foundUser = await userModel.findById(token._QCUI_UI);
 
-    const { categoryName, SubName } = req.body;
+    let { categoryName, SubName } = req.body;
+    categoryName = categoryName.trim();
     let subCategories = [];
     if (SubName) {
       SubName.forEach(name => {

@@ -153,8 +153,8 @@ html {
 }
 
 .left .cards .product-img {
-    min-width: 150px;
-    max-width: 150px;
+    width: 170px;
+    height: 150px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -693,7 +693,7 @@ html {
         font-size: 16px;
     }
 
-    .stars-con{
+    .stars-con {
         font-size: 13px;
     }
 }

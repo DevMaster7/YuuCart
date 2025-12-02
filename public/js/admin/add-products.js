@@ -122,11 +122,49 @@ document.getElementById("removeColor").onclick = () => {
         }
     }
 })()
+
 // Color preview
-// function updateColorPreview() {
-//     document.querySelectorAll(".colorInp").forEach(input => {
-//         input.onchange = () => {
-//             input.previousElementSibling.style.backgroundColor = input.value;
-//         };
-//     });
-// }
+function updateColorPreview() {
+    document.querySelectorAll(".colorInp").forEach(input => {
+        input.onchange = () => {
+            input.previousElementSibling.style.backgroundColor = input.value;
+        };
+    });
+}
+const multiDisplay = document.getElementById("multiDisplay");
+const multiOptions = document.getElementById("multiOptions");
+const label = document.querySelector(".field.multi label");
+
+multiDisplay.addEventListener("click", () => {
+    multiOptions.style.display =
+        multiOptions.style.display === "block" ? "none" : "block";
+});
+
+// Update selected text
+document.querySelectorAll(".multi-options input").forEach((checkbox) => {
+    checkbox.addEventListener("change", () => {
+        let selected = [];
+
+        document.querySelectorAll(".multi-options input:checked").forEach((c) => {
+            selected.push(c.value);
+        });
+
+        multiDisplay.textContent = selected.length
+            ? selected.join(", ")
+            : "Select options";
+
+        // floating label activate if selected
+        if (selected.length > 0) {
+            multiDisplay.classList.add("active");
+        } else {
+            multiDisplay.classList.remove("active");
+        }
+    });
+});
+
+// Click outside to close
+document.addEventListener("click", (e) => {
+    if (!multiDisplay.contains(e.target) && !multiOptions.contains(e.target)) {
+        multiOptions.style.display = "none";
+    }
+});

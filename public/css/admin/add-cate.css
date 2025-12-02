@@ -16,6 +16,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
 }
 
 form {
@@ -29,9 +30,6 @@ form {
 }
 
 .back-btn {
-    position: absolute;
-    top: 10px;
-    left: 15px;
     font-size: 17px;
     color: var(--Accent);
     cursor: pointer;

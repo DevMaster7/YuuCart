@@ -76,3 +76,12 @@
 .category:hover i {
     display: block;
 }
+
+.category.active {
+    background: #fff0e08c;
+    color: var(--Accent);
+}
+
+.category.active i {
+    display: block;
+}

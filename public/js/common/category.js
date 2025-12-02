@@ -15,8 +15,8 @@ async function getCategories() {
     const categoryIcon = document.getElementById("arrow");
 
     let openDropdowns = [];
+    let isMobile = window.innerWidth <= 768;
 
-    // Remove dropdowns from a specific level and above
     function removeFromLevel(level) {
         openDropdowns = openDropdowns.filter(d => {
             if (d.level >= level) {
@@ -27,7 +27,6 @@ async function getCategories() {
         });
     }
 
-    // Create dropdown for any level
     function createLevel(items, level) {
         removeFromLevel(level);
 
@@ -36,9 +35,11 @@ async function getCategories() {
         dropdown.style.left = `${220 * (level - 1)}px`;
 
         dropdown.innerHTML = items
-            .map(i => `
+            .map(i => {
+                const safePath = encodeURIComponent(i.path);
+                return `
                 <a 
-                    href="/shop/catelogue?query=${i.path}" 
+                    href="/shop/catelogue?query=${safePath}" 
                     class="category" 
                     data-name="${i.name}"
                     data-path="${i.path}"
@@ -46,31 +47,64 @@ async function getCategories() {
                     ${i.name} 
                     ${i.subs?.length ? `<i class="fa-solid fa-chevron-right"></i>` : ""}
                 </a>
-            `)
+            `;
+            })
             .join("");
 
         dropdownCon.append(dropdown);
         openDropdowns.push({ el: dropdown, level });
 
         dropdown.querySelectorAll(".category").forEach(cat => {
-            cat.addEventListener("mouseover", () => {
-                let name = cat.dataset.name;
-                let parentPath = cat.dataset.path;
+            if (isMobile) {
+                let clickedOnce = false;
 
-                let next = getChildren(level, name, parentPath);
+                cat.addEventListener("click", (e) => {
+                    e.preventDefault();
 
-                if (next.length > 0) {
-                    createLevel(next, level + 1);
-                } else {
-                    removeFromLevel(level + 1);
-                }
-            });
+                    const name = cat.dataset.name;
+                    const parentPath = cat.dataset.path;
+                    const next = getChildren(level, name, parentPath);
+
+                    if (next.length === 0) {
+                        window.location.href = cat.href;
+                        return;
+                    }
+
+                    if (!clickedOnce) {
+                        clickedOnce = true;
+
+                        setTimeout(() => clickedOnce = false, 300);
+
+                        dropdown.querySelectorAll(".category").forEach(c => c.classList.remove("active"));
+                        cat.classList.add("active");
+
+                        createLevel(next, level + 1);
+
+                    } else {
+                        window.location.href = cat.href;
+                    }
+                });
+
+            } else {
+                cat.addEventListener("mouseover", () => {
+                    dropdown.querySelectorAll(".category").forEach(c => c.classList.remove("active"));
+                    cat.classList.add("active");
+
+                    const name = cat.dataset.name;
+                    const parentPath = cat.dataset.path;
+
+                    const next = getChildren(level, name, parentPath);
+                    if (next.length > 0) {
+                        createLevel(next, level + 1);
+                    } else {
+                        removeFromLevel(level + 1);
+                    }
+                });
+            }
         });
     }
 
-    // Find children (subCategories) based on level
     function getChildren(level, name, parentPath) {
-        // LEVEL 1 → find main category
         if (level === 1) {
             let m = categories.find(c => c.categoryName === name);
             if (!m) return [];
@@ -82,11 +116,8 @@ async function getCategories() {
             }));
         }
 
-        // LEVEL 2 and deeper
         for (let c of categories) {
             for (let s of c.subCategories) {
-
-                // Level 2 match
                 if (s.subName === name && s.subCategories) {
                     return s.subCategories.map(x => ({
                         name: x.subName,
@@ -95,7 +126,6 @@ async function getCategories() {
                     }));
                 }
 
-                // Recursive deep search
                 if (s.subCategories) {
                     for (let x of s.subCategories) {
                         if (x.subName === name && x.subCategories) {
@@ -113,20 +143,35 @@ async function getCategories() {
         return [];
     }
 
-    // Hover to open main dropdown
-    categoryBtn.addEventListener("mouseover", () => {
-        if (openDropdowns.length === 0) {
-            categoryIcon.style.transform = "rotate(180deg)";
+    if (isMobile) {
+        categoryBtn.addEventListener("click", () => {
+            if (openDropdowns.length === 0) {
+                const mainItems = categories.map(c => ({
+                    name: c.categoryName,
+                    path: c.categoryName,
+                    subs: c.subCategories
+                }));
+                createLevel(mainItems, 1);
+            } else {
+                openDropdowns.forEach(d => d.el.remove());
+                openDropdowns = [];
+            }
+        });
+    } else {
+        categoryBtn.addEventListener("mouseover", () => {
+            if (openDropdowns.length === 0) {
+                categoryIcon.style.transform = "rotate(180deg)";
 
-            let mainItems = categories.map(c => ({
-                name: c.categoryName,
-                path: c.categoryName,
-                subs: c.subCategories
-            }));
+                const mainItems = categories.map(c => ({
+                    name: c.categoryName,
+                    path: c.categoryName,
+                    subs: c.subCategories
+                }));
 
-            createLevel(mainItems, 1);
-        }
-    });
+                createLevel(mainItems, 1);
+            }
+        });
+    }
 
     dropdownCon.addEventListener("mouseleave", () => {
         categoryIcon.style.transform = "rotate(0deg)";
@@ -134,4 +179,3 @@ async function getCategories() {
         openDropdowns = [];
     });
 })();
-

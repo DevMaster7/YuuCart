@@ -278,13 +278,13 @@ body {
         gap: 10px;
     }
 
-    .field {
+    /* .field {
         width: 170px !important;
-    }
+    } */
 }
 
 @media (max-width:400px) {
-    .field{
+    /* .field{
         width: 155px !important;
-    }
+    } */
 }

@@ -11,6 +11,7 @@ const session = require("express-session");
 const optionalVerifyToken = require("./middleware/optionalVerifyToken");
 const userModel = require("./models/usersModel");
 const productModel = require("./models/productsModel");
+const categoriesModel = require("./models/categoriesModel");
 const morgan = require("morgan");
 const bcrypt = require("bcrypt");
 const env = require("dotenv");
@@ -67,18 +68,29 @@ app.get("/", optionalVerifyToken, async (req, res) => {
   // );
   // console.log(result);
 
-  // const r = await productModel.updateMany(
-  //   {},
+  // const result = await categoriesModel.updateMany(
+  //   {}, // all documents
   //   [
   //     {
   //       $set: {
-  //         proPrice: "$proOrignalPrice"
+  //         categoryName: { $trim: { input: "$categoryName" } },
+  //         subCategories: {
+  //           $map: {
+  //             input: "$subCategories",
+  //             as: "sub",
+  //             in: {
+  //               $mergeObjects: [
+  //                 "$$sub",
+  //                 { subName: { $trim: { input: "$$sub.subName" } } }
+  //               ]
+  //             }
+  //           }
+  //         }
   //       }
   //     }
   //   ]
   // );
-
-  // console.log(r);
+  // console.log(result);
 
   // const products = await productModel.find({});
   // for (const product of products) {

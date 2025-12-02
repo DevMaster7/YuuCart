@@ -208,9 +208,8 @@ html {
 }
 
 .products-list-con .cards .product-img {
-    min-width: 150px;
-    max-width: 150px;
-    height: 153px;
+    width: 170px;
+    height: 150px;
     display: flex;
     align-items: center;
     justify-content: center;
