@@ -6,6 +6,9 @@ const orderInfoSchema = new mongoose.Schema({
         type: String,
         default: () => moment().tz("Asia/Karachi").format("dddd, D MMMM YYYY — hh:mm:ss A")
     },
+    DeliveryDate: {
+        type: String
+    },
     orderStatus: {
         type: String,
         default: "Pending"
@@ -16,7 +19,6 @@ const orderInfoSchema = new mongoose.Schema({
 }, { _id: true });
 
 const devliverySchema = new mongoose.Schema({
-    PaymentMethod: String,
     userDetails: {
         userId: String,
         fullname: String,
@@ -26,7 +28,7 @@ const devliverySchema = new mongoose.Schema({
         city: String,
         address: String
     },
-    productDetails: {},
+    orderData: {},
     orderInfo: {
         type: orderInfoSchema,
         default: () => ({}),

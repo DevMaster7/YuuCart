@@ -1,7 +1,7 @@
 let pageName = document.getElementsByTagName("head")[0].dataset.page
 async function main() {
-    if (document.cookie.includes("ULGG")) {
-        let data = await getUser();
+    const data = await getUser();
+    if (data.success) {
         if (pageName == "home") {
             loginBtns(1)
             let landBtnCon = document.querySelector(".landing-center").querySelector(".btn-con")
@@ -18,7 +18,9 @@ async function main() {
         else {
             loginBtns(1);
             userContent(data);
-            document.querySelector(".cart-con").style.display = "flex";
+            let cart = document.querySelector(".cart-con")
+            cart.style.display = "flex";
+            cart.querySelector(".super").innerHTML = `${data.user.userCart}`
         }
 
         document.querySelector(".user-con").addEventListener("click", () => {

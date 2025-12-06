@@ -44,10 +44,26 @@ router.get("/frontUser", optionalVerifyToken, async (req, res) => {
     try {
         const token = req.user;
         if (!token) return res.status(404).json({ success: false, message: "not login" });
-        let foundUser = await userModel.findById(token._QCUI_UI);
-        if (!foundUser) return res.status(404).json({ success: false, message: "not login" });
-        foundUser = foundUser.toObject();
-        const user = pickFields(foundUser, ["userImg", "fullname", "username", "phone", "address", "city", "email", "emailVerified", "YuuCoin"]);
+        let user = await userModel.findOne(
+            { _id: token._QCUI_UI },
+            {
+                _id: 0,
+                userImg: 1,
+                fullname: 1,
+                username: 1,
+                phone: 1,
+                address: 1,
+                city: 1,
+                email: 1,
+                emailVerified: 1,
+                YuuCoin: 1,
+                userCart: 1
+            }
+        );
+        user = {
+            ...user.toObject(),
+            userCart: user.userCart.length
+        }
 
         res.status(200).json({ success: true, user });
     } catch (error) {
@@ -57,7 +73,7 @@ router.get("/frontUser", optionalVerifyToken, async (req, res) => {
             message: "Something went wrong while loading this page. Please try again later.",
         });
     }
-})
+});
 
 router.get("/frontCategories", async (req, res) => {
     const categories = await categoriesModel.find(
@@ -71,7 +87,7 @@ router.get("/frontCategories", async (req, res) => {
     );
 
     res.status(200).json({ success: true, categories });
-})
+});
 
 router.get("/frontRewardCenter", optionalVerifyToken, async (req, res) => {
     try {
@@ -146,7 +162,7 @@ router.get("/frontRewardCenter", optionalVerifyToken, async (req, res) => {
             message: "Something went wrong while loading this page. Please try again later.",
         });
     }
-})
+});
 
 router.get("/frontAdminData", optionalVerifyToken, verifyAdmin, async (req, res) => {
     try {

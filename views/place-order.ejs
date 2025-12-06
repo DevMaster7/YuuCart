@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" data-cname="" data-cbenet="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
         integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
@@ -31,86 +31,84 @@
                     <div class="user-details-con">
                         <div>
                             <span>Full-Name:</span>
-                            <div class="name">
-                                <%= user.fullname %>
+                            <div id="name">
                             </div>
                         </div>
                         <div>
                             <span>Phone:</span>
-                            <div class="phone">
-                                <%= user.phone %>
+                            <div id="phone">
                             </div>
                         </div>
                         <div>
                             <span>City:</span>
-                            <div class="city">
-                                <%= user.city %>
+                            <div id="city">
                             </div>
                         </div>
                         <div>
                             <span>Address:</span>
-                            <div class="address">
-                                <%= user.address %>
+                            <div id="address">
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="box-con">
                     <div class="box-bar-con">
-                        <div class="box-heading">Your Product<%= productData.length>1 ? 's' : '' %> Details</div>
+                        <div class="box-heading">Your Product<%= finalData.productData.length>1 ? 's' : '' %> Details
+                        </div>
                         <div class="box-change edit">Edit</div>
                     </div>
-                    <% productData.forEach(product=> { %>
+                    <% finalData.productData.forEach(obj=> { %>
                     <div class="product-detail-con">
-                        <div class="product-img" data-xmghtml="<%= product.productId %>">
-                            <img src="<%= product.productImg %>" alt="">
+                        <div class="product-img">
+                            <img src="<%= obj.productInfo.image %>" alt="">
                         </div>
                         <div class="product-details">
                             <div class="additional-details">
                                 <div>
                                     <div class="product-name">
-                                        <%= product.productName %>
+                                        <%= obj.productInfo.proName %>
                                     </div>
                                     <div class="orignal-price-con">
-                                        <div class="pro-price">Rs. <%= product.productMainPrice %>
+                                        <div class="pro-price">Rs. <%= obj.productInfo.proPrice %>
                                         </div>
-                                        <% if (product.productDiscount!==0) { %>
-                                        <div class="before-dis">Rs. <%= product.productOrignalPrice %>
+                                        <% if (obj.productInfo.proDiscount!==0) { %>
+                                        <div class="before-dis">Rs. <%= obj.productInfo.proOrignalPrice %>
                                         </div>
-                                        <div class="pro-discount">-<%= product.productDiscount %>
+                                        <div class="pro-discount">-<%= obj.productInfo.proDiscount %>
                                         </div>
                                         <% } %>
                                     </div>
                                 </div>
-                                <% if (product.productCutomzie=="true" ) { %>
-                                <div data-modi-pro="<%= product.productCutomzie %>"
-                                    class="product-size-color product-size">Size:
-                                    <div class="pro-size-select">
-                                        <%= product.productSize %>
+                                <% if (obj.productInfo.customization) { %>
+                                <div class="product-size-color product-size">
+                                    Size: <div class="pro-size-select">
+                                        <%= obj.productSize %>
                                     </div>
-                                    <div class="select-cust-price size-price">= &nbsp;&nbsp;&nbsp;
-                                        Rs. <%=product.productSizePrice %>
+                                    <div class="select-cust-price size-price">
+                                        = &nbsp;&nbsp; Rs. <%= obj.sizePrice %>
                                     </div>
                                 </div>
-                                <div class="product-size-color product-color">Color:
-                                    <div class="pro-color-select" style="background: <%= product.productColor %>;">
+                                <div class="product-size-color product-color">
+                                    Color: <div class="pro-color-select" style="background: <%= obj.productColor %>;">
                                     </div>
-                                    <div class="select-cust-price color-price">= &nbsp;&nbsp;&nbsp;
-                                        Rs. <%=product.productColorPrice %>
+                                    <div class="select-cust-price color-price">
+                                        = &nbsp;&nbsp; Rs. <%= obj.colorPrice %>
                                     </div>
                                 </div>
                                 <% } %>
                             </div>
                             <div class="mini-price-con">
                                 <div class="pro-quantity"><span>Quantity:</span>
-                                    <%= product.productQuantity %>
+                                    <%= obj.productQuantity %>
                                 </div>
-                                <div class="pro-price total">Rs. <%= product.totalPrice %>
+                                <div class="pro-price total">
+                                    Rs.
+                                    <%= (obj.productInfo.proPrice + obj.sizePrice + obj.colorPrice) * obj.productQuantity %>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <% }) %>
+                    <%})%>
                 </div>
             </div>
 
@@ -121,10 +119,13 @@
                 </div>
                 <div class="msg"></div>
                 <div class="prices-con">
-                    <div>
-                        <div class="price-detail delivery">Delivery Charges: <span>Free</span></div>
-                        <div class="total-price">Total Price: Rs.
-                            <%= productData[0].cartTotal==0 ? productData[0].totalPrice : productData[0].cartTotal %>
+                    <div style="display: flex;flex-direction: column;gap: 5px;">
+                        <div class="total-price" id="subTotalPrice" style="font-size: 20px;">SubTotal: Rs.
+                            <%= finalData.totalPriceWithoutDelivery %></div>
+                        <div class="price-detail delivery">Delivery Charges: <span>Rs.
+                                <%= finalData.totalDeliveryCharges %></span></div>
+                        <div class="total-price" id="totalPrice">Total Price: Rs.
+                            <%= finalData.totalPriceWithoutDelivery + finalData.totalDeliveryCharges %>
                         </div>
                     </div>
                     <div class="coupon-con">
@@ -151,6 +152,7 @@
             </div>
         </div>
     </div>
+
     <script src="/js/common/at-start.js"></script>
     <script src="/js/place-order.js"></script>
     <script src="/js/common/at-last.js"></script>

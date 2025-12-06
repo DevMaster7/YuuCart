@@ -10,6 +10,7 @@ const orderModel = require("../models/ordersModel");
 const { couponModel } = require("../models/offersModel");
 const { uploadOnCloudinary } = require("../config/cloudinary");
 const upload = require("../middleware/multerConfig");
+const { encrypt, decrypt } = require("../utils/encrypt");
 const fs = require("fs");
 const path = require('node:path');
 const router = express.Router();
@@ -44,11 +45,23 @@ router.get("/account", optionalVerifyToken, async (req, res) => {
     try {
         const token = req.user;
         if (!token) return res.redirect("/user/login");
-        let foundUser = await userModel.findById(token._QCUI_UI);
-        if (!foundUser) return res.redirect("/user/login");
 
-        foundUser = foundUser.toObject();
-        const user = pickFields(foundUser, ["userImg", "fullname", "username", "phone", "address", "city", "email", "emailVerified"]);
+        const user = await userModel.findOne(
+            { _id: token._QCUI_UI },
+            {
+                userImg: 1,
+                fullname: 1,
+                username: 1,
+                phone: 1,
+                address: 1,
+                city: 1,
+                email: 1,
+                emailVerified: 1,
+                YuuCoin: 1
+            }
+        );
+        if (!user) return res.redirect("/user/login");
+
         res.render("users/my-account", { user });
     } catch (error) {
         console.error("ERROR:", error);
@@ -72,6 +85,7 @@ router.post("/updateProfilePic", optionalVerifyToken, upload.single("file"), asy
         if (!foundUser) return res.redirect("/user/login");
         foundUser.userImg = imageUrl;
         await foundUser.save();
+
         res.redirect("/user/account");
     } catch (error) {
         console.error("ERROR:", error);
@@ -121,15 +135,27 @@ router.get("/edit-my-account", optionalVerifyToken, async (req, res) => {
 
         const token = req.user;
         if (!token) return res.redirect("/user/login");
-        let foundUser = await userModel.findById(token._QCUI_UI);
-        if (!foundUser) return res.redirect("/user/login");
 
         const EditToken = req.cookies.UEANT;
         if (!EditToken) return res.redirect("/user/account");
         res.clearCookie('UEANT');
 
-        foundUser = foundUser.toObject();
-        const user = pickFields(foundUser, ["userImg", "fullname", "username", "phone", "address", "city", "email", "emailVerified"]);
+        const user = await userModel.findOne(
+            { _id: token._QCUI_UI },
+            {
+                userImg: 1,
+                fullname: 1,
+                username: 1,
+                phone: 1,
+                address: 1,
+                city: 1,
+                email: 1,
+                emailVerified: 1,
+                YuuCoin: 1
+            }
+        );
+        if (!user) return res.redirect("/user/login");
+
         res.render("users/edit-my-acc", { user });
     } catch (error) {
         console.error("ERROR:", error);
@@ -209,11 +235,25 @@ router.get("/reward-center", optionalVerifyToken, async (req, res) => {
     try {
         const token = req.user;
         if (!token) return res.redirect("/user/login");
-        let foundUser = await userModel.findById(token._QCUI_UI);
-        if (!foundUser) return res.redirect("/user/login");
 
-        foundUser = foundUser.toObject();
-        const user = pickFields(foundUser, ["userImg", "fullname", "username", "phone", "address", "city", "YuuCoin", "joiningDate", "Reffer.url"]);
+        const user = await userModel.findOne(
+            { _id: token._QCUI_UI },
+            {
+                joiningDate: 1,
+                userImg: 1,
+                fullname: 1,
+                username: 1,
+                phone: 1,
+                address: 1,
+                city: 1,
+                email: 1,
+                emailVerified: 1,
+                "Reffer.url": 1,
+                YuuCoin: 1
+            }
+        );
+        if (!user) return res.redirect("/user/login");
+
         res.render("users/reward", { user });
     } catch (error) {
         console.error("ERROR:", error);
@@ -227,11 +267,24 @@ router.get("/messages", optionalVerifyToken, async (req, res) => {
     try {
         const token = req.user;
         if (!token) return res.redirect("/user/login");
-        let foundUser = await userModel.findById(token._QCUI_UI);
-        if (!foundUser) return res.redirect("/user/login");
 
-        foundUser = foundUser.toObject();
-        const user = pickFields(foundUser, ["userImg", "fullname", "username", "phone", "address", "city", "messages"]);
+        const user = await userModel.findOne(
+            { _id: token._QCUI_UI },
+            {
+                userImg: 1,
+                fullname: 1,
+                username: 1,
+                phone: 1,
+                address: 1,
+                city: 1,
+                email: 1,
+                emailVerified: 1,
+                messages: 1,
+                YuuCoin: 1
+            }
+        );
+        if (!user) return res.redirect("/user/login");
+
         res.render("users/messages", { user });
     } catch (error) {
         console.error("ERROR:", error);
@@ -243,14 +296,16 @@ router.get("/messages", optionalVerifyToken, async (req, res) => {
 });
 router.post("/editMessage", optionalVerifyToken, async (req, res) => {
     try {
+        const { id } = req.body;
         const token = req.user;
         if (!token) return res.redirect("/user/login");
-        const { id } = req.body;
+
         await userModel.findOneAndUpdate(
             { _id: token._QCUI_UI, "messages._id": id },
             { $set: { "messages.$.seen": false } },
             { new: true }
         );
+
         res.status(200).json({ success: true });
     } catch (error) {
         console.error("ERROR:", error);
@@ -273,10 +328,8 @@ router.get("/orders", optionalVerifyToken, async (req, res) => {
 
         foundUser = foundUser.toObject();
         foundUser.userOrders = foundUser.userOrders.map(order => {
-            // 1️⃣ Remove _id from the order itself
             const { _id, ...rest } = order;
 
-            // 2️⃣ Remove userId from userDetails
             if (rest.userDetails?.userId) {
                 const { userId, ...uDetails } = rest.userDetails;
                 rest.userDetails = uDetails;

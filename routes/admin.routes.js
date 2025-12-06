@@ -435,7 +435,7 @@ router.post("/manage-products/add-products", verifyAdmin, optionalVerifyToken, u
       galleryImages.push(url);
     }
 
-    let { proName, proOrignalPrice, proDiscount, proBuyer, proRating, proNoOfReviews, proDescription, proCategory, choose, sizes, sizePrices, colors, colorPrices } = req.body;
+    let { proName, proOrignalPrice, proDelivery, proDiscount, proBuyer, proRating, proNoOfReviews, proDescription, proCategory, choose, sizes, sizePrices, colors, colorPrices } = req.body;
     const sizeAndPrice = [];
     if (sizes && sizePrices) {
       for (let i = 0; i < sizes.length; i++) {
@@ -476,6 +476,7 @@ router.post("/manage-products/add-products", verifyAdmin, optionalVerifyToken, u
       proName,
       proPrice,
       proOrignalPrice,
+      proDelivery,
       proDiscount: sanitizeNumber(proDiscount),
       proBuyer: sanitizeNumber(proBuyer),
       proRating: sanitizeNumber(proRating),

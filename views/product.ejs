@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head data-page="product">
+<head data-page="product" data-id="<%= product._id %>">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
@@ -60,7 +60,6 @@
                         fill="#CCD6F6"></path>
                 </svg>
                 <sup class="super">
-                    <%= userCart.length %>
                 </sup>
             </a>
         </div>
@@ -75,7 +74,7 @@
             <div><img src="<%= image %>" alt=""></div>
             <% }) %>
         </div>
-        <div class="product-pic-con" data-id="<%= product._id %>">
+        <div class="product-pic-con">
             <img src="<%= product.image %>" alt="" class="zoom-image">
         </div>
         <div class="extra-pics-videos-land">

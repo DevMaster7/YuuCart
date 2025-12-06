@@ -56,7 +56,6 @@
                             fill="#CCD6F6"></path>
                     </svg>
                     <sup class="super">
-                        <%= userCart.length %>
                     </sup>
                 </a>
             </div>
@@ -152,8 +151,8 @@
         <div class="products-list-con">
             <% products.forEach(product=> { %>
             <a href="/shop/<%= slugify(product.proName, {lower: true}) %>-<%= product._id %>">
-                <div class="cards">
-                    <div class="product-img" data-productid="<%= product._id %>">
+                <div class="cards" data-id="<%= product._id %>">
+                    <div class="product-img">
                         <img src="<%= product.image %>" alt="">
                     </div>
                     <div class="pro-details">

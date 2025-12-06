@@ -1,14 +1,6 @@
-async function mainFun() {
-    let res = await fetch("/api/frontUser", {
-        method: 'get',
-        headers: { 'Content-Type': 'application/json' },
-    })
-    let data = await res.json();
-    return data
-}
-
 (async function () {
-    let Data = await mainFun();
+    const imgContainer = document.querySelector('.product-pic-con');
+    const productID = document.getElementsByTagName("head")[0].dataset.id;
     let landDivs = Array.from(document.querySelector(".extra-pics-videos").getElementsByTagName("div"))
     let mobileDivs = Array.from(document.querySelector(".extra-pics-videos-land").getElementsByTagName("div"))
     function activeBox(e) {
@@ -19,7 +11,7 @@ async function mainFun() {
                 })
                 box.classList.add("activeBox")
                 let imgURL = box.getElementsByTagName("img")[0].src;
-                document.querySelector(".product-pic-con").getElementsByTagName("img")[0].src = imgURL;
+                imgContainer.getElementsByTagName("img")[0].src = imgURL;
             })
         })
     }
@@ -27,17 +19,16 @@ async function mainFun() {
     activeBox(mobileDivs)
 
     // Zoom-In Zoom-Out Product
-    const container = document.querySelector('.product-pic-con');
     const image = document.querySelector('.zoom-image');
-    container.addEventListener('mousemove', function (e) {
-        const { left, top, width, height } = container.getBoundingClientRect();
+    imgContainer.addEventListener('mousemove', function (e) {
+        const { left, top, width, height } = imgContainer.getBoundingClientRect();
         const x = ((e.clientX - left) / width) * 100;
         const y = ((e.clientY - top) / height) * 100;
 
         image.style.transformOrigin = `${x}% ${y}%`;
         image.style.transform = 'scale(2.1)';
     });
-    container.addEventListener('mouseleave', function () {
+    imgContainer.addEventListener('mouseleave', function () {
         image.style.transformOrigin = 'center center';
         image.style.transform = 'scale(1)';
     });
@@ -124,11 +115,10 @@ async function mainFun() {
 
     // Add To Cart
     document.querySelector(".add-cart-btn").addEventListener("click", async () => {
-        const proID = document.querySelector(".product-pic-con").dataset.id;
         const res = await fetch('/shop/add-to-cart', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ proID }),
+            body: JSON.stringify({ proID: productID }),
         });
         const res1 = await res.json();
         if (res1.success) {
@@ -141,81 +131,34 @@ async function mainFun() {
 
     // Product Data Sender
     document.querySelector(".buy-btn").addEventListener("click", async () => {
-        let productCutomzie;
-        let e = document.querySelector(".true")
-        if (e == null) {
-            productCutomzie = "false"
-        }
-        else {
-            productCutomzie = "true"
-        }
-        let productId = document.querySelector(".product-pic-con").dataset.id
-        let productImg = document.querySelector(".zoom-image").src
-        let productName = document.querySelector(".product-name").innerHTML.trim()
-        let productMainPrice = Number(document.querySelector(".product-price").dataset.price)
-        let productOrignalPrice = document.querySelector(".product-orignal-price") == null ? 0 : Number(document.querySelector(".product-orignal-price").dataset.orignalprice)
-        let productDiscount = document.querySelector(".product-discount") == null ? 0 : document.querySelector(".product-discount").innerHTML.trim()
         let productQuantity = Number(document.querySelector(".product-quantity-value").innerHTML.trim())
-        let productSize;
-        let productSizePrice;
-        let productColor;
-        let productColorPrice;
-        if (productCutomzie == "true") {
-            document.querySelectorAll(".cust-size").forEach((e) => {
-                if (e.classList.contains("activeSize")) {
-                    productSize = e.innerHTML.trim()
-                }
-            })
-            document.querySelectorAll(".cust-size").forEach((e) => {
-                if (e.classList.contains("activeSize")) {
-                    productSizePrice = Number(e.dataset.sizeprice)
-                }
-            })
-            document.querySelectorAll(".cust-color").forEach((e) => {
-                if (e.classList.contains("activeColor")) {
-                    productColor = e.dataset.color
-                }
-            })
-            document.querySelectorAll(".cust-color").forEach((e) => {
-                if (e.classList.contains("activeColor")) {
-                    productColorPrice = Number(e.dataset.colorprice)
-                }
-            })
-        }
-        else {
-            productSize = "none"
-            productSizePrice = 0
-            productColor = "none"
-            productColorPrice = 0
-        }
-        let totalPrice = (productMainPrice + productSizePrice + productColorPrice) * productQuantity
-        let cartTotal = 0
+        let productSize = null;
+        let productColor = null;
+        document.querySelectorAll(".cust-size").forEach((e) => {
+            if (e.classList.contains("activeSize")) {
+                productSize = e.innerHTML.trim()
+            }
+        })
+        document.querySelectorAll(".cust-color").forEach((e) => {
+            if (e.classList.contains("activeColor")) {
+                productColor = e.dataset.color
+            }
+        })
         const obj = {
-            productId,
-            productCutomzie,
-            productImg,
-            productName,
-            productMainPrice,
-            productOrignalPrice,
-            productDiscount,
+            productId: productID,
             productQuantity,
             productSize,
-            productSizePrice,
             productColor,
-            productColorPrice,
-            totalPrice,
-            cartTotal
         }
-        const productData = [obj]
+        const productData = [obj];
         const res = await fetch(`/shop/checkout`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ productData }),
         });
-        console.log(productData);
         const res1 = await res.json();
         if (res1.success) {
-            window.location.href = `/shop/checkout`;
+            window.location.href = `/shop/checkout/${productID}`;
         }
     })
 
@@ -263,10 +206,9 @@ async function mainFun() {
         }
 
         document.getElementById("submitReview").addEventListener("click", async () => {
-            const id = document.querySelector(".product-pic-con").dataset.id;
             const comment = document.getElementById("comment").value.trim();
             const formData = new FormData();
-            formData.append("review[id]", id);
+            formData.append("review[id]", productID);
             formData.append("review[rating]", selectedRating);
             formData.append("review[comment]", comment);
             for (let file of document.querySelector("#images").files) {
@@ -290,8 +232,8 @@ async function mainFun() {
                 let newRev = `<div class="review">
                         <div class="meta">
                             <div style="width: fit-content;display: flex;flex-direction: column;align-items: center;">
-                                <strong>${Data.user.fullname}</strong>
-                                <span style="font-size: 10px;text-align: center;color: #6f6f6f;">${Data.user.username}
+                                <strong>${data.fullname}</strong>
+                                <span style="font-size: 10px;text-align: center;color: #6f6f6f;">${data.username}
                                 </span>
                             </div>
                             <p>${comment}</p>
@@ -390,7 +332,7 @@ async function mainFun() {
     });
 
     // Q/A
-    document.getElementById("askQuestionBtn").addEventListener("click", () => {
+    document.getElementById("askQuestionBtn")?.addEventListener("click", () => {
         let cap_token = "";
 
         showModal("Ask a Question", `
@@ -410,9 +352,7 @@ async function mainFun() {
         });
 
         document.getElementById("submitQuestion").addEventListener("click", async () => {
-            const id = document.querySelector(".product-pic-con").dataset.id;
             const question = document.getElementById("question").value;
-
             if (!question || !cap_token) {
                 document.getElementById("message").classList.add("error");
                 document.getElementById("message").innerHTML = "All fields are required!";
@@ -436,7 +376,7 @@ async function mainFun() {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    id,
+                    id: productID,
                     question,
                     cap_token
                 })
@@ -470,7 +410,6 @@ async function mainFun() {
             }
         });
     });
-
 
     // Additionals
     function showModal(title, content) {

@@ -3,10 +3,10 @@ document.querySelectorAll(".heart").forEach(btn => {
         let pageName = document.getElementsByTagName("head")[0].dataset.page
         let proID;
         if (pageName == "product") {
-            proID = document.querySelector(".product-pic-con").dataset.id
+            proID = document.getElementsByTagName("head")[0].dataset.id
         }
         else {
-            proID = btn.closest(".cards").querySelector(".product-img").dataset.productid;
+            proID = btn.closest(".cards").dataset.id;
         }
 
         if (btn.classList.contains("fa-regular")) {

@@ -54,29 +54,30 @@
                 <div class="orders-con" id="orderCon">
                     <% if (user.userOrders.length !== 0) { %>
                     <% user.userOrders.reverse().forEach((order) =>{ %>
-                    <div class="order-box" data-status="<%= order.orderInfo.orderStatus %>"><%= order.userDetails.userId %>
-                        <% order.productDetails.forEach((orderdetail) =>{ %>
+                    <div class="order-box" data-status="<%= order.orderInfo.orderStatus %>">
+                        <%= order.userDetails.userId %>
+                        <% order.orderData.productDetails.forEach((proDetail) =>{ %>
                         <div class="inner-con">
-                            <a href="/shop/<%= slugify(orderdetail.productName, {lower: true}) %>-<%= orderdetail.productId %>"
+                            <a href="/shop/<%= slugify(proDetail.productName, {lower: true}) %>-<%= proDetail.productId %>"
                                 class="img-box">
-                                <img src="<%= orderdetail.productImg %>" alt="Product Image">
+                                <img src="<%= proDetail.productImg %>" alt="Product Image">
                             </a>
                             <div class="order-product-info">
-                                <h2><%= orderdetail.productName %></h2>
-                                <p class="price">Rs. <%= orderdetail.basePrice %></p>
+                                <h2><%= proDetail.productName %></h2>
+                                <p class="price">Rs. <%= proDetail.productPrice %></p>
                                 <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
                                     <div class="add-info-con">
-                                        <% if (orderdetail.productCustomizeStatus === true) { %>
-                                        <p class="add-info info-box">Size: <%= orderdetail.productSize %> = Rs.
-                                            <%= orderdetail.productSizePrice %></p>
+                                        <% if (proDetail.cutomizationStatus === true) { %>
+                                        <p class="add-info info-box">Size: <%= proDetail.productSize %> = Rs.
+                                            <%= proDetail.productSizePrice %></p>
                                         <p class="add-info info-box">Color: <span class="color"
-                                                style="background: <%= orderdetail.productColor %>;"></span> = Rs.
-                                            <%= orderdetail.productColorPrice %></p>
+                                                style="background: <%= proDetail.productColor %>;"></span> = Rs.
+                                            <%= proDetail.productColorPrice %></p>
                                         <% } %>
-                                        <p class="add-info">Quantity: <%= orderdetail.productQuantity %></p>
+                                        <p class="add-info">Quantity: <%= proDetail.productQuantity %></p>
                                     </div>
-                                    <% if (order.productDetails.length > 1) { %>
-                                    <p class="sub-total">SubTotal: Rs. <%= orderdetail.subTotalPrice %></p>
+                                    <% if (order.orderData.productDetails.length > 1) { %>
+                                    <p class="sub-total">SubTotal: Rs. <%= proDetail.subTotal %></p>
                                     <% } %>
                                 </div>
                             </div>
@@ -87,27 +88,28 @@
                                 <div class="order-info">Order ID: <span><%= order.orderInfo._id %></span></div>
                                 <div class="order-info">Payment Method:
                                     <span><%= order.orderInfo.PaymentMethod %></span></div>
-                                <div class="order-info">Date: <span><%= order.orderInfo.orderDate %></span></div>
+                                <div class="order-info">Order Date: <span><%= order.orderInfo.orderDate %></span></div>
+                                <div class="order-info">Delivery Date: <span>---</span></div>
                                 <div class="order-info">Status: <span
                                         class="badge <% if (order.orderInfo.orderStatus === "Pending") { %>pending<% } else if (order.orderInfo.orderStatus === "Delivered") { %>delivered<% } else { %>cancelled<% } %>"><%= order.orderInfo.orderStatus %></span>
                                 </div>
                             </div>
                             <div style="padding-right: 3px;">
-                                <% if (order.productDetails[0].couponName === "none") { %>
+                                <% if (order.orderData.couponName === null) { %>
                                 <div class="total">Total Amount: <span>Rs.
-                                        <%= order.productDetails[0].totalBeforeCoupon %></span>
+                                        <%= order.orderData.finalPriceWithoutCoupon %></span>
                                 </div>
                                 <% }else{ %>
                                 <div class="total"
                                     style="opacity: 0.4; font-size: 14px; cursor: default; user-select: none;">Total
                                     Amount: <span>Rs.
-                                        <%= order.productDetails[0].totalBeforeCoupon %></span></div>
-                                <div class="order-info">Coupon: <span><%= order.productDetails[0].couponName %></span>
+                                        <%= order.orderData.finalPriceWithoutCoupon %></span></div>
+                                <div class="order-info">Coupon: <span><%= order.orderData.couponName %></span>
                                 </div>
                                 <div class="order-info">Benefit:
-                                    <span><%= order.productDetails[0].couponBene %></span></div>
+                                    <span><%= order.orderData.couponBeneT == "discount" ? order.orderData.couponBeneV + "%" : "Rs. " + order.orderData.couponBeneV %> OFF</span></div>
                                 <div class="total">Total Amount: <span>Rs.
-                                        <%= order.productDetails[0].totalAfterCoupon %></span>
+                                        <%= order.orderData.finalPriceWithCoupon %></span>
                                 </div>
                                 <% } %>
                             </div>

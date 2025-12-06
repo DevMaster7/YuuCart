@@ -59,8 +59,8 @@
         <div class="left">
             <div class="select">Select All</div>
             <% products.forEach(product=> { %>
-            <div class="cards">
-                <div class="product-img" data-productid="<%= product._id %>">
+            <div class="cards" data-id="<%= product._id %>">
+                <div class="product-img">
                     <img src="<%= product.image %>" alt="">
                 </div>
                 <div class="pro-details">
@@ -176,7 +176,7 @@
                 <div class="total">Total Price: Rs. 0</div>
             </div>
             <div>
-                <div class="err">Select At Least One Product!</div>
+                <div class="err"></div>
                 <button class="checkout-btn">Procced to CheckOut!</button>
             </div>
         </div>

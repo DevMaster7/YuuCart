@@ -15,15 +15,9 @@ const fs = require("fs");
 
 router.get("/", optionalVerifyToken, async (req, res) => {
     try {
-        const tokenUser = req.user;
         const products = await productModel.find();
-        if (!tokenUser) {
-            return res.render('shop', { products, slugify, userCart: [], user: [] });
-        } else {
-            const user = await userModel.findById(tokenUser._QCUI_UI);
-            const userCart = user?.userCart || [];
-            return res.render('shop', { products, slugify, userCart, user });
-        }
+
+        return res.render('shop', { products, slugify });
     } catch (error) {
         console.error("ERROR:", error);
         return res.status(500).render("errors/500", {
@@ -41,8 +35,8 @@ router.get("/:slug-:id", optionalVerifyToken, async (req, res) => {
         if (!mongoose.Types.ObjectId.isValid(id)) return res.status(400).render("errors/404")
 
         const product = await productModel.findById(id);
-        const products = await productModel.find();
         if (!product) return res.status(404).render("errors/404")
+        const products = await productModel.find();
 
         const category = await categoriesModel.findOne({ categoryName: product.proCategory });
         let categoryIds = [];
@@ -58,7 +52,7 @@ router.get("/:slug-:id", optionalVerifyToken, async (req, res) => {
             });
 
         }
-        
+
         const categoryProducts = await productModel.find({ _id: { $in: categoryIds } });
 
         const allRatings = product.Reviews.map(r => r.rating);
@@ -130,13 +124,11 @@ router.get("/:slug-:id", optionalVerifyToken, async (req, res) => {
             return `${weeks} week${weeks > 1 ? "s" : ""}`;
         }
 
-        if (!tokenUser) {
-            res.render("product", { product, products, slugify, userCart: [], user: [], categoryProducts, distribution, timeAgo, timeDifference });
-        } else {
+        if (tokenUser) {
             const user = await userModel.findById(tokenUser._QCUI_UI);
-
-            const userCart = user?.userCart || [];
-            res.render("product", { product, products, slugify, userCart, user, categoryProducts, distribution, timeAgo, timeDifference });
+            res.render("product", { user, product, products, slugify, categoryProducts, distribution, timeAgo, timeDifference });
+        } else {
+            res.render("product", { user: [], product, products, slugify, categoryProducts, distribution, timeAgo, timeDifference });
         }
     } catch (error) {
         console.error("ERROR:", error);
@@ -217,7 +209,9 @@ router.post("/addReview", upload.array("images"), optionalVerifyToken, async (re
             success: true, product: {
                 proRating: product.proRating,
                 proNoOfReviews: product.proNoOfReviews,
-                distribution
+                distribution,
+                fullname: user.fullname,
+                username: user.username,
             }
         });
     } catch (error) {
@@ -354,11 +348,12 @@ router.get("/catelogue", optionalVerifyToken, async (req, res) => {
 router.get("/cart", optionalVerifyToken, async (req, res) => {
     try {
         const tokenUser = req.user;
-        if (!tokenUser) {
-            return res.status(401).redirect("/user/login");
-        }
+        if (!tokenUser) return res.status(401).redirect("/user/login");
+
         const user = await userModel.findById(tokenUser._QCUI_UI);
+
         const foundProducts = await productModel.find({ _id: { $in: user.userCart } });
+
         res.render("cart", { products: foundProducts, user });
     } catch (error) {
         console.error("ERROR:", error);
@@ -373,12 +368,17 @@ router.post("/add-to-cart", optionalVerifyToken, async (req, res) => {
     try {
         const tokenUser = req.user;
         if (!tokenUser) return res.status(401).json({ success: false, message: "Unauthorized" });
+
         const { proID } = req.body;
+        const product = await productModel.findById(proID);
+        if (!product) return res.status(404).json({ success: false, message: "Product not found" });
+
         const user = await userModel.findById(tokenUser._QCUI_UI);
         if (!user.userCart.includes(proID)) {
             user.userCart.push(proID);
             await user.save();
         }
+
         res.status(200).json({ success: true });
     } catch (error) {
         console.error("ERROR:", error);
@@ -445,21 +445,25 @@ router.post("/remove-from-wishlist", optionalVerifyToken, async (req, res) => {
     }
 });
 
-router.get("/checkout", optionalVerifyToken, async (req, res) => {
+router.get("/checkout/:id", optionalVerifyToken, async (req, res) => {
     try {
         const tokenUser = req.user;
         if (!tokenUser) return res.status(401).redirect("/user/login");
-        const user = await userModel.findById(tokenUser._QCUI_UI);
-        const productData = req.session.productData;
-        if (!productData) {
+
+        const finalData = req.session.finalData;
+
+        if (!finalData) {
             let url = typeof (req.get('referer'));
             if (url == "undefined") {
                 return res.redirect("/shop");
             }
             return res.redirect(req.get('referer'));
         }
-        delete req.session.productData;
-        return res.render("place-order", { user, productData });
+
+        delete req.session.finalData;
+        req.session.orderData = finalData;
+
+        return res.render("place-order", { finalData });
     } catch (error) {
         console.error("ERROR:", error);
         return res.status(500).render("errors/500", {
@@ -471,8 +475,106 @@ router.get("/checkout", optionalVerifyToken, async (req, res) => {
 
 router.post("/checkout", optionalVerifyToken, async (req, res) => {
     try {
-        const { productData } = req.body
-        req.session.productData = productData;
+        const { productData } = req.body;
+
+        const ids = productData.map(p => p.productId);
+        const products = await productModel.find({ _id: { $in: ids } });
+
+        const normalizeColor = (color) => {
+            if (!color) return null;
+            color = color.trim().toLowerCase();
+
+            // HEX → RGB
+            if (color.startsWith("#")) {
+                const hex = color.substring(1);
+                const bigint = parseInt(hex, 16);
+                const r = (bigint >> 16) & 255;
+                const g = (bigint >> 8) & 255;
+                const b = bigint & 255;
+                return `rgb(${r},${g},${b})`;
+            }
+
+            // RGB cleanup
+            if (color.startsWith("rgb")) {
+                return color.replace(/\s+/g, "").toLowerCase();
+            }
+
+            return color;
+        };
+
+        let totalDeliveryCharges = 0;
+        let totalPriceWithoutDelivery = 0;
+
+        let proData = productData.map(item => {
+            const product = products.find(
+                p => p._id.toString() === item.productId
+            );
+
+            if (!product) {
+                return { ...item, valid: false, reason: "Product not found" };
+            }
+
+            totalDeliveryCharges += product.proDelivery || 0;
+
+            // SIZE VALIDATION
+            let sizeValid = true;
+            let sizePrice = 0;
+            if (item.productSize !== null) {
+                sizeValid = product.sizeAndPrice.some(
+                    s => s.size === item.productSize
+                );
+
+                if (sizeValid) {
+                    sizePrice = product.sizeAndPrice.find(
+                        s => s.size === item.productSize
+                    ).price;
+                }
+            }
+
+            // COLOR VALIDATION
+            let colorValid = true;
+            let colorPrice = 0;
+            if (item.productColor !== null) {
+                const cartColor = normalizeColor(item.productColor);
+
+                colorValid = product.colorAndPrice.some(c => {
+                    const productColor = normalizeColor(c.color);
+                    return productColor === cartColor;
+                });
+
+                if (colorValid) {
+                    colorPrice = product.colorAndPrice.find(c => {
+                        const productColor = normalizeColor(c.color);
+                        return productColor === cartColor;
+                    }).price;
+                }
+            }
+
+            totalPriceWithoutDelivery += (product.proPrice + sizePrice + colorPrice) * item.productQuantity || 0;
+
+            return {
+                ...item,
+                sizeValid,
+                sizePrice,
+                colorValid,
+                colorPrice,
+                valid: sizeValid && colorValid,
+                productInfo: product.toObject()
+            };
+        });
+
+        if (proData.some(item => !item.valid)) {
+            return res.status(400).json({ success: false, message: "Invalid Product Data!" });
+        }
+
+        const finalData = {
+            productData: proData,
+            totalDeliveryCharges,
+            totalPriceWithoutDelivery
+        }
+
+        req.session.finalData = finalData;
+
         return res.status(200).json({ success: true });
     } catch (error) {
         console.error("ERROR:", error);
@@ -489,17 +591,16 @@ router.post("/apply-coupon", optionalVerifyToken, async (req, res) => {
         const user = await userModel.findById(req.user._QCUI_UI);
         if (!user) return res.redirect("/user/login");
 
-        const foundCoupon = await couponModel.findOne({
-            $or: [
-                { couponCode: coupon, userList: { $exists: false } },
-
-                { couponCode: coupon, userList: { $in: [user._id] } }
-            ]
-        });
+        const foundCoupon = await couponModel.findOne({ couponCode: coupon });
 
         // Checking...
         if (!foundCoupon) {
             return res.status(400).json({ success: false, message: "Invalid Coupon Code!" })
+        }
+        if (foundCoupon.userList) {
+            if (!foundCoupon.userList.includes(user._id)) {
+                return res.status(400).json({ success: false, message: "Invalid Coupon Code!" })
+            }
         }
         if (!foundCoupon.Status) {
             return res.status(400).json({ success: false, message: "Coupon Not Available Now!" });
@@ -507,6 +608,11 @@ router.post("/apply-coupon", optionalVerifyToken, async (req, res) => {
         if (foundCoupon.couponEndingDate) {
             if (new Date(foundCoupon.couponEndingDate) < new Date()) {
                 return res.status(400).json({ success: false, message: "Coupon Expired!" });
+            }
+        }
+        if (foundCoupon.couponLimit !== undefined && foundCoupon.couponLimit !== null && foundCoupon.couponType === "forall") {
+            if (foundCoupon.couponLimit <= 0) {
+                return res.status(400).json({ success: false, message: "Coupon Limit Reached!" });
             }
         }
         if (foundCoupon.orderLimit) {
@@ -525,6 +631,7 @@ router.post("/apply-coupon", optionalVerifyToken, async (req, res) => {
                 }
             }
         }
+
         res.status(200).json({
             success: true,
             coupon: {
@@ -532,6 +639,7 @@ router.post("/apply-coupon", optionalVerifyToken, async (req, res) => {
                 benefitType: foundCoupon.benefitType,
                 benefitValue: foundCoupon.benefitValue
             },
+
             message: "Coupon Applied Successfully!"
         });
     } catch (error) {
@@ -545,17 +653,60 @@ router.post("/apply-coupon", optionalVerifyToken, async (req, res) => {
 
 router.post("/place-order", optionalVerifyToken, async (req, res) => {
     try {
-        const userID = req.user._QCUI_UI;
-        const user = await userModel.findById(userID);
-        const couponName = req.body.couponName;
+        const token = req.user;
+        const user = await userModel.findById(token._QCUI_UI);
+
         if (user.address == undefined || user.address == "" || user.city == undefined || user.city == "" || user.phone == undefined || user.phone == "" || !user.emailVerified) {
             return res.status(400).json({ success: false, message: "Please Fill All The Details!" });
         }
 
-        if (couponName) {
-            const foundCoupon = await couponModel.findOne({ couponCode: couponName });
+        const userDetails = {
+            userId: user._id,
+            fullname: user.fullname,
+            username: user.username,
+            email: user.email,
+            phone: user.phone,
+            city: user.city,
+            address: user.address
+        }
+
+        const productDeliveryData = req.session.orderData;
+
+        const productDetails = productDeliveryData.productData.map((item) => {
+            return {
+                productId: item.productId,
+                productName: item.productInfo.proName,
+                productImg: item.productInfo.image,
+                productPrice: item.productInfo.proPrice,
+                productQuantity: item.productQuantity,
+                cutomizationStatus: item.productInfo.customization,
+                productSize: item.productSize,
+                productSizePrice: item.sizePrice,
+                productColor: item.productColor,
+                productColorPrice: item.colorPrice,
+                deliveryCharges: item.productInfo.proDelivery,
+                subTotal: ((item.productInfo.proPrice + item.sizePrice + item.colorPrice) * item.productQuantity) + item.productInfo.proDelivery
+            };
+        });
+
+        const finalPriceWithoutCoupon = productDetails.reduce((total, item) => total + item.subTotal, 0);
+
+        const { couponName, couponBenefitType } = req.body;
+        let cpName = null;
+        let cpBenefitType = null;
+        let cpBenefitValue = null;
+        let finalPriceWithCoupon = null;
+
+        if (couponName && couponBenefitType) {
+            const foundCoupon = await couponModel.findOne({ couponCode: couponName, benefitType: couponBenefitType });
+
             if (!foundCoupon) {
-                return res.status(400).json({ success: false, message: "Invalid Coupon Code!" });
+                return res.status(400).json({ success: false, message: "Invalid Coupon Code!" })
+            }
+            if (foundCoupon.userList) {
+                if (!foundCoupon.userList.includes(user._id)) {
+                    return res.status(400).json({ success: false, message: "Invalid Coupon Code!" })
+                }
             }
             if (!foundCoupon.Status) {
                 return res.status(400).json({ success: false, message: "Coupon Not Available Now!" });
@@ -565,7 +716,27 @@ router.post("/place-order", optionalVerifyToken, async (req, res) => {
                     return res.status(400).json({ success: false, message: "Coupon Expired!" });
                 }
             }
+            if (foundCoupon.couponLimit !== undefined && foundCoupon.couponLimit !== null && foundCoupon.couponType === "forall") {
+                if (foundCoupon.couponLimit <= 0) {
+                    return res.status(400).json({ success: false, message: "Coupon Limit Reached!" });
+                }
+            }
+            if (foundCoupon.orderLimit) {
+                let orderLimitArr = foundCoupon.orderLimit.split("-");
+                orderLimitArr = orderLimitArr
+                    .map(e => Number(e.replace(/[^0-9]/g, "")))
+                    .filter(num => !isNaN(num) && num > 0);
 
+                if (orderLimitArr.length == 1) {
+                    if (finalPriceWithoutCoupon < orderLimitArr[0]) {
+                        return res.status(400).json({ success: false, message: "Coupon Not Applicable For This Order!" });
+                    }
+                } else {
+                    if (finalPriceWithoutCoupon < orderLimitArr[0] || finalPriceWithoutCoupon > orderLimitArr[1]) {
+                        return res.status(400).json({ success: false, message: "Coupon Not Applicable For This Order!" });
+                    }
+                }
+            }
             if (foundCoupon.couponType === "forall") {
                 if (typeof foundCoupon.couponLimit === "number") {
                     if (foundCoupon.couponLimit <= 0) {
@@ -577,37 +748,46 @@ router.post("/place-order", optionalVerifyToken, async (req, res) => {
                 foundCoupon.userList = foundCoupon.userList.filter(id => id != user._id);
             }
 
+            cpName = foundCoupon.couponCode;
+            cpBenefitType = foundCoupon.benefitType;
+            cpBenefitValue = foundCoupon.benefitValue;
+
             await foundCoupon.save();
         }
 
+        if (cpName && cpBenefitType && cpBenefitValue) {
+            if (cpBenefitType === "discount") {
+                finalPriceWithCoupon = finalPriceWithoutCoupon - (finalPriceWithoutCoupon * (cpBenefitValue / 100));
+            } else if (cpBenefitType === "rupeeOff") {
+                finalPriceWithCoupon = finalPriceWithoutCoupon - cpBenefitValue;
+            }
+        }
 
-        const productDeliveryData = req.body.productDeliveryData;
-        const data = productDeliveryData.map((item) => {
-            const newItem = { ...item };
-            delete newItem.paymentMethod;
-            return newItem;
-        });
+        const orderData = {
+            productDetails,
+            finalPriceWithoutCoupon,
+            couponName: cpName,
+            couponBeneT: cpBenefitType,
+            couponBeneV: cpBenefitValue,
+            finalPriceWithCoupon: Math.round(finalPriceWithCoupon)
+        }
 
         await orderModel.create({
-            userDetails: {
-                userId: userID,
-                fullname: user.fullname,
-                username: user.username,
-                email: user.email,
-                phone: user.phone,
-                city: user.city,
-                address: user.address
-            },
-            productDetails: data,
+            userDetails,
+            orderData,
             orderInfo: {
-                PaymentMethod: productDeliveryData[0].paymentMethod,
+                PaymentMethod: "Cash",
+
             }
         });
-        productDeliveryData.forEach(async (pro) => {
+
+        productDetails.forEach(async (pro) => {
             const product = await productModel.findById(pro.productId);
             product.proBuyer += 1;
             await product.save();
         })
+
+        console.log(orderData);
         res.status(200).json({ success: true, message: "Order Placed Successfully!" });
     } catch (error) {
         console.error("ERROR:", error);

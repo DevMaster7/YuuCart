@@ -61,7 +61,7 @@ function productsArange(term) {
 
 document.querySelectorAll(".add-cart-btn").forEach(btn => {
     btn.addEventListener("click", async () => {
-        const proID = btn.closest(".cards").querySelector(".product-img").dataset.productid;
+        const proID = btn.closest(".cards").dataset.id;
         const res = await fetch('/shop/add-to-cart', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

@@ -18,7 +18,7 @@ updateTotalProduct();
 document.querySelector(".trash-btn").addEventListener("click", () => {
     document.querySelectorAll(".activeCard").forEach(async product => {
         const productIDs = Array.from(document.querySelectorAll(".activeCard"))
-            .map(product => product.querySelector(".product-img").dataset.productid);
+            .map(product => product.dataset.id);
         await fetch(`/shop/delete-from-cart`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -224,41 +224,24 @@ document.querySelectorAll(".cards").forEach(product => {
 
 document.querySelector(".checkout-btn").addEventListener("click", async () => {
     let productData = []
+    let IDs = []
     let selectedProduct = document.querySelectorAll(".activeCard")
     if (selectedProduct.length > 0) {
         selectedProduct.forEach(product => {
-            const productId = product.querySelector(".product-img").dataset.productid;
-            const productCutomzie = product.querySelector(".customizeable").dataset.choose;
-            const productImg = product.querySelector(".product-img").getElementsByTagName("img")[0].src;
-            const productName = product.querySelector(".pro-name").innerHTML.trim();
-            const productMainPrice = Number(product.querySelector(".pro-price").dataset.baseprice);
-            const productOrignalPrice = product.querySelector(".before-dis") == null ? 0 : Number(product.querySelector(".before-dis").innerHTML.split("Rs.")[1].trim());
-            const productDiscount = product.querySelector(".discount") == null ? 0 : product.querySelector(".discount").innerHTML.slice(10, -2).trim();
+            const productId = product.dataset.id;
             const productQuantity = Number(product.querySelector(".product-quantity-value").innerHTML.trim());
-            const productSize = product.querySelector(".activeSize")?.innerHTML.trim();
-            const productSizePrice = product.querySelector(".activeSize")?.dataset.sizeprice;
-            const productColor = product.querySelector(".activeColor")?.style.backgroundColor;
-            const productColorPrice = product.querySelector(".activeColor")?.dataset.colorprice;
-            const totalPrice = Number(product.querySelector(".pro-cust-price").innerHTML.split("Rs.")[1].trim());
-            const cartTotal = document.querySelector(".total").innerHTML.split("Rs.")[1].trim();
+            const productSize = product.querySelector(".activeSize")?.innerHTML.trim() ? product.querySelector(".activeSize")?.innerHTML.trim() : null;
+            const productColor = product.querySelector(".activeColor")?.dataset.color ? product.querySelector(".activeColor")?.dataset.color : null;
             const obj = {
                 productId,
-                productCutomzie,
-                productImg,
-                productName,
-                productMainPrice,
-                productOrignalPrice,
-                productDiscount,
                 productQuantity,
                 productSize,
-                productSizePrice,
-                productColor,
-                productColorPrice,
-                totalPrice,
-                cartTotal
+                productColor
             }
+            IDs.push(productId)
             productData.push(obj)
         })
+        const IDsURL = IDs.join("-")
         const res = await fetch(`/shop/checkout`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -266,14 +249,21 @@ document.querySelector(".checkout-btn").addEventListener("click", async () => {
         })
         const res1 = await res.json();
         if (res1.success) {
-            window.location.href = `/shop/checkout`;
+            window.location.href = `/shop/checkout/${IDsURL}`;
         }
-        console.log(productData);
+        else {
+            showError(res1.message)
+        }
     }
     else {
-        document.querySelector(".err").style.display = "block";
-        setTimeout(() => {
-            document.querySelector(".err").style.display = "none";
-        }, 1500);
+        showError("Select At Least One Product!")
     }
 })
+
+function showError(msg) {
+    document.querySelector(".err").innerHTML = msg;
+    document.querySelector(".err").style.display = "block";
+    setTimeout(() => {
+        document.querySelector(".err").style.display = "none";
+    }, 1500);
+}

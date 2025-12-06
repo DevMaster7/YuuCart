@@ -1,9 +1,0 @@
-                <!-- <div class="category">Men's Fashion <i class="fa-solid fa-chevron-right"></i></div>
-                    <div class="category">Women's Fashion <i class="fa-solid fa-chevron-right"></i></div>
-                    <div class="category">Tech and Gadgets <i class="fa-solid fa-chevron-right"></i></div>
-                    <div class="category">Sports and Fitness <i class="fa-solid fa-chevron-right"></i></div>
-                    <div class="category">Toys and Games <i class="fa-solid fa-chevron-right"></i></div>
-                    <div class="category">Pets Accessories <i class="fa-solid fa-chevron-right"></i></div>
-                    <div class="category">Kids and Babies <i class="fa-solid fa-chevron-right"></i></div>
-                    <div class="category">Home & Kitchen <i class="fa-solid fa-chevron-right"></i></div>
-                    <div class="category">Groceries and Food <i class="fa-solid fa-chevron-right"></i></div> -->

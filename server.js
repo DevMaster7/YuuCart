@@ -12,6 +12,7 @@ const optionalVerifyToken = require("./middleware/optionalVerifyToken");
 const userModel = require("./models/usersModel");
 const productModel = require("./models/productsModel");
 const categoriesModel = require("./models/categoriesModel");
+const orderModel = require("./models/ordersModel");
 const morgan = require("morgan");
 const bcrypt = require("bcrypt");
 const env = require("dotenv");
@@ -132,7 +133,7 @@ app.get("/", optionalVerifyToken, async (req, res) => {
   const user = await userModel.findById(tokenUser._QCUI_UI);
 
   res.render("home", { user });
-})
+});
 app.get("/auth/google/register", (req, res, next) => {
   const stateDataReg = JSON.stringify({
     action: "register",
