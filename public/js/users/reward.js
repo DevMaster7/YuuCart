@@ -282,6 +282,7 @@ async function getRewardsData() {
 
     // Catalog
     const CATALOG = rewardData.coupons;
+    console.log(CATALOG);
     document.getElementById("catalog").innerHTML = CATALOG.map(item => `
                     <div class="reward" data-ident="${item.couponCode}">
                         <div class="title">${item.couponTitle}</div>

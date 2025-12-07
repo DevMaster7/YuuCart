@@ -62,32 +62,35 @@
                             <div class="info-text">Address: <span><%= order.userDetails.address %></span></div>
                         </div>
                         <div class="heading">Order Details</div>
-                        <% order.productDetails.forEach((orderdetail) =>{ %>
+                        <% order.orderData.productDetails.forEach((proDetail) =>{ %>
                         <div class="inner-con">
                             <div class="img-box">
-                                <img src="<%= orderdetail.productImg %>" alt="Product Image">
+                                <img src="<%= proDetail.productImg %>" alt="Product Image">
                             </div>
                             <div class="order-product-info">
-                                <h2><%= orderdetail.productName %></h2>
-                                <p class="price">Rs. <%= orderdetail.basePrice %></p>
+                                <div class="info-text">Product ID:
+                                    <a href="/admin/manage-products#<%= proDetail.productId %>">
+                                        <span><%= proDetail.productId %></span>
+                                    </a>
+                                </div>
+                                <h2><%= proDetail.productName %></h2>
+                                <p class="price">Rs. <%= proDetail.productPrice %></p>
                                 <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
                                     <div class="add-info-con">
-                                        <% if (orderdetail.productCustomizeStatus === true) { %>
-                                        <p class="add-info info-box">Size: <%= orderdetail.productSize %> = Rs.
-                                            <%= orderdetail.productSizePrice %></p>
+                                        <% if (proDetail.cutomizationStatus === true) { %>
+                                        <p class="add-info info-box">Size: <%= proDetail.productSize %> = Rs.
+                                            <%= proDetail.productSizePrice %></p>
                                         <p class="add-info info-box">Color: <span class="color"
-                                                style="background: <%= orderdetail.productColor %>;"></span> = Rs.
-                                            <%= orderdetail.productColorPrice %></p>
+                                                style="background: <%= proDetail.productColor %>;"></span> = Rs.
+                                            <%= proDetail.productColorPrice %></p>
                                         <% } %>
-                                        <p class="add-info">Quantity: (<%= orderdetail.productQuantity %>)</p>
+                                        <p class="add-info">Quantity: (<%= proDetail.productQuantity %>)</p>
                                     </div>
-                                    <% if (order.productDetails.length > 1) { %>
-                                    <p class="sub-total">SubTotal: Rs. <%= orderdetail.subTotalPrice %></p>
-                                    <% } %>
+                                    <div style="display: flex;flex-direction: column;">
+                                        <p class="add-info">Delivery Rs. <%= proDetail.deliveryCharges %></p>
+                                        <p class="sub-total">SubTotal: Rs. <%= proDetail.subTotal %></p>
+                                    </div>
                                 </div>
-                                <a href="/admin/manage-products#<%= orderdetail.productId %>">
-                                    <div class="info-text">Product ID: <span><%= orderdetail.productId %></span></div>
-                                </a>
                             </div>
                         </div>
                         <% }) %>
@@ -95,10 +98,29 @@
                             <div>
                                 <div class="info-text">Admin OID: <span class="admin-oid"><%= order._id %></span></div>
                                 <div class="info-text">Order ID: <span><%= order.orderInfo._id %></span></div>
+                                <div class="info-text">Order Time:
+                                    <span>
+                                        <% const d = new Date(order.orderInfo.orderDate);
+                                        let date = d.toLocaleDateString("en-GB", {
+                                            day: "2-digit",
+                                            month: "short",
+                                            year: "numeric"
+                                        });
+
+                                        let time = d.toLocaleTimeString("en-US", {
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                            hour12: true
+                                        });
+                                        time = time.replace("am", "AM").replace("pm", "PM");%>
+
+                                        <%= `${date}, ${time}` %>
+                                    </span>
+                                </div>
+                                <div class="info-text">Delivery Date: <span>---</span></div>
                                 <div class="info-text">PaymentMethod:
                                     <span><%= order.orderInfo.PaymentMethod %></span>
                                 </div>
-                                <div class="info-text">Date: <span><%= order.orderInfo.orderDate %></span></div>
                                 <div class="info-text">Status:
                                     <div class="badge-container">
                                         <span
@@ -108,21 +130,22 @@
                                 </div>
                             </div>
                             <div style="padding-right: 3px;">
-                                <% if (order.productDetails[0].couponName === "none") { %>
+                                <% if (order.orderData.couponName === null) { %>
                                 <div class="total">Total Amount: <span>Rs.
-                                        <%= order.productDetails[0].totalBeforeCoupon %></span>
+                                        <%= order.orderData.finalPriceWithoutCoupon %></span>
                                 </div>
                                 <% }else{ %>
                                 <div class="total"
                                     style="opacity: 0.4; font-size: 14px; cursor: default; user-select: none;">Total
                                     Amount: <span>Rs.
-                                        <%= order.productDetails[0].totalBeforeCoupon %></span></div>
-                                <div class="info-text">Coupon: <span><%= order.productDetails[0].couponName %></span>
+                                        <%= order.orderData.finalPriceWithoutCoupon %></span></div>
+                                <div class="info-text">Coupon: <span><%= order.orderData.couponName %></span>
                                 </div>
                                 <div class="info-text">Benefit:
-                                    <span><%= order.productDetails[0].couponBene %></span></div>
+                                    <span><%= order.orderData.couponBeneT == "discount" ? order.orderData.couponBeneV + "%" : "Rs. " + order.orderData.couponBeneV %>
+                                        OFF</span></div>
                                 <div class="total">Total Amount: <span>Rs.
-                                        <%= order.productDetails[0].totalAfterCoupon %></span>
+                                        <%= order.orderData.finalPriceWithCoupon %></span>
                                 </div>
                                 <% } %>
                             </div>

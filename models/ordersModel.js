@@ -3,15 +3,13 @@ const moment = require("moment-timezone");
 
 const orderInfoSchema = new mongoose.Schema({
     orderDate: {
-        type: String,
-        default: () => moment().tz("Asia/Karachi").format("dddd, D MMMM YYYY — hh:mm:ss A")
+        type: Date
     },
     DeliveryDate: {
-        type: String
+        type: Date
     },
     orderStatus: {
         type: String,
-        default: "Pending"
     },
     PaymentMethod: {
         type: String

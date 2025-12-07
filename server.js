@@ -516,6 +516,51 @@ app.post("/verify-otp", optionalVerifyToken, async (req, res) => {
         { email: email },
         { $set: { emailVerified: true } }
       );
+      if (user.Reffer.Status !== null && user.Reffer.from !== "") {
+        const refferUser = await userModel.findOne({ username: user.Reffer.from });
+        if (user.Reffer.Status) {
+          // console.log(`True FriendShip`);
+          let msg = {
+            textContent: `Well, well… someone actually joined through the link! <br>
+                Unlike the ones who sold out for our <strong>100Yuu</strong> coins, your friend <strong style="color:#FB8500;">${user.username}</strong> just proved that friendship still exists in this economy.<br>
+                Loyalty level: Premium 💙`,
+            sendingDate: new Date(),
+            seen: true
+          }
+          refferUser.YuuCoin += 100;
+          refferUser.Yuutx.push({ desc: "Referral Bonus", Yuu: 100 });
+          refferUser.Reffer.yourReffers.push(user.username);
+          refferUser.messages.push(msg);
+          await refferUser.save();
+
+          let newMsg = {
+            textContent: `Well, well… you actually joined through the link! <br>
+                Unlike the ones who sold out for our <strong>100Yuu</strong> coins, you just proved that friendship still exists in this economy.<br>
+                Loyalty level: Premium 💙`,
+            sendingDate: new Date(),
+            seen: true
+          }
+          user.messages.push(newMsg);
+          await user.save();
+        }
+        else if (!user.Reffer.Status) {
+          // console.log(`LoL Fake FriendShip`);
+          user.YuuCoin += 100;
+          user.Yuutx.push({ desc: "Betray Bonus", Yuu: 100 });
+          await user.save();
+
+          let msg = {
+            textContent: `
+                It appears that your friend just reject your referral link — all for <strong>100Yuu</strong> coins. <br>
+                Interesting how loyalty seems to lose its shine when there’s a small number of valuable Yuu attached to it. Perhaps your friendship was worth a less than our <strong>100Yuu</strong> after all. <br>
+                To prevent fight between both of you we can't give you his username to you 🙂`,
+            sendingDate: new Date(),
+            seen: true
+          }
+          refferUser.messages.push(msg);
+          await refferUser.save();
+        }
+      }
       res.status(200).json({ success: true, redirectTo: "/user/account", message: "OTP verified!" })
     }
     await userModel.updateOne(

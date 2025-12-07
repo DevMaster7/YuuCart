@@ -167,7 +167,6 @@ router.get("/edit-my-account", optionalVerifyToken, async (req, res) => {
 });
 router.post("/updateUser",
     body("NewObj.Name").trim().isLength({ min: 3 }),
-    body("NewObj.Username").trim().isLength({ min: 5 }),
     body("NewObj.Phone_Number").trim().isLength({ min: 10 }),
     body("NewObj.Address").trim().isLength({ min: 5 }),
     body("NewObj.City").trim().isLength({ min: 5 }),
@@ -177,15 +176,12 @@ router.post("/updateUser",
             if (!errors.isEmpty()) {
                 return res.status(400).json({ success: false, message: "Invalid data!" });
             }
-            const { Name, Username, Phone_Number, Address, City } = req.body.NewObj;
+            const { Name, Phone_Number, Address, City } = req.body.NewObj;
             const token = req.user;
             if (!token) return res.redirect("/user/login");
             let user = await userModel.findById(token._QCUI_UI);
             if (!user) return res.redirect("/user/login");
             user.fullname = Name;
-            user.username = Username;
-            user.Reffer.refferCode = Username;
-            user.Reffer.url = process.env.BASE_URL + "/user/register?reffer=" + Username;
             user.phone = Phone_Number;
             user.address = Address;
             user.city = City;
@@ -478,8 +474,10 @@ router.post("/register",
 
             let Reffer = req.session.reffer
             let from = "";
-            if (Reffer && Reffer.status) {
-                from = req.session.reffer.from;
+            let accept = null;
+            if (Reffer) {
+                from = Reffer.from;
+                accept = Reffer.status
             }
 
             await userModel.create({
@@ -495,6 +493,7 @@ router.post("/register",
                 spinDate: joiningDate,
                 Reffer: {
                     from,
+                    Status: accept,
                     refferCode: username,
                     url: `${process.env.BASE_URL}/user/register?reffer=${username}`,
                 },
@@ -510,52 +509,52 @@ router.post("/register",
                 }],
             })
 
-            if (Reffer) {
-                const refferUser = await userModel.findOne({ username: Reffer.from });
-                const newUser = await userModel.findOne({ username: username });
-                if (Reffer.status) {
-                    // console.log(`True FriendShip`);
-                    let msg = {
-                        textContent: `Well, well… someone actually joined through the link! <br>
-                Unlike the ones who sold out for our <strong>100Yuu</strong> coins, your friend <strong style="color:#FB8500;">${username}</strong> just proved that friendship still exists in this economy.<br>
-                Loyalty level: Premium 💙`,
-                        sendingDate: new Date(),
-                        seen: true
-                    }
-                    refferUser.YuuCoin += 100;
-                    refferUser.Yuutx.push({ desc: "Referral Bonus", Yuu: 100 });
-                    refferUser.Reffer.yourReffers.push(username);
-                    refferUser.messages.push(msg);
-                    await refferUser.save();
+            // if (Reffer) {
+            //     const refferUser = await userModel.findOne({ username: Reffer.from });
+            //     const newUser = await userModel.findOne({ username: username });
+            //     if (Reffer.status) {
+            //         // console.log(`True FriendShip`);
+            //         let msg = {
+            //             textContent: `Well, well… someone actually joined through the link! <br>
+            //     Unlike the ones who sold out for our <strong>100Yuu</strong> coins, your friend <strong style="color:#FB8500;">${username}</strong> just proved that friendship still exists in this economy.<br>
+            //     Loyalty level: Premium 💙`,
+            //             sendingDate: new Date(),
+            //             seen: true
+            //         }
+            //         refferUser.YuuCoin += 100;
+            //         refferUser.Yuutx.push({ desc: "Referral Bonus", Yuu: 100 });
+            //         refferUser.Reffer.yourReffers.push(username);
+            //         refferUser.messages.push(msg);
+            //         await refferUser.save();
 
-                    let newMsg = {
-                        textContent: `Well, well… someone actually joined through the link! <br>
-                Unlike the ones who sold out for our <strong>100Yuu</strong> coins, you just proved that friendship still exists in this economy.<br>
-                Loyalty level: Premium 💙`,
-                        sendingDate: new Date(),
-                        seen: true
-                    }
-                    newUser.messages.push(newMsg);
-                    await newUser.save();
-                }
-                else if (!Reffer.status) {
-                    // console.log(`LoL Fake FriendShip`);
-                    newUser.YuuCoin += 100;
-                    newUser.Yuutx.push({ desc: "Betray Bonus", Yuu: 100 });
-                    await newUser.save();
+            //         let newMsg = {
+            //             textContent: `Well, well… someone actually joined through the link! <br>
+            //     Unlike the ones who sold out for our <strong>100Yuu</strong> coins, you just proved that friendship still exists in this economy.<br>
+            //     Loyalty level: Premium 💙`,
+            //             sendingDate: new Date(),
+            //             seen: true
+            //         }
+            //         newUser.messages.push(newMsg);
+            //         await newUser.save();
+            //     }
+            //     else if (!Reffer.status) {
+            //         // console.log(`LoL Fake FriendShip`);
+            //         newUser.YuuCoin += 100;
+            //         newUser.Yuutx.push({ desc: "Betray Bonus", Yuu: 100 });
+            //         await newUser.save();
 
-                    let msg = {
-                        textContent: `
-                It appears that your friend just reject your referral link — all for <strong>100Yuu</strong> coins. <br>
-                Interesting how loyalty seems to lose its shine when there’s a small number of valuable Yuu attached to it. Perhaps your friendship was worth a less than our <strong>100Yuu</strong> after all. <br>
-                To prevent fight between both of you we can't give you his username to you 🙂`,
-                        sendingDate: new Date(),
-                        seen: true
-                    }
-                    refferUser.messages.push(msg);
-                    await refferUser.save();
-                }
-            }
+            //         let msg = {
+            //             textContent: `
+            //     It appears that your friend just reject your referral link — all for <strong>100Yuu</strong> coins. <br>
+            //     Interesting how loyalty seems to lose its shine when there’s a small number of valuable Yuu attached to it. Perhaps your friendship was worth a less than our <strong>100Yuu</strong> after all. <br>
+            //     To prevent fight between both of you we can't give you his username to you 🙂`,
+            //             sendingDate: new Date(),
+            //             seen: true
+            //         }
+            //         refferUser.messages.push(msg);
+            //         await refferUser.save();
+            //     }
+            // }
 
             delete req.session.reffer
 

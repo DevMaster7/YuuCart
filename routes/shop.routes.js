@@ -657,7 +657,7 @@ router.post("/place-order", optionalVerifyToken, async (req, res) => {
         const user = await userModel.findById(token._QCUI_UI);
 
         if (user.address == undefined || user.address == "" || user.city == undefined || user.city == "" || user.phone == undefined || user.phone == "" || !user.emailVerified) {
-            return res.status(400).json({ success: false, message: "Please Fill All The Details!" });
+            return res.status(400).json({ success: false, redirect: true, url: "/user/account" });
         }
 
         const userDetails = {
@@ -776,8 +776,9 @@ router.post("/place-order", optionalVerifyToken, async (req, res) => {
             userDetails,
             orderData,
             orderInfo: {
+                orderDate: new Date(),
                 PaymentMethod: "Cash",
-
+                orderStatus: "Pending"
             }
         });
 
@@ -787,7 +788,6 @@ router.post("/place-order", optionalVerifyToken, async (req, res) => {
             await product.save();
         })
 
-        console.log(orderData);
         res.status(200).json({ success: true, message: "Order Placed Successfully!" });
     } catch (error) {
         console.error("ERROR:", error);

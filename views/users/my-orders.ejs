@@ -76,9 +76,10 @@
                                         <% } %>
                                         <p class="add-info">Quantity: <%= proDetail.productQuantity %></p>
                                     </div>
-                                    <% if (order.orderData.productDetails.length > 1) { %>
-                                    <p class="sub-total">SubTotal: Rs. <%= proDetail.subTotal %></p>
-                                    <% } %>
+                                    <div style="display: flex;flex-direction: column;">
+                                        <p class="add-info">Delivery Rs. <%= proDetail.deliveryCharges %></p>
+                                        <p class="sub-total">SubTotal: Rs. <%= proDetail.subTotal %></p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -86,10 +87,28 @@
                         <div class="order-card-footer">
                             <div>
                                 <div class="order-info">Order ID: <span><%= order.orderInfo._id %></span></div>
+                                <div class="order-info">Order Time:
+                                    <span>
+                                        <% const d = new Date(order.orderInfo.orderDate);
+                                        let date = d.toLocaleDateString("en-GB", {
+                                            day: "2-digit",
+                                            month: "short",
+                                            year: "numeric"
+                                        });
+
+                                        let time = d.toLocaleTimeString("en-US", {
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                            hour12: true
+                                        });
+                                        time = time.replace("am", "AM").replace("pm", "PM");%>
+
+                                        <%= `${date}, ${time}` %>
+                                    </span>
+                                </div>
+                                <div class="order-info">Delivery Date: <span>---</span></div>
                                 <div class="order-info">Payment Method:
                                     <span><%= order.orderInfo.PaymentMethod %></span></div>
-                                <div class="order-info">Order Date: <span><%= order.orderInfo.orderDate %></span></div>
-                                <div class="order-info">Delivery Date: <span>---</span></div>
                                 <div class="order-info">Status: <span
                                         class="badge <% if (order.orderInfo.orderStatus === "Pending") { %>pending<% } else if (order.orderInfo.orderStatus === "Delivered") { %>delivered<% } else { %>cancelled<% } %>"><%= order.orderInfo.orderStatus %></span>
                                 </div>
@@ -107,7 +126,8 @@
                                 <div class="order-info">Coupon: <span><%= order.orderData.couponName %></span>
                                 </div>
                                 <div class="order-info">Benefit:
-                                    <span><%= order.orderData.couponBeneT == "discount" ? order.orderData.couponBeneV + "%" : "Rs. " + order.orderData.couponBeneV %> OFF</span></div>
+                                    <span><%= order.orderData.couponBeneT == "discount" ? order.orderData.couponBeneV + "%" : "Rs. " + order.orderData.couponBeneV %>
+                                        OFF</span></div>
                                 <div class="total">Total Amount: <span>Rs.
                                         <%= order.orderData.finalPriceWithCoupon %></span>
                                 </div>

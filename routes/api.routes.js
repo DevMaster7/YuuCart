@@ -99,6 +99,7 @@ router.get("/frontRewardCenter", optionalVerifyToken, async (req, res) => {
         let coupons = await couponModel.find();
         coupons = coupons
             .filter(item => {
+                const forAll = item.couponType === "forall";
                 const isExpiredOrInactive =
                     new Date(item.couponEndingDate) <= Date.now() || !item.Status;
 
@@ -108,6 +109,7 @@ router.get("/frontRewardCenter", optionalVerifyToken, async (req, res) => {
                     Array.isArray(item.userList) &&
                     item.userList.some(id => id.toString() === foundUser._id.toString());
 
+                if (forAll) return false;
                 if (isExpiredOrInactive) return false;
                 if (!userHasUsed && isLimitOver) return false;
 

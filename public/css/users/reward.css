@@ -272,10 +272,10 @@ h2 {
 
 /* Rewards grid */
 .catalog {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    display: flex;
+    flex-direction: column;
+    margin-top: 12px;
     gap: 12px;
-    margin-top: 12px
 }
 
 .reward {

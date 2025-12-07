@@ -80,6 +80,7 @@ const userSchema = new mongoose.Schema({
     },
     Reffer: {
         from: String,
+        Status: Boolean,
         refferCode: String,
         url: String,
         yourReffers: [

@@ -1,4 +1,5 @@
-const msg = document.querySelector(".msg");
+const couponMsg = document.getElementById("couponMsg");
+const orderMsg = document.getElementById("orderMsg");
 document.querySelector(".edit").addEventListener("click", () => {
     history.back();
 })
@@ -48,11 +49,11 @@ async function getUser() {
             priceEle.style.opacity = "0.4";
             priceEle.style.cursor = "default";
             priceEle.style.userSelect = "none";
-            msg.innerHTML = result.message;
-            msg.classList.remove("err");
-            msg.classList.add("success");
+            couponMsg.innerHTML = result.message;
+            couponMsg.classList.remove("err");
+            couponMsg.classList.add("success");
             setTimeout(() => {
-                msg.classList.remove("success");
+                couponMsg.classList.remove("success");
             }, 5000)
             const couponDetails = result.coupon;
             const couponName = couponDetails.couponCode;
@@ -79,11 +80,11 @@ async function getUser() {
             }
             totalAfterCoupon.innerHTML = `Total After Coupon: Rs.${finalPrice}`;
         } else {
-            msg.innerHTML = result.message;
-            msg.classList.remove("success");
-            msg.classList.add("err");
+            couponMsg.innerHTML = result.message;
+            couponMsg.classList.remove("success");
+            couponMsg.classList.add("err");
             setTimeout(() => {
-                msg.classList.remove("err");
+                couponMsg.classList.remove("err");
             }, 5000)
         }
     });
@@ -103,8 +104,16 @@ async function getUser() {
         if (res1.success) {
             window.location.replace("/user/orders");
         }
+        else if (res1.redirect) {
+            window.location.replace(res1.url);
+        }
         else {
-            window.location.replace("/user/account");
+            orderMsg.innerHTML = res1.message;
+            orderMsg.classList.remove("success");
+            orderMsg.classList.add("err");
+            setTimeout(() => {
+                orderMsg.classList.remove("err");
+            }, 5000)
         }
     })
 })()

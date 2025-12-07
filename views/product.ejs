@@ -281,7 +281,7 @@
                     <div class="heading">Reviews</div>
                     <% if (user && user.userOrders) { %>
                     <% const hasConfirmed = user.userOrders.some(order => 
-                        order.productDetails.some(prod => 
+                        order.orderData.productDetails.some(prod => 
                         prod.productId.toString() === product._id.toString() && 
                         order.orderInfo.orderStatus === "Delivered" && 
                         !product.Reviews.some(review => review.username.toString() === user.username.toString())
