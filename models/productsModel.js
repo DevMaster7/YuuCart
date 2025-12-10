@@ -31,9 +31,7 @@ const productSchema = new mongoose.Schema({
         default: 0,
     },
     proDescription: String,
-    proCategory: {
-        type: String,
-    },
+    proCategory: [],
     stock: {
         type: Boolean,
         default: true

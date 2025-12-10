@@ -22,11 +22,13 @@ if (pageType == 'search') {
         document.querySelector(".no-products").querySelector(".heading").innerHTML = "Your Search is Out From Imagination"
     }
     else {
-        productsArange(term);
+        productsArange(term, "search");
     }
 } else if (pageType == 'category') {
     let term = document.getElementsByTagName("head")[0].dataset.query;
-    document.getElementsByTagName("title")[0].innerHTML = `Category Results For: "${term}"`;
+    let [main, sub] = term.split(",");
+    sub = sub ? ` > ${sub}` : "";
+    document.getElementsByTagName("title")[0].innerHTML = `Category Results For: "${main}${sub}"`;
 
     let categoryShow = document.querySelector(".additional-con");
     if (categoryShow == null || cards == 0) {
@@ -35,12 +37,19 @@ if (pageType == 'search') {
         document.querySelector(".no-products").querySelector(".heading").innerHTML = "<strong>Sorry!</strong><br> This Category is empty this time"
     }
     else {
-        productsArange(term);
+        productsArange(term, "category");
     }
 }
 
-function productsArange(term) {
-    document.querySelector(".additional-con").getElementsByTagName("span")[0].innerHTML = term;
+function productsArange(term, from) {
+    if (from === "search") {
+        document.querySelector(".additional-con").getElementsByTagName("span")[0].innerHTML = term;
+    } else {
+        let [main, sub] = term.split(",");
+        sub = sub ? ` > ${sub}` : "";
+        document.querySelector(".additional-con").getElementsByTagName("span")[0].innerHTML = `${main}${sub}`;
+    }
+
     document.querySelector(".view-icons").querySelectorAll("i").forEach((icon) => {
         icon.addEventListener("click", () => {
             document.querySelector(".view-icons").querySelectorAll("i").forEach((e) => {

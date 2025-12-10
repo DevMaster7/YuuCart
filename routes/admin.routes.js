@@ -407,106 +407,153 @@ router.get("/manage-products/add-products", verifyAdmin, allowPage("manageProduc
     });
   }
 })
-router.post("/manage-products/add-products", verifyAdmin, optionalVerifyToken, upload.fields([
-  { name: 'thumbnail', maxCount: 1 },
-  { name: 'galleryURLs', minCount: 1, maxCount: 10 }
-]), async (req, res) => {
-  try {
-    const token = req.user;
-    const user = await userModel.findById(token._QCUI_UI);
-    let thumbnail = req.files['thumbnail'];
-    thumbnail = thumbnail[0].buffer;
+router.post("/manage-products/add-products", verifyAdmin, optionalVerifyToken,
+  upload.fields([
+    { name: 'thumbnail', maxCount: 1 },
+    { name: 'galleryURLs', minCount: 1, maxCount: 10 }
+  ]), async (req, res) => {
+    try {
+      const token = req.user;
+      const user = await userModel.findById(token._QCUI_UI);
 
-    let galleryURLs = req.files['galleryURLs'] || [];
-    galleryURLs = galleryURLs.map((e) => {
-      return e.buffer;
-    })
-    let folderName = "product_pics";
-    const imageUrl = await uploadOnCloudinary(thumbnail, folderName);
-    if (!imageUrl) {
-      return res.status(500).json({ success: false, message: "Cloudinary upload failed" });
-    }
-    let galleryImages = []
-    for (const file of galleryURLs) {
-      const url = await uploadOnCloudinary(file, folderName);
-      if (!url) {
+      let thumbnail = req.files['thumbnail'][0].buffer;
+
+      let galleryURLs = req.files['galleryURLs'] || [];
+      galleryURLs = galleryURLs.map(e => e.buffer);
+
+      const folderName = "product_pics";
+
+      const imageUrl = await uploadOnCloudinary(thumbnail, folderName);
+      if (!imageUrl)
         return res.status(500).json({ success: false, message: "Cloudinary upload failed" });
-      }
-      galleryImages.push(url);
-    }
 
-    let { proName, proOrignalPrice, proDelivery, proDiscount, proBuyer, proRating, proNoOfReviews, proDescription, proCategory, choose, sizes, sizePrices, colors, colorPrices } = req.body;
-    const sizeAndPrice = [];
-    if (sizes && sizePrices) {
-      for (let i = 0; i < sizes.length; i++) {
-        if (sizes[i] && sizePrices[i]) {
-          sizeAndPrice.push({ size: sizes[i].toUpperCase(), price: Number(sizePrices[i]) });
+      let galleryImages = [];
+      for (const file of galleryURLs) {
+        const url = await uploadOnCloudinary(file, folderName);
+        if (!url)
+          return res.status(500).json({ success: false, message: "Cloudinary upload failed" });
+        galleryImages.push(url);
+      }
+
+      let { proName, proOrignalPrice, proDelivery, proDiscount, proBuyer, proRating, proNoOfReviews, proDescription,
+        selectedCategories, selectedSubCategories, choose, sizes, sizePrices, colors, colorPrices } = req.body;
+
+      choose = choose ? true : false;
+      const sizeAndPrice = [];
+      const colorAndPrice = [];
+      if (choose) {
+        if (sizes && sizePrices) {
+          for (let i = 0; i < sizes.length; i++) {
+            if (sizes[i] && sizePrices[i]) {
+              sizeAndPrice.push({ size: sizes[i].toUpperCase(), price: Number(sizePrices[i]) });
+            }
+          }
+        }
+        if (colors && colorPrices) {
+          for (let i = 0; i < colors.length; i++) {
+            if (colors[i] && colorPrices[i]) {
+              colorAndPrice.push({ color: colors[i], price: Number(colorPrices[i]) });
+            }
+          }
         }
       }
-    }
-    const colorAndPrice = [];
-    if (colors && colorPrices) {
-      for (let i = 0; i < colors.length; i++) {
-        if (colors[i] && colorPrices[i]) {
-          colorAndPrice.push({ color: colors[i], price: Number(colorPrices[i]) });
-        }
+
+      const sanitizeNumber = val => val === undefined || val === "" ? undefined : Number(val);
+
+      let proPrice;
+      if (sanitizeNumber(proDiscount)) {
+        proPrice = proOrignalPrice - (proOrignalPrice * sanitizeNumber(proDiscount)) / 100;
+      } else {
+        proPrice = proOrignalPrice;
       }
+
+      if (selectedCategories && typeof selectedCategories === "string") {
+        selectedCategories = JSON.parse(selectedCategories);
+      }
+      if (selectedSubCategories && typeof selectedSubCategories === "string") {
+        selectedSubCategories = JSON.parse(selectedSubCategories);
+      }
+
+      let proCategory = [];
+      if ((!selectedCategories || selectedCategories.length === 0) &&
+        (!selectedSubCategories || selectedSubCategories.length === 0)) {
+        proCategory = ["Uncategorized"];
+      } else {
+        if (selectedSubCategories && selectedSubCategories.length > 0)
+          proCategory = selectedSubCategories;
+        else
+          proCategory = selectedCategories;
+      }
+
+      const newProduct = await productModel.create({
+        AddedBy: user.username,
+        image: imageUrl,
+        galleryImages,
+        proName,
+        proPrice,
+        proOrignalPrice,
+        proDelivery,
+        proDiscount: sanitizeNumber(proDiscount),
+        proBuyer: sanitizeNumber(proBuyer),
+        proRating: sanitizeNumber(proRating),
+        proNoOfReviews: sanitizeNumber(proNoOfReviews),
+        proDescription,
+        proCategory,
+        customization: choose,
+        sizeAndPrice,
+        colorAndPrice,
+      });
+
+      if (!newProduct)
+        return res.status(500).json({ success: false, message: "Product creation failed" });
+
+      console.log(selectedCategories, selectedSubCategories);
+
+      const updateCategoryRelations = async (productId) => {
+
+        if ((!selectedCategories || selectedCategories.length === 0) &&
+          (!selectedSubCategories || selectedSubCategories.length === 0))
+          return;
+
+        if (!selectedSubCategories || selectedSubCategories.length === 0) {
+          const cats = await categoriesModel.find({
+            categoryName: { $in: selectedCategories }
+          });
+
+          for (const cat of cats) {
+            cat.products.push(productId);
+            await cat.save();
+          }
+          return;
+        }
+
+        for (const entry of selectedSubCategories) {
+          const [categoryName, subName] = entry.split("-");
+
+          const category = await categoriesModel.findOne({ categoryName });
+          if (!category) continue;
+
+          const sub = category.subCategories
+            .find(sc => sc.subName === subName);
+          if (!sub) continue;
+
+          sub.products.push(productId);
+          await category.save();
+        }
+
+      };
+      await updateCategoryRelations(newProduct._id);
+
+      return res.redirect("/admin/manage-products/add-products");
+
+    } catch (error) {
+      console.error("ERROR:", error);
+      return res.status(500).render("errors/500", {
+        title: "500 | Internal Server Error",
+        message: "Something went wrong while loading this page."
+      });
     }
-
-    const sanitizeNumber = (val) => {
-      return val === undefined || val === "" ? undefined : Number(val);
-    };
-
-    if (choose == undefined || choose == null) {
-      choose = false
-    }
-
-    let proPrice;
-    if (sanitizeNumber(proDiscount)) {
-      proPrice = proOrignalPrice - (proOrignalPrice * sanitizeNumber(proDiscount)) / 100;
-    }
-    else {
-      proPrice = proOrignalPrice;
-    }
-
-    const newProduct = await productModel.create({
-      AddedBy: user.username,
-      image: imageUrl,
-      galleryImages,
-      proName,
-      proPrice,
-      proOrignalPrice,
-      proDelivery,
-      proDiscount: sanitizeNumber(proDiscount),
-      proBuyer: sanitizeNumber(proBuyer),
-      proRating: sanitizeNumber(proRating),
-      proNoOfReviews: sanitizeNumber(proNoOfReviews),
-      proDescription,
-      proCategory,
-      customization: choose,
-      sizeAndPrice,
-      colorAndPrice,
-    });
-
-    if (!newProduct) return res.status(500).json({ success: false, message: "Product creation failed" });
-
-    let category = await categoriesModel.findOne({ categoryName: proCategory });
-    if (!req.body.proSubCategory) {
-      category.products.push(newProduct._id)
-    } else {
-      let subCategory = category.subCategories.find((sub) => sub.subName === req.body.proSubCategory);
-      subCategory.products.push(newProduct._id);
-    }
-    await category.save();
-    res.redirect("/admin/manage-products/add-products")
-  } catch (error) {
-    console.error("ERROR:", error);
-    return res.status(500).render("errors/500", {
-      title: "500 | Internal Server Error",
-      message: "Something went wrong while loading this page. Please try again later.",
-    });
-  }
-})
+  });
 
 // Coupons
 router.get("/manage-coupons", verifyAdmin, allowPage("manageCoupons"), async (req, res) => {

@@ -69,27 +69,58 @@
                             <input type="text" name="proDescription" id="proDescription" placeholder=" " required />
                             <label for="proDescription">Product Desc</label>
                         </div>
+                        <div class="field" id="multifield">
 
-                        <!-- <div class="field multi">
-                            <div class="multi-select-display" id="multiDisplay">Select options</div>
-                            <label>Categories</label>
-
-                            <div class="multi-options" id="multiOptions">
-                                <label><input type="checkbox" value="Option 1"> Option 1</label>
-                                <label><input type="checkbox" value="Option 2"> Option 2</label>
-                                <label><input type="checkbox" value="Option 3"> Option 3</label>
-                                <label><input type="checkbox" value="Option 4"> Option 4</label>
+                            <div class="multiple-select multi-header" id="multiHeader" tabindex="0">
+                                <div class="multi-value placeholder" id="displayValue">&nbsp;</div>
                             </div>
-                        </div> -->
+
+                            <label>Category Options</label>
+
+                            <div class="dropdown-panel" id="dropdown">
+                                <div class="search-box">
+                                    <input type="text" id="searchInput" placeholder="Search...">
+                                </div>
+
+                                <div class="options-list" id="optionsList">
+
+                                    <div class="option select-all-option">
+                                        <input type="checkbox" id="selectAll">
+                                        <div class="lbl"><strong>Select all</strong></div>
+                                    </div>
 
 
-                        <div class="field">
-                            <select id="chooseCategory" name="proCategory" required>
-                                <option value="" disabled selected hidden></option>
-                            </select>
-                            <label for="chooseCategory">Category</label>
+                                    <!-- <div class="option"><input type="checkbox" data-value="Apple">
+                                        <div class="lbl">Apple</div>
+                                    </div>
+                                    <div class="option"><input type="checkbox" data-value="Orange">
+                                        <div class="lbl">Orange</div>
+                                    </div>
+                                    <div class="option"><input type="checkbox" data-value="Banana">
+                                        <div class="lbl">Banana</div>
+                                    </div>
+                                    <div class="option"><input type="checkbox" data-value="Grapes">
+                                        <div class="lbl">Grapes</div>
+                                    </div>
+                                    <div class="option"><input type="checkbox" data-value="Mango">
+                                        <div class="lbl">Mango</div>
+                                    </div>
+                                    <div class="option"><input type="checkbox" data-value="Strawberry">
+                                        <div class="lbl">Strawberry</div>
+                                    </div>
+                                    <div class="option"><input type="checkbox" data-value="Watermelon">
+                                        <div class="lbl">Watermelon</div>
+                                    </div> -->
+
+                                </div>
+
+                                <div class="helper-row">
+                                    <div id="countInfo">0 selected</div>
+                                    <div>Esc to close</div>
+                                </div>
+                            </div>
+
                         </div>
-
                         <div class="field">
                             <select id="choose" name="choose" required>
                                 <option value="" disabled selected hidden></option>
@@ -119,6 +150,9 @@
                         </div>
 
                     </div>
+
+                    <input type="hidden" name="selectedCategories" id="selectedCategories">
+                    <input type="hidden" name="selectedSubCategories" id="selectedSubCategories">
                     <button class="btn-submit">Add Product</button>
                 </form>
                 <div class="card-preview">
