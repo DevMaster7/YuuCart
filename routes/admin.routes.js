@@ -438,7 +438,7 @@ router.post("/manage-products/add-products", verifyAdmin, optionalVerifyToken,
       let { proName, proOrignalPrice, proDelivery, proDiscount, proBuyer, proRating, proNoOfReviews, proDescription,
         selectedCategories, selectedSubCategories, choose, sizes, sizePrices, colors, colorPrices } = req.body;
 
-      choose = choose ? true : false;
+      choose = choose === "true" ? true : false;
       const sizeAndPrice = [];
       const colorAndPrice = [];
       if (choose) {
@@ -506,8 +506,6 @@ router.post("/manage-products/add-products", verifyAdmin, optionalVerifyToken,
 
       if (!newProduct)
         return res.status(500).json({ success: false, message: "Product creation failed" });
-
-      console.log(selectedCategories, selectedSubCategories);
 
       const updateCategoryRelations = async (productId) => {
 
