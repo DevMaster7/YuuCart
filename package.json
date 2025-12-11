@@ -1,5 +1,5 @@
 {
-  "name": "quickcart",
+  "name": "yuucart",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
@@ -44,11 +44,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DevMaster7/QuickCart.git"
+    "url": "git+https://github.com/DevMaster7/YuuCart.git"
   },
   "bugs": {
-    "url": "https://github.com/DevMaster7/QuickCart/issues"
+    "url": "https://github.com/DevMaster7/YuuCart/issues"
   },
-  "homepage": "https://github.com/DevMaster7/QuickCart#readme",
+  "homepage": "https://github.com/DevMaster7/YuuCart#readme",
   "description": ""
 }

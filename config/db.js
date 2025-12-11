@@ -7,10 +7,10 @@ async function connectDB() {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
-        console.log("Connected to QuickCart Database ✅");
+        console.log("Connected to YuuCart Database ✅");
     } catch (error) {
         console.error("MongoDB connection failed ❌", error);
-        process.exit(1); // Exit process if DB fails
+        process.exit(1); 
     }
 }
 

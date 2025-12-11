@@ -4,7 +4,7 @@ function footer() {
     footerEle.innerHTML = `<div class="footer-container">
             <div class="logo-section">
                 <a href="/shop" class="logo-con">
-            <div id="logo-txt">QuickCart</div>
+            <div id="logo-txt">YuuCart</div>
             <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M3 3H6L9 15H19L22 6H7" stroke="#64B6AC" stroke-width="2" stroke-linecap="round"
                     stroke-linejoin="round" />
@@ -53,7 +53,7 @@ function footer() {
 
             <div class="footer-section">
                 <h3>Contact</h3>
-                <p>Email: support@quickcart.com</p>
+                <p>Email: support@yuucart.com</p>
                 <p>Phone: +92 300 1234567</p>
                 <div class="social-icons">
                 <a href="https://www.instagram.com/trolleypakistan" class="social-link"><i class="fa-brands insta fa-instagram"></i></a>
@@ -65,7 +65,7 @@ function footer() {
         </div>
 
         <div class="footer-bottom">
-            <p>&copy; ${new Date().getFullYear()} QuickCart All rights reserved.</p>
+            <p>&copy; ${new Date().getFullYear()} YuuCart All rights reserved.</p>
         </div>`
     document.getElementsByTagName("body")[0].append(footerEle)
 }

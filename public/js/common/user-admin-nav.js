@@ -5,7 +5,7 @@ function navMaker() {
             <i class="fa-solid fa-bars"></i>
         </div>
         <div class="center">
-            <div class="logo-text">QuickCart</div>
+            <div class="logo-text">YuuCart</div>
             <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M3 3H6L9 15H19L22 6H7" stroke="#64B6AC" stroke-width="2" stroke-linecap="round"
                     stroke-linejoin="round" />
