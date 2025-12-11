@@ -20,9 +20,4 @@ function decrypt(encryptedText) {
     return decrypted;
 }
 
-// Test
-const encrypted = encrypt("cart-of-user Starts with Name of Allah");
-console.log("Encrypted:", encrypted);
-
-const decrypted = decrypt("3b69245e0a79ac1f3e7c129ab7cf29a49a7676f1f5f75cdcf934ed95d909a9aa823ac80ebf0c11d9efe6f44fffb07df5");
-console.log("Decrypted:", decrypted);
+module.exports = { encrypt, decrypt };
