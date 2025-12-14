@@ -59,7 +59,7 @@ if (url.includes("reffer")) {
     })
 } else if (head.dataset.info == "enter-pass") {
     let newPassHTML = `<div class="pass-con">
-        <form id="enterPassForm">
+        <form id="enterPassForm" class="pass-form">
         <div class="heading">Enter Your Password</div>
         <div class="field">
                         <input type="password" name="password" placeholder=" " required />
@@ -77,6 +77,13 @@ if (url.includes("reffer")) {
         </div>`;
     document.body.style.overflow = "hidden";
     document.getElementById("modalRoot").innerHTML = newPassHTML;
+
+    document.querySelector(".pass-con").addEventListener("click", (e) => {
+        if (!e.target.closest(".pass-form")) {
+            document.querySelector(".pass-con").remove();
+            document.body.style.overflow = "auto";
+        }
+    });
 
     document.getElementById("enterPassForm").addEventListener("submit", async (e) => {
         e.preventDefault();

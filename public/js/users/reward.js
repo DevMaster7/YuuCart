@@ -36,26 +36,11 @@ async function getRewardsData() {
 
     // Check In
     document.getElementById("checkInBtn").addEventListener("click", async () => {
-        const nowUTC = new Date();
-        const lastCheckUTC = rewardData.user.checkIn.lastCheck ? new Date(rewardData.user.checkIn.lastCheck) : null;
-
-        const nowPKT = new Date(nowUTC.getTime() + 5 * 60 * 60 * 1000);
-        const lastCheckPKT = new Date(lastCheckUTC.getTime() + 5 * 60 * 60 * 1000);
-
-        const todayMidnight = new Date(nowPKT);
-        todayMidnight.setHours(0, 0, 0, 0);
-
-        const lastMidnight = new Date(lastCheckPKT);
-        lastMidnight.setHours(0, 0, 0, 0);
-
-        const dayDiff = Math.floor((todayMidnight - lastMidnight) / (1000 * 60 * 60 * 24));
-
-        if (!(dayDiff === 0)) {
+        async function sendCheckIn() {
             let res = await fetch("/addons/checkIn", {
                 method: "GET",
             });
             let res1 = await res.json();
-            console.log(res1);
             if (res1.success) {
                 let streak = res1.streak
                 let root = document.getElementById("modalRoot")
@@ -75,6 +60,29 @@ async function getRewardsData() {
                     "<button class=\"btn\" onclick=\"closeModal()\">OK</button>"
                 );
             }
+        }
+
+        const nowUTC = new Date();
+        const lastCheckUTC = rewardData.user.checkIn.lastCheck ? new Date(rewardData.user.checkIn.lastCheck) : null;
+
+        if (!lastCheckUTC) {
+            sendCheckIn();
+            return;
+        }
+
+        const nowPKT = new Date(nowUTC.getTime() + 5 * 60 * 60 * 1000);
+        const lastCheckPKT = new Date(lastCheckUTC.getTime() + 5 * 60 * 60 * 1000);
+
+        const todayMidnight = new Date(nowPKT);
+        todayMidnight.setHours(0, 0, 0, 0);
+
+        const lastMidnight = new Date(lastCheckPKT);
+        lastMidnight.setHours(0, 0, 0, 0);
+
+        const dayDiff = Math.floor((todayMidnight - lastMidnight) / (1000 * 60 * 60 * 24));
+
+        if (!(dayDiff === 0)) {
+            sendCheckIn();
         } else {
             showModal("Already Checked In",
                 "You’ve already claimed today’s reward!",
@@ -258,6 +266,11 @@ async function getRewardsData() {
         const nowUTC = new Date();
         const lastSpinUTC = new Date(rewardData.user.spinDate);
 
+        if (!spinning && !lastSpinUTC) {
+            spin();
+            return;
+        }
+
         const nowPKT = new Date(nowUTC.getTime() + 5 * 60 * 60 * 1000);
         const lastSpinPKT = new Date(lastSpinUTC.getTime() + 5 * 60 * 60 * 1000);
 
@@ -282,7 +295,6 @@ async function getRewardsData() {
 
     // Catalog
     const CATALOG = rewardData.coupons;
-    console.log(CATALOG);
     document.getElementById("catalog").innerHTML = CATALOG.map(item => `
                     <div class="reward" data-ident="${item.couponCode}">
                         <div class="title">${item.couponTitle}</div>
@@ -392,6 +404,7 @@ async function getRewardsData() {
 
     // ===== Modal =====
     function renderAgain(newCoins, desc, date) {
+        const YuuCoins = Number(document.getElementById("pointsVal").innerHTML.split(" ")[0].trim());
         document.getElementById("pointsVal").textContent = `${YuuCoins + newCoins} Yuu`;
         document.getElementById("pointsSmall").textContent = YuuCoins + newCoins;
         document.getElementById("pointsTotal").textContent = YuuCoins + newCoins;

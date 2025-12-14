@@ -30,7 +30,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         minlength: 8,
     },
-    spinDate: Date,
+    spinDate: {
+        type: Date,
+        default: null
+    },
     YuuCoin: {
         type: Number,
         default: 0

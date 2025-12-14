@@ -184,7 +184,6 @@ app.get("/auth/google/callback",
           provider: data.provider,
           username,
           email: data.emails[0].value,
-          spinDate: joiningDate,
           Reffer,
         }
 
@@ -247,8 +246,10 @@ app.post("/user/register/enterpass", async (req, res) => {
 
   let Reffer = userData.Reffer;
   let from = "";
-  if (Reffer && Reffer.status) {
+  let accept = null;
+  if (Reffer) {
     from = Reffer.from;
+    accept = Reffer.status
   }
 
   await userModel.create({
@@ -258,15 +259,15 @@ app.post("/user/register/enterpass", async (req, res) => {
     provider: userData.provider,
     username: userData.username,
     email: userData.email,
-    spinDate: userData.spinDate,
     password: userData.password,
     Reffer: {
       from,
+      Status: accept,
       refferCode: userData.username,
       url: `${process.env.BASE_URL}/user/register?reffer=${userData.username}`,
     },
     messages: [{
-      textContent: `Assalam o Alaikum, <strong style="color:#FB8500;">${userData.fullname}</strong>!<br>
+      textContent: `Assalam o Alaikum, <strong style="color:#FB8500;">${userData.fullname}!</strong><br>
             Welcome to <strong style="color:#FB8500;">YuuCart</strong><br>
             We’re delighted to have you join our community!<br>
             Explore, shop, and enjoy a seamless experience — we hope you’ll love everything we have to offer.<br><br>
@@ -277,52 +278,52 @@ app.post("/user/register/enterpass", async (req, res) => {
     }],
   });
 
-  if (Reffer) {
-    const refferUser = await userModel.findOne({ username: Reffer.from });
-    const newUser = await userModel.findOne({ username: userData.username });
-    if (Reffer.status) {
-      // console.log(`True FriendShip`);
-      let msg = {
-        textContent: `Well, well… someone actually joined through the link! <br>
-                Unlike the ones who sold out for our <strong>100Yuu</strong> coins, your friend <strong style="color:#FB8500;">${userData.username}</strong> just proved that friendship still exists in this economy.<br>
-                Loyalty level: Premium 💙`,
-        sendingDate: new Date(),
-        seen: true
-      }
-      refferUser.YuuCoin += 100;
-      refferUser.Yuutx.push({ desc: "Referral Bonus", Yuu: 100 });
-      refferUser.Reffer.yourReffers.push(userData.username);
-      refferUser.messages.push(msg);
-      await refferUser.save();
+  // if (Reffer) {
+  //   const refferUser = await userModel.findOne({ username: Reffer.from });
+  //   const newUser = await userModel.findOne({ username: userData.username });
+  //   if (Reffer.status) {
+  //     // console.log(`True FriendShip`);
+  //     let msg = {
+  //       textContent: `Well, well… someone actually joined through the link! <br>
+  //               Unlike the ones who sold out for our <strong>100Yuu</strong> coins, your friend <strong style="color:#FB8500;">${userData.username}</strong> just proved that friendship still exists in this economy.<br>
+  //               Loyalty level: Premium 💙`,
+  //       sendingDate: new Date(),
+  //       seen: true
+  //     }
+  //     refferUser.YuuCoin += 100;
+  //     refferUser.Yuutx.push({ desc: "Referral Bonus", Yuu: 100 });
+  //     refferUser.Reffer.yourReffers.push(userData.username);
+  //     refferUser.messages.push(msg);
+  //     await refferUser.save();
 
-      let newMsg = {
-        textContent: `Well, well… someone actually joined through the link! <br>
-                Unlike the ones who sold out for our <strong>100Yuu</strong> coins, you just proved that friendship still exists in this economy.<br>
-                Loyalty level: Premium 💙`,
-        sendingDate: new Date(),
-        seen: true
-      }
-      newUser.messages.push(newMsg);
-      await newUser.save();
-    }
-    else if (!Reffer.status) {
-      // console.log(`LoL Fake FriendShip`);
-      newUser.YuuCoin += 100;
-      newUser.Yuutx.push({ desc: "Betray Bonus", Yuu: 100 });
-      await newUser.save();
+  //     let newMsg = {
+  //       textContent: `Well, well… someone actually joined through the link! <br>
+  //               Unlike the ones who sold out for our <strong>100Yuu</strong> coins, you just proved that friendship still exists in this economy.<br>
+  //               Loyalty level: Premium 💙`,
+  //       sendingDate: new Date(),
+  //       seen: true
+  //     }
+  //     newUser.messages.push(newMsg);
+  //     await newUser.save();
+  //   }
+  //   else if (!Reffer.status) {
+  //     // console.log(`LoL Fake FriendShip`);
+  //     newUser.YuuCoin += 100;
+  //     newUser.Yuutx.push({ desc: "Betray Bonus", Yuu: 100 });
+  //     await newUser.save();
 
-      let msg = {
-        textContent: `
-        It appears that your friend just reject your referral link — all for <strong>100Yuu</strong> coins. <br>
-        Interesting how loyalty seems to lose its shine when there’s a small number of valuable Yuu attached to it. Perhaps your friendship was worth a less than our <strong>100Yuu</strong> after all. <br>
-        To prevent fight between both of you we can't give you his username to you 🙂`,
-        sendingDate: new Date(),
-        seen: true
-      }
-      refferUser.messages.push(msg);
-      await refferUser.save();
-    }
-  }
+  //     let msg = {
+  //       textContent: `
+  //       It appears that your friend just reject your referral link — all for <strong>100Yuu</strong> coins. <br>
+  //       Interesting how loyalty seems to lose its shine when there’s a small number of valuable Yuu attached to it. Perhaps your friendship was worth a less than our <strong>100Yuu</strong> after all. <br>
+  //       To prevent fight between both of you we can't give you his username to you 🙂`,
+  //       sendingDate: new Date(),
+  //       seen: true
+  //     }
+  //     refferUser.messages.push(msg);
+  //     await refferUser.save();
+  //   }
+  // }
 
   delete req.session.userData;
 
@@ -394,79 +395,112 @@ app.get("/send/verification-email", optionalVerifyToken, async (req, res) => {
       if (type === "email-verification") {
         html = `
   <div style="margin:0; padding:0; background:#F8F9FA; font-family:Arial, sans-serif;">
-    <div style="max-width:600px; margin:40px auto; background:white; border-radius:12px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.08);">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#F8F9FA;">
+      <tr>
+        <td align="center" style="padding:20px 10px;">
+          
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" 
+                 style="max-width:600px; background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.08);">
 
-      <!-- HEADER -->
-      <div style="background:#023047; padding:24px; text-align:center;">
-        <h1 style="color:#CCD6F6; margin:0; font-size:26px;">Verify Your Email</h1>
-      </div>
+            <!-- HEADER -->
+            <tr>
+              <td style="background:#023047; padding:24px; text-align:center;">
+                <h1 style="color:#CCD6F6; margin:0; font-size:22px;">Verify Your Email</h1>
+              </td>
+            </tr>
 
-      <!-- CONTENT -->
-      <div style="padding:30px 35px;">
-        <p style="font-size:16px; color:#023047;">Hi <strong>${user.fullname}</strong>,</p>
+            <!-- CONTENT -->
+            <tr>
+              <td style="padding:30px 25px;">
+                <p style="font-size:16px; color:#333; margin:0 0 12px;">
+                  Hi <strong style="color:#023047;">${user.fullname}</strong>,
+                </p>
 
-        <p style="font-size:16px; color:#333; line-height:1.6;">
-          To verify your email in <strong>YuuCart</strong>, please verify your email using the code below:
-        </p>
+                <p style="font-size:15px; color:#333; line-height:1.6;">
+                  To verify your email in <strong>YuuCart</strong>, please use the verification code below:
+                </p>
 
-        <!-- OTP BOX -->
-        <div style="text-align:center; margin:35px 0;">
-            <span style="font-size:34px; font-weight:bold; color:#FB8500; letter-spacing:8px;">
-              ${code}
-            </span>
-        </div>
+                <!-- OTP -->
+                <div style="text-align:center; margin:32px 0;">
+                  <span style="font-size:32px; font-weight:bold; color:#FB8500; letter-spacing:8px;">
+                    ${code}
+                  </span>
+                </div>
 
-        <p style="font-size:14px; color:#555; line-height:1.6;">
-          This code is valid for the next <strong>5 minutes</strong>.  
-          Please do not share this code with anyone.
-        </p>
+                <p style="font-size:14px; color:#555; line-height:1.6;">
+                  This code is valid for the next <strong>5 minutes</strong>.
+                  Please do not share this code with anyone.
+                </p>
 
-        <hr style="border:none; border-top:1px solid #eee; margin:35px 0;">
+                <hr style="border-top:1px solid #eee; margin:30px 0;">
 
-        <p style="text-align:center; font-size:13px; color:#999;">
-          &copy; ${year} YuuCart — All Rights Reserved.
-        </p>
-      </div>
-    </div>
+                <p style="text-align:center; font-size:13px; color:#999;">
+                  &copy; ${year} YuuCart — All Rights Reserved.
+                </p>
+
+              </td>
+            </tr>
+
+          </table>
+        </td>
+      </tr>
+    </table>
   </div>`;
       } else if (type === "forgot") {
         html = `
   <div style="margin:0; padding:0; background:#F8F9FA; font-family:Arial, sans-serif;">
-    <div style="max-width:600px; margin:40px auto; background:white; border-radius:12px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#F8F9FA;">
+      <tr>
+        <td align="center" style="padding:20px 10px;">
+          
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" 
+                 style="max-width:600px; background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
 
-      <!-- HEADER -->
-      <div style="background:#023047; padding:24px; text-align:center;">
-        <h1 style="color:#CCD6F6; margin:0; font-size:26px;">Reset Your Password</h1>
-      </div>
+            <!-- HEADER -->
+            <tr>
+              <td style="background:#023047; padding:24px; text-align:center;">
+                <h1 style="color:#CCD6F6; margin:0; font-size:22px;">Reset Your Password</h1>
+              </td>
+            </tr>
 
-      <!-- CONTENT -->
-      <div style="padding:30px 35px;">
-        <p style="font-size:16px; color:#023047;">Hi <strong>${user.fullname}</strong>,</p>
+            <!-- CONTENT -->
+            <tr>
+              <td style="padding:30px 25px;">
 
-        <p style="font-size:16px; color:#333; line-height:1.6;">
-          We received a request to reset your password for <strong>YuuCart</strong>.  
-          Use the security code below to continue:
-        </p>
+                <p style="font-size:16px; color:#333; margin:0 0 12px;">
+                  Hi <strong style="color:#023047;">${user.fullname}</strong>,
+                </p>
 
-        <!-- OTP BOX -->
-        <div style="text-align:center; margin:35px 0;">
-            <span style="font-size:34px; font-weight:bold; color:#D9534F; letter-spacing:8px;">
-              ${code}
-            </span>
-        </div>
+                <p style="font-size:15px; color:#333; line-height:1.6;">
+                  We received a request to reset your <strong>YuuCart</strong> password.  
+                  Use the security code below to continue:
+                </p>
 
-        <p style="font-size:14px; color:#555; line-height:1.6;">
-          This code is valid for the next <strong>5 minutes</strong>.<br>
-          If you did not request a password reset, you can safely ignore this email.
-        </p>
+                <!-- OTP -->
+                <div style="text-align:center; margin:32px 0;">
+                  <span style="font-size:32px; font-weight:bold; color:#D9534F; letter-spacing:8px;">
+                    ${code}
+                  </span>
+                </div>
 
-        <hr style="border:none; border-top:1px solid #eee; margin:35px 0;">
+                <p style="font-size:14px; color:#555; line-height:1.6;">
+                  This code is valid for the next <strong>5 minutes</strong>.<br>
+                  If you did not request a password reset, simply ignore this email.
+                </p>
 
-        <p style="text-align:center; font-size:13px; color:#999;">
-          &copy; ${year} YuuCart — All Rights Reserved.
-        </p>
-      </div>
-    </div>
+                <hr style="border-top:1px solid #eee; margin:30px 0;">
+
+                <p style="text-align:center; font-size:13px; color:#999;">
+                  &copy; ${year} YuuCart — All Rights Reserved.
+                </p>
+
+              </td>
+            </tr>
+
+          </table>
+        </td>
+      </tr>
+    </table>
   </div>`;
       }
 

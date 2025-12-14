@@ -15,7 +15,7 @@ fileInput.addEventListener("change", () => {
 let head = document.getElementsByTagName("head")[0];
 if (head.dataset.info == "enter-pass") {
     let forgotPassHTML = `<div class="pass-con">
-        <form id="enterPassForm" action="/set-new-forgot" method="post">
+        <form id="enterPassForm" class="pass-form" action="/set-new-forgot" method="post">
         <div class="heading">Enter Your New Password</div>
         <div class="field">
                         <input type="password" id="new-pass" name="password" placeholder=" " required />
@@ -33,6 +33,13 @@ if (head.dataset.info == "enter-pass") {
         </div`;
     document.querySelector("body").style.overflow = "hidden";
     document.querySelector(".main-container").querySelector(".con").innerHTML = forgotPassHTML;
+    
+    document.querySelector(".pass-con").addEventListener("click", (e) => {
+        if (!e.target.closest(".pass-form")) {
+            document.querySelector(".pass-con").remove();
+            document.querySelector("body").style.overflow = "auto";
+        }
+    });
 
     document.getElementById("enterPassForm").addEventListener("submit", async (e) => {
         e.preventDefault();

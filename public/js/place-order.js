@@ -19,10 +19,10 @@ async function getUser() {
 (async function () {
     const data = await getUser();
 
-    document.getElementById("name").innerHTML = data.user.fullname;
-    document.getElementById("phone").innerHTML = data.user.phone;
-    document.getElementById("city").innerHTML = data.user.city;
-    document.getElementById("address").innerHTML = data.user.address;
+    document.getElementById("name").innerHTML = data.user.fullname == undefined ? "---" : data.user.fullname;
+    document.getElementById("phone").innerHTML = data.user.phone == undefined ? "---" : data.user.phone;
+    document.getElementById("city").innerHTML = data.user.city == undefined ? "---" : data.user.city;
+    document.getElementById("address").innerHTML = data.user.address == undefined ? "---" : data.user.address;
 
     document.querySelector(".coupon-btn").addEventListener("click", async () => {
         let firstPriceEle = document.getElementById("subTotalPrice");
