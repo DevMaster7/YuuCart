@@ -237,86 +237,120 @@ async function categoriesData() {
             window.location.reload()
         });
 
-        saveBtn.addEventListener("click", async () => {
-            let newData = {
-                _id: main.querySelector("#product_id").getElementsByTagName("a")[0].innerText,
-                galleryImages: []
-            };
+        if (!saveBtn.dataset.listenerAttached) {
+            saveBtn.addEventListener("click", async () => {
+                const formData = new FormData();
 
-            // Product Details
-            main.querySelectorAll(".edited-data").forEach((e) => {
-                if (e.classList.contains("proName")) {
-                    e.setAttribute("data-info", "proName");
-                } else if (!e.classList.contains("value-btn")) {
-                    let dataName = e.parentElement.dataset.info;
-                    e.setAttribute("data-info", dataName);
+                if (main.frontImageFile) {
+                    formData.append("frontImage", main.frontImageFile);
                 }
 
-                let key, value;
+                let newData = {
+                    _id: main.querySelector("#product_id").getElementsByTagName("a")[0].innerText,
+                    galleryImages: []
+                };
 
-                if (e.classList.contains("value-btn")) {
-                    key = e.dataset.info;
-                    value = e.innerText.toLowerCase();
-                } else {
-                    function autoConvert(value) {
-                        return /^\d+(\.\d+)?$/.test(value) ? Number(value) : value;
+                // Product Details
+                main.querySelectorAll(".edited-data").forEach((e) => {
+                    if (e.classList.contains("proName")) {
+                        e.setAttribute("data-info", "proName");
+                    } else if (!e.classList.contains("value-btn")) {
+                        let dataName = e.parentElement.dataset.info;
+                        e.setAttribute("data-info", dataName);
                     }
-                    key = e.dataset.info;
-                    value = autoConvert(e.value);
+
+                    let key, value;
+
+                    if (e.classList.contains("value-btn")) {
+                        key = e.dataset.info;
+                        value = e.innerText.toLowerCase();
+                    } else {
+                        function autoConvert(value) {
+                            return /^\d+(\.\d+)?$/.test(value) ? Number(value) : value;
+                        }
+                        key = e.dataset.info;
+                        value = autoConvert(e.value);
+                    }
+
+                    newData[key] = value;
+                });
+
+                // Color and Size
+                if (newData.customization == "true") {
+                    newData.colorAndPrice = [];
+                    const colorInputs = main.querySelectorAll('input[type="color"]');
+                    colorInputs.forEach(input => {
+                        let priceEl = input.parentElement.querySelector('.color-price');
+                        let color = input.value;
+                        let price = priceEl ? Number(priceEl.value.trim()) : 0;
+                        newData.colorAndPrice.push({ color, price });
+                    });
+
+                    newData.sizeAndPrice = [];
+                    let sizeInputs = main.querySelectorAll(".size-info");
+                    sizeInputs.forEach((e) => {
+                        let size = e.value.toUpperCase();
+                        let price = Number(e.parentElement.lastElementChild.value);
+                        newData.sizeAndPrice.push({ size, price });
+                    });
                 }
 
-                newData[key] = value;
-            });
+                // Product Images
+                main.querySelectorAll(".box").forEach((e) => {
+                    if (!e.classList.contains("add-image-label")) {
+                        const img = e.querySelector("img");
+                        const src = img.src;
 
-            // Color and Size
-            if (newData.customization == "true") {
-                newData.colorAndPrice = [];
-                const colorInputs = main.querySelectorAll('input[type="color"]');
-                colorInputs.forEach(input => {
-                    let priceEl = input.parentElement.querySelector('.color-price');
-                    let color = input.value;
-                    let price = priceEl ? Number(priceEl.value.trim()) : 0;
-                    newData.colorAndPrice.push({ color, price });
-                });
-
-                newData.sizeAndPrice = [];
-                let sizeInputs = main.querySelectorAll(".size-info");
-                sizeInputs.forEach((e) => {
-                    let size = e.value.toUpperCase();
-                    let price = Number(e.parentElement.lastElementChild.value);
-                    newData.sizeAndPrice.push({ size, price });
-                });
-            }
-
-            // Product Images
-            const formData = new FormData();
-            main.querySelectorAll(".box").forEach((e) => {
-                if (!e.classList.contains("add-image-label")) {
-                    const img = e.querySelector("img");
-                    const src = img.src;
-
-                    if (src.includes("cloudinary.com")) {
-                        newData.galleryImages.push(src);
-                    } else if (src.startsWith("blob:")) {
-                        const file = newFilesMap.get(src);
-                        if (file) {
-                            formData.append("notIncludedImgs", file);
+                        if (src.includes("cloudinary.com")) {
+                            newData.galleryImages.push(src);
+                        } else if (src.startsWith("blob:")) {
+                            const file = newFilesMap.get(src);
+                            if (file) {
+                                formData.append("notIncludedImgs", file);
+                            }
                         }
                     }
+                });
+                formData.append("newData", JSON.stringify(newData));
+
+                const response = await fetch("/admin/manage-products/edit-product", {
+                    method: "POST",
+                    body: formData,
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    window.location.reload();
                 }
             });
-            formData.append("newData", JSON.stringify(newData));
 
-            const response = await fetch("/admin/manage-products/edit-product", {
-                method: "POST",
-                body: formData,
-            });
-            const data = await response.json();
-            if (data.success) {
-                window.location.reload();
+            saveBtn.dataset.listenerAttached = "true";
+        }
+    }
+
+    document.querySelectorAll(".main-pic").forEach((e) => {
+        let main = e.closest(".product-card");
+        let input = main.querySelector(".front-pic");
+
+        input.addEventListener("input", () => {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+
+                const blobUrl = URL.createObjectURL(file);
+
+                main.frontImageFile = file;
+                newFilesMap.set(blobUrl, file);
+
+                main.querySelector(".main-pic img").src = blobUrl;
             }
         });
-    }
+
+        e.addEventListener("click", () => {
+            btnFunctions(main);
+            input.click();
+        });
+    });
 
     // Remove Images Function
     function removeImage() {
@@ -353,7 +387,6 @@ async function categoriesData() {
             Array.from(input.files).forEach((file) => {
                 let blobUrl = URL.createObjectURL(file);
                 newFilesMap.set(blobUrl, file);
-                console.log(newFilesMap);
                 let main = input.closest(".product-card")
                 let html = `
             <div class="box">
@@ -424,12 +457,12 @@ async function categoriesData() {
                 let sizeHTML = `<div class="info cust-con">
                                             <input class="edited-data input-info size-info">
                                             <nav style="display: flex; flex-shrink: 0;">= Rs.</nav>
-                                            <input class="edited-data input-info">
+                                            <input class="edited-data input-info" type="number" value="0" min="0">
                                         </div>`
                 let colorHTML = `<div class="info cust-con">
-                                                                        <input class="edited-data" type="color">
-                                                                        <nav style="display: flex; flex-shrink: 0;">= Rs.</nav>
-                                                                        <input class="edited-data color-price input-info" type="number" min="0">
+                                            <input class="edited-data" type="color">
+                                            <nav style="display: flex; flex-shrink: 0;">= Rs.</nav>
+                                            <input class="edited-data color-price input-info" type="number" value="0" min="0">
                                          </div>`
                 let btn_con = add_rem.parentElement
                 if (btn_con.classList.contains("size")) {

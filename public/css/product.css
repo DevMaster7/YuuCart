@@ -894,6 +894,11 @@ html {
 .pro-name {
     font-size: 15px;
     color: #021d2a;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    transition: .3s ease;
 }
 
 .pro-price-con {

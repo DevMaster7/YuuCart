@@ -69,7 +69,7 @@ document.getElementById("addSize").onclick = () => {
     let box = document.createElement("div");
     box.className = "add-inputs";
     box.innerHTML = `<input name="sizes[]" placeholder="Size" required>
-                     <input type="number" name="sizePrices[]" placeholder="Price" required>`;
+                     <input type="number" name="sizePrices[]" value="0" placeholder="Price" required>`;
     document.querySelector(".optionSizes").appendChild(box);
 };
 // Remove Size Input
@@ -84,7 +84,7 @@ document.getElementById("addColor").onclick = () => {
     box.className = "add-inputs";
     box.innerHTML = `
                      <input type="color" class="colorInp" name="colors[]" placeholder="Color" required>
-                     <input type="number" name="colorPrices[]" placeholder="Price" required>`;
+                     <input type="number" name="colorPrices[]" value="0" placeholder="Price" required>`;
     document.querySelector(".optionColors").appendChild(box);
 };
 // Remove Color Input
