@@ -162,6 +162,15 @@ async function categoriesData() {
     });
     let newFilesMap = new Map();
     function btnFunctions(main) {
+        if (!main.dataset.originalState) {
+            main.dataset.originalState = JSON.stringify({
+                html: main.innerHTML
+            });
+        }
+
+        bindFrontImage(main);
+        bindGalleryImages(main);
+
         main.querySelectorAll(".edit-info").forEach((e) => {
             let input = document.createElement("input");
             input.classList.add("edited-data")
@@ -234,7 +243,7 @@ async function categoriesData() {
         cancelBtn.style.display = "flex"
 
         cancelBtn.addEventListener("click", () => {
-            window.location.reload()
+            restoreOriginal(main);
         });
 
         if (!saveBtn.dataset.listenerAttached) {
@@ -321,7 +330,7 @@ async function categoriesData() {
                 const data = await response.json();
 
                 if (data.success) {
-                    window.location.reload();
+                    applyUpdatedUI(main, newData, data);
                 }
             });
 
@@ -609,7 +618,8 @@ async function categoriesData() {
         delete_btn.addEventListener("click", () => {
             confirmationWrapper(deleteDiv);
             document.querySelector(".yes").addEventListener("click", async () => {
-                let productID = delete_btn.closest(".product-card").attributes.id.value
+                let card = delete_btn.closest(".product-card")
+                let productID = card.attributes.id.value
                 const res = await fetch(`/admin/manage-products/delete-product`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -617,11 +627,133 @@ async function categoriesData() {
                 })
                 const res1 = await res.json();
                 if (res1.success) {
-                    window.location.reload();
+                    card.remove()
                 }
             })
         })
     })
+
+    function applyUpdatedUI(main, newData, serverRes) {
+        main.querySelectorAll(".edited-data").forEach(input => {
+            const span = document.createElement("span");
+            span.classList.add("edit-info");
+            span.dataset.info = input.dataset.info;
+            span.innerText = input.value;
+            input.replaceWith(span);
+        });
+
+        const name = main.querySelector("[data-info='proName']");
+        if (name) name.classList.add("proName");
+
+        if (main.frontImageFile && serverRes.frontImageUrl) {
+            main.querySelector(".main-pic img").src = serverRes.frontImageUrl;
+        }
+
+        if (serverRes.galleryImages) {
+            const extraPics = main.querySelector(".extra-pics");
+            extraPics.querySelectorAll(".box:not(.add-image-label)").forEach(b => b.remove());
+
+            serverRes.galleryImages.forEach(url => {
+                extraPics.insertAdjacentHTML("afterbegin", `
+                <div class="box">
+                    <img src="${url}">
+                </div>
+            `);
+            });
+        }
+
+        main.querySelector(".edit-btn").style.display = "flex";
+        main.querySelector(".delete-btn").style.display = "flex";
+        main.querySelector(".save-btn").style.display = "none";
+        main.querySelector(".cancel-btn").style.display = "none";
+
+        delete main.frontImageFile;
+        newFilesMap.clear();
+
+        removeImage();
+    }
+
+    function restoreOriginal(main) {
+        if (!main.dataset.originalState) return;
+
+        const original = JSON.parse(main.dataset.originalState);
+        main.innerHTML = original.html;
+
+        delete main.dataset.originalState;
+        delete main.frontImageFile;
+        newFilesMap.clear();
+
+        rebindProductCard(main);
+        bindGalleryImages(main);
+    }
+
+    function rebindProductCard(main) {
+        main.querySelector(".edit-btn")?.addEventListener("click", () => {
+            btnFunctions(main);
+        });
+
+        main.querySelector(".main-pic")?.addEventListener("click", () => {
+            let input = main.querySelector(".front-pic");
+            btnFunctions(main);
+            input.click();
+        });
+
+        bindFrontImage(main);
+        bindGalleryImages(main);
+
+        customizeDropdown();
+        removeImage();
+    }
+
+    function bindFrontImage(main) {
+        const input = main.querySelector(".front-pic");
+        if (!input) return;
+
+        input.value = "";
+
+        input.onchange = () => {
+            if (!input.files || !input.files[0]) return;
+
+            const file = input.files[0];
+            const blobUrl = URL.createObjectURL(file);
+
+            main.frontImageFile = file;
+            newFilesMap.set(blobUrl, file);
+
+            main.querySelector(".main-pic img").src = blobUrl;
+        };
+    }
+    function bindGalleryImages(main) {
+        const input = main.querySelector(".input-images");
+        if (!input) return;
+
+        input.value = "";
+
+        input.onchange = () => {
+            Array.from(input.files).forEach(file => {
+
+                const blobUrl = URL.createObjectURL(file);
+                newFilesMap.set(blobUrl, file);
+
+                const html = `
+                <div class="box">
+                    <img src="${blobUrl}">
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px"
+                            viewBox="0 -960 960 960" width="24px" fill="#e3e3e3">
+                            <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Z"/>
+                        </svg>
+                    </div>
+                </div>`;
+
+                main.querySelector(".extra-pics")
+                    .querySelector(".add-image-label")
+                    .insertAdjacentHTML("beforebegin", html);
+            });
+
+            removeImage();
+        };
+    }
 
     // Confirmation Function
     function confirmationWrapper(html) {

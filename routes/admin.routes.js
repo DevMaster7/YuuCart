@@ -340,10 +340,10 @@ router.post("/manage-products/edit-product", verifyAdmin,
           newData.galleryImages.push(url);
         }
       }
-
+      let frontURL = null;
       if (frontImage && frontImage.length > 0) {
-        const frontUrl = await uploadOnCloudinary(frontImage[0].buffer, folderName);
-        product.image = frontUrl;
+        frontURL = await uploadOnCloudinary(frontImage[0].buffer, folderName);
+        product.image = frontURL;
       }
 
       const originalPrice = Number(newData.proOrignalPrice) || 0;
@@ -369,8 +369,14 @@ router.post("/manage-products/edit-product", verifyAdmin,
       product.customization = newData.customization
       product.sizeAndPrice = newData.sizeAndPrice
       product.colorAndPrice = newData.colorAndPrice
+
       await product.save();
-      res.status(200).json({ success: true });
+
+      res.status(200).json({
+        success: true,
+        frontImageUrl: product.image,
+        galleryImages: product.galleryImages
+      });
     } catch (error) {
       console.error("ERROR:", error);
       return res.status(500).render("errors/500", {
@@ -379,53 +385,6 @@ router.post("/manage-products/edit-product", verifyAdmin,
       });
     }
   });
-
-// router.post("/manage-products/edit-product", verifyAdmin,
-//   upload.array("notIncludedImgs"),
-//   async (req, res) => {
-//     try {
-//       const files = req.files;
-//       const newData = JSON.parse(req.body.newData);
-
-//       console.log(newData.image);
-//       let folderName = "product_pics";
-
-//       // let frontImageURL = await uploadImageFromUrl(newData.image, folderName);
-//       // console.log(frontImageURL);
-//       for (const file of files) {
-//         const url = await uploadOnCloudinary(file.buffer, folderName);
-//         if (!url) {
-//           return res.status(500).json({ success: false, message: "Cloudinary upload failed" });
-//         }
-//         newData.galleryImages.push(url);
-//       }
-
-//       const product = await productModel.findOne({ _id: newData._id });
-//       let proPrice = Math.ceil(newData.proOrignalPrice);
-//       proPrice = newData.proDiscount !== 0 ? Math.ceil(proPrice - (Math.ceil(newData.proOrignalPrice) * newData.proDiscount / 100)) : Math.ceil(newData.proOrignalPrice)
-//       product.proName = newData.proName
-//       product.galleryImages = newData.galleryImages
-//       product.proPrice = proPrice
-//       product.proOrignalPrice = Math.ceil(newData.proOrignalPrice) || 0
-//       product.proDiscount = newData.proDiscount || 0
-//       product.proBuyer = newData.proBuyer || 0
-//       product.proRating = newData.proRating || 0
-//       product.proNoOfReviews = newData.proNoOfReviews || 0
-//       product.proCategory = newData.proCategory
-//       product.stock = newData.stock
-//       product.customization = newData.customization
-//       product.sizeAndPrice = newData.sizeAndPrice
-//       product.colorAndPrice = newData.colorAndPrice
-//       await product.save();
-//       res.status(200).json({ success: true });
-//     } catch (error) {
-//       console.error("ERROR:", error);
-//       return res.status(500).render("errors/500", {
-//         title: "500 | Internal Server Error",
-//         message: "Something went wrong while loading this page. Please try again later.",
-//       });
-//     }
-//   });
 router.post("/manage-products/apply-discount", verifyAdmin, async (req, res) => {
   try {
     const { filterProducts } = req.body;
