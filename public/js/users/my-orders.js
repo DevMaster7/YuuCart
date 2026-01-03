@@ -25,9 +25,9 @@ document.querySelectorAll(".tab").forEach((tab) => {
             orderCon.innerHTML = `
                 <div class="empty-con">
                     <img src="/assets/no-order.png" alt="No Orders" />
-                    <h3>No ${status} Orders Found!</h3>
-                    <p>You didn’t have any ${lowerStatus} orders. Start Exploring Now!</p>
-                    <a href="/shop" class="explore-btn">Explore Products</a>
+                    <h3>No${status === "All" ? "" : ` ${status}`} Orders Yet!</h3>
+                    <p>${status === "All" ? "You haven’t placed any orders." : `You didn’t have any ${lowerStatus} orders.`} Start Exploring Now!</p>
+                    <a href="/shop" class="explore-btn">Explore Shop</a>
                 </div>`;
         } else {
             orderCon.innerHTML = "";

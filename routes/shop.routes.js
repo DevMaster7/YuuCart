@@ -38,22 +38,27 @@ router.get("/:slug-:id", optionalVerifyToken, async (req, res) => {
         if (!product) return res.status(404).render("errors/404")
         const products = await productModel.find();
 
-        const category = await categoriesModel.findOne({ categoryName: product.proCategory });
-        let categoryIds = [];
+        async function getProductIdsFromProCategory(proCategory) {
+            let productIds = [];
 
-        if (category) {
-            category.products.forEach(id => {
-                categoryIds.push(id)
-            })
-            category.subCategories.forEach(sub => {
-                if (sub.products && Array.isArray(sub.products)) {
-                    categoryIds.push(...sub.products);
+            for (const catObj of proCategory) {
+                const categoryName = Object.keys(catObj)[0];
+
+                const category = await categoriesModel.findOne({ categoryName });
+                if (!category) continue;
+
+                if (Array.isArray(category.products)) {
+                    productIds.push(
+                        ...category.products.map(id => id.toString())
+                    );
                 }
-            });
 
+            }
+            return [...new Set(productIds)];
         }
 
-        const categoryProducts = await productModel.find({ _id: { $in: categoryIds } });
+        const productIds = await getProductIdsFromProCategory(product.proCategory);
+        const categoryProducts = await productModel.find({ _id: { $in: productIds } });
 
         const allRatings = product.Reviews.map(r => r.rating);
         let starCounts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };

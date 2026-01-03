@@ -68,11 +68,15 @@
                                 <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
                                     <div class="add-info-con">
                                         <% if (proDetail.cutomizationStatus === true) { %>
+                                        <% if (proDetail.productSize) { %>
                                         <p class="add-info info-box">Size: <%= proDetail.productSize %> = Rs.
                                             <%= proDetail.productSizePrice %></p>
+                                        <% } %>
+                                        <% if (proDetail.productColor) { %>
                                         <p class="add-info info-box">Color: <span class="color"
                                                 style="background: <%= proDetail.productColor %>;"></span> = Rs.
                                             <%= proDetail.productColorPrice %></p>
+                                        <% } %>
                                         <% } %>
                                         <p class="add-info">Quantity: <%= proDetail.productQuantity %></p>
                                     </div>
@@ -141,7 +145,7 @@
                         <img src="/assets/no-order.png" alt="Empty Wishlist" />
                         <h3>No Orders Yet</h3>
                         <p>You haven’t placed any orders. Start Exploring Now!</p>
-                        <a href="/shop" class="explore-btn">Explore Products</a>
+                        <a href="/shop" class="explore-btn">Explore Shop</a>
                     </div>
                     <% } %>
                 </div>

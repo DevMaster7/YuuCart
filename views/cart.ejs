@@ -124,6 +124,7 @@
                         </div>
                         <% if (product.customization) { %>
                         <div class="main-cust-con">
+                            <% if (product.sizeAndPrice && product.sizeAndPrice.length> 0) { %>
                             <div class="cust-con">
                                 <div class="heading">Size:</div>
                                 <div class="btn-con">
@@ -134,6 +135,8 @@
                                     <% }) %>
                                 </div>
                             </div>
+                            <% } %>
+                            <% if (product.colorAndPrice && product.colorAndPrice.length> 0) { %>
                             <div class="cust-con">
                                 <div class="heading">Color:</div>
                                 <div class="btn-con">
@@ -144,6 +147,7 @@
                                     <% }) %>
                                 </div>
                             </div>
+                            <% } %>
                         </div>
                         <% } %>
                     </div>

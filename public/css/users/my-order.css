@@ -250,10 +250,6 @@
 }
 
 @media (max-width: 460px) {
-    .content {
-        padding: 2px !important;
-    }
-
     .tab-bar {
         border-left: none;
         border-right: none;

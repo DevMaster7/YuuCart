@@ -346,6 +346,31 @@ router.post("/manage-products/edit-product", verifyAdmin,
         product.image = frontURL;
       }
 
+      function parsePath(paths) {
+        const grouped = [];
+        const map = {};
+
+        paths.forEach(path => {
+          const splitIndex = path.indexOf("-");
+          const category = path.slice(0, splitIndex).trim();
+          const sub = path.slice(splitIndex + 1).trim();
+
+          if (!map[category]) {
+            map[category] = [];
+          }
+          map[category].push(sub);
+        });
+
+        for (let cat in map) {
+          grouped.push({ [cat]: map[cat] });
+        }
+
+        return grouped
+      }
+
+      let paths = newData.selectedPaths;
+      const proCategory = parsePath(paths);
+
       const originalPrice = Number(newData.proOrignalPrice) || 0;
       const discount = Number(newData.proDiscount) || 0;
 
@@ -364,13 +389,35 @@ router.post("/manage-products/edit-product", verifyAdmin,
       product.proBuyer = newData.proBuyer || 0
       product.proRating = newData.proRating || 0
       product.proNoOfReviews = newData.proNoOfReviews || 0
-      product.proCategory = newData.proCategory
+      product.proCategory = proCategory
       product.stock = newData.stock
       product.customization = newData.customization
       product.sizeAndPrice = newData.sizeAndPrice
       product.colorAndPrice = newData.colorAndPrice
-
       await product.save();
+
+      async function updateCategories(prodId, groupedCategories) {
+        for (let catObj of groupedCategories) {
+          const categoryName = Object.keys(catObj)[0];
+          const subNames = catObj[categoryName];
+
+          // 1️⃣ Add to main category products array
+          await categoriesModel.updateOne(
+            { categoryName },
+            { $addToSet: { products: prodId } }
+          );
+
+          // 2️⃣ Add to subcategories products array
+          for (let subName of subNames) {
+            await categoriesModel.updateOne(
+              { categoryName, "subCategories.subName": subName },
+              { $addToSet: { "subCategories.$.products": prodId } }
+            );
+          }
+        }
+      }
+
+      updateCategories(product._id, product.proCategory);
 
       res.status(200).json({
         success: true,
@@ -503,15 +550,33 @@ router.post("/manage-products/add-products", verifyAdmin, optionalVerifyToken,
         selectedSubCategories = JSON.parse(selectedSubCategories);
       }
 
+      function categoriesAssigner(mainCategories, subCategories) {
+        let proCategory = [];
+        mainCategories.forEach(cat => {
+          let c = {}
+          c[cat] = []
+          proCategory.push(c)
+        })
+
+        if (!(!subCategories || subCategories.length === 0)) {
+          subCategories.forEach(subcat => {
+            const [cat, sub] = subcat.split("-");
+
+            proCategory.forEach(c => {
+              if (c[cat]) {
+                c[cat].push(sub);
+              }
+            })
+          })
+        }
+
+        return proCategory
+      }
+
       let proCategory = [];
-      if ((!selectedCategories || selectedCategories.length === 0) &&
-        (!selectedSubCategories || selectedSubCategories.length === 0)) {
-        proCategory = ["Uncategorized"];
-      } else {
-        if (selectedSubCategories && selectedSubCategories.length > 0)
-          proCategory = selectedSubCategories;
-        else
-          proCategory = selectedCategories;
+
+      if (!((!selectedCategories || selectedCategories.length === 0) && (!selectedSubCategories || selectedSubCategories.length === 0))) {
+        proCategory = categoriesAssigner(selectedCategories, selectedSubCategories);
       }
 
       const newProduct = await productModel.create({
@@ -536,40 +601,68 @@ router.post("/manage-products/add-products", verifyAdmin, optionalVerifyToken,
       if (!newProduct)
         return res.status(500).json({ success: false, message: "Product creation failed" });
 
-      const updateCategoryRelations = async (productId) => {
+      if (!newProduct.proCategory || newProduct.proCategory.length === 0) return;
 
-        if ((!selectedCategories || selectedCategories.length === 0) &&
-          (!selectedSubCategories || selectedSubCategories.length === 0))
-          return;
+      for (const catObj of newProduct.proCategory) {
 
-        if (!selectedSubCategories || selectedSubCategories.length === 0) {
-          const cats = await categoriesModel.find({
-            categoryName: { $in: selectedCategories }
-          });
-
-          for (const cat of cats) {
-            cat.products.push(productId);
-            await cat.save();
-          }
-          return;
-        }
-
-        for (const entry of selectedSubCategories) {
-          const [categoryName, subName] = entry.split("-");
+        for (const [categoryName, subCats] of Object.entries(catObj)) {
 
           const category = await categoriesModel.findOne({ categoryName });
           if (!category) continue;
 
-          const sub = category.subCategories
-            .find(sc => sc.subName === subName);
-          if (!sub) continue;
+          if (!category.products.includes(newProduct._id)) {
+            category.products.push(newProduct._id);
+          }
 
-          sub.products.push(productId);
+          if (Array.isArray(subCats) && subCats.length > 0) {
+            category.subCategories.forEach(sub => {
+              if (subCats.includes(sub.subName)) {
+                if (!sub.products.includes(newProduct._id)) {
+                  sub.products.push(newProduct._id);
+                }
+              }
+            });
+          }
+
           await category.save();
         }
+      }
 
-      };
-      await updateCategoryRelations(newProduct._id);
+
+      // const updateCategoryRelations = async (productId) => {
+
+      //   if ((!selectedCategories || selectedCategories.length === 0) &&
+      //     (!selectedSubCategories || selectedSubCategories.length === 0))
+      //     return;
+
+      //     if (!selectedSubCategories || selectedSubCategories.length === 0) {
+      //       const cats = await categoriesModel.find({
+      //         categoryName: { $in: selectedCategories }
+      //       });
+
+      //       for (const cat of cats) {
+      //         cat.products.push(productId);
+      //         await cat.save();
+      //       }
+      //       return;
+      //     }
+
+      //     // for (const entry of selectedSubCategories) {
+      //     //   const [categoryName, subName] = entry.split("-");
+
+      //     //   const category = await categoriesModel.findOne({ categoryName });
+      //     //   if (!category) continue;
+
+      //     //   const sub = category.subCategories
+      //     //     .find(sc => sc.subName === subName);
+      //     //   if (!sub) continue;
+
+      //     //   sub.products.push(productId);
+      //     //   await category.save();
+      //     // }
+
+      // };
+      // await updateCategoryRelations(newProduct._id);
 
       return res.redirect("/admin/manage-products/add-products");
 

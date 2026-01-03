@@ -80,6 +80,7 @@
                                     </div>
                                 </div>
                                 <% if (obj.productInfo.customization) { %>
+                                <% if (obj.productSize) { %>
                                 <div class="product-size-color product-size">
                                     Size: <div class="pro-size-select">
                                         <%= obj.productSize %>
@@ -88,6 +89,8 @@
                                         = &nbsp;&nbsp; Rs. <%= obj.sizePrice %>
                                     </div>
                                 </div>
+                                <% } %>
+                                <% if (obj.productColor) { %>
                                 <div class="product-size-color product-color">
                                     Color: <div class="pro-color-select" style="background: <%= obj.productColor %>;">
                                     </div>
@@ -95,6 +98,7 @@
                                         = &nbsp;&nbsp; Rs. <%= obj.colorPrice %>
                                     </div>
                                 </div>
+                                <% } %>
                                 <% } %>
                             </div>
                             <div class="mini-price-con">

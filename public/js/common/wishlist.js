@@ -1,5 +1,6 @@
 document.querySelectorAll(".heart").forEach(btn => {
-    btn.addEventListener("click", async () => {
+    btn.addEventListener("click", async (e) => {
+        e.preventDefault()
         let pageName = document.getElementsByTagName("head")[0].dataset.page
         let proID;
         if (pageName == "product") {
