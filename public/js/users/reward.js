@@ -43,6 +43,7 @@ async function getRewardsData() {
             let res1 = await res.json();
             if (res1.success) {
                 let streak = res1.streak
+                console.log(streak);
                 let root = document.getElementById("modalRoot")
                 document.body.style.overflow = "hidden";
                 root.style.display = "flex";
@@ -109,33 +110,33 @@ async function getRewardsData() {
         segments: [{
             label: '150 Yuu',
             color: '#F97316',
-            weight: 2
+            weight: 8
         },
         {
             label: '10 Yuu',
             color: '#60A5FA',
-            weight: 50
+            weight: 30
         },
         {
             label: '500 Yuu',
             color: '#34D399',
-            weight: 0
+            weight: 0.5
         },
         {
             label: '5% OFF',
             code: "SAVE5WITHSPIN",
             color: '#06B6D4',
-            weight: 5
+            weight: 0.5
         },
         {
             label: 'No Prize',
             color: '#E5E7EB',
-            weight: 2
+            weight: 40
         },
         {
             label: 'Free Mug',
             color: '#F43F5E',
-            weight: 1
+            weight: 0.2
         },
         ],
         fullSpins: 5,
@@ -377,7 +378,7 @@ async function getRewardsData() {
         })
     });
 
-    // // Transactions
+    // Transactions
     const TX = rewardData.user.Yuutx;
     document.getElementById("txList").innerHTML = TX.reverse().map(t => `
             <div class="txn">

@@ -22,7 +22,6 @@ router.get("/checkIn", optionalVerifyToken, async (req, res) => {
         const nowUTC = new Date();
         const lastCheckUTC = user.checkIn.lastCheck ? new Date(user.checkIn.lastCheck) : null;
 
-        // 🌟 First-time check-in
         if (!lastCheckUTC) {
             const reward = REWARDS[0];
             user.checkIn.lastCheck = nowUTC;
@@ -50,7 +49,6 @@ router.get("/checkIn", optionalVerifyToken, async (req, res) => {
 
         const dayDiff = Math.floor((todayMidnight - lastMidnight) / (1000 * 60 * 60 * 24));
 
-        // ❌ Same day → cannot check-in
         if (dayDiff === 0) {
             return res.status(400).json({
                 success: false,
@@ -59,15 +57,32 @@ router.get("/checkIn", optionalVerifyToken, async (req, res) => {
             });
         }
 
-        // ✅ Next day → streak continues
         if (dayDiff === 1) {
-            const rewardIndex = user.checkIn.streak % REWARDS.length;
-            const reward = REWARDS[rewardIndex];
+            if (user.checkIn.streak >= REWARDS.length) {
+                const reward = REWARDS[0];
+
+                user.checkIn.streak = 1;
+                user.checkIn.lastCheck = nowUTC;
+                user.YuuCoin += reward;
+                user.Yuutx.push({ desc: "Daily Check-in", Yuu: reward });
+
+                await user.save();
+
+                return res.status(200).json({
+                    success: true,
+                    message: "7-day streak completed! Streak restarted 🎉",
+                    streak: 1,
+                    reward,
+                });
+            }
+
+            const reward = REWARDS[user.checkIn.streak];
 
             user.checkIn.streak += 1;
             user.checkIn.lastCheck = nowUTC;
             user.YuuCoin += reward;
             user.Yuutx.push({ desc: "Daily Check-in", Yuu: reward });
+
             await user.save();
 
             return res.status(200).json({
@@ -78,7 +93,6 @@ router.get("/checkIn", optionalVerifyToken, async (req, res) => {
             });
         }
 
-        // 🔴 Missed more than 1 day → streak reset
         if (dayDiff >= 2) {
             const reward = REWARDS[0];
 
