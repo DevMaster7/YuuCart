@@ -131,7 +131,9 @@ async function categoriesData() {
 
             if (
                 e.target.closest(".categoryBtn") ||
-                e.target.closest(".dropdown-con")
+                e.target.closest(".dropdown-con") ||
+                e.target.closest(".info") ||
+                e.target.closest(".btn")
             ) return;
 
             if (!card.classList.contains("filter-pro")) return;
