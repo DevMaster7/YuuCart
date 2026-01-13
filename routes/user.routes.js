@@ -607,13 +607,13 @@ router.post("/login",
             const token = jwt.sign(
                 { _QCUI_UI: user._id },
                 process.env.SECRET_KEY,
-                { expiresIn: "24h" }
+                { expiresIn: "7d" }
             );
 
             res.cookie("ULGG", token, {
-                // httpOnly: true,
-                // secure: true,
-                maxAge: 24 * 60 * 60 * 1000
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                maxAge: 1000 * 60 * 60 * 24 * 7
             });
 
             // ----For Testing----

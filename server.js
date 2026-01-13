@@ -196,30 +196,30 @@ app.get("/auth/google/callback",
       }
     } else if (action == "login") {
       if (user) {
-        // const token = jwt.sign(
-        //   { _QCUI_UI: user._id },
-        //   process.env.SECRET_KEY,
-        //   { expiresIn: "24h" }
-        // );
-
-        // res.cookie("ULGG", token, {
-        //   // httpOnly: true,
-        //   // secure: true,
-        //   maxAge: 24 * 60 * 60 * 1000
-        // });
-
-        // ----For Testing----
         const token = jwt.sign(
           { _QCUI_UI: user._id },
           process.env.SECRET_KEY,
-          { expiresIn: "1m" }
+          { expiresIn: "7d" }
         );
 
         res.cookie("ULGG", token, {
           httpOnly: true,
-          // secure: true,
-          maxAge: 60 * 1000
+          secure: process.env.NODE_ENV === "production",
+          maxAge: 1000 * 60 * 60 * 24 * 7
         });
+
+        // ----For Testing----
+        // const token = jwt.sign(
+        //   { _QCUI_UI: user._id },
+        //   process.env.SECRET_KEY,
+        //   { expiresIn: "1m" }
+        // );
+
+        // res.cookie("ULGG", token, {
+        //   httpOnly: true,
+        //   secure: process.env.NODE_ENV === "production",
+        //   maxAge: 60 * 1000
+        // });
         if (user.isAdmin) {
           res.redirect("/admin");
         } else {
