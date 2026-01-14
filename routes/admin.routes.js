@@ -384,6 +384,7 @@ router.post("/manage-products/edit-product", verifyAdmin,
       product.proName = newData.proName
       product.galleryImages = newData.galleryImages
       product.proOrignalPrice = originalPrice;
+      product.proDelivery = newData.proDelivery;
       product.proDiscount = discount;
       product.proPrice = proPrice;
       product.proBuyer = newData.proBuyer || 0
